@@ -1,0 +1,7 @@
+{
+  "name": "TỪ VỰNG CZ",
+  "description": "Ứng dụng học tiếng Séc trình độ A1-A2 với gia sư AI thực tế ảo.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
