@@ -51,6 +51,6 @@ export function cuaAi({ tieuDe, taoCauHoi, can, dsBiKip, thoat, khiQua }) {
   });
   manHinh(
     h('div', { class: 'thanh-tren' }, h('div', { class: 'tieu-de' }, tieuDe)),
-    cuNoi(h('b', {}, 'Cửa ải bí kíp!'), h('span', {}, `Ở đây không được mở Sổ bí kíp, em phải nhớ. Chạm vào chữ Séc để xem nghĩa thì vẫn được. Đúng ${can} câu trở lên là qua.`)),
+    cuNoi(h('b', {}, tieuDe.startsWith('Trùm') ? 'Đánh trùm!' : 'Cửa ải bí kíp!'), h('span', {}, `Ở đây không được mở Sổ bí kíp, em phải nhớ. Chạm vào chữ Séc để xem nghĩa thì vẫn được. Đúng ${can} câu trở lên là qua.`)),
     h('button', { class: 'nut nut-chinh nut-rong', type: 'button', onclick: thu }, 'Vào Cửa ải ▸'));
 }

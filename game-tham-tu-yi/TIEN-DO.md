@@ -74,6 +74,18 @@ Ghi chú thiết kế:
 - Chị Xu dùng ảnh 3D tự vẽ `img/chi-xu.png` (300px, đã cắt tròn) làm mặc định, giống Ánh Dương.
 - Bố mẹ có thể chọn ảnh riêng cho từng hồ sơ bằng nút **🖼️ Chọn ảnh** (màn ✏️ Đổi tên hồ sơ). Ảnh đó chỉ lưu trong trình duyệt của máy đó, không vào repo.
 
+### Giai đoạn 3: 6 phố còn lại ✅
+
+- Các phố L, M, P, S, V, Z đều mở được theo thứ tự, có đủ truyện, bí kíp, vòng học, Cửa ải và kết phố.
+- **Cốt truyện "Kẻ trộm chữ Y":** mỗi phố có một trùm là một từ trong bảng: B býk, L plyš, M myš, P netopýr, S syčet, V výr, Z Ruzyně. Muốn trả chữ Y về phố, phải đánh trùm: trả lời đúng 3/5 câu về từ đó.
+- **Trò soi lỗi** (phố P): 3 từ đúng + 1 từ bị đổi y↔i, chọn từ viết sai. Cách viết sai nào là một từ có thật (ví dụ pil) thì bỏ qua.
+- Mỗi phố có luật luyện riêng trong vòng: B BK4, L BK5 (từ cùng nhà), M/P BK6 (cặp nghe giống), S BK7 (dài/ngắn), V BK8 (vy-).
+- Phố M trở đi có nút ý / í.
+- Thoại truyện các phố nằm trong `data/truyen.json` (câu Séc đơn giản kèm nghĩa Việt).
+- Bot chơi thử đi qua cả 7 phố ở khổ 360px: không lỗi JavaScript, không tràn ngang.
+
+Chưa làm (thuộc giai đoạn 4): Trùm cuối toàn game, ôn lại theo lịch, Sổ thám tử, trang tiến độ cho bố mẹ.
+
 ## Quyết định đã chốt (chưa có trong prompt gốc)
 
 1. **Nhân vật**: Ánh Dương (em, dấu sắc, không phải "Ảnh") là **nhân vật chính xuyên suốt**, game nhập vai. Chị là **Xu** (hiển thị "chị Xu"), đồng hành trong truyện. Cả hai là nữ. Hồ sơ: Bố, Mẹ, chị Xu, Ánh Dương.

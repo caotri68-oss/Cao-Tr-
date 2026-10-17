@@ -195,6 +195,244 @@
           "ai": "cu",
           "vn": "Cảm ơn thám tử Ánh Dương!"
         }
+      ],
+      "trum": [
+        {
+          "ai": "ke_trom",
+          "vn": "Hô hô! Con bò đực býk sẽ giữ chữ Y của ta!"
+        },
+        {
+          "ai": "cu",
+          "vn": "Trả lời đúng 3 câu là đánh bại nó. Thử nhé!"
+        }
+      ]
+    },
+    "L": {
+      "vao": [
+        {
+          "ai": "xu",
+          "vn": "Phố Lyže có tuyết trắng, nhưng chữ Y ở đây cũng bị lấy mất rồi."
+        },
+        {
+          "ai": "cu",
+          "vn": "Chú gấu bông plyš đang canh cửa cho kẻ trộm. Phải trả lời đúng mới qua được!"
+        },
+        {
+          "ai": "anhduong",
+          "cz": "Jdeme dál!",
+          "vn": "Đi tiếp thôi!"
+        }
+      ],
+      "trum": [
+        {
+          "ai": "ke_trom",
+          "vn": "Hô hô! Gấu bông của ta mềm lắm, các ngươi không đánh nổi đâu!"
+        },
+        {
+          "ai": "anhduong",
+          "vn": "Em nhớ bí kíp rồi, đánh thôi!"
+        }
+      ],
+      "ket": [
+        {
+          "ai": "anhduong",
+          "cz": "Písmeno Y je zpátky!",
+          "vn": "Chữ Y đã trở lại rồi!"
+        },
+        {
+          "ai": "xu",
+          "vn": "Tuyết lại trắng xóa kìa!"
+        }
+      ]
+    },
+    "M": {
+      "vao": [
+        {
+          "ai": "xu",
+          "vn": "Phố Myš có chuột nhắt chạy khắp nơi. Chữ Y ở đây cũng biến mất!"
+        },
+        {
+          "ai": "cu",
+          "vn": "Ở phố này có cả y lẫn ý, và i lẫn í. Phải nghe kỹ dấu nhé!"
+        },
+        {
+          "ai": "anhduong",
+          "cz": "Myš je tady!",
+          "vn": "Chuột ở đây rồi!"
+        }
+      ],
+      "trum": [
+        {
+          "ai": "ke_trom",
+          "vn": "Hô hô! Chuột nhắt myš sẽ cắn các ngươi!"
+        },
+        {
+          "ai": "cu",
+          "vn": "Đừng sợ, em đọc kỹ từng dấu là được."
+        }
+      ],
+      "ket": [
+        {
+          "ai": "anhduong",
+          "cz": "Myš utekla!",
+          "vn": "Chuột chạy mất rồi!"
+        },
+        {
+          "ai": "cu",
+          "vn": "Chữ Y đã về phố Myš!"
+        }
+      ]
+    },
+    "P": {
+      "vao": [
+        {
+          "ai": "xu",
+          "vn": "Phố Netopýr tối om, con dơi đang bay lượn. Chữ Y bị giấu ở đâu đó."
+        },
+        {
+          "ai": "cu",
+          "vn": "Có một từ viết sai trong bốn từ. Em phải tìm cho ra nhé!"
+        },
+        {
+          "ai": "anhduong",
+          "cz": "Najdu ho!",
+          "vn": "Em sẽ tìm ra nó!"
+        }
+      ],
+      "trum": [
+        {
+          "ai": "ke_trom",
+          "vn": "Hô hô! Con dơi netopýr sẽ che mắt các ngươi!"
+        },
+        {
+          "ai": "anhduong",
+          "vn": "Em soi kỹ từng từ là được!"
+        }
+      ],
+      "ket": [
+        {
+          "ai": "anhduong",
+          "cz": "Netopýr je pryč!",
+          "vn": "Con dơi bay đi rồi!"
+        },
+        {
+          "ai": "xu",
+          "vn": "Chữ Y đã về phố Netopýr!"
+        }
+      ]
+    },
+    "S": {
+      "vao": [
+        {
+          "ai": "xu",
+          "vn": "Phố Sýr có phô mai thơm lừng, nhưng chữ Y đã bị kẻ trộm lấy đi."
+        },
+        {
+          "ai": "cu",
+          "vn": "Chữ dài ý và ngắn y vẫn viết y nhé. Đừng đổi thành i!"
+        },
+        {
+          "ai": "anhduong",
+          "cz": "Hledám písmeno!",
+          "vn": "Em đang tìm chữ đây!"
+        }
+      ],
+      "trum": [
+        {
+          "ai": "ke_trom",
+          "vn": "Hô hô! Con rắn syčet sẽ rít lên dọa các ngươi!"
+        },
+        {
+          "ai": "cu",
+          "vn": "Nghe tiếng rít thì cứ nhớ bí kíp dài ngắn!"
+        }
+      ],
+      "ket": [
+        {
+          "ai": "anhduong",
+          "cz": "Sýr je zpátky!",
+          "vn": "Phô mai đã trở lại!"
+        },
+        {
+          "ai": "xu",
+          "vn": "Chữ Y đã về phố Sýr!"
+        }
+      ]
+    },
+    "V": {
+      "vao": [
+        {
+          "ai": "xu",
+          "vn": "Phố Výr có cú đại bàng và rái cá. Ở đây có nhiều từ bắt đầu bằng vy-."
+        },
+        {
+          "ai": "cu",
+          "vn": "Từ bắt đầu bằng vy- hoặc vý- luôn viết y. Nhớ cho kỹ!"
+        },
+        {
+          "ai": "anhduong",
+          "cz": "Vítr je silný!",
+          "vn": "Gió mạnh quá!"
+        }
+      ],
+      "trum": [
+        {
+          "ai": "ke_trom",
+          "vn": "Hô hô! Cú đại bàng výr sẽ bay xuống bắt các ngươi!"
+        },
+        {
+          "ai": "anhduong",
+          "vn": "Em nhớ vy- luôn là y, còn vítr thì là i!"
+        }
+      ],
+      "ket": [
+        {
+          "ai": "anhduong",
+          "cz": "Výborně!",
+          "vn": "Tuyệt vời!"
+        },
+        {
+          "ai": "xu",
+          "vn": "Chữ Y đã về phố Výr!"
+        }
+      ]
+    },
+    "Z": {
+      "vao": [
+        {
+          "ai": "xu",
+          "vn": "Sân bay Ruzyně đông nghịt. Kẻ trộm đang trốn ở đây!"
+        },
+        {
+          "ai": "cu",
+          "vn": "Đây là phố cuối cùng. Chỉ có bốn từ, nhưng em phải nhớ hết!"
+        },
+        {
+          "ai": "anhduong",
+          "cz": "Jdeme na letiště!",
+          "vn": "Đi ra sân bay thôi!"
+        }
+      ],
+      "trum": [
+        {
+          "ai": "ke_trom",
+          "vn": "Hô hô! Ta sẽ giữ chữ Y cuối cùng ở sân bay này!"
+        },
+        {
+          "ai": "cu",
+          "vn": "Ôn lại cả 7 phố là đánh được nó!"
+        }
+      ],
+      "ket": [
+        {
+          "ai": "anhduong",
+          "cz": "Písmeno Y je zpátky všude!",
+          "vn": "Chữ Y đã trở lại khắp nơi!"
+        },
+        {
+          "ai": "cu",
+          "vn": "Chợ Chữ đã có đủ chữ Y. Em là thám tử giỏi nhất!"
+        }
       ]
     }
   },

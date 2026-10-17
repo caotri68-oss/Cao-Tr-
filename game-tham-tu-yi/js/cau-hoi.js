@@ -211,6 +211,36 @@ export function qCauViDu(t, { dai = false, luat = 'BK4' } = {}) {
   };
 }
 
+// ——— 7. Soi lỗi: 4 từ, một từ viết sai y/i ———
+// tuDung: 3 từ đúng (mục {cz, nghia}); tuLoi: 1 từ bị đổi y↔i. Trả về null nếu cách viết sai lại là một từ có thật.
+export function qSoiLoi(tuDung, tuLoi, { luat = 'BK6' } = {}) {
+  const sai = doiYI(tuLoi.cz, viTriGoc(tuLoi.cz, 'y'));
+  if (traTuDung(sai)) return null;
+  const dapAn = sai;
+  return {
+    loai: 'soi_loi', tu: tuLoi.cz, luat, dapAn, meoNhom: null,
+    ve(khung, xong) {
+      const ds = tronMang([...tuDung.slice(0, 3).map((t) => ({ cz: t.cz, dung: true })), { cz: sai, dung: false }]);
+      const khoi = h('div', { class: 'lua-chon', style: 'grid-template-columns:1fr 1fr' });
+      const nut = ds.map((o) => {
+        const b = nutLuaChon(h('span', { lang: 'cs' }, o.cz), '', () => {
+          khoaCacNut(khung);
+          const dung = !o.dung;
+          b.classList.add(dung ? 'dung' : 'sai');
+          if (!dung) nut[ds.findIndex((x) => !x.dung)].classList.add('dung');
+          doc(tuLoi.cz, { tuDong: true });
+          xong({ dung, giaiThich: ['Từ đúng là ', h('b', { lang: 'cs' }, czChu(tuLoi.cz, { mau: { loai: 'y', viTri: viTriGoc(tuLoi.cz, 'y') } })), ` (${tuLoi.nghia}). Chỉ đổi y ↔ i là sai.`] });
+        });
+        khoi.append(b);
+        return b;
+      });
+      khung.append(
+        h('p', { class: 'goi-y' }, 'Thám tử soi lỗi: một từ viết SAI y/i. Chạm từ sai:'),
+        khoi);
+    },
+  };
+}
+
 // ——— 6. Ba bước thám tử (BK4) ———
 const CUNG = 'hkr';           // chữ cứng dùng để hỏi (bỏ d, t, n vì có cách đọc riêng)
 const MEM = 'žščřcj';

@@ -1,26 +1,32 @@
 // Một phố chữ: khởi động → truyện → mở bí kíp → các vòng học → Cửa ải → kết phố.
 import { h, manHinh, tronMang, chon } from './dom.js';
-import { TRUYEN, tenPho, nhomTheoChu, biKip, tuBayHoiDuoc, hoHangHoiDuoc } from './du-lieu.js';
+import { TRUYEN, tenPho, nhomTheoChu, biKip, tuBayHoiDuoc, hoHangHoiDuoc, viTriGoc, traTuDung } from './du-lieu.js';
 import { hoSo, luu, thuocBiKip } from './luu-tien-do.js';
 import { czChu, czCau, czTrongTruyen } from './dich.js';
 import { nutNghe, nutNgheCham, khoiDocTheo, doc } from './am-thanh.js';
 import { cuNoi, loiThoai } from './nhan-vat.js';
 import {
-  chayLuot, qLuat, qNgheDien, qCungNha, qBayNgheGiong, qGhepNghia, qCauViDu, qBaBuoc,
-  mucTuChinh, mucTuBay, viDuCungMem,
+  chayLuot, qLuat, qNgheDien, qCungNha, qBayNgheGiong, qGhepNghia, qCauViDu, qBaBuoc, qSoiLoi,
+  mucTuChinh, mucTuBay, viDuCungMem, doiYI,
 } from './cau-hoi.js';
 import { manMoBiKip, moSoBiKipNhanh } from './so-bi-kip.js';
 import { canhTruyen, cuaAi, soSao, hangSao } from './chung.js';
+import { chuong } from './am-thanh.js';
 
-// Cấu hình từng phố. Giai đoạn 2 mới mở phố B; các phố khác làm ở giai đoạn 3.
+// Cấu hình từng phố.
+//   biKip: bí kíp mở ở đầu phố (null nếu phố chỉ ôn)
+//   luat:  bí kíp dùng để nhắc khi sai
+//   dai:   có nút ý / í không (từ phố M trở đi)
+//   soiLoi: có trò soi lỗi không
+//   trum:  từ trong bảng làm trùm cuối phố (kẻ trộm giấu chữ y trong con vật này)
 export const PHO = {
-  B: { biKip: 'BK4', dai: false, daLam: true },
-  L: { biKip: 'BK5', dai: false },
-  M: { biKip: 'BK6', dai: true },
-  P: { biKip: null, dai: true },
-  S: { biKip: 'BK7', dai: true },
-  V: { biKip: 'BK8', dai: true },
-  Z: { biKip: null, dai: true },
+  B: { biKip: 'BK4', luat: 'BK4', dai: false, trum: 'býk' },
+  L: { biKip: 'BK5', luat: 'BK5', dai: false, trum: 'plyš' },
+  M: { biKip: 'BK6', luat: 'BK6', dai: true, trum: 'myš' },
+  P: { biKip: null, luat: 'BK6', dai: true, soiLoi: true, trum: 'netopýr' },
+  S: { biKip: 'BK7', luat: 'BK7', dai: true, trum: 'syčet' },
+  V: { biKip: 'BK8', luat: 'BK8', dai: true, trum: 'výr' },
+  Z: { biKip: null, luat: 'BK4', dai: true, trum: 'Ruzyně' },
 };
 
 const NGAY = 24 * 60 * 60 * 1000;
@@ -39,7 +45,7 @@ export function vaoPho(chu, veBanDo) {
   const tt = hs.pho[chu] || (hs.pho[chu] = { buoc: 0, sao: 0, qua: false, diemCao: 0 });
   const tu = n.tu.map((t) => ({ ...t, nhom: chu }));
   const vong = chiaVong(tu);
-  const buoc = ['khoi_dong', 'truyen', 'bi_kip', ...vong.map((_, i) => 'vong' + i), 'cua_ai', 'ket'];
+  const buoc = ['khoi_dong', 'truyen', 'bi_kip', ...vong.map((_, i) => 'vong' + i), 'cua_ai', 'trum', 'ket'];
   if (tt.buoc >= buoc.length) tt.buoc = 0;
   luu();
 
@@ -60,6 +66,7 @@ export function vaoPho(chu, veBanDo) {
       return hocTu(vong[v], v, vong.length, tieuDe, thoat, () => choiVong(n, cfg, vong[v], v, vong.length, tieuDe, thoat, tiep));
     }
     if (b === 'cua_ai') return cuaAiPho(n, cfg, tu, tieuDe, thoat, (kq) => { tt.kqCuaAi = kq; tiep(); });
+    if (b === 'trum') return trumPho(n, cfg, tieuDe, thoat, tiep);
     if (b === 'ket') return ketPho(n, cfg, tu, tt, thoat);
   }
   chay();
@@ -137,26 +144,54 @@ function hocTu(ds, v, soVong, tieuDe, thoat, xong) {
 }
 
 // ——— Chơi một vòng ———
-function thuThachBiKip(n, cfg, ds, v, bay) {
-  if (cfg.biKip !== 'BK4') return [];
-  const cm = tronMang(viDuCungMem());
-  const tuY = chon(ds);
-  const muc = [
-    [{ ...mucTuChinh(tuY) }, { ...mucTuBay(bay[0], n.chu) }],
-    [{ ...mucTuChinh(chon(ds)) }, { ...cm[0] }],
-    [{ ...mucTuBay(bay[1] || bay[0], n.chu) }, { ...cm[1] }],
-  ][v % 3];
-  return muc.map((m) => qBaBuoc(m));
+// Mỗi phố có một luật riêng để luyện trong vòng. Trả về danh sách câu hỏi thêm.
+function thuThachBiKip(n, cfg, ds, v, bay, opt) {
+  const coHo = ds.filter((t) => hoHangHoiDuoc(t).length);
+  switch (cfg.luat) {
+    case 'BK4': {
+      const cm = tronMang(viDuCungMem());
+      const muc = [
+        [mucTuChinh(chon(ds)), mucTuBay(bay[0], n.chu)],
+        [mucTuChinh(chon(ds)), cm[0]],
+        [mucTuBay(bay[1] || bay[0], n.chu), cm[1]],
+      ][v % 3];
+      return muc.map((m) => qBaBuoc({ ...m })).filter(Boolean);
+    }
+    case 'BK5': // từ cùng nhà: gốc có y thì con cháu cũng y
+      return [chon(coHo.length ? coHo : ds), chon(coHo.length ? coHo : ds)]
+        .map((t) => qCungNha(t, n, opt)).filter(Boolean);
+    case 'BK6': // cặp nghe giống, khác nghĩa
+      return [qBayNgheGiong(mucTuChinh(chon(ds)), opt), qBayNgheGiong(mucTuBay(bay[0], n.chu), opt)];
+    case 'BK7': { // dài ngắn không đổi y
+      const co = ds.filter((t) => /[ý]/.test(t.cz));
+      return (co.length ? co : ds).slice(0, 2).map((t) => qNgheDien(mucTuChinh(t), { ...opt, dai: true }));
+    }
+    case 'BK8': // vy- / vý-
+      return (biKip('BK8').cau_hoi_thuoc || []).slice(0, 2).map((q) => qLuat('BK8', q));
+    default: // ôn tổng hợp
+      return [];
+  }
+}
+
+// Trò soi lỗi: 3 từ đúng + 1 từ bị đổi y↔i, chọn từ viết sai.
+function taoSoiLoi(n, ds) {
+  for (let k = 0; k < 12; k++) {
+    const tuLoi = chon(n.tu);
+    const dung = tronMang(n.tu.filter((t) => t.cz !== tuLoi.cz)).slice(0, 3);
+    const q = qSoiLoi(dung, tuLoi);
+    if (q) return q;
+  }
+  return null;
 }
 
 function choiVong(n, cfg, ds, v, soVong, tieuDe, thoat, xong) {
-  const opt = { dai: cfg.dai, luat: cfg.biKip || 'BK4' };
+  const opt = { dai: cfg.dai, luat: cfg.luat };
   const bayTatCa = tronMang(tuBayHoiDuoc(n));
   const bay = [bayTatCa[(v * 2) % bayTatCa.length], bayTatCa[(v * 2 + 1) % bayTatCa.length]];
   const cauHoi = [
     ...ds.map((t) => qNgheDien(mucTuChinh(t), opt)),
     ...bay.map((b) => qNgheDien(mucTuBay(b, n.chu), opt)),
-    ...thuThachBiKip(n, cfg, ds, v, bay),
+    ...thuThachBiKip(n, cfg, ds, v, bay, opt),
   ];
   const coHoHang = ds.filter((t) => hoHangHoiDuoc(t).length);
   const them = [
@@ -164,6 +199,7 @@ function choiVong(n, cfg, ds, v, soVong, tieuDe, thoat, xong) {
     () => [qBayNgheGiong(mucTuChinh(chon(ds)), opt), qBayNgheGiong(mucTuBay(bay[0], n.chu), opt), qCauViDu(chon(ds), opt)],
     () => [coHoHang.length ? qCungNha(chon(coHoHang), n, opt) : null, ...tronMang(ds).slice(0, 2).map((t) => qCauViDu(t, opt))],
   ][v % 3]();
+  if (cfg.soiLoi) them.push(taoSoiLoi(n, ds));
   const ghep = them.find((q) => q && q.loai === 'ghep');
   const conLai = tronMang([...cauHoi, ...them.filter((q) => q && q !== ghep)]);
   chayLuot({
@@ -173,10 +209,34 @@ function choiVong(n, cfg, ds, v, soVong, tieuDe, thoat, xong) {
   });
 }
 
+// ——— Trùm cuối phố: kẻ trộm giấu chữ y trong một từ của phố. Đánh trùm = trả lời đúng 3/5 câu về từ đó.
+function trumPho(n, cfg, tieuDe, thoat, xong) {
+  const boss = n.tu.find((t) => t.cz === cfg.trum);
+  const opt = { dai: cfg.dai, luat: cfg.luat };
+  const taoCauHoi = () => {
+    const danh = [
+      qNgheDien(mucTuChinh(boss), opt),
+      qNgheDien(mucTuChinh(boss), opt),
+      qCauViDu(boss, opt),
+      hoHangHoiDuoc(boss).length ? qCungNha(boss, n, opt) : null,
+      qBayNgheGiong(mucTuChinh(boss), opt),
+    ].filter(Boolean);
+    while (danh.length < 5) danh.push(qNgheDien(mucTuChinh(boss), opt));
+    return tronMang(danh).slice(0, 5);
+  };
+  canhTruyen(TRUYEN.pho?.[n.chu]?.trum || [], {
+    tieuDe: `${tieuDe} · Trùm`,
+    khiXong: () => cuaAi({
+      tieuDe: `Trùm: ${boss.cz}`, taoCauHoi, can: 3, dsBiKip: [], thoat,
+      khiQua: () => { chuong(true); xong(); },
+    }),
+  });
+}
+
 // ——— Cửa ải phố: 2 câu về bí kíp phố, 2 câu luật nền, 6 câu áp dụng ———
 function cuaAiPho(n, cfg, tu, tieuDe, thoat, khiQua) {
   const hs = hoSo();
-  const opt = { dai: cfg.dai, luat: cfg.biKip || 'BK4' };
+  const opt = { dai: cfg.dai, luat: cfg.luat };
   const taoCauHoi = () => {
     const bk = cfg.biKip ? biKip(cfg.biKip) : null;
     const luatPho = bk ? tronMang(bk.cau_hoi_thuoc).slice(0, 2).map((q) => qLuat(bk.ma, q)) : [];

@@ -5,7 +5,7 @@ import { HO_SO, docHoSo, chonHoSo, hoSo, doiTen, thongKe, caiDat, luuCaiDat, ghi
 import { coGiongSec, daBietGiong, huongDanCaiGiong, doc } from './am-thanh.js';
 import { hinh, hinhHoSo, cuNoi } from './nhan-vat.js';
 import { vaoVanPhong } from './van-phong.js';
-import { vaoPho, PHO } from './pho.js';
+import { vaoPho } from './pho.js';
 import { trangSoBiKip, theBiKip } from './so-bi-kip.js';
 import { hangSao } from './chung.js';
 
@@ -116,12 +116,10 @@ function banDo() {
   let truocDaQua = quaVanPhong;
   for (const n of D.nhom) {
     const tt = hs.pho[n.chu];
-    const cfg = PHO[n.chu];
-    const moKhoa = truocDaQua && cfg.daLam;
+    const moKhoa = truocDaQua;
     const qua = tt?.qua;
     let moTa;
-    if (!cfg.daLam) moTa = 'Đang xây (giai đoạn 3)';
-    else if (!truocDaQua) moTa = 'Qua trạm trước để mở';
+    if (!truocDaQua) moTa = 'Qua trạm trước để mở';
     else if (qua) moTa = `${n.tu.length} từ · đã trả chữ Y`;
     else moTa = `${n.tu.length} từ` + (tt && tt.buoc ? ' · đang chơi dở' : ' · sẵn sàng');
     tram.push(h('button', {
