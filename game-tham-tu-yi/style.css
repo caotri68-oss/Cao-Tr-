@@ -322,3 +322,36 @@ input[type="text"] {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* Chính tả: ô gõ và bàn phím có dấu */
+.o-go {
+  display: inline-block; min-width: 3.2em; padding: 0 8px;
+  border-bottom: 4px solid var(--y); color: var(--y); font-weight: 800;
+  text-align: center;
+}
+.o-go.dung { color: var(--dung); border-bottom-color: var(--dung); }
+.o-go.sai { color: var(--sai); border-bottom-color: var(--sai); }
+.ban-phim { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 6px; }
+.ban-phim .nut { min-height: 44px; padding: 0; font-size: 1.15rem; box-shadow: 0 3px 0 var(--muc); }
+
+/* Thẻ sưu tập 80 từ */
+.the-suu-tap { border-left: 8px solid var(--vien); }
+.the-suu-tap.thuong { border-left-color: #b98a5a; }
+.the-suu-tap.bac { border-left-color: #9aa8bb; background: linear-gradient(90deg, #f2f6fb, #fff); }
+.the-suu-tap.vang { border-left-color: var(--vang); background: linear-gradient(90deg, #fff6d6, #fff); }
+.the-suu-tap .hang { font-size: .75rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muc-nhat); }
+.chip { min-height: 40px; padding: 4px 12px; border: 2px solid var(--vien); border-radius: 99px; background: #fff; font-weight: 800; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--vang); border-color: var(--muc); }
+.hang-chip { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Biểu đồ phút chơi trong 7 ngày */
+.bieu-do { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; align-items: end; height: 110px; }
+.bieu-do .cot { display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; gap: 2px; font-size: .75rem; font-weight: 700; color: var(--muc-nhat); }
+.bieu-do .cot i { display: block; width: 100%; background: var(--vang); border: 2px solid var(--muc); border-radius: 6px 6px 0 0; min-height: 2px; }
+
+/* Bằng thám tử */
+.bang-tham-tu {
+  text-align: center; align-items: center;
+  border: 6px double var(--y); background: linear-gradient(#fff, #fff8e3);
+}
+.bang-tham-tu .ten-bang { font-family: var(--font-to); font-size: 2rem; font-weight: 800; color: var(--y); }

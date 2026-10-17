@@ -84,7 +84,20 @@ Ghi chú thiết kế:
 - Thoại truyện các phố nằm trong `data/truyen.json` (câu Séc đơn giản kèm nghĩa Việt).
 - Bot chơi thử đi qua cả 7 phố ở khổ 360px: không lỗi JavaScript, không tràn ngang.
 
-Chưa làm (thuộc giai đoạn 4): Trùm cuối toàn game, ôn lại theo lịch, Sổ thám tử, trang tiến độ cho bố mẹ.
+
+### Giai đoạn 4: Ôn lại, Trùm cuối, Sổ thám tử, Tiến độ gia đình ✅
+
+| Tính năng | File | Ghi chú |
+|---|---|---|
+| **Vụ án hôm nay** (ôn theo lịch 1·3·7·14·30 ngày) | `js/on-tap.js`, `js/luu-tien-do.js` | Tối đa 15 từ đến hạn (ưu tiên từ hay sai) + tối đa 2 bí kíp đến hạn. Đủ 7 ngày liên tiếp mở "chương bí mật" (`truyen.json` → `vu_an.chuong7`). Từ trả lời đúng khi đã ở hộp 5 = "đã thuộc lâu" |
+| **Trùm cuối** | `js/trum-cuoi.js` | Phần 1: 8 câu quiz PDF (có câu 2 chỗ trống) + 6 cặp nghe giống + 7 câu mỗi phố một câu, cần 17/21. Phần 2: chính tả 5 câu, cần 4/5. Qua thì nhận **Bằng thám tử** (xem lại được từ bản đồ) |
+| **Chính tả (diktát)** | `js/cau-hoi.js` `qChinhTa` | Nghe câu, gõ từ bị che bằng bàn phím có dấu. Chỉ chấm dãy y/ý/i/í; chữ khác gõ chưa khớp thì nhắc nhẹ, không tính sai |
+| **Sổ thám tử** | `js/tu-dien.js` | Từ đã gặp, tìm theo chữ Séc hoặc nghĩa Việt (không cần gõ dấu), lọc theo B…Z hoặc ⚠️ Hay sai, nút "Đọc cả nhóm". Mỗi từ là **thẻ sưu tập**: 🟤 thường, ⚪ bạc (đúng 3 lần liền hoặc hộp ≥ 3), 🟡 vàng (đã thuộc lâu) |
+| **Tiến độ gia đình** | `js/tien-do.js` | Mỗi hồ sơ: phút chơi 7 ngày (đếm 15 giây một lần khi trang đang hiện), từ đã học/đang ôn/thuộc lâu, 10 từ hay sai nhất, bí kíp chưa qua, phố điểm thấp, đang chơi ở đâu. Không mật khẩu, không xếp hạng |
+
+Kiểm tra: bot gieo hồ sơ đã qua 7 phố rồi chơi Vụ án hôm nay, Sổ thám tử (tìm "chuot" ra myš), Tiến độ, Trùm cuối + chính tả → nhận Bằng, không lỗi JavaScript, không tràn ngang ở 360px.
+
+Ý tưởng hấp dẫn đã làm: cốt truyện Kẻ trộm chữ Y, trùm mỗi phố, sưu tập thẻ, vụ án hôm nay. **Chưa làm:** bí kíp thành phép thuật trong trận trùm, "con làm cô giáo", "đọc thuộc theo nhịp".
 
 ## Quyết định đã chốt (chưa có trong prompt gốc)
 

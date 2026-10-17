@@ -467,5 +467,63 @@
     "Không sao, thám tử nào cũng có lúc nhầm.",
     "Nhớ câu thần chú nhé!",
     "Lần sau em sẽ đúng."
-  ]
+  ],
+  "cuoi": {
+    "vao": [
+      {
+        "ai": "ke_trom",
+        "cz": "Já jsem zloděj!",
+        "vn": "Ta là kẻ trộm!"
+      },
+      {
+        "ai": "ke_trom",
+        "vn": "Chữ Y cuối cùng nằm trong tay ta. Qua được ba thử thách mới đòi lại được!"
+      },
+      {
+        "ai": "cu",
+        "vn": "Thử thách 1: quiz thám tử. Thử thách 2: sáu cặp anh em sinh đôi. Thử thách 3: mỗi phố một câu."
+      },
+      {
+        "ai": "anhduong",
+        "cz": "Jdeme na to!",
+        "vn": "Mình làm thôi!"
+      }
+    ],
+    "ket": [
+      {
+        "ai": "ke_trom",
+        "vn": "Ta thua rồi… Trả lại chữ Y cuối cùng đây."
+      },
+      {
+        "ai": "anhduong",
+        "cz": "Děkuju!",
+        "vn": "Cảm ơn!"
+      },
+      {
+        "ai": "xu",
+        "vn": "Em giỏi quá! Chị tự hào về em."
+      },
+      {
+        "ai": "cu",
+        "vn": "Em đã trả đủ chữ Y về chợ Chữ. Cú xin trao Bằng thám tử cho em!"
+      }
+    ]
+  },
+  "vu_an": {
+    "chuong7": [
+      {
+        "ai": "cu",
+        "vn": "Em đã phá án 7 ngày liên tiếp! Cú kể một bí mật nhé."
+      },
+      {
+        "ai": "cu",
+        "vn": "Ngày xưa Kẻ trộm cũng là một bạn nhỏ hay nhầm y với i. Bạn ấy giận quá nên đi lấy chữ Y. Nhờ có các thám tử như em, bạn ấy học lại và không nhầm nữa."
+      },
+      {
+        "ai": "anhduong",
+        "cz": "Každý se učí!",
+        "vn": "Ai cũng phải học mà!"
+      }
+    ]
+  }
 }

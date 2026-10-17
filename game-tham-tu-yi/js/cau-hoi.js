@@ -3,7 +3,7 @@ import { h, manHinh, tronMang, chon } from './dom.js';
 import { D, TRUYEN, biKip, viTriGoc, laY, hoHangHoiDuoc, timTrongCau, traTuDung } from './du-lieu.js';
 import { czChu, czCau, toMau } from './dich.js';
 import { doc, nutNghe, chuong, coGiongSec } from './am-thanh.js';
-import { ghiTu } from './luu-tien-do.js';
+import { ghiTu, ghiBiKip } from './luu-tien-do.js';
 import { cuNoi } from './nhan-vat.js';
 
 // ——— Công cụ chung ———
@@ -241,6 +241,90 @@ export function qSoiLoi(tuDung, tuLoi, { luat = 'BK6' } = {}) {
   };
 }
 
+// ——— 8. Quiz 8 câu trong PDF (một câu có thể có 2 chỗ trống) ———
+export function qQuiz(q) {
+  const dapAn = q.dap_an;
+  return {
+    loai: 'quiz', tu: null, luat: 'BK3', dapAn: dapAn.join('|'),
+    ve(khung, xong) {
+      let cau = q.cau; let k = 0; let dungHet = true;
+      const cauKhung = h('div', { class: 'tu-to', style: 'font-size:1.5rem;line-height:1.6' });
+      const veCau = () => cauKhung.replaceChildren(czCau(cau));
+      const { khoi, nut } = banChu(true, (c) => {
+        const that = dapAn[k];
+        const dung = c === that;
+        if (!dung) dungHet = false;
+        Object.values(nut).forEach((b) => { b.disabled = true; });
+        nut[c].classList.add(dung ? 'dung' : 'sai');
+        if (!dung) nut[that].classList.add('dung');
+        setTimeout(() => {
+          cau = cau.replace('_', that); k++;
+          veCau();
+          if (k < dapAn.length) {
+            Object.values(nut).forEach((b) => { b.disabled = false; b.classList.remove('dung', 'sai'); });
+          } else {
+            doc(cau, { tuDong: true });
+            xong({ dung: dungHet, giaiThich: ['Câu đúng: ', czCau(cau)] });
+          }
+        }, 650);
+      });
+      veCau();
+      khung.append(
+        h('p', { class: 'goi-y' }, dapAn.length > 1 ? `Câu này có ${dapAn.length} chỗ trống, điền lần lượt:` : 'Điền chữ còn thiếu:'),
+        h('div', { class: 'de-bai' }, cauKhung), khoi);
+    },
+  };
+}
+
+// Một cặp nghe giống hệt (být / bít): cho nghĩa, chọn cách viết.
+export function qCapNghe(cap) {
+  const phiaY = Math.random() < 0.5;
+  const cz = phiaY ? cap.y : cap.i;
+  return qBayNgheGiong({ cz, nghia: phiaY ? cap.y_nghia : cap.i_nghia, emoji: '', loai: phiaY ? 'y' : 'i', nhom: '' }, { luat: 'BK6' });
+}
+
+// ——— 9. Chính tả (diktát): nghe câu, gõ lại từ bị che bằng bàn phím có dấu ———
+const HANG_PHIM = ['a', 'á', 'b', 'c', 'č', 'd', 'ď', 'e', 'é', 'ě', 'f', 'g', 'h', 'i', 'í', 'j', 'k', 'l', 'm', 'n', 'ň', 'o', 'ó', 'p', 'r', 'ř', 's', 'š', 't', 'ť', 'u', 'ú', 'ů', 'v', 'y', 'ý', 'z', 'ž'];
+const DAY_NGUYEN_AM = (s) => [...s.toLowerCase()].filter((c) => 'yýií'.includes(c)).join('');
+
+export function qChinhTa(t, { luat = 'BK4' } = {}) {
+  const vt = timTrongCau(t.vi_du.cz, t.cz);
+  if (!vt) return null;
+  const tu = t.vi_du.cz.split(' ');
+  const dang = /^([“"(]*)(.*?)([.,!?;:”")…]*)$/.exec(tu[vt.chiSo]);
+  const dapAn = dang[2];
+  return {
+    loai: 'chinh_ta', tu: t.cz, luat, dapAn, meoNhom: t.nhom,
+    ve(khung, xong) {
+      let go = '';
+      const o = h('span', { class: 'o-go', lang: 'cs', 'aria-label': 'chỗ gõ' });
+      const veO = () => { o.textContent = go || '…'; };
+      const truoc = tu.slice(0, vt.chiSo).join(' ') + (vt.chiSo ? ' ' : '') + dang[1];
+      const sau = dang[3] + (vt.chiSo < tu.length - 1 ? ' ' : '') + tu.slice(vt.chiSo + 1).join(' ');
+      const cauKhung = h('div', { class: 'tu-to', style: 'font-size:1.4rem;line-height:1.7' },
+        truoc.trim() ? czCau(truoc.trim()) : null, ' ', o, ' ', sau.trim() ? czCau(sau.trim()) : null);
+      veO();
+      const phim = h('div', { class: 'ban-phim' }, HANG_PHIM.map((c) => h('button', { class: 'nut', type: 'button', onclick: () => { if (go.length < 22) { go += c; veO(); } } }, c)));
+      const xoa = h('button', { class: 'nut', type: 'button', onclick: () => { go = go.slice(0, -1); veO(); } }, '⌫ Xóa');
+      const nop = h('button', { class: 'nut nut-chinh', type: 'button', onclick: () => {
+        if (!go) return;
+        khung.querySelectorAll('button').forEach((b) => { b.disabled = true; });
+        const dung = DAY_NGUYEN_AM(go) === DAY_NGUYEN_AM(dapAn);
+        o.classList.add(dung ? 'dung' : 'sai');
+        o.textContent = dapAn;
+        const them = dung && go.toLowerCase() !== dapAn.toLowerCase() ? ' Các chữ khác em gõ chưa khớp hẳn, lần sau nhìn kỹ hơn nhé (không bị tính sai).' : '';
+        doc(t.vi_du.cz, { tuDong: true });
+        xong({ dung, giaiThich: ['Từ đúng là ', h('b', { lang: 'cs' }, czChu(dapAn)), ` (${t.nghia}).` + them] });
+      } }, 'Kiểm tra');
+      khung.append(
+        h('p', { class: 'goi-y' }, 'Chính tả: nghe câu rồi gõ từ còn thiếu. Chỉ chấm y/i, ý/í.'),
+        h('div', { class: 'de-bai' }, cauKhung, h('div', { class: 'hang-nut' }, nutNghe(t.vi_du.cz))),
+        phim, h('div', { class: 'hang-nut' }, xoa, nop));
+      setTimeout(() => doc(t.vi_du.cz, { tuDong: true }), 300);
+    },
+  };
+}
+
 // ——— 6. Ba bước thám tử (BK4) ———
 const CUNG = 'hkr';           // chữ cứng dùng để hỏi (bỏ d, t, n vì có cách đọc riêng)
 const MEM = 'žščřcj';
@@ -422,7 +506,7 @@ export function chayLuot({ tieuDe, phuDe = '', cauHoi, cheDo = 'hoc', moSoBiKip 
   function veCau() {
     if (!hangDoi.length) { khiXong({ dung: soDung, tong, tuSai }); return; }
     const { q, lanDau } = hangDoi.shift();
-    if (window.__KIEM_TRA__) window.__cauHienTai = q; // chỉ dùng khi chạy kiểm tra tự động
+    if (window.__KIEM_TRA__) { window.__cauHienTai = q; window.__cauId = (window.__cauId || 0) + 1; } // chỉ dùng khi chạy kiểm tra tự động
     const khung = h('div', { class: 'the' });
     const phanHoi = h('div', {});
     const thanh = h('div', { class: 'thanh-tren' },
@@ -437,6 +521,7 @@ export function chayLuot({ tieuDe, phuDe = '', cauHoi, cheDo = 'hoc', moSoBiKip 
     q.ve(khung, ({ dung, giaiThich }) => {
       if (lanDau) { daLam++; if (dung) soDung++; }
       if (cheDo !== 'luyen' && q.tu) ghiTu(q.tu, dung);
+      else if (cheDo !== 'luyen' && q.loai === 'luat') ghiBiKip(q.luat, dung);
       if (!dung && q.tu && !tuSai.includes(q.tu)) tuSai.push(q.tu);
       chuong(dung);
       const noiDung = [];

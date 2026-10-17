@@ -1,13 +1,17 @@
 // Khởi động game: tải dữ liệu, chọn hồ sơ, bản đồ chợ Chữ.
 import { h, manHinh } from './dom.js';
 import { D, taiDuLieu, tenPho } from './du-lieu.js';
-import { HO_SO, docHoSo, chonHoSo, hoSo, doiTen, thongKe, caiDat, luuCaiDat, ghiLanChoi, anhHoSo, luuAnhHoSo } from './luu-tien-do.js';
+import { HO_SO, docHoSo, chonHoSo, hoSo, doiTen, thongKe, caiDat, luuCaiDat, ghiLanChoi, ghiGiay, anhHoSo, luuAnhHoSo } from './luu-tien-do.js';
 import { coGiongSec, daBietGiong, huongDanCaiGiong, doc } from './am-thanh.js';
 import { hinh, hinhHoSo, cuNoi } from './nhan-vat.js';
 import { vaoVanPhong } from './van-phong.js';
 import { vaoPho } from './pho.js';
 import { trangSoBiKip, theBiKip } from './so-bi-kip.js';
 import { hangSao } from './chung.js';
+import { vuAnHomNay, tuCanOn } from './on-tap.js';
+import { trangTuDien } from './tu-dien.js';
+import { trangTienDo } from './tien-do.js';
+import { vaoTruCuoi, daQuaBayPho, trangBang } from './trum-cuoi.js';
 
 async function batDau() {
   const loi = await taiDuLieu();
@@ -86,8 +90,16 @@ function trangDoiTen() {
     }));
 }
 
+// Đếm thời gian chơi (mỗi 15 giây khi trang đang hiện) để vẽ biểu đồ ở trang Tiến độ.
+let dongHo = null;
+function batDauDemGio() {
+  clearInterval(dongHo);
+  dongHo = setInterval(() => { if (!document.hidden) ghiGiay(15); }, 15000);
+}
+
 function vaoGame(id) {
   chonHoSo(id);
+  batDauDemGio();
   const soNgay = ghiLanChoi();
   const hs = hoSo();
   const daMo = D.bi_kip.filter((b) => hs.biKip[b.ma]);
@@ -131,9 +143,15 @@ function banDo() {
     qua ? hangSao(tt.sao) : null));
     truocDaQua = !!qua;
   }
-  tram.push(h('div', { class: 'tram bi-khoa' },
-    h('span', { class: 'huy-hieu' }, '★'),
-    h('span', { class: 'noi-dung' }, h('b', {}, 'Trùm cuối'), h('span', {}, 'Mở khi qua cả 7 phố'))));
+  const moCuoi = daQuaBayPho();
+  const quaCuoi = hs.cuoi?.qua;
+  tram.push(h('button', {
+    class: 'tram ' + (quaCuoi ? 'da-qua' : moCuoi ? 'dang-mo' : 'bi-khoa'), type: 'button',
+    disabled: moCuoi ? null : true,
+    onclick: moCuoi ? () => (quaCuoi ? trangBang(banDo) : vaoTruCuoi(banDo)) : null,
+  },
+  h('span', { class: 'huy-hieu' }, moCuoi ? '★' : '🔒'),
+  h('span', { class: 'noi-dung' }, h('b', {}, 'Trùm cuối'), h('span', {}, quaCuoi ? 'Đã có Bằng thám tử · xem lại' : moCuoi ? 'Kẻ trộm giữ chữ Y cuối cùng' : 'Mở khi qua cả 7 phố'))));
 
   manHinh(
     h('div', { class: 'thanh-tren' },
@@ -142,8 +160,12 @@ function banDo() {
       h('button', { class: 'nut nut-tron nut-nho', type: 'button', 'aria-label': 'Cài đặt', onclick: trangCaiDat }, '⚙️')),
     daBietGiong() && !coGiongSec() ? h('button', { class: 'nut nut-nho', type: 'button', onclick: huongDanCaiGiong }, '🔇 Máy chưa có giọng Séc · xem cách cài') : null,
     h('div', { class: 'ban-do' }, tram),
+    h('button', { class: 'nut nut-chinh nut-rong', type: 'button', onclick: () => vuAnHomNay(banDo) }, `🔎 Vụ án hôm nay (${tuCanOn().length} từ)`),
     h('div', { class: 'hang-nut' },
-      h('button', { class: 'nut', type: 'button', onclick: () => trangSoBiKip(banDo) }, '📜 Sổ bí kíp'),
+      h('button', { class: 'nut', type: 'button', onclick: () => trangTuDien(banDo) }, '📖 Sổ thám tử'),
+      h('button', { class: 'nut', type: 'button', onclick: () => trangSoBiKip(banDo) }, '📜 Sổ bí kíp')),
+    h('div', { class: 'hang-nut' },
+      h('button', { class: 'nut', type: 'button', onclick: () => trangTienDo(banDo) }, '👨‍👩‍👧 Tiến độ gia đình'),
       h('button', { class: 'nut', type: 'button', onclick: chonNguoiChoi }, '👥 Đổi người chơi')));
 }
 
