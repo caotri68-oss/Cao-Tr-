@@ -59,8 +59,8 @@ const HINH = {
 
 const TEN = { cu: 'Cú Sýček', anhduong: 'Ánh Dương', xu: 'Chị Xu', me: 'Mẹ', bo: 'Bố', ke_trom: 'Kẻ trộm chữ Y' };
 
-// Ánh Dương dùng ảnh 3D (img/anh-duong.png), các nhân vật khác dùng hình vẽ SVG.
-const ANH_MAC_DINH = { anhduong: 'img/anh-duong.png' };
+// Ánh Dương và chị Xu dùng ảnh 3D tự vẽ, các nhân vật khác dùng hình vẽ SVG.
+const ANH_MAC_DINH = { anhduong: 'img/anh-duong.png', xu: 'img/chi-xu.png' };
 
 function hinhAnh(src, lop) {
   return h('span', { class: lop }, h('img', { src, alt: '', style: 'width:100%;height:100%;border-radius:50%;object-fit:cover' }));

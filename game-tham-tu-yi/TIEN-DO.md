@@ -71,6 +71,7 @@ Ghi chú thiết kế:
 ### Bổ sung sau giai đoạn 2
 
 - Ánh Dương dùng ảnh 3D tự vẽ `img/anh-duong.png` (300px, đã cắt tròn và che logo NASA trên áo). Ảnh này nằm trong repo, nên sẽ được đưa lên mạng cùng game. Anh xác nhận đây là hình minh họa tự vẽ, không phải ảnh chụp người thật.
+- Chị Xu dùng ảnh 3D tự vẽ `img/chi-xu.png` (300px, đã cắt tròn) làm mặc định, giống Ánh Dương.
 - Bố mẹ có thể chọn ảnh riêng cho từng hồ sơ bằng nút **🖼️ Chọn ảnh** (màn ✏️ Đổi tên hồ sơ). Ảnh đó chỉ lưu trong trình duyệt của máy đó, không vào repo.
 
 ## Quyết định đã chốt (chưa có trong prompt gốc)
