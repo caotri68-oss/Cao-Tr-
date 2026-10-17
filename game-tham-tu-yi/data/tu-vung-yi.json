@@ -158,7 +158,7 @@
       "meo": "být (là) viết y, bít (đánh) viết í. Các từ byl, byla, bylo (đã là) cũng viết y.",
       "nghe_giong_viet_i": [
         {"cz": "bít", "nghia": "đánh"}, {"cz": "bílý", "nghia": "trắng"}, {"cz": "bída", "nghia": "nghèo khó"},
-        {"cz": "bitva", "nghia": "trận đánh"}, {"cz": "biologie", "nghia": ""}
+        {"cz": "bitva", "nghia": "trận đánh"}, {"cz": "biologie", "nghia": "sinh học (từ mượn, không có trong PDF)"}
       ],
       "tu": [
         {"cz": "být", "phien_am": "biːt", "nghia": "là, tồn tại", "emoji": "🙋",
@@ -364,7 +364,7 @@
       "meo": "sýr (phô mai) và syrový (sống) cùng nhà nên đều viết y.",
       "nghe_giong_viet_i": [
         {"cz": "síla", "nghia": "sức mạnh"}, {"cz": "silný", "nghia": "khỏe"}, {"cz": "sníh", "nghia": "tuyết"},
-        {"cz": "sirup", "nghia": ""}, {"cz": "síť", "nghia": "lưới"}
+        {"cz": "sirup", "nghia": "xi-rô (từ mượn, không có trong PDF)"}, {"cz": "síť", "nghia": "lưới"}
       ],
       "tu": [
         {"cz": "syn", "phien_am": "sin", "nghia": "con trai", "emoji": "👦",

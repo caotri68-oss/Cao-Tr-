@@ -99,6 +99,12 @@ Kiểm tra: bot gieo hồ sơ đã qua 7 phố rồi chơi Vụ án hôm nay, S�
 
 Ý tưởng hấp dẫn đã làm: cốt truyện Kẻ trộm chữ Y, trùm mỗi phố, sưu tập thẻ, vụ án hôm nay. **Chưa làm:** bí kíp thành phép thuật trong trận trùm, "con làm cô giáo", "đọc thuộc theo nhịp".
 
+### Bổ sung: nghĩa cho mọi chữ Séc
+
+- `data/tu-cau.json`: 203 chữ Séc xuất hiện trong câu ví dụ, bí kíp, truyện, thoại và quiz nhưng không nằm trong 80 từ chính (ví dụ muốn, lékařkou, Honza, Praha, Ruzyně) đều có nghĩa tiếng Việt. Các nghĩa này do người làm game bổ sung, không lấy từ PDF.
+- Hai từ bẫy PDF để trống nghĩa (`biologie`, `sirup`) đã có nghĩa, ghi rõ là từ mượn không có trong PDF.
+- Kiểm tra: mọi chữ Séc trong dữ liệu đều tra được nghĩa. Câu dài luôn đi kèm nghĩa cả câu (trường `vn`).
+
 ## Quyết định đã chốt (chưa có trong prompt gốc)
 
 1. **Nhân vật**: Ánh Dương (em, dấu sắc, không phải "Ảnh") là **nhân vật chính xuyên suốt**, game nhập vai. Chị là **Xu** (hiển thị "chị Xu"), đồng hành trong truyện. Cả hai là nữ. Hồ sơ: Bố, Mẹ, chị Xu, Ánh Dương.

@@ -3,16 +3,20 @@
 export const LUONG_TINH = 'bflmpsvz';
 export const D = {};          // dữ liệu từ vựng (tu-vung-yi.json)
 export const TRUYEN = {};     // thoại truyện (truyen.json)
+export const TU_CAU = {};     // nghĩa các chữ Séc trong câu (tu-cau.json)
 const tuDien = new Map();     // chữ thường → { cz, nghia, phien_am, emoji }
 let tuChinh = [];             // 80 từ, mỗi từ kèm chữ nhóm
 
 export async function taiDuLieu() {
   const loi = [];
-  const [tv, tr] = await Promise.all([docJson('data/tu-vung-yi.json', loi), docJson('data/truyen.json', loi)]);
+  const [tv, tr, tc] = await Promise.all([
+    docJson('data/tu-vung-yi.json', loi), docJson('data/truyen.json', loi), docJson('data/tu-cau.json', loi),
+  ]);
   if (tv) kiemTra(tv, loi);
   if (loi.length) return loi;
   Object.assign(D, tv);
   Object.assign(TRUYEN, tr || {});
+  Object.assign(TU_CAU, (tc && tc.tu) || {});
   dungTuDien();
   return [];
 }
@@ -94,6 +98,8 @@ function dungTuDien() {
   }
   for (const c of D.cap_de_nham) { themTu(c.y, { nghia: c.y_nghia }); themTu(c.i, { nghia: c.i_nghia, bay: true }); }
   for (const t of TRUYEN.tu_them || []) themTu(t.cz, { nghia: t.nghia });
+  // Nghĩa các chữ Séc trong câu ví dụ, truyện, thoại (không phải 80 từ chính, nên không tô màu y)
+  for (const [cz, nghia] of Object.entries(TU_CAU)) themTu(cz, { nghia });
 }
 
 const sach = (s) => s.toLowerCase().replace(/[.,!?;:“”"()…]/g, '');
