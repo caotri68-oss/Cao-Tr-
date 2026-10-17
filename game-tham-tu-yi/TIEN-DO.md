@@ -31,6 +31,43 @@ Ghi chú dữ liệu:
 - **Chỉ che y/ý ở gốc từ**: chữ y/ý đầu tiên đứng ngay sau chữ lưỡng tính (hàm `viTriChe` trong `kiem-tra-du-lieu.cjs`). Không hỏi y/i ở đuôi từ (nový, lysý, pysky).
 - Câu ví dụ của `být` đã sửa theo yêu cầu người dùng: "Chci být lékařkou." (PDF ghi "lékařka"; sau být dùng cách 7).
 
+### Giai đoạn 2: Khung game, Văn phòng thám tử, phố B ✅
+
+Chạy thử trên máy: trong thư mục này gõ `python3 -m http.server 8765` rồi mở http://localhost:8765 (không mở thẳng file index.html, vì trình duyệt chặn đọc file dữ liệu).
+
+| File | Làm gì |
+|---|---|
+| `index.html`, `style.css` | Trang chính, giao diện (một cột cho điện thoại, mái hiên chợ, chữ y đỏ / i xanh) |
+| `data/truyen.json` | Thoại truyện "Kẻ trộm chữ Y", câu Séc đơn giản kèm nghĩa Việt, từ điển nhỏ `tu_them` cho các câu đó |
+| `js/app.js` | Khởi động, chọn 4 hồ sơ, đổi tên, bản đồ chợ, cài đặt, nhắc bài khi lâu không chơi (> 3 ngày) |
+| `js/du-lieu.js` | Đọc và kiểm tra 2 file JSON (báo lỗi tiếng Việt), từ điển tra nghĩa, tìm vị trí chữ y/i ở gốc từ |
+| `js/luu-tien-do.js` | Hồ sơ, lưu localStorage (try/catch), hộp nhớ 1–5 cho từng từ |
+| `js/am-thanh.js` | Giọng đọc cs-CZ (0.8, 🐢 0.6), hướng dẫn cài giọng, ghi âm đọc theo (không có micro thì nút "Mình đã đọc to"), chuông đúng/sai |
+| `js/dich.js` | Chạm chữ Séc để xem nghĩa (bảng nổi từ dưới lên). Chữ đang che không lộ đáp án |
+| `js/nhan-vat.js` | Hình SVG: cú Sýček, Ánh Dương, chị Xu, Mẹ, Bố, Kẻ trộm; khung lời thoại |
+| `js/cau-hoi.js` | Các dạng câu hỏi và bộ chạy lượt chơi (sai thì nhắc câu thần chú + mẹo, hỏi lại cuối lượt) |
+| `js/so-bi-kip.js` | Thẻ bí kíp, màn mở bí kíp (đọc to câu thần chú), Sổ bí kíp, Luyện nhanh 5 câu |
+| `js/chung.js` | Cảnh truyện từng câu, Cửa ải (khóa Sổ bí kíp, chưa đạt thì xem lại bí kíp rồi thử lại), sao |
+| `js/van-phong.js` | Màn 0: mở đầu truyện + 3 phòng (thử các nút, chữ cái rơi vào giỏ, xếp câu nhớ), cửa ải 4/5 |
+| `js/pho.js` | Một phố: khởi động → truyện → bí kíp → các vòng (học từ + chơi) → Cửa ải 8/10 → kết phố. Bảng `PHO` cấu hình 7 phố, mới bật `daLam` cho B |
+| `cong-cu/choi-thu-tu-dong.cjs` | Bot Playwright tự chơi từ màn 0 hết phố B, chụp ảnh, báo lỗi |
+
+Các dạng câu hỏi đã có: nghe – điền y/i, từ cùng nhà, bẫy nghe giống (cho nghĩa, chọn cách viết; nếu cách viết kia là từ thật như bít thì giải thích nghĩa), ghép nghĩa, câu ví dụ, ba bước thám tử (BK4, có cả ví dụ chữ cứng/mềm lấy từ BK1/BK2), câu hỏi luật, chữ cái rơi vào giỏ, câu nhớ thiếu chữ. Mỗi câu hỏi có trường `dapAn` (dùng cho bot và cho kiểm tra "đúng 1 đáp án" ở giai đoạn 5).
+
+Đã kiểm tra:
+- Bot chơi hết màn 0 và phố B ở khổ 360px: không lỗi JavaScript, không tràn ngang, Cửa ải trả lời đúng hết được 10/10 (đáp án khớp chấm điểm).
+- Cả 80 từ: tìm được từ trong câu ví dụ để che, tạo được mọi dạng câu hỏi không lỗi. Truyện nhớ của cả 7 nhóm chỉ tô chữ Séc, không tô nhầm chữ Việt.
+- File JSON sai dấu phẩy hoặc thiếu nghĩa → màn báo lỗi tiếng Việt chỉ đúng chỗ. Tải lại trang giữa chừng → vào lại đúng bước đang dở.
+
+Ghi chú thiết kế:
+- Phố B chỉ có nút y / i; từ phố M trở đi bật thêm ý / í (`PHO[chu].dai`).
+- Trò "nghe – điền" luôn hiện nghĩa, vì nghĩa là thứ quyết định y hay i (být/bít). "Không lộ nghĩa" chỉ áp dụng ở trò ghép nghĩa; bảng tra của chữ đang che chỉ hiện chữ còn che.
+- Từ bẫy chỉ hỏi khi chữ i đứng ngay sau chữ lưỡng tính (bỏ `sníh` khỏi câu hỏi, vẫn hiện trong danh sách).
+- Ví dụ chữ cứng dùng để hỏi chỉ lấy h, ch, k, r; không hỏi d, t, n (vì di/ti/ni đọc mềm, dễ rối).
+- Thoại có tiếng Séc mới (người dùng đồng ý thêm câu đơn giản): Pomoc! Kde je písmeno Y? · Zloděj ukradl písmeno Y! · Já jsem Sýček. · Jdeme na to! · Výborně! · Správně! · Skoro! · Zkus to znovu. · Děkujeme! · Písmeno Y je zpátky!
+- Ý tưởng "Kẻ trộm chữ Y" đang dùng làm khung truyện; các ý tưởng hấp dẫn khác chưa làm, chờ người dùng chọn.
+- Bản xem thử đăng ở claude.ai (link riêng tư). Ở đó micro bị chặn nên chỉ có nút "Mình đã đọc to"; khi đưa lên GitHub Pages (giai đoạn 6) micro sẽ dùng được.
+
 ## Quyết định đã chốt (chưa có trong prompt gốc)
 
 1. **Nhân vật**: Ánh Dương (em, dấu sắc, không phải "Ảnh") là **nhân vật chính xuyên suốt**, game nhập vai. Chị là **Xu** (hiển thị "chị Xu"), đồng hành trong truyện. Cả hai là nữ. Hồ sơ: Bố, Mẹ, chị Xu, Ánh Dương.
@@ -46,14 +83,18 @@ Ghi chú dữ liệu:
 
 ## Còn chờ người dùng trả lời
 
-1. Thoại truyện: chỉ dùng từ trong 80 từ, hay được thêm câu Séc đơn giản kèm nghĩa Việt?
-2. Chọn ý tưởng tăng độ hấp dẫn nào (đề xuất: cốt truyện "Kẻ trộm chữ Y", trùm mỗi phố là một từ trong bảng, bí kíp thành phép thuật, sưu tập thẻ 80 từ, vụ án hôm nay, con làm cô giáo, đọc thuộc theo nhịp).
+1. Chọn ý tưởng tăng độ hấp dẫn nào (đề xuất: cốt truyện "Kẻ trộm chữ Y", trùm mỗi phố là một từ trong bảng, bí kíp thành phép thuật, sưu tập thẻ 80 từ, vụ án hôm nay, con làm cô giáo, đọc thuộc theo nhịp).
 
 ## Đã trả lời
 
 - Bố và Mẹ có **hồ sơ riêng**, không dùng tên Ánh Dương. Hồ sơ: Bố, Mẹ, chị Xu, Ánh Dương (4 hồ sơ).
 - Câu ví dụ của `být` đã sửa thành "Chci být lékařkou."
+- Thoại truyện **được thêm câu Séc đơn giản**, luôn kèm nghĩa tiếng Việt (vì bé hiểu được câu đơn giản).
 
 ## Giai đoạn tiếp theo
 
-**Giai đoạn 2** (model Opus 5.5): khung game, chọn hồ sơ, lưu tiến độ, màn 0 (3 phòng), phố B hoàn chỉnh. Nên cập nhật prompt gốc theo mục "Quyết định đã chốt" trước khi bắt đầu.
+**Giai đoạn 3** (model Sonnet 5.5): 6 phố còn lại L, M, P, S, V, Z.
+- Bật `daLam` trong bảng `PHO` (`js/pho.js`), thêm thoại `pho.<chữ>.vao/ket` vào `data/truyen.json`.
+- Viết thử thách bí kíp riêng cho từng phố trong `thuThachBiKip` (hiện chỉ có BK4 cho phố B): L → BK5 từ cùng nhà, M → BK6 cặp nghe giống, P → trò "soi lỗi" (tìm từ viết sai; không coi từ đúng có thật như bít là lỗi), S → BK7 dài ngắn, V → BK8 tiền tố vy-/vý- (dùng `nhom[V].tien_to`), Z → ôn tổng hợp.
+- Phố M trở đi có nút ý / í.
+- Chạy lại `cong-cu/choi-thu-tu-dong.cjs` (sửa điều kiện dừng cho phố mới).

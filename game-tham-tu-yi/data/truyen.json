@@ -1,0 +1,233 @@
+{
+  "ghi_chu": "Thoại truyện của game. Câu Séc ở đây là câu đơn giản thêm cho truyện (người dùng đã đồng ý), luôn kèm nghĩa tiếng Việt. Nhân vật: anhduong = Ánh Dương (nhân vật chính, em), xu = chị Xu, cu = cú Sýček, ke_trom = Kẻ trộm chữ Y.",
+  "tu_them": [
+    {
+      "cz": "ahoj",
+      "nghia": "xin chào (với bạn bè)"
+    },
+    {
+      "cz": "já",
+      "nghia": "tôi, tớ"
+    },
+    {
+      "cz": "jsem",
+      "nghia": "là (tôi là)"
+    },
+    {
+      "cz": "jsme",
+      "nghia": "là (chúng tôi là)"
+    },
+    {
+      "cz": "pomoc",
+      "nghia": "cứu với"
+    },
+    {
+      "cz": "kde",
+      "nghia": "ở đâu"
+    },
+    {
+      "cz": "je",
+      "nghia": "là, thì, ở"
+    },
+    {
+      "cz": "písmeno",
+      "nghia": "chữ cái"
+    },
+    {
+      "cz": "zloděj",
+      "nghia": "kẻ trộm"
+    },
+    {
+      "cz": "ukradl",
+      "nghia": "đã lấy trộm"
+    },
+    {
+      "cz": "jdeme",
+      "nghia": "chúng ta đi"
+    },
+    {
+      "cz": "na",
+      "nghia": "lên, vào"
+    },
+    {
+      "cz": "to",
+      "nghia": "cái đó, việc đó"
+    },
+    {
+      "cz": "výborně",
+      "nghia": "tuyệt vời"
+    },
+    {
+      "cz": "správně",
+      "nghia": "đúng rồi"
+    },
+    {
+      "cz": "zkus",
+      "nghia": "thử đi"
+    },
+    {
+      "cz": "znovu",
+      "nghia": "lại lần nữa"
+    },
+    {
+      "cz": "děkujeme",
+      "nghia": "chúng mình cảm ơn"
+    },
+    {
+      "cz": "zpátky",
+      "nghia": "trở lại"
+    },
+    {
+      "cz": "skoro",
+      "nghia": "gần đúng rồi"
+    }
+  ],
+  "mo_dau": [
+    {
+      "ai": "anhduong",
+      "vn": "Hôm nay em đi chợ Chữ cùng chị Xu. Ơ… sao biển hiệu nào cũng bị mất chữ?"
+    },
+    {
+      "ai": "xu",
+      "vn": "Em nhìn kìa: “b_t”, “m_š”, “s_r”. Chữ y biến đâu hết rồi!"
+    },
+    {
+      "ai": "anhduong",
+      "cz": "Pomoc! Kde je písmeno Y?",
+      "vn": "Cứu với! Chữ Y ở đâu rồi?"
+    },
+    {
+      "ai": "ke_trom",
+      "cz": "Zloděj ukradl písmeno Y!",
+      "vn": "Kẻ trộm đã lấy trộm chữ Y!"
+    },
+    {
+      "ai": "ke_trom",
+      "vn": "Hô hô! Các ngươi có phân biệt được y và i đâu!"
+    },
+    {
+      "ai": "cu",
+      "cz": "Já jsem Sýček.",
+      "vn": "Tớ là Sýček."
+    },
+    {
+      "ai": "cu",
+      "vn": "Mình là cú Sýček, thám tử trưởng của chợ. Ánh Dương, em làm thám tử nhé? Muốn trả chữ Y về cho từng phố, em phải học bí kíp."
+    },
+    {
+      "ai": "anhduong",
+      "cz": "Jdeme na to!",
+      "vn": "Mình làm thôi!"
+    }
+  ],
+  "phong": {
+    "1": [
+      {
+        "ai": "cu",
+        "vn": "Phòng 1: Phòng Âm thanh. Bí mật đầu tiên: tai nghe y và i giống hệt nhau."
+      }
+    ],
+    "2": [
+      {
+        "ai": "cu",
+        "vn": "Phòng 2: Phòng Cứng – Mềm. Chữ cái cũng có tính cách: có chữ cứng, có chữ mềm."
+      },
+      {
+        "ai": "xu",
+        "vn": "Chị nhớ rồi: chữ cứng thích y, chữ mềm thích i!"
+      }
+    ],
+    "3": [
+      {
+        "ai": "cu",
+        "vn": "Phòng 3: Phòng Tám chữ lưỡng tính. Đây là 8 chữ khó tính nhất, kẻ trộm thích nấp sau chúng."
+      },
+      {
+        "ai": "anhduong",
+        "vn": "Em sẽ thuộc câu nhớ: Bố Fi Lên Mây Phóng Sao Vào Zũ trụ!"
+      }
+    ],
+    "xong": [
+      {
+        "ai": "cu",
+        "cz": "Výborně!",
+        "vn": "Tuyệt vời!"
+      },
+      {
+        "ai": "cu",
+        "vn": "Em đã qua Văn phòng thám tử. Phố đầu tiên đang chờ: phố Bylina (chữ B)."
+      }
+    ]
+  },
+  "pho": {
+    "B": {
+      "vao": [
+        {
+          "ai": "xu",
+          "vn": "Phố Bylina buồn quá, chú bò đực býk đứng ngơ ngác vì biển nhà mình chỉ còn “b_k”."
+        },
+        {
+          "ai": "cu",
+          "vn": "Ở phố B có 13 từ viết y. Học hết 13 từ, qua Cửa ải, là trả được chữ Y về đây."
+        },
+        {
+          "ai": "anhduong",
+          "cz": "Jdeme na to!",
+          "vn": "Mình làm thôi!"
+        }
+      ],
+      "ket": [
+        {
+          "ai": "anhduong",
+          "cz": "Písmeno Y je zpátky!",
+          "vn": "Chữ Y đã trở lại rồi!"
+        },
+        {
+          "ai": "xu",
+          "vn": "Biển nhà chú býk sáng lên rồi kìa. Mình sang phố tiếp theo thôi!"
+        },
+        {
+          "ai": "cu",
+          "cz": "Děkujeme!",
+          "vn": "Chúng mình cảm ơn!"
+        },
+        {
+          "ai": "cu",
+          "vn": "Cảm ơn thám tử Ánh Dương!"
+        }
+      ]
+    }
+  },
+  "khen": [
+    {
+      "cz": "Výborně!",
+      "vn": "Tuyệt vời!"
+    },
+    {
+      "cz": "Správně!",
+      "vn": "Đúng rồi!"
+    }
+  ],
+  "khen_vn": [
+    "Mắt thám tử tinh quá!",
+    "Chuẩn luôn!",
+    "Giỏi lắm!",
+    "Đúng bí kíp rồi!",
+    "Kẻ trộm sợ em rồi đó!"
+  ],
+  "dong_vien": [
+    {
+      "cz": "Skoro!",
+      "vn": "Gần đúng rồi!"
+    },
+    {
+      "cz": "Zkus to znovu.",
+      "vn": "Thử lại nhé."
+    }
+  ],
+  "dong_vien_vn": [
+    "Không sao, thám tử nào cũng có lúc nhầm.",
+    "Nhớ câu thần chú nhé!",
+    "Lần sau em sẽ đúng."
+  ]
+}
