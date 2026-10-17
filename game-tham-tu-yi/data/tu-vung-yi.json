@@ -1,0 +1,510 @@
+{
+  "phien_ban": 1,
+  "nguon": "BO1-Bang-tu-vung-co-nghia-viet-6-trang.pdf (Vyjmenovaná slova). Mục có \"nguon\": \"bo_sung\" là phần thêm theo chương trình trường Séc, không có trong PDF.",
+
+  "quy_tac": {
+    "bi_mat": "Trong tiếng Séc, y và i như hai anh em sinh đôi: nghe giống hệt nhau. Nhưng sau 7 chữ B, L, M, P, S, V, Z, chỉ những từ trong bảng này (và các từ cùng nhà với chúng) được viết bằng anh y. Từ nào không có trong bảng thì viết bằng em i.",
+    "ba_buoc": [
+      "Nghe thấy “i” sau B L M P S V Z? Dừng lại kiểm tra.",
+      "Từ có trong bảng, hay là “con cháu” của từ trong bảng? Ví dụ umyvadlo (bồn rửa) là con cháu của mýt (rửa).",
+      "Có thì viết y / ý. Không thì viết i / í. Ví dụ vítr (gió) viết í."
+    ],
+    "chu_khac": "Sau č, š, ž, ř, c, j luôn viết i. Sau h, ch, k, r thường viết y."
+  },
+
+  "cach_doc": [
+    {"chu": "y ý i í", "giai_thich": "Đều đọc là “i”. Có dấu (ý, í) thì đọc dài hơn. Vì vậy bé phải nhớ mặt chữ: myš = “mish”, mýt = “miːt”."},
+    {"chu": "č · š · ž", "giai_thich": "č = ch, š = sh, ž = zh (như “j” trong tiếng Pháp “je”), ř = rzh (âm khó nhất, uốn lưỡi như r rồi bật “zh”)"},
+    {"chu": "c · ch · j · ň", "giai_thich": "c = ts, ch = kh, j = y (như “yêu”), ň = nh"},
+    {"chu": "ou · ej · á é ó ú", "giai_thich": "ou = âu, ej = ê-i, chữ có dấu sắc (á, é, ó, ú) đọc như a, e, o, u nhưng kéo dài"}
+  ],
+  "ghi_chu_phien_am": "Phiên âm bằng chữ Việt (gần đúng). Âm đầu của từ luôn được nhấn. Dấu ː là kéo dài.",
+
+  "bi_kip": [
+    {
+      "ma": "BK0", "man": 0, "ten": "Tai nghe như nhau", "nguon": "PDF",
+      "than_chu": "Tai nghe như nhau, mắt phải nhớ",
+      "giai_thich": "y, ý, i, í đều đọc là “i”. Có dấu (ý, í) thì đọc dài hơn. Nghe không phân biệt được, nên phải nhớ mặt chữ.",
+      "chi_tiet": ["myš = “mish”, mýt = “miːt”", "č = ch, š = sh, ž = zh, ř = rzh", "c = ts, ch = kh, j = y, ň = nh", "ou = âu, ej = ê-i"],
+      "vi_du": ["myš", "mýt", "být", "bít"],
+      "cau_hoi_thuoc": [
+        {"hoi": "y và i đọc thế nào?", "lua_chon": ["Giống nhau", "Khác nhau"], "dap_an": "Giống nhau"},
+        {"hoi": "ý (có dấu) đọc thế nào so với y?", "lua_chon": ["Dài hơn", "Ngắn hơn", "Giống hệt"], "dap_an": "Dài hơn"},
+        {"hoi": "Chữ č đọc như?", "lua_chon": ["ch", "c", "k"], "dap_an": "ch"},
+        {"hoi": "Chữ ř đọc như?", "lua_chon": ["rzh", "r", "d"], "dap_an": "rzh"},
+        {"hoi": "Chữ j đọc như?", "lua_chon": ["y (như “yêu”)", "gi", "j tiếng Anh"], "dap_an": "y (như “yêu”)"}
+      ]
+    },
+    {
+      "ma": "BK1", "man": 0, "ten": "Chữ cứng", "nguon": "bo_sung",
+      "than_chu": "Cứng đi với y cứng",
+      "giai_thich": "Chữ cứng: h, ch, k, r, d, t, n. Sau h, ch, k, r viết y (trong từ gốc Séc). Sau d, t, n: nghe âm cứng thì viết y.",
+      "chi_tiet": [
+        "PDF ghi “sau h, ch, k, r thường viết y”. Ở trường dạy là luôn viết y trong từ gốc Séc; chỉ một số từ mượn nước ngoài mới viết i.",
+        "d, t, n là chữ cứng: dy, ty, ny đọc cứng như “đi, ti, ni”.",
+        "Nếu viết di, ti, ni thì đọc mềm như “ďi, ťi, ňi” (Anička đọc là “a-ňi-čka”). Vì vậy với d, t, n, tai nghe được: cứng thì y, mềm thì i."
+      ],
+      "vi_du": ["rohy", "chybu", "rychle", "Český", "vody", "Anička"],
+      "cau_hoi_thuoc": [
+        {"hoi": "Sau h, ch, k, r viết gì?", "lua_chon": ["y", "i"], "dap_an": "y"},
+        {"hoi": "Chữ nào là chữ cứng?", "lua_chon": ["k", "č", "l"], "dap_an": "k"},
+        {"hoi": "Býk má ostré roh_.", "lua_chon": ["y", "i"], "dap_an": "y"},
+        {"hoi": "Za ch_bu musí pykat.", "lua_chon": ["y", "i"], "dap_an": "y"},
+        {"hoi": "d, t, n nghe cứng (dy, ty, ny) thì viết gì?", "lua_chon": ["y", "i"], "dap_an": "y"}
+      ]
+    },
+    {
+      "ma": "BK2", "man": 0, "ten": "Chữ mềm", "nguon": "PDF + bo_sung",
+      "than_chu": "Mềm đi với i mềm",
+      "giai_thich": "Chữ mềm: ž, š, č, ř, c, j, ď, ť, ň. Sau chữ mềm luôn viết i / í.",
+      "chi_tiet": [
+        "PDF có ž, š, č, ř, c, j. Bổ sung theo trường: ď, ť, ň cũng là chữ mềm.",
+        "ď, ť, ň khi đứng trước i thì bỏ dấu móc: viết di, ti, ni. Ví dụ Ruzyně → v Ruzyni."
+      ],
+      "vi_du": ["žije", "slyším", "syčí", "pýřit se", "Myji", "Ruzyni"],
+      "cau_hoi_thuoc": [
+        {"hoi": "Sau ž, š, č, ř, c, j viết gì?", "lua_chon": ["i", "y"], "dap_an": "i"},
+        {"hoi": "Chữ nào là chữ mềm?", "lua_chon": ["ř", "r", "b"], "dap_an": "ř"},
+        {"hoi": "Sysel ž_je v noře.", "lua_chon": ["i", "y"], "dap_an": "i"},
+        {"hoi": "Had syč_.", "lua_chon": ["í", "ý"], "dap_an": "í"},
+        {"hoi": "Myj_ si ruce.", "lua_chon": ["i", "y"], "dap_an": "i"}
+      ]
+    },
+    {
+      "ma": "BK3", "man": 0, "ten": "Chữ lưỡng tính", "nguon": "PDF + bo_sung",
+      "than_chu": "Bố Fi Lên Mây Phóng Sao Vào Zũ trụ",
+      "giai_thich": "Chữ lưỡng tính: B, F, L, M, P, S, V, Z. Sau những chữ này có khi y, có khi i, nên phải soi bảng từ.",
+      "chi_tiet": [
+        "Mỗi chữ đầu trong câu nhớ là một chữ lưỡng tính: Bố (B) Fi (F) Lên (L) Mây (M) Phóng (P) Sao (S) Vào (V) Zũ (Z) trụ. “Zũ” viết lệch có chủ ý để nhớ chữ Z.",
+        "Chữ F không có từ nào trong bảng, nên sau F hầu hết viết i. Ngoại lệ là vài từ mượn, ví dụ fyzika (vật lý).",
+        "Luật này áp dụng cho phần gốc của từ. Đuôi từ (nový, krásný, pysky) theo luật khác, game không hỏi y/i ở đuôi từ."
+      ],
+      "vi_du": ["být", "lyže", "myš", "pyl", "sýr", "výr", "jazyk"],
+      "cau_hoi_thuoc": [
+        {"hoi": "Câu nhớ chữ lưỡng tính là?", "lua_chon": ["Bố Fi Lên Mây Phóng Sao Vào Zũ trụ", "Bố Fi Lên Mây Phóng Sang Vườn Zui", "Bé Lan Mua Phở Sáng Vui"], "dap_an": "Bố Fi Lên Mây Phóng Sao Vào Zũ trụ"},
+        {"hoi": "Chữ nào là chữ lưỡng tính?", "lua_chon": ["m", "k", "š"], "dap_an": "m"},
+        {"hoi": "Có mấy chữ lưỡng tính?", "lua_chon": ["8", "7", "6"], "dap_an": "8"},
+        {"hoi": "Sau F hầu hết viết gì?", "lua_chon": ["i", "y"], "dap_an": "i"},
+        {"hoi": "Sau chữ lưỡng tính, khi nào viết y?", "lua_chon": ["Khi từ có trong bảng hoặc là từ cùng nhà", "Luôn luôn", "Không bao giờ"], "dap_an": "Khi từ có trong bảng hoặc là từ cùng nhà"}
+      ]
+    },
+    {
+      "ma": "BK4", "man": "B", "ten": "3 bước thám tử", "nguon": "PDF",
+      "than_chu": "Nghe – Soi bảng – Quyết",
+      "giai_thich": "1) Nghe thấy “i” sau B L M P S V Z? Dừng lại. 2) Từ có trong bảng, hay là con cháu của từ trong bảng? 3) Có thì viết y / ý, không thì viết i / í.",
+      "chi_tiet": ["Ví dụ umyvadlo (bồn rửa) là con cháu của mýt (rửa) → y.", "Ví dụ vítr (gió) không có trong bảng → í."],
+      "vi_du": ["umyvadlo", "vítr"],
+      "cau_hoi_thuoc": [
+        {"hoi": "Bước 1 của thám tử là gì?", "lua_chon": ["Nghe “i” sau B L M P S V Z thì dừng lại", "Viết ngay chữ i", "Đoán đại"], "dap_an": "Nghe “i” sau B L M P S V Z thì dừng lại"},
+        {"hoi": "Bước 2 của thám tử là gì?", "lua_chon": ["Soi xem từ có trong bảng hoặc là con cháu không", "Đếm số chữ", "Hỏi bạn bên cạnh"], "dap_an": "Soi xem từ có trong bảng hoặc là con cháu không"},
+        {"hoi": "vítr (gió) có trong bảng không, viết gì?", "lua_chon": ["Không có → í", "Có → ý"], "dap_an": "Không có → í"}
+      ]
+    },
+    {
+      "ma": "BK5", "man": "L", "ten": "Từ cùng nhà", "nguon": "PDF",
+      "than_chu": "Ông viết y, cháu cũng y",
+      "giai_thich": "Từ cùng nhà (con cháu) của một từ trong bảng cũng viết y.",
+      "chi_tiet": ["mýt → umyvadlo, mýdlo, myčka", "být → byl, byla, bylo", "lyže → lyžovat, lyžař"],
+      "vi_du": ["umyvadlo", "byla", "lyžař"],
+      "cau_hoi_thuoc": [
+        {"hoi": "umyvadlo là con cháu của từ nào?", "lua_chon": ["mýt", "mít"], "dap_an": "mýt"},
+        {"hoi": "lyžař (người trượt tuyết) viết gì?", "lua_chon": ["y", "i"], "dap_an": "y"},
+        {"hoi": "Con cháu của từ trong bảng viết gì?", "lua_chon": ["y", "i"], "dap_an": "y"}
+      ]
+    },
+    {
+      "ma": "BK6", "man": "M", "ten": "Cặp nghe giống, khác nghĩa", "nguon": "PDF",
+      "than_chu": "Nghe giống, nghĩa quyết",
+      "giai_thich": "Có những cặp từ nghe giống hệt nhau nhưng nghĩa khác, nên viết khác. Phải nghĩ nghĩa rồi mới viết.",
+      "chi_tiet": ["být (là) ≠ bít (đánh)", "mýt (rửa) ≠ mít (có)", "výt (hú) ≠ vít (quấn)", "pyl (phấn hoa) ≠ pil (đã uống)", "my (chúng tôi) ≠ mi (cho tôi)", "mlýn (cối xay) ≠ mlít (xay)"],
+      "vi_du": ["být", "bít", "mýt", "mít"],
+      "cau_hoi_thuoc": [
+        {"hoi": "“chúng tôi” viết là?", "lua_chon": ["my", "mi"], "dap_an": "my"},
+        {"hoi": "“có” viết là?", "lua_chon": ["mít", "mýt"], "dap_an": "mít"},
+        {"hoi": "“phấn hoa” viết là?", "lua_chon": ["pyl", "pil"], "dap_an": "pyl"},
+        {"hoi": "“đánh” viết là?", "lua_chon": ["bít", "být"], "dap_an": "bít"}
+      ]
+    },
+    {
+      "ma": "BK7", "man": "S", "ten": "Dài ngắn không đổi y", "nguon": "PDF",
+      "than_chu": "Đổi dài ngắn, không đổi y",
+      "giai_thich": "Trong cùng một nhà, y có thể đổi dài thành ngắn (ý ↔ y), nhưng vẫn là y, không đổi thành i.",
+      "chi_tiet": ["sýr → syrový nhưng cả hai đều y (mẹo trong PDF: sýr và syrový cùng nhà nên đều viết y)", "mýt → umyvadlo, mytí", "vysoký → výška"],
+      "vi_du": ["sýr", "syrový", "výška", "vysoký"],
+      "cau_hoi_thuoc": [
+        {"hoi": "sýr → s_rový?", "lua_chon": ["y", "i"], "dap_an": "y"},
+        {"hoi": "Khi y đổi dài ngắn trong cùng nhà thì?", "lua_chon": ["Vẫn là y", "Đổi thành i"], "dap_an": "Vẫn là y"},
+        {"hoi": "vysoký → v_ška?", "lua_chon": ["ý", "í"], "dap_an": "ý"}
+      ]
+    },
+    {
+      "ma": "BK8", "man": "V", "ten": "Vy- đứng đầu", "nguon": "PDF",
+      "than_chu": "Vy- đứng đầu là y",
+      "giai_thich": "Mọi từ BẮT ĐẦU bằng vy- / vý- luôn viết y. Còn vítr, víno, vidět thì viết i.",
+      "chi_tiet": ["vybrat, vyrobit, výlet, výstava, výhra, výsledek, vymyslet", "Bẫy: vítr (gió), víno (rượu vang), vidět (nhìn) viết i"],
+      "vi_du": ["výlet", "vyrobit", "vítr", "víno"],
+      "cau_hoi_thuoc": [
+        {"hoi": "Từ bắt đầu bằng vy- / vý- viết gì?", "lua_chon": ["y", "i"], "dap_an": "y"},
+        {"hoi": "v_let (chuyến đi chơi)?", "lua_chon": ["ý", "í"], "dap_an": "ý"},
+        {"hoi": "v_tr (gió)?", "lua_chon": ["í", "ý"], "dap_an": "í"}
+      ]
+    }
+  ],
+
+  "nhom": [
+    {
+      "chu": "B", "ten": "bylina · cây thảo mộc", "emoji": "🌿",
+      "truyen_nho": "Chú býk (bò đực) rất bystrý (nhanh trí). Chú bydlí (sống) trong một byt đầy nábytek. Ngoài sân có bylina (cây thảo mộc), kobyla (ngựa cái) và cả đàn dobytek (gia súc). Hàng xóm là một obyvatel (cư dân) ở Přibyslav, vẫn giữ obyčej (phong tục) cũ. Còn příbytek là chỗ trú của chú. Và chú muốn být (là) một chú bò vui vẻ!",
+      "meo": "být (là) viết y, bít (đánh) viết í. Các từ byl, byla, bylo (đã là) cũng viết y.",
+      "nghe_giong_viet_i": [
+        {"cz": "bít", "nghia": "đánh"}, {"cz": "bílý", "nghia": "trắng"}, {"cz": "bída", "nghia": "nghèo khó"},
+        {"cz": "bitva", "nghia": "trận đánh"}, {"cz": "biologie", "nghia": ""}
+      ],
+      "tu": [
+        {"cz": "být", "phien_am": "biːt", "nghia": "là, tồn tại", "emoji": "🙋",
+         "tu_cung_nha": [{"cz": "byl", "nghia": "đã là (giống đực)"}, {"cz": "byla", "nghia": "đã là (giống cái)"}, {"cz": "bylo", "nghia": "đã là (giống trung)"}, {"cz": "bývat", "nghia": "thường là"}, {"cz": "bývalý", "nghia": "cũ, trước đây"}, {"cz": "zbýt", "nghia": "còn lại"}],
+         "vi_du": {"cz": "Chci být lékařka.", "vn": "Tớ muốn làm bác sĩ."}},
+        {"cz": "bydlet", "bien_the": "bydlit", "phien_am": "bid·let", "nghia": "ở, sống (ở đâu)", "emoji": "🏠",
+         "tu_cung_nha": [{"cz": "bydliště", "nghia": "nơi cư trú"}, {"cz": "obydlí", "nghia": "nơi ở, chỗ ở"}, {"cz": "bydlení", "nghia": "sự cư trú"}],
+         "vi_du": {"cz": "Bydlím v Praze.", "vn": "Tôi sống ở Praha."}},
+        {"cz": "obyvatel", "phien_am": "o·bi·va·tel", "nghia": "cư dân", "emoji": "👨‍👩‍👧",
+         "tu_cung_nha": [{"cz": "obyvatelstvo", "nghia": "dân số"}, {"cz": "obývat", "nghia": "sinh sống trong"}],
+         "vi_du": {"cz": "Praha má hodně obyvatel.", "vn": "Praha có nhiều cư dân."}},
+        {"cz": "byt", "phien_am": "bit", "nghia": "căn hộ", "emoji": "🏢",
+         "tu_cung_nha": [{"cz": "bytový", "nghia": "thuộc căn hộ"}, {"cz": "ubytovna", "nghia": "ký túc xá, nhà trọ"}],
+         "vi_du": {"cz": "Náš byt je ve třetím patře.", "vn": "Căn hộ nhà mình ở tầng 3."}},
+        {"cz": "příbytek", "phien_am": "rzhiː·bi·tek", "nghia": "chỗ ở, nơi trú ngụ", "emoji": "🛖",
+         "tu_cung_nha": [{"cz": "přebývat", "nghia": "ở lại, lưu trú"}],
+         "vi_du": {"cz": "Jeskyně byla příbytkem medvěda.", "vn": "Hang động là chỗ ở của gấu."}},
+        {"cz": "nábytek", "phien_am": "naː·bi·tek", "nghia": "đồ nội thất", "emoji": "🛋️",
+         "tu_cung_nha": [{"cz": "nábytkový", "nghia": "thuộc nội thất"}],
+         "vi_du": {"cz": "V pokoji je nový nábytek.", "vn": "Trong phòng có đồ nội thất mới."}},
+        {"cz": "dobytek", "phien_am": "do·bi·tek", "nghia": "gia súc", "emoji": "🐄",
+         "tu_cung_nha": [{"cz": "dobytče", "nghia": "một con gia súc"}],
+         "vi_du": {"cz": "Dobytek se pase na louce.", "vn": "Gia súc ăn cỏ trên đồng cỏ."}},
+        {"cz": "obyčej", "phien_am": "o·bi·chej", "nghia": "phong tục", "emoji": "🎄",
+         "tu_cung_nha": [{"cz": "obyčejný", "nghia": "bình thường, giản dị"}, {"cz": "neobyčejný", "nghia": "khác thường"}],
+         "vi_du": {"cz": "Vánoční obyčeje jsou zajímavé.", "vn": "Phong tục Giáng sinh rất thú vị."}},
+        {"cz": "bystrý", "phien_am": "bis·triː", "nghia": "nhanh trí; (nước) chảy xiết", "emoji": "💡",
+         "tu_cung_nha": [{"cz": "bystrost", "nghia": "sự nhanh trí"}, {"cz": "bystřina", "nghia": "suối nước chảy xiết"}],
+         "vi_du": {"cz": "Anička je bystrá holka.", "vn": "Anička là cô bé nhanh trí."}},
+        {"cz": "bylina", "phien_am": "bi·li·na", "nghia": "cây thảo mộc", "emoji": "🌿",
+         "tu_cung_nha": [{"cz": "bylinka", "nghia": "cây thảo mộc nhỏ"}, {"cz": "bylinný", "nghia": "thuộc thảo mộc"}, {"cz": "bylinkový", "nghia": "thuộc cây thảo mộc"}],
+         "vi_du": {"cz": "Máta je bylina.", "vn": "Bạc hà là cây thảo mộc."}},
+        {"cz": "kobyla", "phien_am": "ko·bi·la", "nghia": "ngựa cái", "emoji": "🐴",
+         "tu_cung_nha": [{"cz": "kobylka", "nghia": "châu chấu, cào cào"}],
+         "vi_du": {"cz": "Kobyla má hříbě.", "vn": "Ngựa cái có ngựa con."}},
+        {"cz": "býk", "phien_am": "biːk", "nghia": "bò đực", "emoji": "🐂",
+         "tu_cung_nha": [{"cz": "býček", "nghia": "bò đực con"}, {"cz": "býčí", "nghia": "thuộc bò đực"}],
+         "vi_du": {"cz": "Býk má ostré rohy.", "vn": "Bò đực có sừng nhọn."}},
+        {"cz": "Přibyslav", "phien_am": "rzhi·bi·slaf", "nghia": "tên thành phố (và tên người)", "emoji": "🏙️",
+         "tu_cung_nha": [],
+         "vi_du": {"cz": "Přibyslav je město na Vysočině.", "vn": "Přibyslav là thành phố ở vùng Vysočina."}}
+      ]
+    },
+    {
+      "chu": "L", "ten": "lyže · ván trượt tuyết", "emoji": "🎿",
+      "truyen_nho": "Đi lyže (trượt tuyết), bé slyší (nghe) tiếng mlýn (cối xay) quay và nước plyne (trôi). Trời blýská se (chớp) làm ông lysý (hói) sợ quá, polykat (nuốt) luôn cây pelyněk (ngải đắng). Bé vzlykat (nức nở) vì đau lýtko (bắp chân), ôm con gấu plyš. Đừng plýtvat (lãng phí) nước mắt nhé! Còn lýko là lớp vỏ trong của cây.",
+      "meo": "mlýn (cối xay) viết ý, nhưng mlít (xay) viết í.",
+      "nghe_giong_viet_i": [
+        {"cz": "líbit se", "nghia": "thích"}, {"cz": "lidé", "nghia": "con người"}, {"cz": "liška", "nghia": "con cáo"},
+        {"cz": "lípa", "nghia": "cây đoạn"}, {"cz": "plíseň", "nghia": "nấm mốc"}
+      ],
+      "tu": [
+        {"cz": "slyšet", "phien_am": "sli·shet", "nghia": "nghe thấy", "emoji": "👂",
+         "tu_cung_nha": [{"cz": "slyšení", "nghia": "sự nghe"}, {"cz": "slyšitelný", "nghia": "nghe được"}, {"cz": "uslyšet", "nghia": "nghe thấy"}, {"cz": "neslyšící", "nghia": "người khiếm thính"}],
+         "vi_du": {"cz": "Slyším zvonek.", "vn": "Tớ nghe thấy chuông cửa."}},
+        {"cz": "mlýn", "phien_am": "mliːn", "nghia": "cối xay", "emoji": "🌾",
+         "tu_cung_nha": [{"cz": "mlýnek", "nghia": "máy xay nhỏ"}, {"cz": "mlynář", "nghia": "thợ xay"}],
+         "vi_du": {"cz": "Mlýn mele obilí.", "vn": "Cối xay xay lúa."}},
+        {"cz": "blýskat se", "phien_am": "bliːs·kat se", "nghia": "chớp, lóe sáng", "emoji": "⚡",
+         "tu_cung_nha": [{"cz": "blýsknout se", "nghia": "chớp lên"}, {"cz": "blýskavice", "nghia": "tia chớp"}, {"cz": "blýskavý", "nghia": "sáng lấp lánh"}],
+         "vi_du": {"cz": "Venku se blýská.", "vn": "Ngoài trời đang chớp."}},
+        {"cz": "polykat", "phien_am": "po·li·kat", "nghia": "nuốt", "emoji": "😋",
+         "tu_cung_nha": [{"cz": "spolykat", "nghia": "nuốt chửng"}],
+         "vi_du": {"cz": "Nepolykej tak rychle!", "vn": "Đừng nuốt vội thế!"}},
+        {"cz": "plynout", "phien_am": "pli·nâut", "nghia": "trôi, chảy", "emoji": "🌊",
+         "tu_cung_nha": [{"cz": "plyn", "nghia": "khí ga"}, {"cz": "plynulý", "nghia": "trôi chảy, lưu loát"}, {"cz": "plynule", "nghia": "trôi chảy"}],
+         "vi_du": {"cz": "Řeka plyne do moře.", "vn": "Sông chảy ra biển."}},
+        {"cz": "plýtvat", "phien_am": "pliːt·vat", "nghia": "lãng phí", "emoji": "🚰",
+         "tu_cung_nha": [{"cz": "plýtvání", "nghia": "sự lãng phí"}],
+         "vi_du": {"cz": "Neplýtvej vodou!", "vn": "Đừng lãng phí nước!"}},
+        {"cz": "vzlykat", "phien_am": "vz·li·kat", "nghia": "nức nở", "emoji": "😢",
+         "tu_cung_nha": [{"cz": "vzlyk", "nghia": "tiếng nấc"}, {"cz": "vzlykot", "nghia": "tiếng nấc liên tục"}],
+         "vi_du": {"cz": "Holčička vzlykala.", "vn": "Cô bé nức nở."}},
+        {"cz": "lysý", "phien_am": "li·siː", "nghia": "hói", "emoji": "👨‍🦲",
+         "tu_cung_nha": [{"cz": "lysina", "nghia": "chỗ hói"}, {"cz": "Lysá hora", "nghia": "tên một ngọn núi"}],
+         "vi_du": {"cz": "Dědeček je lysý.", "vn": "Ông là người hói."}},
+        {"cz": "lýtko", "phien_am": "liːt·ko", "nghia": "bắp chân", "emoji": "🦵",
+         "tu_cung_nha": [{"cz": "lýtka", "nghia": "số nhiều"}],
+         "vi_du": {"cz": "Bolí mě lýtko.", "vn": "Bắp chân tớ đau."}},
+        {"cz": "lýko", "phien_am": "liː·ko", "nghia": "lớp vỏ trong của cây", "emoji": "🌳",
+         "tu_cung_nha": [{"cz": "lýkový", "nghia": "làm bằng vỏ cây"}],
+         "vi_du": {"cz": "Lýko je vnitřní vrstva kůry.", "vn": "Lýko là lớp trong của vỏ cây."}},
+        {"cz": "lyže", "phien_am": "li·zhe", "nghia": "ván trượt tuyết", "emoji": "🎿",
+         "tu_cung_nha": [{"cz": "lyžovat", "nghia": "trượt tuyết"}, {"cz": "lyžař", "nghia": "người trượt tuyết"}, {"cz": "lyžování", "nghia": "môn trượt tuyết"}],
+         "vi_du": {"cz": "Na lyže jedeme do hor.", "vn": "Tụi mình đi trượt tuyết ở núi."}},
+        {"cz": "pelyněk", "phien_am": "pe·li·nhek", "nghia": "ngải đắng", "emoji": "🌱",
+         "tu_cung_nha": [{"cz": "pelyňkový", "nghia": "thuộc ngải đắng"}],
+         "vi_du": {"cz": "Pelyněk je hořká bylina.", "vn": "Ngải đắng là loại thảo mộc đắng."}},
+        {"cz": "plyš", "phien_am": "plish", "nghia": "vải lông mềm (làm gấu bông)", "emoji": "🧸",
+         "tu_cung_nha": [{"cz": "plyšový", "nghia": "bằng vải nhung"}, {"cz": "plyšák", "nghia": "thú nhồi bông, gấu bông"}],
+         "vi_du": {"cz": "Mám plyšového medvídka.", "vn": "Tớ có một con gấu bông."}}
+      ]
+    },
+    {
+      "chu": "M", "ten": "myš · chuột nhắt", "emoji": "🐭",
+      "truyen_nho": "Chuột myš và ốc hlemýžď ở thành phố Litomyšl myslit (nghĩ) rằng my (chúng ta) nên mýt (rửa) con hmyz (côn trùng) dính chmýří (bông tơ). Chúng dmýchat (thổi) cho khô, zamykat (khóa) cửa, smýkat (quăng) giẻ lau và mýtit (phát quang) lối đi. Ai nachomýtnout se (tình cờ ghé qua) mà mýlit se (nhầm) là mưa thì cười vỡ bụng!",
+      "meo": "my (chúng ta) viết y, mi (cho tôi) viết i. mýt (rửa) viết ý, mít (có) viết í.",
+      "nghe_giong_viet_i": [
+        {"cz": "mít", "nghia": "có"}, {"cz": "mi", "nghia": "cho tôi"}, {"cz": "míč", "nghia": "quả bóng"},
+        {"cz": "mír", "nghia": "hòa bình"}, {"cz": "milý", "nghia": "thân mến"}
+      ],
+      "tu": [
+        {"cz": "my", "phien_am": "mi", "nghia": "chúng tôi, chúng ta", "emoji": "🤝",
+         "tu_cung_nha": [],
+         "vi_du": {"cz": "My jdeme do školy.", "vn": "Chúng mình đi học."}},
+        {"cz": "mýt", "phien_am": "miːt", "nghia": "rửa", "emoji": "🧼",
+         "tu_cung_nha": [{"cz": "umýt", "nghia": "rửa sạch"}, {"cz": "mytí", "nghia": "sự rửa"}, {"cz": "myčka", "nghia": "máy rửa bát"}, {"cz": "umyvadlo", "nghia": "bồn rửa mặt"}, {"cz": "mýdlo", "nghia": "xà phòng"}],
+         "vi_du": {"cz": "Myji si ruce.", "vn": "Tớ rửa tay."}},
+        {"cz": "myslit", "phien_am": "mis·lit", "nghia": "nghĩ", "emoji": "💭",
+         "tu_cung_nha": [{"cz": "mysl", "nghia": "tâm trí"}, {"cz": "myšlenka", "nghia": "ý nghĩ"}, {"cz": "úmysl", "nghia": "ý định"}, {"cz": "smysl", "nghia": "ý nghĩa"}, {"cz": "myslivec", "nghia": "thợ săn, kiểm lâm"}, {"cz": "přemýšlet", "nghia": "suy nghĩ kỹ"}],
+         "vi_du": {"cz": "Myslím na tebe.", "vn": "Tớ nghĩ đến bạn."}},
+        {"cz": "mýlit se", "phien_am": "miː·lit se", "nghia": "nhầm lẫn", "emoji": "❓",
+         "tu_cung_nha": [{"cz": "omyl", "nghia": "sự nhầm lẫn"}, {"cz": "mýlka", "nghia": "lỗi nhầm"}, {"cz": "nemýlit se", "nghia": "không nhầm lẫn"}],
+         "vi_du": {"cz": "Mýlíš se.", "vn": "Bạn nhầm rồi."}},
+        {"cz": "hmyz", "phien_am": "hmis", "nghia": "côn trùng", "emoji": "🐜",
+         "tu_cung_nha": [{"cz": "hmyzí", "nghia": "thuộc côn trùng"}],
+         "vi_du": {"cz": "Včela je hmyz.", "vn": "Con ong là côn trùng."}},
+        {"cz": "myš", "phien_am": "mish", "nghia": "chuột nhắt", "emoji": "🐭",
+         "tu_cung_nha": [{"cz": "myška", "nghia": "chuột nhỏ"}, {"cz": "myší", "nghia": "thuộc chuột"}],
+         "vi_du": {"cz": "Myš jí sýr.", "vn": "Chuột ăn phô mai."}},
+        {"cz": "hlemýžď", "phien_am": "hle·miːshty", "nghia": "ốc sên", "emoji": "🐌",
+         "tu_cung_nha": [{"cz": "hlemýždí", "nghia": "thuộc ốc sên"}],
+         "vi_du": {"cz": "Hlemýžď nese ulitu na zádech.", "vn": "Ốc sên mang vỏ trên lưng."}},
+        {"cz": "mýtit", "phien_am": "miː·tit", "nghia": "chặt cây, dọn đất", "emoji": "🪓",
+         "tu_cung_nha": [{"cz": "mýtina", "nghia": "khoảng rừng trống"}, {"cz": "vymýtit", "nghia": "xóa sổ, phát quang hết"}],
+         "vi_du": {"cz": "Lesník mýtí část lesa.", "vn": "Người kiểm lâm phát quang một phần rừng."}},
+        {"cz": "zamykat", "phien_am": "za·mi·kat", "nghia": "khóa (cửa)", "emoji": "🔒",
+         "tu_cung_nha": [{"cz": "odemykat", "nghia": "mở khóa"}, {"cz": "uzamykat", "nghia": "khóa lại"}],
+         "vi_du": {"cz": "Zamykám dveře klíčem.", "vn": "Tớ khóa cửa bằng chìa."}},
+        {"cz": "smýkat", "phien_am": "smiː·kat", "nghia": "giật, quăng mạnh", "emoji": "🎒",
+         "tu_cung_nha": [{"cz": "smýknout", "nghia": "giật mạnh"}, {"cz": "smyk", "nghia": "sự trượt bánh"}, {"cz": "smyčec", "nghia": "cây vĩ kéo đàn"}],
+         "vi_du": {"cz": "Nesmýkej taškou!", "vn": "Đừng quăng quật cái cặp!"}},
+        {"cz": "dmýchat", "phien_am": "dmiː·khat", "nghia": "thổi phù phù", "emoji": "💨",
+         "tu_cung_nha": [{"cz": "dmýchadlo", "nghia": "ống bễ thổi (dmychadlo)"}],
+         "vi_du": {"cz": "Dmýchám do ohně.", "vn": "Tớ thổi vào lửa."}},
+        {"cz": "chmýří", "phien_am": "khmiː·rzhiː", "nghia": "lông tơ, bông tơ", "emoji": "🌼",
+         "tu_cung_nha": [{"cz": "chmýřitý", "nghia": "có lông tơ"}],
+         "vi_du": {"cz": "Pampeliška má chmýří.", "vn": "Bồ công anh có bông tơ."}},
+        {"cz": "nachomýtnout se", "phien_am": "na·kho·miːt·nâut se", "nghia": "tình cờ có mặt", "emoji": "😮",
+         "tu_cung_nha": [],
+         "vi_du": {"cz": "Nachomýtl se tam náhodou.", "vn": "Cậu ấy tình cờ có mặt ở đó."}},
+        {"cz": "Litomyšl", "phien_am": "li·to·mishl", "nghia": "tên thành phố", "emoji": "🏰",
+         "tu_cung_nha": [{"cz": "litomyšlský", "nghia": "thuộc Litomyšl"}],
+         "vi_du": {"cz": "Litomyšl má krásný zámek.", "vn": "Litomyšl có lâu đài rất đẹp."}}
+      ]
+    },
+    {
+      "chu": "P", "ten": "netopýr · con dơi", "emoji": "🦇",
+      "truyen_nho": "Dơi netopýr đầy pýcha (kiêu ngạo), vác pytel (bao tải) pyl (phấn hoa) đi dạo. Nó klopýtat (vấp) vào kopyto (móng guốc) của ngựa. Ngựa pýřit se (đỏ mặt vì ngượng) và čepýřit se (xù lông) trên bãi pýr (cỏ dại). Thằn lằn slepýš nhìn pysk (môi) ngựa mà cười. Tối đến, dơi zpytovat (tự vấn) và pykat (ăn năn) dưới sao třpytit se (lấp lánh).",
+      "meo": "pyl (phấn hoa) viết y, pil (đã uống) viết i.",
+      "nghe_giong_viet_i": [
+        {"cz": "pít", "nghia": "uống"}, {"cz": "pil", "nghia": "đã uống"}, {"cz": "pivo", "nghia": "bia"},
+        {"cz": "píseň", "nghia": "bài hát"}, {"cz": "pila", "nghia": "cái cưa"}
+      ],
+      "tu": [
+        {"cz": "pýcha", "phien_am": "piː·kha", "nghia": "kiêu ngạo", "emoji": "🦚",
+         "tu_cung_nha": [{"cz": "pyšný", "nghia": "kiêu căng"}, {"cz": "pyšnit se", "nghia": "khoe khoang, tự hào"}],
+         "vi_du": {"cz": "Pýcha předchází pád.", "vn": "Kiêu ngạo đi trước sa ngã."}},
+        {"cz": "pytel", "phien_am": "pi·tel", "nghia": "bao tải", "emoji": "🛍️",
+         "tu_cung_nha": [{"cz": "pytlík", "nghia": "túi nhỏ"}, {"cz": "pytlák", "nghia": "kẻ săn trộm"}, {"cz": "pytlovina", "nghia": "vải bao"}],
+         "vi_du": {"cz": "Pytel brambor je těžký.", "vn": "Một bao khoai tây rất nặng."}},
+        {"cz": "pysk", "phien_am": "pisk", "nghia": "môi (của động vật)", "emoji": "👄",
+         "tu_cung_nha": [{"cz": "pysky", "nghia": "các môi"}, {"cz": "ptakopysk", "nghia": "thú mỏ vịt"}],
+         "vi_du": {"cz": "Kůň má měkké pysky.", "vn": "Ngựa có đôi môi mềm."}},
+        {"cz": "netopýr", "phien_am": "ne·to·piːr", "nghia": "con dơi", "emoji": "🦇",
+         "tu_cung_nha": [{"cz": "netopýří", "nghia": "thuộc con dơi"}],
+         "vi_du": {"cz": "Netopýr létá v noci.", "vn": "Dơi bay vào ban đêm."}},
+        {"cz": "slepýš", "phien_am": "sle·piːsh", "nghia": "thằn lằn không chân (trông như rắn)", "emoji": "🦎",
+         "tu_cung_nha": [{"cz": "slepýši", "nghia": "các thằn lằn không chân"}],
+         "vi_du": {"cz": "Slepýš vypadá jako had, ale je to ještěrka.", "vn": "Slepýš trông như rắn nhưng là thằn lằn."}},
+        {"cz": "pyl", "phien_am": "pil", "nghia": "phấn hoa", "emoji": "🐝",
+         "tu_cung_nha": [{"cz": "pylový", "nghia": "thuộc phấn hoa"}, {"cz": "opylovat", "nghia": "thụ phấn"}, {"cz": "opylení", "nghia": "sự thụ phấn"}],
+         "vi_du": {"cz": "Včela sbírá pyl.", "vn": "Con ong thu thập phấn hoa."}},
+        {"cz": "kopyto", "phien_am": "ko·pi·to", "nghia": "móng guốc", "emoji": "🐎",
+         "tu_cung_nha": [{"cz": "kopyta", "nghia": "các móng guốc"}, {"cz": "kopytnatec", "nghia": "động vật móng guốc"}, {"cz": "lichokopytník", "nghia": "thú móng lẻ"}],
+         "vi_du": {"cz": "Kůň má podkovu na kopytě.", "vn": "Ngựa có móng sắt ở guốc."}},
+        {"cz": "klopýtat", "phien_am": "klo·piː·tat", "nghia": "vấp, loạng choạng", "emoji": "🪨",
+         "tu_cung_nha": [{"cz": "klopýtnout", "nghia": "vấp ngã"}],
+         "vi_du": {"cz": "Klopýtl o kámen.", "vn": "Cậu ấy vấp phải hòn đá."}},
+        {"cz": "třpytit se", "phien_am": "trzh·pi·tit se", "nghia": "lấp lánh", "emoji": "✨",
+         "tu_cung_nha": [{"cz": "třpyt", "nghia": "ánh lấp lánh"}, {"cz": "třpytivý", "nghia": "lấp lánh"}, {"cz": "třpytky", "nghia": "kim tuyến"}],
+         "vi_du": {"cz": "Sníh se třpytí.", "vn": "Tuyết lấp lánh."}},
+        {"cz": "zpytovat", "phien_am": "spi·to·vat", "nghia": "tự nhìn lại lỗi của mình", "emoji": "🤔",
+         "tu_cung_nha": [{"cz": "zpytování", "nghia": "sự tự vấn"}, {"cz": "nevyzpytatelný", "nghia": "khó lường"}],
+         "vi_du": {"cz": "Zpytuji své svědomí.", "vn": "Tôi tự vấn lương tâm mình."}},
+        {"cz": "pykat", "phien_am": "pi·kat", "nghia": "chịu phạt vì làm sai", "emoji": "😔",
+         "tu_cung_nha": [{"cz": "odpykat", "nghia": "chịu xong hình phạt"}],
+         "vi_du": {"cz": "Za chybu musí pykat.", "vn": "Phải trả giá cho lỗi lầm."}},
+        {"cz": "pýr", "phien_am": "piːr", "nghia": "một loại cỏ dại", "emoji": "🌱",
+         "tu_cung_nha": [],
+         "vi_du": {"cz": "Pýr roste na poli.", "vn": "Cỏ pýr mọc trên ruộng."}},
+        {"cz": "pýřit se", "phien_am": "piː·rzhit se", "nghia": "đỏ mặt (vì ngượng)", "emoji": "😳",
+         "tu_cung_nha": [{"cz": "zapýřit se", "nghia": "đỏ mặt"}, {"cz": "pýří", "nghia": "lông tơ"}],
+         "vi_du": {"cz": "Zapýřila se.", "vn": "Cô bé đỏ mặt vì ngượng."}},
+        {"cz": "čepýřit se", "phien_am": "che·piː·rzhit se", "nghia": "xù lông lên", "emoji": "🐱",
+         "tu_cung_nha": [{"cz": "načepýřit", "nghia": "làm xù lên"}, {"cz": "načepýřený", "nghia": "xù lông"}],
+         "vi_du": {"cz": "Pták si čepýří peří.", "vn": "Con chim xù lông lên."}}
+      ]
+    },
+    {
+      "chu": "S", "ten": "sýr · phô mai", "emoji": "🧀",
+      "truyen_nho": "Chim sýkora và cú sýček hỏi chú sysel: “Cậu syn (con trai) của bạn đã sytý (no) chưa?” Sysel đáp: “Rồi, nó ăn sýr (phô mai) và thích sypat (rắc) hạt lên bột syrový (sống). Trời sychravý (ẩm lạnh) nên cỏ usychat (héo), còn rắn thì syčet (rít).”",
+      "meo": "sýr (phô mai) và syrový (sống) cùng nhà nên đều viết y.",
+      "nghe_giong_viet_i": [
+        {"cz": "síla", "nghia": "sức mạnh"}, {"cz": "silný", "nghia": "khỏe"}, {"cz": "sníh", "nghia": "tuyết"},
+        {"cz": "sirup", "nghia": ""}, {"cz": "síť", "nghia": "lưới"}
+      ],
+      "tu": [
+        {"cz": "syn", "phien_am": "sin", "nghia": "con trai", "emoji": "👦",
+         "tu_cung_nha": [{"cz": "synek", "nghia": "con trai nhỏ"}, {"cz": "synovec", "nghia": "cháu trai"}],
+         "vi_du": {"cz": "Petr je Honzův syn.", "vn": "Petr là con trai của Honza."}},
+        {"cz": "sytý", "phien_am": "si·tiː", "nghia": "no, đã bụng", "emoji": "🍽️",
+         "tu_cung_nha": [{"cz": "sytit", "nghia": "làm no"}, {"cz": "nasytit", "nghia": "làm no"}, {"cz": "sytost", "nghia": "sự no"}],
+         "vi_du": {"cz": "Už jsem sytá.", "vn": "Tớ no rồi."}},
+        {"cz": "sýr", "phien_am": "siːr", "nghia": "phô mai", "emoji": "🧀",
+         "tu_cung_nha": [{"cz": "sýrový", "nghia": "làm từ phô mai"}, {"cz": "sýrárna", "nghia": "xưởng làm phô mai"}],
+         "vi_du": {"cz": "Myš má ráda sýr.", "vn": "Chuột thích phô mai."}},
+        {"cz": "syrový", "phien_am": "si·ro·viː", "nghia": "sống, chưa nấu", "emoji": "🥚",
+         "tu_cung_nha": [{"cz": "syrovátka", "nghia": "nước tách từ sữa"}, {"cz": "syrovost", "nghia": "tính sống, chưa chín"}],
+         "vi_du": {"cz": "Syrové maso nejíme.", "vn": "Thịt sống thì mình không ăn."}},
+        {"cz": "sychravý", "phien_am": "si·khra·viː", "nghia": "trời ẩm và lạnh", "emoji": "🌫️",
+         "tu_cung_nha": [{"cz": "sychravo", "nghia": "trời ẩm và lạnh"}],
+         "vi_du": {"cz": "Dnes je sychravo.", "vn": "Hôm nay trời ẩm lạnh."}},
+        {"cz": "usychat", "phien_am": "u·si·khat", "nghia": "khô héo", "emoji": "🥀",
+         "tu_cung_nha": [{"cz": "vysychat", "nghia": "cạn khô"}, {"cz": "usychání", "nghia": "sự khô héo"}, {"cz": "zasychat", "nghia": "khô dần"}],
+         "vi_du": {"cz": "Bez vody květina usychá.", "vn": "Không có nước, hoa héo khô."}},
+        {"cz": "sýkora", "phien_am": "siː·ko·ra", "nghia": "chim bạc má", "emoji": "🐦",
+         "tu_cung_nha": [{"cz": "sýkorka", "nghia": "chim bạc má nhỏ"}],
+         "vi_du": {"cz": "Sýkora sedí na krmítku.", "vn": "Chim bạc má đậu trên máng ăn."}},
+        {"cz": "sýček", "phien_am": "siː·chek", "nghia": "cú mèo nhỏ", "emoji": "🦉",
+         "tu_cung_nha": [],
+         "vi_du": {"cz": "Sýček je malá sova.", "vn": "Sýček là loài cú nhỏ."}},
+        {"cz": "sysel", "phien_am": "si·sel", "nghia": "sóc đất", "emoji": "🐿️",
+         "tu_cung_nha": [{"cz": "syslí", "nghia": "thuộc sóc đất"}],
+         "vi_du": {"cz": "Sysel žije v noře.", "vn": "Sóc đất sống trong hang."}},
+        {"cz": "syčet", "phien_am": "si·chet", "nghia": "rít, xì xì", "emoji": "🐍",
+         "tu_cung_nha": [{"cz": "syčení", "nghia": "tiếng xì xì"}, {"cz": "zasyčet", "nghia": "rít lên một tiếng"}],
+         "vi_du": {"cz": "Had syčí.", "vn": "Rắn rít lên."}},
+        {"cz": "sypat", "phien_am": "si·pat", "nghia": "rắc, đổ (hạt, bột)", "emoji": "🧂",
+         "tu_cung_nha": [{"cz": "sypký", "nghia": "rời rạc như cát"}, {"cz": "vysypat", "nghia": "đổ ra hết"}, {"cz": "nasypat", "nghia": "rắc vào"}, {"cz": "posypat", "nghia": "rắc lên"}],
+         "vi_du": {"cz": "Sypu cukr do čaje.", "vn": "Tớ rắc đường vào trà."}}
+      ]
+    },
+    {
+      "chu": "V", "ten": "výr · cú đại bàng", "emoji": "🦉",
+      "truyen_nho": "Vy (các bạn) có thấy con vydra (rái cá) và con výr (cú đại bàng) vysoký không? Chú chó vyžle gầy nhom výt (hú) làm povyk (ầm ĩ). Trẻ con výskat (reo hò) và žvýkat (nhai) kẹo cao su bên výheň (lò rèn). Ở đó lâu, ai cũng sẽ zvykat (quen dần).",
+      "meo": "Từ BẮT ĐẦU bằng vy- / vý- (vyrobit, výlet, výsledek) luôn viết y. Còn vítr, víno, vidět thì viết i.",
+      "nghe_giong_viet_i": [
+        {"cz": "vítr", "nghia": "gió"}, {"cz": "víla", "nghia": "tiên"}, {"cz": "víno", "nghia": "rượu vang"},
+        {"cz": "vidět", "nghia": "nhìn"}, {"cz": "víra", "nghia": "niềm tin"}
+      ],
+      "tien_to": {
+        "cz": "vy- / vý-", "phien_am": "vi- / viː-", "nghia": "mọi từ BẮT ĐẦU bằng vy- hoặc vý-", "emoji": "⭐",
+        "ghi_chu": "Đây là quy tắc tiền tố, không tính vào 11 từ của nhóm V.",
+        "tu_cung_nha": [{"cz": "vybrat", "nghia": "chọn, lấy ra"}, {"cz": "vyrobit", "nghia": "làm ra, sản xuất"}, {"cz": "výlet", "nghia": "chuyến đi chơi"}, {"cz": "výstava", "nghia": "triển lãm"}, {"cz": "výhra", "nghia": "chiến thắng, giải thưởng"}, {"cz": "výsledek", "nghia": "kết quả"}, {"cz": "vymyslet", "nghia": "nghĩ ra, bịa ra"}],
+        "vi_du": {"cz": "Děti vyrazily na výlet.", "vn": "Bọn trẻ lên đường đi dã ngoại."}
+      },
+      "tu": [
+        {"cz": "vy", "phien_am": "vi", "nghia": "các bạn, quý vị", "emoji": "👥",
+         "tu_cung_nha": [{"cz": "vykat", "nghia": "xưng hô lịch sự bằng \"vy\""}, {"cz": "vykání", "nghia": "việc xưng hô \"vy\""}],
+         "vi_du": {"cz": "Vy jste moji kamarádi.", "vn": "Các bạn là bạn tớ."}},
+        {"cz": "vysoký", "phien_am": "vi·so·kiː", "nghia": "cao", "emoji": "🦒",
+         "tu_cung_nha": [{"cz": "výška", "nghia": "chiều cao"}, {"cz": "výše", "nghia": "độ cao"}, {"cz": "vyšší", "nghia": "cao hơn"}, {"cz": "Vysočina", "nghia": "vùng cao nguyên"}],
+         "vi_du": {"cz": "Žirafa je vysoká.", "vn": "Hươu cao cổ rất cao."}},
+        {"cz": "výt", "phien_am": "viːt", "nghia": "hú, tru", "emoji": "🐺",
+         "tu_cung_nha": [{"cz": "vytí", "nghia": "tiếng hú"}, {"cz": "zavýjat", "nghia": "hú lên"}],
+         "vi_du": {"cz": "Vlk vyje na měsíc.", "vn": "Sói hú với mặt trăng."}},
+        {"cz": "výskat", "phien_am": "viːs·kat", "nghia": "reo hò vì vui", "emoji": "🎉",
+         "tu_cung_nha": [{"cz": "výskot", "nghia": "tiếng reo hò"}],
+         "vi_du": {"cz": "Děti výskají radostí.", "vn": "Bọn trẻ reo hò vì vui."}},
+        {"cz": "zvykat", "phien_am": "zvi·kat", "nghia": "quen dần", "emoji": "🔁",
+         "tu_cung_nha": [{"cz": "zvyk", "nghia": "thói quen"}, {"cz": "zlozvyk", "nghia": "thói xấu"}, {"cz": "zvyklost", "nghia": "tập quán"}, {"cz": "zvyknout si", "nghia": "quen dần"}, {"cz": "obvyklý", "nghia": "thông thường"}],
+         "vi_du": {"cz": "Zvykám si na novou školu.", "vn": "Tớ đang quen với trường mới."}},
+        {"cz": "žvýkat", "phien_am": "zhviː·kat", "nghia": "nhai", "emoji": "🍬",
+         "tu_cung_nha": [{"cz": "žvýkačka", "nghia": "kẹo cao su"}, {"cz": "žvýkání", "nghia": "sự nhai"}, {"cz": "přežvýkavec", "nghia": "động vật nhai lại"}],
+         "vi_du": {"cz": "Žvýkám žvýkačku.", "vn": "Tớ nhai kẹo cao su."}},
+        {"cz": "vydra", "phien_am": "vid·ra", "nghia": "rái cá", "emoji": "🦦",
+         "tu_cung_nha": [{"cz": "vydří", "nghia": "thuộc rái cá"}],
+         "vi_du": {"cz": "Vydra plave v řece.", "vn": "Rái cá bơi trong sông."}},
+        {"cz": "výr", "phien_am": "viːr", "nghia": "cú đại bàng", "emoji": "🦉",
+         "tu_cung_nha": [],
+         "vi_du": {"cz": "Výr je největší sova.", "vn": "Výr là loài cú lớn nhất."}},
+        {"cz": "vyžle", "phien_am": "vi·zhle", "nghia": "người gầy như que củi; chó săn", "emoji": "🐕",
+         "tu_cung_nha": [],
+         "vi_du": {"cz": "Je hubený jako vyžle.", "vn": "Cậu ấy gầy như que củi."}},
+        {"cz": "povyk", "phien_am": "po·vik", "nghia": "tiếng ồn ào, om sòm", "emoji": "📢",
+         "tu_cung_nha": [{"cz": "povykovat", "nghia": "làm ồn ào"}],
+         "vi_du": {"cz": "Co je to za povyk?", "vn": "Ồn ào gì thế này?"}},
+        {"cz": "výheň", "phien_am": "viː·henh", "nghia": "lò rèn", "emoji": "🔥",
+         "tu_cung_nha": [],
+         "vi_du": {"cz": "Kovář pracuje u výhně.", "vn": "Thợ rèn làm việc bên lò rèn."}}
+      ]
+    },
+    {
+      "chu": "Z", "ten": "Ruzyně · sân bay Praha", "emoji": "✈️",
+      "truyen_nho": "Chuyến bay brzy (sớm) hạ cánh xuống Ruzyně, sân bay của Praha. Hành khách nói nhiều jazyk (ngôn ngữ) khác nhau. Nhưng ai cũng nazývat (gọi) nơi này là Ruzyně. Chữ Z chỉ có đúng 4 từ, bé nhớ chuyến bay này là đủ.",
+      "meo": "Chữ Z chỉ có đúng 4 từ. Học xong trong 2 phút!",
+      "nghe_giong_viet_i": [
+        {"cz": "zima", "nghia": "mùa đông, lạnh"}, {"cz": "zítra", "nghia": "ngày mai"}, {"cz": "zip", "nghia": "khóa kéo"},
+        {"cz": "zívat", "nghia": "ngáp"}, {"cz": "zinek", "nghia": "kẽm"}
+      ],
+      "tu": [
+        {"cz": "brzy", "phien_am": "brzi", "nghia": "sớm, sắp", "emoji": "⏰",
+         "tu_cung_nha": [{"cz": "brzo", "nghia": "sớm", "khong_co_y": true}, {"cz": "brzký", "nghia": "sớm"}],
+         "vi_du": {"cz": "Brzy bude léto.", "vn": "Sắp đến mùa hè rồi."}},
+        {"cz": "jazyk", "phien_am": "ya·zik", "nghia": "cái lưỡi; ngôn ngữ", "emoji": "👅",
+         "tu_cung_nha": [{"cz": "jazýček", "nghia": "cái lưỡi nhỏ"}, {"cz": "jazykový", "nghia": "thuộc ngôn ngữ"}, {"cz": "jazykolam", "nghia": "câu nói líu lưỡi"}],
+         "vi_du": {"cz": "Český jazyk je zajímavý.", "vn": "Tiếng Séc thú vị."}},
+        {"cz": "nazývat", "phien_am": "na·ziː·vat", "nghia": "gọi là, đặt tên", "emoji": "🏷️",
+         "tu_cung_nha": [{"cz": "přezývka", "nghia": "biệt danh"}],
+         "vi_du": {"cz": "Nazývají ho Honza.", "vn": "Người ta gọi cậu ấy là Honza."}},
+        {"cz": "Ruzyně", "phien_am": "ru·zi·nhe", "nghia": "khu phố và sân bay ở Praha", "emoji": "✈️",
+         "tu_cung_nha": [{"cz": "ruzyňský", "nghia": "thuộc Ruzyně"}],
+         "vi_du": {"cz": "Letiště je v Ruzyni.", "vn": "Sân bay ở Ruzyně."}}
+      ]
+    }
+  ],
+
+  "cap_de_nham": [
+    {"y": "být", "y_nghia": "là", "i": "bít", "i_nghia": "đánh"},
+    {"y": "mýt", "y_nghia": "rửa", "i": "mít", "i_nghia": "có"},
+    {"y": "výt", "y_nghia": "hú", "i": "vít", "i_nghia": "quấn"},
+    {"y": "pyl", "y_nghia": "phấn hoa", "i": "pil", "i_nghia": "đã uống"},
+    {"y": "my", "y_nghia": "chúng tôi", "i": "mi", "i_nghia": "cho tôi"},
+    {"y": "mlýn", "y_nghia": "cối xay", "i": "mlít", "i_nghia": "xay"}
+  ],
+
+  "quiz_cuoi": [
+    {"cau": "M_š jí s_r.", "dap_an": ["y", "ý"]},
+    {"cau": "Venku fouká v_tr.", "dap_an": ["í"]},
+    {"cau": "V pokoji je nový náb_tek.", "dap_an": ["y"]},
+    {"cau": "Chci p_t vodu.", "dap_an": ["í"]},
+    {"cau": "Kůň má čtyři kop_ta.", "dap_an": ["y"]},
+    {"cau": "Venku je z_ma.", "dap_an": ["i"]},
+    {"cau": "To je v_soký strom.", "dap_an": ["y"]},
+    {"cau": "Táta jede na l_že.", "dap_an": ["y"]}
+  ],
+
+  "lo_trinh_7_ngay": [
+    {"ngay": 1, "chu": "B", "so_tu": 13},
+    {"ngay": 2, "chu": "L", "so_tu": 13},
+    {"ngay": 3, "chu": "M", "so_tu": 14},
+    {"ngay": 4, "chu": "P", "so_tu": 14},
+    {"ngay": 5, "chu": "S", "so_tu": 11},
+    {"ngay": 6, "chu": "V", "so_tu": 11},
+    {"ngay": 7, "chu": "Z", "so_tu": 4, "ghi_chu": "Z + quiz"}
+  ],
+  "cach_hoc_moi_ngay": "Mỗi ngày: (1) đọc to truyện nhớ, (2) đọc từng từ theo cách đọc và nói nghĩa, (3) che cột Từ, nhìn nghĩa rồi nói lại từ tiếng Séc, (4) ôn 3 từ hôm trước."
+}
