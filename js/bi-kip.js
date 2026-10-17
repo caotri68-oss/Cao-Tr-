@@ -4,6 +4,31 @@ window.PK = window.PK || {};
 (function () {
   const ui = function () { return PK.ui; };
 
+  // Bài hát vỗ tay của bí kíp 2: mỗi dòng có nút nghe; nút "Hát cả bài" chạy chữ theo nhịp.
+  function baiHat(bk) {
+    const h = ui().h;
+    const dong = bk.bai_hat.split(' · ').map(function (d) { return d.replace(/!$/, '').trim(); });
+    const cacDong = dong.map(function (d) { return h('span', { class: 'dong-hat' }, h('span', { class: 'cz-hat' }, d)); });
+    let dangHat = false;
+    const nut = h('button', { class: 'nut nho', onclick: async function () {
+      if (dangHat) return;
+      dangHat = true; nut.disabled = true;
+      for (let i = 0; i < dong.length; i++) {
+        cacDong.forEach(function (e, k) { e.classList.toggle('dang-hat', k === i); });
+        await PK.am.noi(dong[i]);
+        await new Promise(function (xong) { setTimeout(xong, 250); });
+      }
+      cacDong.forEach(function (e) { e.classList.remove('dang-hat'); });
+      dangHat = false; nut.disabled = false;
+    } }, '▶️ Hát cả bài (vỗ tay theo nhịp 👏)');
+    return h('div', { class: 'bai-hat' },
+      h('div', { class: 'nhat' }, '🎵 Bài hát vỗ tay (chạm một dòng để nghe riêng):'),
+      h('div', { class: 'dong-hat-ds' }, cacDong.map(function (e, i) {
+        return h('span', { class: 'hat-o', onclick: function () { PK.am.nhac('cham'); PK.am.noi(dong[i]); } }, e);
+      })),
+      nut);
+  }
+
   function theBiKip(bk, tuyChon) {
     const h = ui().h; const o = tuyChon || {};
     return h('section', { class: 'bi-kip' },
@@ -13,6 +38,7 @@ window.PK = window.PK || {};
       h('div', { class: 'than-chu' }, bk.than_chu),
       bk.giai_thich ? h('p', null, bk.giai_thich) : null,
       (bk.chi_tiet || []).length ? h('ul', null, bk.chi_tiet.map(function (d) { return h('li', null, ui().dongCoChuSec(d)); })) : null,
+      bk.bai_hat ? baiHat(bk) : null,
       (bk.vi_du || []).length ? h('div', null,
         h('div', { class: 'nhat' }, 'Ví dụ (chạm 🔊 để nghe, chạm chữ để xem nghĩa):'),
         h('div', { class: 'vi-du' }, bk.vi_du.map(function (v) {
@@ -23,6 +49,35 @@ window.PK = window.PK || {};
             t.phien_am ? h('span', { class: 'phien-am' }, ' [' + t.phien_am + ']') : null);
         }))) : null
     );
+  }
+
+  // "Bí kíp" của màn tổng hợp: gom câu thần chú của mọi bí kíp để ôn.
+  function biKipTongHop() {
+    const ds = PK.d.bi_kip.filter(function (b) { return b.man >= 1; }).sort(function (a, b) { return a.man - b.man; });
+    return {
+      id: 'BK13', man: 13, ten: 'Tổng hợp: ôn mọi bí kíp',
+      than_chu: 'Nhớ lại tất cả bí kíp bạn đã thuộc!',
+      giai_thich: 'Màn này không có bí kíp mới. Cửa ải trộn câu hỏi từ mọi bí kíp đã mở.',
+      chi_tiet: ds.map(function (b) { return 'Bí kíp ' + b.man + ': ' + b.than_chu; }),
+      vi_du: [], cau_hoi_thuoc: []
+    };
+  }
+
+  // Cửa sổ xem nhanh câu thần chú của mọi bí kíp đã mở.
+  function xemTatCa(hoSo) {
+    const h = ui().h;
+    const d = PK.luu.doc(hoSo.id);
+    const ds = PK.d.bi_kip.slice().sort(function (a, b) { return a.man - b.man; });
+    ui().moTam([
+      h('h3', null, '📜 Mọi bí kíp'),
+      ds.map(function (b) {
+        const mo = (d.biKip[b.id] || {}).mo;
+        return mo
+          ? h('div', { class: 'the' }, h('b', null, b.ten), h('div', { class: 'than-chu', style: 'font-family:var(--font-tieu-de);font-weight:800' }, b.than_chu))
+          : h('div', { class: 'the bk-khoa' }, h('span', null, '🔒'), h('div', null, h('b', null, 'Bí kíp số ' + b.man), h('div', { class: 'nhat' }, 'Chưa mở')));
+      }),
+      h('button', { class: 'nut rong', onclick: ui().dongTam }, 'Đóng')
+    ]);
   }
 
   function xemThe(bk, thuoc) {
@@ -42,6 +97,7 @@ window.PK = window.PK || {};
   function cauHoiLuyen(bk, so) {
     let ds = ui().tron(cauHoiThuoc(bk));
     if (ds.length < so && PK.taoCauHoi[bk.id]) ds = ds.concat(PK.taoCauHoi[bk.id](so - ds.length));
+    if (ds.length < so && PK.cauHoiBK && PK.cauHoiBK[bk.man]) ds = ds.concat(PK.cauHoiBK[bk.man](so - ds.length, PK.tuDenMan(bk.man), {}));
     return ds.slice(0, so);
   }
 
@@ -96,5 +152,5 @@ window.PK = window.PK || {};
     });
   }
 
-  PK.biKip = { theBiKip: theBiKip, xemThe: xemThe, cauHoiThuoc: cauHoiThuoc, cauHoiLuyen: cauHoiLuyen, manHinhSo: manHinhSo };
+  PK.biKip = { biKipTongHop: biKipTongHop, xemTatCa: xemTatCa, theBiKip: theBiKip, xemThe: xemThe, cauHoiThuoc: cauHoiThuoc, cauHoiLuyen: cauHoiLuyen, manHinhSo: manHinhSo };
 })();

@@ -53,7 +53,7 @@ window.PK = window.PK || {};
       manQua: man.filter(function (m) { return m.qua; }).length,
       sao: man.reduce(function (s, m) { return s + (m.sao || 0); }, 0),
       tuDaHoc: Object.values(d.tu).filter(function (t) { return t.hoc; }).length,
-      biKipMo: Object.values(d.biKip).filter(function (b) { return b.mo; }).length
+      biKipMo: Object.keys(d.biKip).filter(function (k) { return k !== 'BK13' && d.biKip[k].mo; }).length
     };
   }
 

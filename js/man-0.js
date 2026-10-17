@@ -275,6 +275,7 @@ window.PK = window.PK || {};
           h('div', { class: 'the ket-qua' },
             h('h2', null, 'Qua Cửa ải! 🎉'),
             h('div', { class: 'sao-to lap-lanh', 'aria-label': (m.sao || 0) + ' sao' }, '★'.repeat(m.sao || 0) + '☆'.repeat(3 - (m.sao || 0))),
+            h('div', { class: 'huy-hieu-moi' }, h('div', { class: 'hh-hinh' }, PK.huyHieu.cua(0).emoji), h('div', null, h('b', null, 'Huy hiệu: ' + PK.huyHieu.cua(0).ten), h('div', null, PK.huyHieu.huanChuong(m.sao) + ' huân chương ' + ['', 'đồng', 'bạc', 'vàng'][m.sao || 1]))),
             h('p', null, 'Điểm cao nhất: ' + (m.diemCao || 0) + '/10')),
           PK.biKip.theBiKip(bk, { thuoc: true }),
           PK.ui.loi('pes', 'Bí kíp số 0 đã được đóng dấu "Đã thuộc ✓" trong Sổ bí kíp. Màn 1 đã mở!'),

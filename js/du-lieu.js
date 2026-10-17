@@ -104,6 +104,19 @@ window.PK = window.PK || {};
         them(m[3], { loai: 'la', cz: m[3], phien_am: m[4], nghia: 'là (dùng với ' + daiTu + ')' });
       });
     });
+    // Câu hỏi "'Tôi không phải' = ?" trong bí kíp: đáp án chính là chữ Séc có nghĩa đó.
+    d.bi_kip.forEach(function (b) {
+      (b.cau_hoi_thuoc || []).forEach(function (q) {
+        const m = String(q.hoi).match(/^'([^']+)'\s*=\s*(\?|To ___)/);
+        if (m) them(q.dap, { loai: 'tu', cz: q.dap, phien_am: '', nghia: m[1].charAt(0).toLowerCase() + m[1].slice(1) });
+      });
+    });
+    // Vài chữ nền tảng của bí kíp 2, 3, 9 mà bản dữ liệu chỉ giải thích trong câu chữ (nghĩa lấy từ phần giải thích bí kíp).
+    [
+      ['ten', 'mạo từ của TEN (ông, giống đực)'], ['ta', 'mạo từ của TA (bà, giống cái)'], ['to', 'mạo từ của TO (em bé, giống trung)'],
+      ['ty', 'bạn (cách gọi thân: bạn bè, trẻ con)'], ['vy', 'ngài, các bạn (cách gọi lịch sự: người lạ, người lớn)'],
+      ['nejsi', 'bạn không phải (ne- + jsi)']
+    ].forEach(function (x) { them(x[0], { loai: 'tu', cz: x[0], phien_am: '', nghia: x[1] }); });
     return tu;
   }
 

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><title>Bạn</title>
+<ellipse cx="60" cy="112" rx="34" ry="6" fill="#000" opacity=".08"/>
+
+<path d="M24 120 Q26 88 60 86 Q94 88 96 120 Z" fill="#6BCB77"/>
+<rect x="53" y="76" width="14" height="14" rx="6" fill="#F6C9A0"/>
+<circle cx="60" cy="52" r="28" fill="#FCDDBF"/>
+<circle cx="32" cy="55" r="5" fill="#F6C9A0"/><circle cx="88" cy="55" r="5" fill="#F6C9A0"/>
+<path d="M32 54 Q28 20 60 18 Q92 20 88 54 Q82 34 66 30 Q54 40 40 32 Q34 40 32 54 Z" fill="#8A4B2A"/><circle cx="60" cy="19" r="6" fill="#8A4B2A"/>
+<circle cx="49" cy="56" r="3.6" fill="#2B2420"/><circle cx="50.2" cy="54.8" r="1.2" fill="#fff"/>
+<circle cx="71" cy="56" r="3.6" fill="#2B2420"/><circle cx="72.2" cy="54.8" r="1.2" fill="#fff"/>
+<path d="M53 66 Q60 72 67 66" stroke="#B5524A" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+<circle cx="42" cy="64" r="4.5" fill="#FF9BA8" opacity=".55"/><circle cx="78" cy="64" r="4.5" fill="#FF9BA8" opacity=".55"/>
+
+</svg>

@@ -6,7 +6,7 @@ window.PK = window.PK || {};
 
   // Tên cảnh chợ cho từng màn.
   const TEN_MAN = {
-    0: 'Cổng chợ', 1: 'Quầy đầu chợ', 2: 'Quầy bánh mì', 3: 'Quầy sữa và trứng',
+    0: 'Cổng chợ', 13: 'Chợ lớn · Tổng hợp', 1: 'Quầy đầu chợ', 2: 'Quầy bánh mì', 3: 'Quầy sữa và trứng',
     4: 'Lối đi trong chợ', 5: 'Quán cà phê nhỏ', 6: 'Quầy đồ chơi', 7: 'Quầy rau củ',
     8: 'Quầy quần áo', 9: 'Quầy cá', 10: 'Ghế đá trò chuyện', 11: 'Quầy đồ màu', 12: 'Cổng ra về'
   };
@@ -65,7 +65,7 @@ window.PK = window.PK || {};
 
   function nhaHoSo(hs) {
     const d = PK.luu.doc(hs.id);
-    const soMan = PK.d.bi_kip.map(function (b) { return b.man; }).sort(function (a, b) { return a - b; });
+    const soMan = PK.d.bi_kip.map(function (b) { return b.man; }).sort(function (a, b) { return a - b; }).concat([PK.manChoi.MAN_TONG_HOP]);
     const xongMan0 = !!(d.man[0] && d.man[0].qua);
 
     vung.replaceChildren(
@@ -77,11 +77,14 @@ window.PK = window.PK || {};
         h('div', null, h('h2', null, 'Xin chào, ' + hs.ten + '!'), chiSo(d))),
       xongMan0 ? '' : PK.ui.loi('pes', 'Lần đầu đến chợ? Bắt đầu từ Màn 0 nhé, tụi mình hướng dẫn hết!'),
       h('div', { class: 'hang-nut' },
-        h('button', { class: 'nut phu', onclick: function () { PK.biKip.manHinhSo(vung, hs, function () { nhaHoSo(hs); }); } }, '📜 Sổ bí kíp')),
+        h('button', { class: 'nut phu', onclick: function () { PK.biKip.manHinhSo(vung, hs, function () { nhaHoSo(hs); }); } }, '📜 Sổ bí kíp'),
+        h('button', { class: 'nut phu', onclick: function () { meoDoc(hs); } }, '🔤 Mẹo đọc chữ Séc'),
+        h('button', { class: 'nut phu', onclick: function () { PK.huyHieu.bang(hs); } }, '🏅 Huy hiệu')),
       h('div', { class: 'danh-sach-man' }, soMan.map(function (so) {
         const m = d.man[so] || {};
         const mo = PK.luu.manDaMo(d, so);
         const bk = PK.biKipTheoMan.get(so);
+        const tomTat = so === 0 ? 'Hướng dẫn + ' + bk.ten : so === PK.manChoi.MAN_TONG_HOP ? 'Ôn lại mọi bí kíp, không có từ mới' : bk.ten;
         return h('button', {
           class: 'o-man' + (mo ? '' : ' khoa') + (m.qua ? ' xong' : ''),
           'aria-disabled': mo ? null : 'true',
@@ -93,9 +96,39 @@ window.PK = window.PK || {};
           h('span', { class: 'so' }, mo ? String(so) : '🔒'),
           h('span', { class: 'noi-dung' },
             h('b', null, 'Màn ' + so + ' · ' + (TEN_MAN[so] || 'Màn tổng hợp')),
-            h('div', { class: 'nhat' }, (so === 0 ? 'Hướng dẫn + ' + bk.ten : bk.ten) + (so === 0 || PK.manChoi.daLam(so) ? '' : ' · 🛠 sắp có'))),
+            h('div', { class: 'nhat' }, tomTat + (so === 0 || PK.manChoi.daLam(so) ? '' : ' · 🛠 sắp có'))),
           m.qua ? h('span', { class: 'sao', 'aria-label': m.sao + ' sao' }, '★'.repeat(m.sao) + '☆'.repeat(3 - m.sao)) : null);
       })));
+  }
+
+  // ---------- Mẹo đọc chữ Séc ----------
+  function meoDoc(hs) {
+    const meo = PK.d.meo_phat_am || [];
+    vung.replaceChildren(
+      h('div', { class: 'thanh-tren' },
+        h('button', { class: 'nut-tron', 'aria-label': 'Quay lại', onclick: function () { nhaHoSo(hs); } }, '←'),
+        h('h2', null, '🔤 Mẹo đọc chữ Séc')),
+      PK.ui.loi('kocka', 'Tiếng Séc viết sao đọc vậy. Thuộc mấy mẹo này là đọc được mọi từ! Chạm 🔊 để nghe, chạm chữ để xem nghĩa.', true),
+      h('div', { style: 'display:flex;flex-direction:column;gap:12px' }, meo.map(function (m, i) {
+        return h('div', { class: 'the' },
+          h('div', { class: 'nhan-bk', style: 'color:var(--chu-nhat);font-weight:800' }, 'Mẹo ' + (i + 1)),
+          h('div', { style: 'font-size:1.1rem' }, PK.ui.dongCoChuSec(m)),
+          h('div', { class: 'vi-du' }, mauNghe(m)));
+      })));
+  }
+  // Các chữ dạng "chữ [phiên âm]" trong một mẹo → nút nghe từng chữ.
+  function mauNghe(m) {
+    const kq = [];
+    const re = /([\p{L}]+)\s\[([^\]]+)\]/gu;
+    let x;
+    while ((x = re.exec(m))) {
+      (function (chu, pa) {
+        kq.push(h('span', { class: 'nut-nghe' },
+          h('button', { class: 'nut-tron', style: 'width:36px;height:36px;font-size:1rem', 'aria-label': 'Nghe ' + chu, onclick: function () { PK.am.noi(chu); } }, '🔊'),
+          PK.ui.cz(chu), h('span', { class: 'phien-am' }, ' [' + pa + ']')));
+      })(x[1], x[2]);
+    }
+    return kq;
   }
 
   function moMan(hs, so) {
@@ -121,8 +154,33 @@ window.PK = window.PK || {};
         PK.am.noi('Dobrý den.');
         setTimeout(function () { if (!PK.am.coGiongSec()) PK.ui.huongDanGiong(); else PK.ui.thongBao('✅ Máy có giọng tiếng Séc.'); }, 700);
       } }, '🔊 Nghe thử giọng Séc'),
+      h('button', { class: 'nut phu rong', onclick: kiemTraAmThanh }, '🔎 Kiểm tra âm thanh'),
       h('p', { class: 'nhat' }, 'Sao lưu / khôi phục tiến độ sẽ có ở giai đoạn đóng gói.'),
       h('button', { class: 'nut rong', onclick: PK.ui.dongTam }, 'Xong')]);
+  }
+
+  // ---------- Kiểm tra âm thanh ----------
+  function kiemTraAmThanh() {
+    const t = PK.am.chanDoan();
+    const dong = function (ok, chu) { return h('p', null, (ok ? '✅ ' : '❌ ') + chu); };
+    let ketLuan;
+    if (!t.hoTro) ketLuan = 'Trình duyệt này không có tính năng đọc thành tiếng. Hãy mở link bằng Chrome.';
+    else if (t.soGiong === 0) ketLuan = 'Trình duyệt chưa tìm thấy giọng đọc nào. Mở Cài đặt máy → Chuyển văn bản thành giọng nói, chọn công cụ Google và tải giọng Čeština, rồi mở lại game.';
+    else if (!t.giongSec) ketLuan = 'Máy có giọng đọc nhưng chưa có tiếng Séc. Cài giọng Čeština rồi mở lại game (hướng dẫn trong nút bên dưới).';
+    else ketLuan = 'Máy có giọng tiếng Séc. Bấm "Nghe thử" để kiểm tra. Nếu vẫn im lặng, tăng âm lượng media và tắt chế độ im lặng của điện thoại.';
+    PK.ui.moTam([
+      h('h3', null, '🔎 Kiểm tra âm thanh'),
+      dong(t.hoTro, 'Trình duyệt hỗ trợ đọc thành tiếng'),
+      dong(t.soGiong > 0, 'Số giọng đọc tìm thấy: ' + t.soGiong),
+      dong(!!t.giongSec, t.giongSec ? 'Giọng tiếng Séc: ' + t.giongSec : 'Chưa có giọng tiếng Séc'),
+      dong(t.mic, 'Micro: ' + (t.mic ? 'trình duyệt có hỗ trợ' : 'không hỗ trợ')),
+      t.trongKhung ? h('p', { class: 'nhat' }, 'ℹ️ Game đang mở trong trang xem thử, nên micro có thể bị chặn. Khi đưa lên địa chỉ riêng thì dùng được.') : null,
+      h('p', null, h('b', null, ketLuan)),
+      h('div', { class: 'hang-nut' },
+        h('button', { class: 'nut', onclick: function () { PK.am.noi('Dobrý den.'); } }, '🔊 Nghe thử'),
+        h('button', { class: 'nut phu', onclick: PK.ui.huongDanGiong }, 'Cách cài giọng Séc')),
+      h('button', { class: 'nut phu rong', onclick: PK.ui.dongTam }, 'Đóng')
+    ]);
   }
 
   // ---------- Khởi động ----------

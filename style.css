@@ -272,3 +272,19 @@ p { margin: 0; }
 .chon.lon { font-size: 2.6rem; text-align: center; line-height: 1.2; padding: 8px; }
 .chip-tu { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip { background: var(--nen); border-radius: 999px; padding: 6px 12px; font-size: 1.05rem; }
+
+/* ---------- bài hát bí kíp 2 ---------- */
+.bai-hat { display: flex; flex-direction: column; gap: 8px; background: rgba(255,255,255,.7); border-radius: 16px; padding: 12px; }
+.dong-hat-ds { display: flex; flex-wrap: wrap; gap: 8px; }
+.hat-o { cursor: pointer; }
+.dong-hat { display: inline-block; background: #fff; border: 2px solid #E8B64C; border-radius: 999px; padding: 8px 14px; font-weight: 800; min-height: 48px; line-height: 30px; }
+.dong-hat.dang-hat { background: #FFD23F; transform: scale(1.08); }
+
+/* ---------- huy hiệu ---------- */
+.luoi-huy-hieu { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.huy-hieu { background: var(--nen); border-radius: 16px; padding: 10px 6px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 0; }
+.huy-hieu .hh-hinh { font-size: 2.2rem; line-height: 1.1; }
+.huy-hieu .hh-ten { font-size: .8rem; font-weight: 800; overflow-wrap: anywhere; }
+.huy-hieu.khoa { opacity: .5; }
+.huy-hieu-moi { display: flex; align-items: center; gap: 12px; justify-content: center; }
+.huy-hieu-moi .hh-hinh { font-size: 3rem; }

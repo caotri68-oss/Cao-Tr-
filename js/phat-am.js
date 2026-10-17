@@ -102,7 +102,23 @@ window.PK = window.PK || {};
     } catch (e) { /* máy không phát được: bỏ qua */ }
   }
 
+  // Thông tin để biết vì sao không nghe được tiếng (hiện ở Cài đặt → Kiểm tra âm thanh).
+  function chanDoan() {
+    timGiong();
+    const ds = coGiongDoc ? (speechSynthesis.getVoices() || []) : [];
+    let trongKhung = false;
+    try { trongKhung = window.top !== window.self; } catch (e) { trongKhung = true; }
+    return {
+      hoTro: coGiongDoc,
+      soGiong: ds.length,
+      giongSec: giongSec ? giongSec.name + ' (' + giongSec.lang + ')' : null,
+      mic: coMicro,
+      trongKhung: trongKhung
+    };
+  }
+
   PK.am = {
+    chanDoan: chanDoan,
     noi: noi,
     coGiongSec: function () { timGiong(); return !!giongSec; },
     coMicro: coMicro,

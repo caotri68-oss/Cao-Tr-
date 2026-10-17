@@ -23,6 +23,12 @@ window.PK = window.PK || {};
     return new Set(q.luaChon).size === q.luaChon.length;
   }
 
+  // Lựa chọn là chữ Séc đã có nghĩa trong dữ liệu thì cho chạm "?" để xem.
+  function coNghia(chu) {
+    const k = PK.duLieu.chuan(chu);
+    return PK.tuDien.has(k) || PK.cauTheoChu.has(k);
+  }
+
   function chay(khung, cauHinh) {
     const h = PK.ui.h;
     const ds = cauHinh.cauHoi.filter(function (q) {
@@ -58,10 +64,10 @@ window.PK = window.PK || {};
 
       const cacNut = [];
       const luaChon = h('div', { class: 'lua-chon' + (q.luaChonLon ? ' hang' : '') }, PK.ui.tron(q.luaChon).map(function (lc) {
-        const nut = h('button', { class: 'chon' + (q.luaChonLon ? ' lon' : ''), onclick: function () { chon(lc, nut); } }, lc);
+        const nut = h('button', { class: 'chon' + (q.luaChonLon ? ' lon' : ''), 'data-dap': lc === q.dap ? '1' : null, onclick: function () { chon(lc, nut); } }, lc);
         cacNut.push(nut);
         return h('div', { class: 'dong-chon' }, nut,
-          q.luaChonCz ? h('button', { class: 'nut-tron', 'aria-label': 'Xem nghĩa', onclick: function () { PK.ui.moTraNghia(lc); } }, '?') : null);
+          (q.luaChonCz || coNghia(lc)) && !q.luaChonLon ? h('button', { class: 'nut-tron', 'aria-label': 'Xem nghĩa', onclick: function () { PK.ui.moTraNghia(lc); } }, '?') : null);
       }));
 
       function chon(lc, nut) {
