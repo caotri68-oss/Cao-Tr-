@@ -6,10 +6,12 @@ window.PK = window.PK || {};
 
   // Tên cảnh chợ cho từng màn.
   const TEN_MAN = {
-    0: 'Cổng chợ', 1: 'Quầy trái cây', 2: 'Quầy bánh mì', 3: 'Quầy sữa và trứng',
+    0: 'Cổng chợ', 1: 'Quầy đầu chợ', 2: 'Quầy bánh mì', 3: 'Quầy sữa và trứng',
     4: 'Lối đi trong chợ', 5: 'Quán cà phê nhỏ', 6: 'Quầy đồ chơi', 7: 'Quầy rau củ',
     8: 'Quầy quần áo', 9: 'Quầy cá', 10: 'Ghế đá trò chuyện', 11: 'Quầy đồ màu', 12: 'Cổng ra về'
   };
+
+  PK.TEN_MAN = TEN_MAN;
 
   let vung;
 
@@ -20,7 +22,7 @@ window.PK = window.PK || {};
     return h('div', { class: 'chi-so' },
       h('span', null, '🚪 ' + t.manQua + ' màn'),
       h('span', null, '⭐ ' + t.sao + ' sao'),
-      h('span', null, '📖 ' + t.tuThuoc + ' từ'),
+      h('span', null, '📖 ' + t.tuDaHoc + ' từ'),
       h('span', null, '📜 ' + t.biKipMo + ' bí kíp'));
   }
 
@@ -73,7 +75,7 @@ window.PK = window.PK || {};
         h('button', { class: 'nut-tron', 'aria-label': 'Cài đặt', onclick: caiDat }, '⚙️')),
       h('div', { class: 'dau-ho-so' }, h('img', { src: hs.anh, alt: '' }),
         h('div', null, h('h2', null, 'Xin chào, ' + hs.ten + '!'), chiSo(d))),
-      xongMan0 ? null : PK.ui.loi('pes', 'Lần đầu đến chợ? Bắt đầu từ Màn 0 nhé, tụi mình hướng dẫn hết!'),
+      xongMan0 ? '' : PK.ui.loi('pes', 'Lần đầu đến chợ? Bắt đầu từ Màn 0 nhé, tụi mình hướng dẫn hết!'),
       h('div', { class: 'hang-nut' },
         h('button', { class: 'nut phu', onclick: function () { PK.biKip.manHinhSo(vung, hs, function () { nhaHoSo(hs); }); } }, '📜 Sổ bí kíp')),
       h('div', { class: 'danh-sach-man' }, soMan.map(function (so) {
@@ -91,13 +93,14 @@ window.PK = window.PK || {};
           h('span', { class: 'so' }, mo ? String(so) : '🔒'),
           h('span', { class: 'noi-dung' },
             h('b', null, 'Màn ' + so + ' · ' + (TEN_MAN[so] || 'Màn tổng hợp')),
-            h('div', { class: 'nhat' }, so === 0 ? 'Hướng dẫn + ' + bk.ten : bk.ten)),
+            h('div', { class: 'nhat' }, (so === 0 ? 'Hướng dẫn + ' + bk.ten : bk.ten) + (so === 0 || PK.manChoi.daLam(so) ? '' : ' · 🛠 sắp có'))),
           m.qua ? h('span', { class: 'sao', 'aria-label': m.sao + ' sao' }, '★'.repeat(m.sao) + '☆'.repeat(3 - m.sao)) : null);
       })));
   }
 
   function moMan(hs, so) {
     if (so === 0) { PK.man0.chay(vung, hs, function () { nhaHoSo(hs); }); return; }
+    if (PK.manChoi.daLam(so)) { PK.manChoi.chay(vung, hs, so, function () { nhaHoSo(hs); }); return; }
     PK.ui.moTam([
       PK.ui.loi('kocka', 'Màn ' + so + ' đã mở khóa! Nội dung màn này sẽ có ở giai đoạn tiếp theo. Bạn quay lại sau nhé.'),
       h('button', { class: 'nut rong', onclick: PK.ui.dongTam }, 'Đã hiểu')]);

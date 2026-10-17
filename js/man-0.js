@@ -264,45 +264,7 @@ window.PK = window.PK || {};
           n);
       } },
       { ten: 'cua-ai', ve: function (k, tiep) {
-        function batDau() {
-          k.replaceChildren();
-          PK.cuaAi.chay(k, {
-            cheDo: 'cua-ai',
-            biKip: bk,
-            cauHoi: deCuaAi(),
-            ghiNhan: function (khoa, dung) {
-              PK.luu.capNhat(hoSo.id, function (d) {
-                const t = d.tu[khoa] = d.tu[khoa] || { dung: 0, sai: 0 };
-                if (dung) t.dung++; else t.sai++;
-              });
-            },
-            khiXong: function (dung, tong) {
-              const sao = PK.cuaAi.soSao(dung, tong);
-              PK.luu.capNhat(hoSo.id, function (d) {
-                const m = d.man[SO_MAN] = d.man[SO_MAN] || { qua: false, sao: 0, diemCao: 0, lanThu: 0 };
-                m.lanThu++;
-                m.diemCao = Math.max(m.diemCao, dung);
-                if (sao) {
-                  m.qua = true; m.sao = Math.max(m.sao, sao);
-                  d.biKip.BK0 = Object.assign(d.biKip.BK0 || { mo: true }, { thuoc: true, diem: Math.max((d.biKip.BK0 || {}).diem || 0, dung) });
-                }
-              });
-              if (sao) { tiep(); return; }
-              PK.am.nhac('cham');
-              khoaBiKip(false);
-              k.replaceChildren(
-                h('div', { class: 'the ket-qua' }, h('h2', null, 'Đúng ' + dung + '/' + tong)),
-                PK.ui.loi('kocka', 'Gần tới rồi! Cần 8 câu đúng để qua cửa. Sao đã có vẫn giữ nguyên. Mình xem lại bí kíp một chút nhé.', true),
-                PK.biKip.theBiKip(bk),
-                h('button', { class: 'nut rong', onclick: function () { khoaBiKip(true); batDau(); } }, '🚪 Thử lại Cửa ải'));
-            }
-          });
-        }
-        const n = nutTiep('🚪 Vào Cửa ải'); n.onclick = batDau;
-        k.append(
-          PK.ui.loi('pes', 'Tới Cửa ải đầu tiên rồi! Có 10 câu. Đúng từ 8 câu trở lên là qua cửa.'),
-          PK.ui.loi('kocka', 'Nút 📜 bị khóa, phải tự nhớ 4 mật mã nhé. Sẵn sàng chưa?', true),
-          n);
+        PK.cuaAi.vaoCuaAi(k, { hoSo: hoSo, so: SO_MAN, bk: bk, deThi: deCuaAi, khoaBiKip: khoaBiKip, tiep: tiep });
       } },
       { ten: 'ket', ve: function (k) {
         const d = PK.luu.doc(hoSo.id);
@@ -325,5 +287,6 @@ window.PK = window.PK || {};
     di(Math.min(daLuu, BUOC.length - 1));
   }
 
-  PK.man0 = { chay: chay, deCuaAi: deCuaAi };
+  // Các câu của màn 0 được dùng trong hướng dẫn (học câu, hội thoại, Cửa ải).
+  PK.man0 = { chay: chay, deCuaAi: deCuaAi, cauDung: ['Ahoj!', 'Dobrý den.', 'Na shledanou!', 'Děkuju.', 'Prosím.'] };
 })();

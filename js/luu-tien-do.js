@@ -52,9 +52,24 @@ window.PK = window.PK || {};
     return {
       manQua: man.filter(function (m) { return m.qua; }).length,
       sao: man.reduce(function (s, m) { return s + (m.sao || 0); }, 0),
-      tuThuoc: Object.values(d.tu).filter(function (t) { return t.thuoc; }).length,
+      tuDaHoc: Object.values(d.tu).filter(function (t) { return t.hoc; }).length,
       biKipMo: Object.values(d.biKip).filter(function (b) { return b.mo; }).length
     };
+  }
+
+  // Ghi nhận trả lời đúng / sai cho một từ (dùng để chọn câu hỏi ôn và trang tiến độ).
+  function ghiTu(id, tu, dung) {
+    capNhat(id, function (d) {
+      const t = d.tu[tu] = Object.assign({ dung: 0, sai: 0 }, d.tu[tu] || {});
+      if (dung) t.dung++; else t.sai++;
+    });
+  }
+  // Đánh dấu từ đã học (đã nhìn, đọc to, tô sao). Hộp nhớ 1, hạn ôn sau 1 ngày; giai đoạn ôn lại sẽ dùng.
+  function danhDauHoc(id, tu) {
+    capNhat(id, function (d) {
+      const t = d.tu[tu] = Object.assign({ dung: 0, sai: 0 }, d.tu[tu] || {});
+      if (!t.hoc) { t.hoc = true; t.hop = 1; t.han = Date.now() + 24 * 3600 * 1000; }
+    });
   }
 
   function manDaMo(d, so) { return so === 0 || !!(d.man[so - 1] && d.man[so - 1].qua); }
@@ -77,5 +92,5 @@ window.PK = window.PK || {};
     });
   }, 15000);
 
-  PK.luu = { doc: doc, ghi: ghi, capNhat: capNhat, thongKe: thongKe, manDaMo: manDaMo, caiDat: caiDat, ghiCaiDat: ghiCaiDat };
+  PK.luu = { doc: doc, ghi: ghi, capNhat: capNhat, ghiTu: ghiTu, danhDauHoc: danhDauHoc, thongKe: thongKe, manDaMo: manDaMo, caiDat: caiDat, ghiCaiDat: ghiCaiDat };
 })();

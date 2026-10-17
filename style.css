@@ -259,3 +259,16 @@ p { margin: 0; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* ---------- màn học ---------- */
+.buoc-nhan {
+  align-self: flex-start; background: var(--mat); border: 2px solid var(--vien);
+  border-radius: 999px; padding: 4px 14px; font-weight: 800; font-size: .9rem; color: var(--chu-nhat);
+}
+.bay-note { background: #FFF1C2; border-radius: 12px; padding: 6px 12px; font-weight: 700; }
+.goi-y { background: #E8F1FF; border-radius: 12px; padding: 8px 12px; font-weight: 700; }
+.lua-chon.hang { flex-direction: row; flex-wrap: wrap; }
+.lua-chon.hang .dong-chon { flex: 1 1 28%; }
+.chon.lon { font-size: 2.6rem; text-align: center; line-height: 1.2; padding: 8px; }
+.chip-tu { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { background: var(--nen); border-radius: 999px; padding: 6px 12px; font-size: 1.05rem; }

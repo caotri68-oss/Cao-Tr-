@@ -139,5 +139,13 @@ window.PK = window.PK || {};
     return { d: d };
   }
 
-  PK.duLieu = { tai: tai, chuan: chuan, tachNgoac: tachNgoac, kiemTraCauTruc: kiemTraCauTruc, PHIEN_AM_MAO_TU: PHIEN_AM_MAO_TU };
+  // Thêm một câu ghép từ mẫu (ví dụ "To je kniha.") để chạm vào là xem được nghĩa.
+  // Câu đã có trong dữ liệu thì giữ nguyên bản gốc.
+  function dangKyCau(cz, phienAm, nghia) {
+    const k = chuan(cz);
+    if (!PK.cauTheoChu.has(k)) PK.cauTheoChu.set(k, { cz: cz, phien_am: phienAm || '', nghia: nghia });
+    return PK.cauTheoChu.get(k);
+  }
+
+  PK.duLieu = { dangKyCau: dangKyCau, tai: tai, chuan: chuan, tachNgoac: tachNgoac, kiemTraCauTruc: kiemTraCauTruc, PHIEN_AM_MAO_TU: PHIEN_AM_MAO_TU };
 })();
