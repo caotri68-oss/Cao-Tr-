@@ -1,0 +1,3295 @@
+{
+ "ghi_chu": "Dữ liệu lấy từ 3 file PDF: so-tay (Sổ tay từ vựng Séc v6), a4 (Cẩm nang TEN-TA-TO A4), pes-kocka (Cẩm nang Pes a Kočka). Phiên âm giữ nguyên như file, không kèm mạo từ. Phiên âm mạo từ: TEN [tên], TA [ta], TO [tô]. bay=true là từ bẫy (★ trong file). phien_am rỗng = file không có phiên âm. Đã bỏ: 'Guido' (tên riêng), 'pistolka' (súng, không hợp game trẻ em), 'kalhoty' (số nhiều, chỉ dùng trong câu 'To jsou kalhoty').",
+ "mau_giong": {
+  "TEN": "xanh dương",
+  "TA": "hồng",
+  "TO": "xanh lá"
+ },
+ "danh_tu": [
+  {
+   "tu": "dům",
+   "giong": "TEN",
+   "phien_am": "đum",
+   "nghia": "ngôi nhà",
+   "emoji": "🏠",
+   "bay": false,
+   "nhom": "noi-chon",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "hotel",
+   "giong": "TEN",
+   "phien_am": "hô-têl",
+   "nghia": "khách sạn",
+   "emoji": "🏨",
+   "bay": false,
+   "nhom": "noi-chon",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "hrad",
+   "giong": "TEN",
+   "phien_am": "hra-đờ",
+   "nghia": "lâu đài",
+   "emoji": "🏰",
+   "bay": false,
+   "nhom": "noi-chon",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "chléb",
+   "giong": "TEN",
+   "phien_am": "khlếp",
+   "nghia": "bánh mì",
+   "emoji": "🍞",
+   "bay": false,
+   "nhom": "cho",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "cukr",
+   "giong": "TEN",
+   "phien_am": "tsu-cơ-rờ",
+   "nghia": "đường",
+   "emoji": "🍬",
+   "bay": false,
+   "nhom": "cho",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "les",
+   "giong": "TEN",
+   "phien_am": "lê-sờ",
+   "nghia": "rừng",
+   "emoji": "🌲",
+   "bay": false,
+   "nhom": "noi-chon",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "obraz",
+   "giong": "TEN",
+   "phien_am": "ô-bra-sờ",
+   "nghia": "bức tranh",
+   "emoji": "🖼️",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "pes",
+   "giong": "TEN",
+   "phien_am": "pê-sờ",
+   "nghia": "con chó",
+   "emoji": "🐶",
+   "bay": false,
+   "nhom": "con-vat",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "stůl",
+   "giong": "TEN",
+   "phien_am": "stun",
+   "nghia": "cái bàn",
+   "emoji": "🍽️",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "čaj",
+   "giong": "TEN",
+   "phien_am": "chai",
+   "nghia": "trà",
+   "emoji": "🍵",
+   "bay": false,
+   "nhom": "cho",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "student",
+   "giong": "TEN",
+   "phien_am": "stu-đênt",
+   "nghia": "sinh viên",
+   "emoji": "🧑‍🎓",
+   "bay": false,
+   "nhom": "nguoi",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "pán",
+   "giong": "TEN",
+   "phien_am": "pan",
+   "nghia": "quý ông",
+   "emoji": "🧔",
+   "bay": false,
+   "nhom": "nguoi",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "podzim",
+   "giong": "TEN",
+   "phien_am": "pốt-dim",
+   "nghia": "mùa thu",
+   "emoji": "🍂",
+   "bay": false,
+   "nhom": "thoi-gian",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "panelák",
+   "giong": "TEN",
+   "phien_am": "pa-nê-lác",
+   "nghia": "chung cư panel",
+   "emoji": "🏢",
+   "bay": false,
+   "nhom": "noi-chon",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "kolega",
+   "giong": "TEN",
+   "phien_am": "cô-lê-ga",
+   "nghia": "đồng nghiệp nam",
+   "emoji": "🤝",
+   "bay": true,
+   "nhom": "nguoi",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "táta",
+   "giong": "TEN",
+   "phien_am": "ta-ta",
+   "nghia": "bố",
+   "emoji": "👨",
+   "bay": true,
+   "nhom": "nguoi",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "turista",
+   "giong": "TEN",
+   "phien_am": "tu-ri-sta",
+   "nghia": "khách du lịch",
+   "emoji": "🧳",
+   "bay": true,
+   "nhom": "nguoi",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "průvodce",
+   "giong": "TEN",
+   "phien_am": "pru-vốt-tsê",
+   "nghia": "hướng dẫn viên",
+   "emoji": "🚩",
+   "bay": true,
+   "nhom": "nguoi",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "soudce",
+   "giong": "TEN",
+   "phien_am": "sâu-tsê",
+   "nghia": "thẩm phán",
+   "emoji": "⚖️",
+   "bay": true,
+   "nhom": "nguoi",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "kniha",
+   "giong": "TA",
+   "phien_am": "cnhi-ha",
+   "nghia": "sách",
+   "emoji": "📖",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "lampa",
+   "giong": "TA",
+   "phien_am": "lam-pa",
+   "nghia": "đèn",
+   "emoji": "💡",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "láska",
+   "giong": "TA",
+   "phien_am": "la-sca",
+   "nghia": "tình yêu",
+   "emoji": "❤️",
+   "bay": false,
+   "nhom": "khac",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "polévka",
+   "giong": "TA",
+   "phien_am": "pô-lếp-ca",
+   "nghia": "súp",
+   "emoji": "🍲",
+   "bay": false,
+   "nhom": "cho",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "voda",
+   "giong": "TA",
+   "phien_am": "vô-đa",
+   "nghia": "nước",
+   "emoji": "💧",
+   "bay": false,
+   "nhom": "cho",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "ulice",
+   "giong": "TA",
+   "phien_am": "u-li-tsê",
+   "nghia": "đường phố",
+   "emoji": "🛣️",
+   "bay": false,
+   "nhom": "noi-chon",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "restaurace",
+   "giong": "TA",
+   "phien_am": "rê-stau-ra-tsê",
+   "nghia": "nhà hàng",
+   "emoji": "🍴",
+   "bay": false,
+   "nhom": "noi-chon",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "televize",
+   "giong": "TA",
+   "phien_am": "tê-lê-vi-dê",
+   "nghia": "tivi",
+   "emoji": "📺",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "policie",
+   "giong": "TA",
+   "phien_am": "pô-li-tsi-ê",
+   "nghia": "cảnh sát",
+   "emoji": "👮",
+   "bay": false,
+   "nhom": "nguoi",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "radost",
+   "giong": "TA",
+   "phien_am": "ra-đô-stờ",
+   "nghia": "niềm vui",
+   "emoji": "😄",
+   "bay": false,
+   "nhom": "khac",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "píseň",
+   "giong": "TA",
+   "phien_am": "pi-sênh",
+   "nghia": "bài hát",
+   "emoji": "🎵",
+   "bay": false,
+   "nhom": "khac",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "skříň",
+   "giong": "TA",
+   "phien_am": "scrinh",
+   "nghia": "tủ",
+   "emoji": "🚪",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "nemoc",
+   "giong": "TA",
+   "phien_am": "nê-mốt-sờ",
+   "nghia": "bệnh",
+   "emoji": "🤒",
+   "bay": true,
+   "nhom": "khac",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "pomoc",
+   "giong": "TA",
+   "phien_am": "pô-mốt-sờ",
+   "nghia": "sự giúp đỡ",
+   "emoji": "🆘",
+   "bay": true,
+   "nhom": "khac",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "krev",
+   "giong": "TA",
+   "phien_am": "crêp",
+   "nghia": "máu",
+   "emoji": "🩸",
+   "bay": true,
+   "nhom": "co-the",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "kancelář",
+   "giong": "TA",
+   "phien_am": "can-tsê-larzh",
+   "nghia": "văn phòng",
+   "emoji": "💼",
+   "bay": true,
+   "nhom": "noi-chon",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "myš",
+   "giong": "TA",
+   "phien_am": "mi-shờ",
+   "nghia": "con chuột",
+   "emoji": "🐭",
+   "bay": true,
+   "nhom": "con-vat",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "paní",
+   "giong": "TA",
+   "phien_am": "pa-nhi",
+   "nghia": "bà, cô",
+   "emoji": "👩",
+   "bay": true,
+   "nhom": "nguoi",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "zima",
+   "giong": "TA",
+   "phien_am": "di-ma",
+   "nghia": "mùa đông",
+   "emoji": "❄️",
+   "bay": false,
+   "nhom": "thoi-gian",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "auto",
+   "giong": "TO",
+   "phien_am": "au-tô",
+   "nghia": "ô tô",
+   "emoji": "🚗",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "jaro",
+   "giong": "TO",
+   "phien_am": "ia-rô",
+   "nghia": "mùa xuân",
+   "emoji": "🌸",
+   "bay": false,
+   "nhom": "thoi-gian",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "léto",
+   "giong": "TO",
+   "phien_am": "lê-tô",
+   "nghia": "mùa hè",
+   "emoji": "☀️",
+   "bay": false,
+   "nhom": "thoi-gian",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "okno",
+   "giong": "TO",
+   "phien_am": "ốc-nô",
+   "nghia": "cửa sổ",
+   "emoji": "🪟",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "pivo",
+   "giong": "TO",
+   "phien_am": "pi-vô",
+   "nghia": "bia",
+   "emoji": "🍺",
+   "bay": false,
+   "nhom": "cho",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "mléko",
+   "giong": "TO",
+   "phien_am": "mlê-cô",
+   "nghia": "sữa",
+   "emoji": "🥛",
+   "bay": false,
+   "nhom": "cho",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "nádobí",
+   "giong": "TO",
+   "phien_am": "na-đô-bi",
+   "nghia": "bát đĩa",
+   "emoji": "🥣",
+   "bay": false,
+   "nhom": "cho",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "nádraží",
+   "giong": "TO",
+   "phien_am": "na-đra-gi",
+   "nghia": "nhà ga",
+   "emoji": "🚉",
+   "bay": false,
+   "nhom": "noi-chon",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "náměstí",
+   "giong": "TO",
+   "phien_am": "na-mnhê-sti",
+   "nghia": "quảng trường",
+   "emoji": "⛲",
+   "bay": false,
+   "nhom": "noi-chon",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "hřiště",
+   "giong": "TO",
+   "phien_am": "hrzhi-sh-tê",
+   "nghia": "sân chơi",
+   "emoji": "🛝",
+   "bay": false,
+   "nhom": "noi-chon",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "letiště",
+   "giong": "TO",
+   "phien_am": "lê-ti-sh-tê",
+   "nghia": "sân bay",
+   "emoji": "✈️",
+   "bay": false,
+   "nhom": "noi-chon",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "parkoviště",
+   "giong": "TO",
+   "phien_am": "par-cô-vi-sh-tê",
+   "nghia": "bãi đỗ xe",
+   "emoji": "🅿️",
+   "bay": false,
+   "nhom": "noi-chon",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "kuře",
+   "giong": "TO",
+   "phien_am": "cu-rzhê",
+   "nghia": "gà con",
+   "emoji": "🐥",
+   "bay": true,
+   "nhom": "cho",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "srdce",
+   "giong": "TO",
+   "phien_am": "sơ-rơ-tsê",
+   "nghia": "trái tim",
+   "emoji": "🫀",
+   "bay": true,
+   "nhom": "co-the",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "vejce",
+   "giong": "TO",
+   "phien_am": "vây-tsê",
+   "nghia": "quả trứng",
+   "emoji": "🥚",
+   "bay": true,
+   "nhom": "cho",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "zvíře",
+   "giong": "TO",
+   "phien_am": "dvi-rzhê",
+   "nghia": "thú vật",
+   "emoji": "🐾",
+   "bay": true,
+   "nhom": "con-vat",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "centrum",
+   "giong": "TO",
+   "phien_am": "tsên-trum",
+   "nghia": "trung tâm",
+   "emoji": "🏙️",
+   "bay": false,
+   "nhom": "noi-chon",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "muzeum",
+   "giong": "TO",
+   "phien_am": "mu-dê-um",
+   "nghia": "bảo tàng",
+   "emoji": "🏛️",
+   "bay": false,
+   "nhom": "noi-chon",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "téma",
+   "giong": "TO",
+   "phien_am": "tê-ma",
+   "nghia": "chủ đề",
+   "emoji": "💬",
+   "bay": false,
+   "nhom": "khac",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "menu",
+   "giong": "TO",
+   "phien_am": "mê-nu",
+   "nghia": "thực đơn",
+   "emoji": "📋",
+   "bay": false,
+   "nhom": "cho",
+   "nguon": "so-tay"
+  },
+  {
+   "tu": "slunce",
+   "giong": "TO",
+   "phien_am": "SLUN-tse",
+   "nghia": "mặt trời",
+   "emoji": "🌞",
+   "bay": true,
+   "nhom": "thoi-gian",
+   "nguon": "a4"
+  },
+  {
+   "tu": "zrcadlo",
+   "giong": "TO",
+   "phien_am": "ZR-tsa-dlo",
+   "nghia": "cái gương",
+   "emoji": "🪞",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "metro",
+   "giong": "TO",
+   "phien_am": "MET-ro",
+   "nghia": "tàu điện ngầm",
+   "emoji": "🚇",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "iglú",
+   "giong": "TO",
+   "phien_am": "I-glú",
+   "nghia": "lều tuyết",
+   "emoji": "⛺",
+   "bay": true,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "jablko",
+   "giong": "TO",
+   "phien_am": "YA-blko",
+   "nghia": "quả táo",
+   "emoji": "🍎",
+   "bay": false,
+   "nhom": "cho",
+   "nguon": "a4"
+  },
+  {
+   "tu": "kolo",
+   "giong": "TO",
+   "phien_am": "KO-lo",
+   "nghia": "xe đạp / bánh xe",
+   "emoji": "🚲",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "maso",
+   "giong": "TO",
+   "phien_am": "MA-so",
+   "nghia": "thịt",
+   "emoji": "🥩",
+   "bay": false,
+   "nhom": "cho",
+   "nguon": "a4"
+  },
+  {
+   "tu": "pero",
+   "giong": "TO",
+   "phien_am": "PE-ro",
+   "nghia": "ngòi bút",
+   "emoji": "✒️",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "divadlo",
+   "giong": "TO",
+   "phien_am": "ĐI-va-dlo",
+   "nghia": "nhà hát",
+   "emoji": "🎭",
+   "bay": false,
+   "nhom": "noi-chon",
+   "nguon": "a4"
+  },
+  {
+   "tu": "odpoledne",
+   "giong": "TO",
+   "phien_am": "OT-po-led-ne",
+   "nghia": "buổi chiều",
+   "emoji": "🌤️",
+   "bay": true,
+   "nhom": "thoi-gian",
+   "nguon": "a4"
+  },
+  {
+   "tu": "stavení",
+   "giong": "TO",
+   "phien_am": "STA-ve-nhí",
+   "nghia": "tòa nhà",
+   "emoji": "🏢",
+   "bay": false,
+   "nhom": "noi-chon",
+   "nguon": "a4"
+  },
+  {
+   "tu": "ráno",
+   "giong": "TO",
+   "phien_am": "RÁ-no",
+   "nghia": "buổi sáng",
+   "emoji": "🌅",
+   "bay": false,
+   "nhom": "thoi-gian",
+   "nguon": "a4"
+  },
+  {
+   "tu": "jméno",
+   "giong": "TO",
+   "phien_am": "YMÉ-no",
+   "nghia": "tên",
+   "emoji": "📛",
+   "bay": false,
+   "nhom": "khac",
+   "nguon": "a4"
+  },
+  {
+   "tu": "město",
+   "giong": "TO",
+   "phien_am": "MNYES-to",
+   "nghia": "thành phố",
+   "emoji": "🏙️",
+   "bay": false,
+   "nhom": "noi-chon",
+   "nguon": "a4"
+  },
+  {
+   "tu": "dítě",
+   "giong": "TO",
+   "phien_am": "ĐÍ-tye",
+   "nghia": "đứa trẻ",
+   "emoji": "🧒",
+   "bay": true,
+   "nhom": "nguoi",
+   "nguon": "a4"
+  },
+  {
+   "tu": "moře",
+   "giong": "TO",
+   "phien_am": "MO-rzhe",
+   "nghia": "biển",
+   "emoji": "🌊",
+   "bay": true,
+   "nhom": "noi-chon",
+   "nguon": "a4"
+  },
+  {
+   "tu": "příjmení",
+   "giong": "TO",
+   "phien_am": "PRZHÍY-me-nhí",
+   "nghia": "họ",
+   "emoji": "🪪",
+   "bay": false,
+   "nhom": "khac",
+   "nguon": "a4"
+  },
+  {
+   "tu": "mimino",
+   "giong": "TO",
+   "phien_am": "MI-mi-no",
+   "nghia": "bé sơ sinh",
+   "emoji": "👶",
+   "bay": false,
+   "nhom": "nguoi",
+   "nguon": "a4"
+  },
+  {
+   "tu": "počasí",
+   "giong": "TO",
+   "phien_am": "PO-cha-sí",
+   "nghia": "thời tiết",
+   "emoji": "🌦️",
+   "bay": false,
+   "nhom": "thoi-gian",
+   "nguon": "a4"
+  },
+  {
+   "tu": "mýdlo",
+   "giong": "TO",
+   "phien_am": "MÍ-dlo",
+   "nghia": "xà phòng",
+   "emoji": "🧼",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "tělo",
+   "giong": "TO",
+   "phien_am": "TYE-lo",
+   "nghia": "cơ thể",
+   "emoji": "🧍",
+   "bay": false,
+   "nhom": "co-the",
+   "nguon": "a4"
+  },
+  {
+   "tu": "břicho",
+   "giong": "TO",
+   "phien_am": "BRZHI-kho",
+   "nghia": "cái bụng",
+   "emoji": "🤰",
+   "bay": false,
+   "nhom": "co-the",
+   "nguon": "a4"
+  },
+  {
+   "tu": "lýtko",
+   "giong": "TO",
+   "phien_am": "LÍT-ko",
+   "nghia": "bắp chân",
+   "emoji": "🦵",
+   "bay": false,
+   "nhom": "co-the",
+   "nguon": "a4"
+  },
+  {
+   "tu": "stehno",
+   "giong": "TO",
+   "phien_am": "STEH-no",
+   "nghia": "cái đùi",
+   "emoji": "🍗",
+   "bay": false,
+   "nhom": "co-the",
+   "nguon": "a4"
+  },
+  {
+   "tu": "chodidlo",
+   "giong": "TO",
+   "phien_am": "KHO-đi-dlo",
+   "nghia": "bàn chân",
+   "emoji": "🦶",
+   "bay": false,
+   "nhom": "co-the",
+   "nguon": "a4"
+  },
+  {
+   "tu": "kapr",
+   "giong": "TEN",
+   "phien_am": "KA-pr",
+   "nghia": "cá chép",
+   "emoji": "🐟",
+   "bay": false,
+   "nhom": "cho",
+   "nguon": "a4"
+  },
+  {
+   "tu": "syn",
+   "giong": "TEN",
+   "phien_am": "SIN",
+   "nghia": "con trai",
+   "emoji": "👦",
+   "bay": false,
+   "nhom": "nguoi",
+   "nguon": "a4"
+  },
+  {
+   "tu": "vlak",
+   "giong": "TEN",
+   "phien_am": "VLAK",
+   "nghia": "tàu hỏa",
+   "emoji": "🚆",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "záchod",
+   "giong": "TEN",
+   "phien_am": "ZÁ-khot",
+   "nghia": "nhà vệ sinh",
+   "emoji": "🚽",
+   "bay": false,
+   "nhom": "noi-chon",
+   "nguon": "a4"
+  },
+  {
+   "tu": "klobouk",
+   "giong": "TEN",
+   "phien_am": "KLO-bôuk",
+   "nghia": "cái mũ",
+   "emoji": "🎩",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "fotbalista",
+   "giong": "TEN",
+   "phien_am": "FOT-ba-lis-ta",
+   "nghia": "cầu thủ bóng đá",
+   "emoji": "⚽",
+   "bay": true,
+   "nhom": "nguoi",
+   "nguon": "a4"
+  },
+  {
+   "tu": "lev",
+   "giong": "TEN",
+   "phien_am": "LEF",
+   "nghia": "sư tử",
+   "emoji": "🦁",
+   "bay": false,
+   "nhom": "con-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "nos",
+   "giong": "TEN",
+   "phien_am": "NOS",
+   "nghia": "cái mũi",
+   "emoji": "👃",
+   "bay": false,
+   "nhom": "co-the",
+   "nguon": "a4"
+  },
+  {
+   "tu": "tučňák",
+   "giong": "TEN",
+   "phien_am": "TUCH-nhák",
+   "nghia": "chim cánh cụt",
+   "emoji": "🐧",
+   "bay": false,
+   "nhom": "con-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "hrnec",
+   "giong": "TEN",
+   "phien_am": "HR-nets",
+   "nghia": "cái nồi",
+   "emoji": "🍲",
+   "bay": false,
+   "nhom": "cho",
+   "nguon": "a4"
+  },
+  {
+   "tu": "hrnek",
+   "giong": "TEN",
+   "phien_am": "HR-nek",
+   "nghia": "cái cốc",
+   "emoji": "☕",
+   "bay": false,
+   "nhom": "cho",
+   "nguon": "a4"
+  },
+  {
+   "tu": "bratr",
+   "giong": "TEN",
+   "phien_am": "BRA-tr",
+   "nghia": "anh/em trai",
+   "emoji": "👦",
+   "bay": false,
+   "nhom": "nguoi",
+   "nguon": "a4"
+  },
+  {
+   "tu": "doktor",
+   "giong": "TEN",
+   "phien_am": "DOK-tor",
+   "nghia": "bác sĩ",
+   "emoji": "🩺",
+   "bay": false,
+   "nhom": "nguoi",
+   "nguon": "a4"
+  },
+  {
+   "tu": "herec",
+   "giong": "TEN",
+   "phien_am": "HE-rets",
+   "nghia": "diễn viên nam",
+   "emoji": "🎭",
+   "bay": false,
+   "nhom": "nguoi",
+   "nguon": "a4"
+  },
+  {
+   "tu": "číšník",
+   "giong": "TEN",
+   "phien_am": "CHÍSH-nhík",
+   "nghia": "bồi bàn",
+   "emoji": "🤵",
+   "bay": false,
+   "nhom": "nguoi",
+   "nguon": "a4"
+  },
+  {
+   "tu": "žák",
+   "giong": "TEN",
+   "phien_am": "ZHÁK",
+   "nghia": "học sinh",
+   "emoji": "🎒",
+   "bay": false,
+   "nhom": "nguoi",
+   "nguon": "a4"
+  },
+  {
+   "tu": "řidič",
+   "giong": "TEN",
+   "phien_am": "RZHI-đich",
+   "nghia": "tài xế",
+   "emoji": "🚗",
+   "bay": false,
+   "nhom": "nguoi",
+   "nguon": "a4"
+  },
+  {
+   "tu": "manžel",
+   "giong": "TEN",
+   "phien_am": "MAN-zhel",
+   "nghia": "chồng",
+   "emoji": "💍",
+   "bay": false,
+   "nhom": "nguoi",
+   "nguon": "a4"
+  },
+  {
+   "tu": "kuchař",
+   "giong": "TEN",
+   "phien_am": "KU-kharzh",
+   "nghia": "đầu bếp",
+   "emoji": "👨‍🍳",
+   "bay": false,
+   "nhom": "nguoi",
+   "nguon": "a4"
+  },
+  {
+   "tu": "bojovník",
+   "giong": "TEN",
+   "phien_am": "BO-yov-nhík",
+   "nghia": "chiến binh",
+   "emoji": "⚔️",
+   "bay": false,
+   "nhom": "nguoi",
+   "nguon": "a4"
+  },
+  {
+   "tu": "košík",
+   "giong": "TEN",
+   "phien_am": "KO-shík",
+   "nghia": "cái giỏ",
+   "emoji": "🧺",
+   "bay": false,
+   "nhom": "cho",
+   "nguon": "a4"
+  },
+  {
+   "tu": "stroj",
+   "giong": "TEN",
+   "phien_am": "STROY",
+   "nghia": "cái máy",
+   "emoji": "⚙️",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "počítač",
+   "giong": "TEN",
+   "phien_am": "PO-chí-tach",
+   "nghia": "máy tính",
+   "emoji": "💻",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "den",
+   "giong": "TEN",
+   "phien_am": "ĐEN",
+   "nghia": "ngày",
+   "emoji": "☀️",
+   "bay": false,
+   "nhom": "thoi-gian",
+   "nguon": "a4"
+  },
+  {
+   "tu": "klíč",
+   "giong": "TEN",
+   "phien_am": "KLÍCH",
+   "nghia": "chìa khóa / cờ lê",
+   "emoji": "🔑",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "kroužek",
+   "giong": "TEN",
+   "phien_am": "KROU-zhek",
+   "nghia": "cái nhẫn / vòng (file bị cắt chữ, cần kiểm tra)",
+   "emoji": "⭕",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "telefon",
+   "giong": "TEN",
+   "phien_am": "TE-le-fon",
+   "nghia": "điện thoại",
+   "emoji": "📱",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "večer",
+   "giong": "TEN",
+   "phien_am": "VE-cher",
+   "nghia": "buổi tối",
+   "emoji": "🌆",
+   "bay": false,
+   "nhom": "thoi-gian",
+   "nguon": "a4"
+  },
+  {
+   "tu": "háček",
+   "giong": "TEN",
+   "phien_am": "HÁ-chek",
+   "nghia": "dấu móc (ˇ)",
+   "emoji": "ˇ",
+   "bay": false,
+   "nhom": "khac",
+   "nguon": "a4"
+  },
+  {
+   "tu": "obličej",
+   "giong": "TEN",
+   "phien_am": "O-bli-chey",
+   "nghia": "khuôn mặt",
+   "emoji": "😊",
+   "bay": false,
+   "nhom": "co-the",
+   "nguon": "a4"
+  },
+  {
+   "tu": "krk",
+   "giong": "TEN",
+   "phien_am": "KRK",
+   "nghia": "cái cổ",
+   "emoji": "🧣",
+   "bay": false,
+   "nhom": "co-the",
+   "nguon": "a4"
+  },
+  {
+   "tu": "kašel",
+   "giong": "TEN",
+   "phien_am": "KA-shel",
+   "nghia": "cơn ho",
+   "emoji": "😷",
+   "bay": false,
+   "nhom": "khac",
+   "nguon": "a4"
+  },
+  {
+   "tu": "prst",
+   "giong": "TEN",
+   "phien_am": "PRST",
+   "nghia": "ngón tay",
+   "emoji": "☝️",
+   "bay": false,
+   "nhom": "co-the",
+   "nguon": "a4"
+  },
+  {
+   "tu": "had",
+   "giong": "TEN",
+   "phien_am": "HAT",
+   "nghia": "con rắn",
+   "emoji": "🐍",
+   "bay": false,
+   "nhom": "con-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "měsíc",
+   "giong": "TEN",
+   "phien_am": "MNYE-síts",
+   "nghia": "mặt trăng / tháng",
+   "emoji": "🌙",
+   "bay": false,
+   "nhom": "thoi-gian",
+   "nguon": "a4"
+  },
+  {
+   "tu": "příklad",
+   "giong": "TEN",
+   "phien_am": "PRZHÍ-klat",
+   "nghia": "ví dụ",
+   "emoji": "💡",
+   "bay": false,
+   "nhom": "khac",
+   "nguon": "a4"
+  },
+  {
+   "tu": "salám",
+   "giong": "TEN",
+   "phien_am": "SA-lám",
+   "nghia": "xúc xích salami",
+   "emoji": "🥓",
+   "bay": false,
+   "nhom": "cho",
+   "nguon": "a4"
+  },
+  {
+   "tu": "dort",
+   "giong": "TEN",
+   "phien_am": "DORT",
+   "nghia": "bánh ngọt",
+   "emoji": "🎂",
+   "bay": false,
+   "nhom": "cho",
+   "nguon": "a4"
+  },
+  {
+   "tu": "chodník",
+   "giong": "TEN",
+   "phien_am": "KHOT-nhík",
+   "nghia": "vỉa hè",
+   "emoji": "🚶",
+   "bay": false,
+   "nhom": "noi-chon",
+   "nguon": "a4"
+  },
+  {
+   "tu": "plyn",
+   "giong": "TEN",
+   "phien_am": "PLIN",
+   "nghia": "khí gas",
+   "emoji": "🔥",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "citron",
+   "giong": "TEN",
+   "phien_am": "TSI-tron",
+   "nghia": "quả chanh",
+   "emoji": "🍋",
+   "bay": false,
+   "nhom": "cho",
+   "nguon": "a4"
+  },
+  {
+   "tu": "oheň",
+   "giong": "TEN",
+   "phien_am": "O-henh",
+   "nghia": "lửa",
+   "emoji": "🔥",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "album",
+   "giong": "TEN",
+   "phien_am": "AL-bum",
+   "nghia": "album ảnh",
+   "emoji": "📔",
+   "bay": true,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "ryba",
+   "giong": "TA",
+   "phien_am": "RI-ba",
+   "nghia": "con cá",
+   "emoji": "🐠",
+   "bay": false,
+   "nhom": "cho",
+   "nguon": "a4"
+  },
+  {
+   "tu": "řepa",
+   "giong": "TA",
+   "phien_am": "RZHE-pa",
+   "nghia": "củ cải",
+   "emoji": "🍠",
+   "bay": false,
+   "nhom": "cho",
+   "nguon": "a4"
+  },
+  {
+   "tu": "škola",
+   "giong": "TA",
+   "phien_am": "SHKO-la",
+   "nghia": "trường học",
+   "emoji": "🏫",
+   "bay": false,
+   "nhom": "noi-chon",
+   "nguon": "a4"
+  },
+  {
+   "tu": "školka",
+   "giong": "TA",
+   "phien_am": "SHKOL-ka",
+   "nghia": "trường mẫu giáo",
+   "emoji": "🧸",
+   "bay": false,
+   "nhom": "noi-chon",
+   "nguon": "a4"
+  },
+  {
+   "tu": "tabule",
+   "giong": "TA",
+   "phien_am": "TA-bu-le",
+   "nghia": "cái bảng",
+   "emoji": "📋",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "tramvaj",
+   "giong": "TA",
+   "phien_am": "TRAM-vay",
+   "nghia": "xe điện",
+   "emoji": "🚋",
+   "bay": true,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "zebra",
+   "giong": "TA",
+   "phien_am": "ZEB-ra",
+   "nghia": "ngựa vằn",
+   "emoji": "🦓",
+   "bay": false,
+   "nhom": "con-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "židle",
+   "giong": "TA",
+   "phien_am": "ZHI-dle",
+   "nghia": "cái ghế",
+   "emoji": "🪑",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "čepice",
+   "giong": "TA",
+   "phien_am": "CHE-pi-tse",
+   "nghia": "mũ len",
+   "emoji": "🧢",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "garáž",
+   "giong": "TA",
+   "phien_am": "GA-rázh",
+   "nghia": "nhà để xe",
+   "emoji": "🏠",
+   "bay": true,
+   "nhom": "noi-chon",
+   "nguon": "a4"
+  },
+  {
+   "tu": "chata",
+   "giong": "TA",
+   "phien_am": "KHA-ta",
+   "nghia": "nhà gỗ nghỉ dưỡng",
+   "emoji": "🏡",
+   "bay": false,
+   "nhom": "noi-chon",
+   "nguon": "a4"
+  },
+  {
+   "tu": "opice",
+   "giong": "TA",
+   "phien_am": "O-pi-tse",
+   "nghia": "con khỉ",
+   "emoji": "🐒",
+   "bay": false,
+   "nhom": "con-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "pastelka",
+   "giong": "TA",
+   "phien_am": "PAS-tel-ka",
+   "nghia": "bút chì màu",
+   "emoji": "🖍️",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "tužka",
+   "giong": "TA",
+   "phien_am": "TUSH-ka",
+   "nghia": "bút chì",
+   "emoji": "✏️",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "propiska",
+   "giong": "TA",
+   "phien_am": "PRO-pis-ka",
+   "nghia": "bút bi",
+   "emoji": "🖊️",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "vana",
+   "giong": "TA",
+   "phien_am": "VA-na",
+   "nghia": "bồn tắm",
+   "emoji": "🛁",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "dcera",
+   "giong": "TA",
+   "phien_am": "ĐTSE-ra",
+   "nghia": "con gái",
+   "emoji": "👧",
+   "bay": false,
+   "nhom": "nguoi",
+   "nguon": "a4"
+  },
+  {
+   "tu": "žena",
+   "giong": "TA",
+   "phien_am": "ZHE-na",
+   "nghia": "người phụ nữ",
+   "emoji": "👩",
+   "bay": false,
+   "nhom": "nguoi",
+   "nguon": "a4"
+  },
+  {
+   "tu": "noc",
+   "giong": "TA",
+   "phien_am": "NOTS",
+   "nghia": "đêm",
+   "emoji": "🌌",
+   "bay": true,
+   "nhom": "thoi-gian",
+   "nguon": "a4"
+  },
+  {
+   "tu": "souhláska",
+   "giong": "TA",
+   "phien_am": "SÔU-hlás-ka",
+   "nghia": "phụ âm",
+   "emoji": "🔤",
+   "bay": false,
+   "nhom": "khac",
+   "nguon": "a4"
+  },
+  {
+   "tu": "čárka",
+   "giong": "TA",
+   "phien_am": "CHÁR-ka",
+   "nghia": "dấu phẩy / dấu sắc",
+   "emoji": "✍️",
+   "bay": false,
+   "nhom": "khac",
+   "nguon": "a4"
+  },
+  {
+   "tu": "rodina",
+   "giong": "TA",
+   "phien_am": "RO-đi-na",
+   "nghia": "gia đình",
+   "emoji": "👨‍👩‍👧‍👦",
+   "bay": false,
+   "nhom": "nguoi",
+   "nguon": "a4"
+  },
+  {
+   "tu": "čeština",
+   "giong": "TA",
+   "phien_am": "CHESH-ti-na",
+   "nghia": "tiếng Séc",
+   "emoji": "🇨🇿",
+   "bay": false,
+   "nhom": "khac",
+   "nguon": "a4"
+  },
+  {
+   "tu": "houba",
+   "giong": "TA",
+   "phien_am": "HÔU-ba",
+   "nghia": "nấm",
+   "emoji": "🍄",
+   "bay": false,
+   "nhom": "cho",
+   "nguon": "a4"
+  },
+  {
+   "tu": "abeceda",
+   "giong": "TA",
+   "phien_am": "A-be-tse-đa",
+   "nghia": "bảng chữ cái",
+   "emoji": "🔤",
+   "bay": false,
+   "nhom": "khac",
+   "nguon": "a4"
+  },
+  {
+   "tu": "samohláska",
+   "giong": "TA",
+   "phien_am": "SA-mo-hlás-ka",
+   "nghia": "nguyên âm",
+   "emoji": "🅰️",
+   "bay": false,
+   "nhom": "khac",
+   "nguon": "a4"
+  },
+  {
+   "tu": "dlaň",
+   "giong": "TA",
+   "phien_am": "ĐLANH",
+   "nghia": "lòng bàn tay",
+   "emoji": "✋",
+   "bay": true,
+   "nhom": "co-the",
+   "nguon": "a4"
+  },
+  {
+   "tu": "hlava",
+   "giong": "TA",
+   "phien_am": "HLA-va",
+   "nghia": "cái đầu",
+   "emoji": "🗣️",
+   "bay": false,
+   "nhom": "co-the",
+   "nguon": "a4"
+  },
+  {
+   "tu": "ruka",
+   "giong": "TA",
+   "phien_am": "RU-ka",
+   "nghia": "cái tay",
+   "emoji": "💪",
+   "bay": false,
+   "nhom": "co-the",
+   "nguon": "a4"
+  },
+  {
+   "tu": "želva",
+   "giong": "TA",
+   "phien_am": "ZHEL-va",
+   "nghia": "con rùa",
+   "emoji": "🐢",
+   "bay": false,
+   "nhom": "con-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "labuť",
+   "giong": "TA",
+   "phien_am": "LA-buty",
+   "nghia": "thiên nga",
+   "emoji": "🦢",
+   "bay": true,
+   "nhom": "con-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "liška",
+   "giong": "TA",
+   "phien_am": "LISH-ka",
+   "nghia": "con cáo",
+   "emoji": "🦊",
+   "bay": false,
+   "nhom": "con-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "broskev",
+   "giong": "TA",
+   "phien_am": "BROS-kef",
+   "nghia": "quả đào",
+   "emoji": "🍑",
+   "bay": true,
+   "nhom": "cho",
+   "nguon": "a4"
+  },
+  {
+   "tu": "mrkev",
+   "giong": "TA",
+   "phien_am": "MR-kef",
+   "nghia": "củ cà rốt",
+   "emoji": "🥕",
+   "bay": true,
+   "nhom": "cho",
+   "nguon": "a4"
+  },
+  {
+   "tu": "kytice",
+   "giong": "TA",
+   "phien_am": "KI-ti-tse",
+   "nghia": "bó hoa",
+   "emoji": "💐",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "lžíce",
+   "giong": "TA",
+   "phien_am": "LZHÍ-tse",
+   "nghia": "cái thìa",
+   "emoji": "🥄",
+   "bay": false,
+   "nhom": "cho",
+   "nguon": "a4"
+  },
+  {
+   "tu": "láhev",
+   "giong": "TA",
+   "phien_am": "LÁ-hef",
+   "nghia": "cái chai",
+   "emoji": "🍾",
+   "bay": true,
+   "nhom": "cho",
+   "nguon": "a4"
+  },
+  {
+   "tu": "sklenice",
+   "giong": "TA",
+   "phien_am": "SKLE-ni-tse",
+   "nghia": "cốc thủy tinh",
+   "emoji": "🥛",
+   "bay": false,
+   "nhom": "cho",
+   "nguon": "a4"
+  },
+  {
+   "tu": "postel",
+   "giong": "TA",
+   "phien_am": "POS-tel",
+   "nghia": "cái giường",
+   "emoji": "🛏️",
+   "bay": true,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "sůl",
+   "giong": "TA",
+   "phien_am": "SÚL",
+   "nghia": "muối",
+   "emoji": "🧂",
+   "bay": true,
+   "nhom": "cho",
+   "nguon": "a4"
+  },
+  {
+   "tu": "zeď",
+   "giong": "TA",
+   "phien_am": "ZETY",
+   "nghia": "bức tường",
+   "emoji": "🧱",
+   "bay": true,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "sova",
+   "giong": "TA",
+   "phien_am": "SO-va",
+   "nghia": "con cú",
+   "emoji": "🦉",
+   "bay": false,
+   "nhom": "con-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "kluk",
+   "giong": "TEN",
+   "phien_am": "cluc",
+   "nghia": "con trai",
+   "emoji": "👦",
+   "bay": false,
+   "nhom": "nguoi",
+   "nguon": "pes-kocka"
+  },
+  {
+   "tu": "holka",
+   "giong": "TA",
+   "phien_am": "hôl-ca",
+   "nghia": "con gái",
+   "emoji": "👧",
+   "bay": false,
+   "nhom": "nguoi",
+   "nguon": "pes-kocka"
+  },
+  {
+   "tu": "učitel",
+   "giong": "TEN",
+   "phien_am": "u-chi-têl",
+   "nghia": "thầy giáo",
+   "emoji": "👨‍🏫",
+   "bay": false,
+   "nhom": "nguoi",
+   "nguon": "pes-kocka"
+  },
+  {
+   "tu": "učitelka",
+   "giong": "TA",
+   "phien_am": "u-chi-tel-ca",
+   "nghia": "cô giáo",
+   "emoji": "👩‍🏫",
+   "bay": false,
+   "nhom": "nguoi",
+   "nguon": "pes-kocka"
+  },
+  {
+   "tu": "prodavačka",
+   "giong": "TA",
+   "phien_am": "prô-đa-vach-ca",
+   "nghia": "cô bán hàng",
+   "emoji": "🛒",
+   "bay": false,
+   "nhom": "nguoi",
+   "nguon": "pes-kocka"
+  },
+  {
+   "tu": "sekretářka",
+   "giong": "TA",
+   "phien_am": "sê-crê-tarzh-ca",
+   "nghia": "cô thư ký",
+   "emoji": "🗂️",
+   "bay": false,
+   "nhom": "nguoi",
+   "nguon": "pes-kocka"
+  },
+  {
+   "tu": "kočka",
+   "giong": "TA",
+   "phien_am": "côch-ca",
+   "nghia": "con mèo",
+   "emoji": "🐱",
+   "bay": false,
+   "nhom": "con-vat",
+   "nguon": "pes-kocka"
+  },
+  {
+   "tu": "koruna",
+   "giong": "TA",
+   "phien_am": "cô-ru-na",
+   "nghia": "đồng curon",
+   "emoji": "👑",
+   "bay": false,
+   "nhom": "cho",
+   "nguon": "pes-kocka"
+  },
+  {
+   "tu": "cesta",
+   "giong": "TA",
+   "phien_am": "",
+   "nghia": "đường",
+   "emoji": "🛤️",
+   "bay": false,
+   "nhom": "noi-chon",
+   "nguon": "a4"
+  },
+  {
+   "tu": "motor",
+   "giong": "TEN",
+   "phien_am": "",
+   "nghia": "động cơ",
+   "emoji": "⚙️",
+   "bay": false,
+   "nhom": "do-vat",
+   "nguon": "a4"
+  },
+  {
+   "tu": "kino",
+   "giong": "TO",
+   "phien_am": "",
+   "nghia": "rạp chiếu phim",
+   "emoji": "🎬",
+   "bay": false,
+   "nhom": "noi-chon",
+   "nguon": "a4"
+  },
+  {
+   "tu": "sídliště",
+   "giong": "TO",
+   "phien_am": "",
+   "nghia": "khu dân cư",
+   "emoji": "🏘️",
+   "bay": false,
+   "nhom": "noi-chon",
+   "nguon": "a4"
+  },
+  {
+   "tu": "rýže",
+   "giong": "TA",
+   "phien_am": "",
+   "nghia": "gạo",
+   "emoji": "🍚",
+   "bay": false,
+   "nhom": "cho",
+   "nguon": "a4"
+  },
+  {
+   "tu": "pokoj",
+   "giong": "TEN",
+   "phien_am": "",
+   "nghia": "phòng",
+   "emoji": "🚪",
+   "bay": false,
+   "nhom": "noi-chon",
+   "nguon": "a4"
+  },
+  {
+   "tu": "bratranec",
+   "giong": "TEN",
+   "phien_am": "",
+   "nghia": "anh em họ",
+   "emoji": "👫",
+   "bay": false,
+   "nhom": "nguoi",
+   "nguon": "a4"
+  }
+ ],
+ "cau": [
+  {
+   "cz": "Ahoj!",
+   "phien_am": "a-hôi",
+   "nghia": "Chào / tạm biệt (bạn bè)",
+   "nhom": "chao-hoi",
+   "nguon": "pes-kocka",
+   "man": 0
+  },
+  {
+   "cz": "Dobrý den.",
+   "phien_am": "đô-bri đen",
+   "nghia": "Chào (người lớn)",
+   "nhom": "chao-hoi",
+   "nguon": "pes-kocka",
+   "man": 0
+  },
+  {
+   "cz": "Na shledanou!",
+   "phien_am": "na sclê-đa-nâu",
+   "nghia": "Hẹn gặp lại",
+   "nhom": "chao-hoi",
+   "nguon": "pes-kocka",
+   "man": 0
+  },
+  {
+   "cz": "Děkuju.",
+   "phien_am": "điê-cu-iu",
+   "nghia": "Cảm ơn",
+   "nhom": "chao-hoi",
+   "nguon": "pes-kocka",
+   "man": 0
+  },
+  {
+   "cz": "Prosím.",
+   "phien_am": "prô-sim",
+   "nghia": "Xin mời / không có gì",
+   "nhom": "chao-hoi",
+   "nguon": "pes-kocka",
+   "man": 0
+  },
+  {
+   "cz": "Jak se máš?",
+   "phien_am": "iac sê mash",
+   "nghia": "Bạn khỏe không? (thân, ty)",
+   "nhom": "hoi-tham",
+   "nguon": "pes-kocka",
+   "man": 3
+  },
+  {
+   "cz": "Jak se máte?",
+   "phien_am": "iac sê ma-tê",
+   "nghia": "Ngài khỏe không? (lịch sự, vy)",
+   "nhom": "hoi-tham",
+   "nguon": "pes-kocka",
+   "man": 3
+  },
+  {
+   "cz": "Mám se dobře.",
+   "phien_am": "mam sê đô-brzhê",
+   "nghia": "Tôi khỏe.",
+   "nhom": "hoi-tham",
+   "nguon": "pes-kocka",
+   "man": 3
+  },
+  {
+   "cz": "Mám se dobře. A vy?",
+   "phien_am": "mam sê đô-brzhê. a vi",
+   "nghia": "Tôi khỏe. Còn bạn?",
+   "nhom": "hoi-tham",
+   "nguon": "pes-kocka",
+   "man": 3
+  },
+  {
+   "cz": "Jde to.",
+   "phien_am": "iđê tô",
+   "nghia": "Tạm được.",
+   "nhom": "hoi-tham",
+   "nguon": "pes-kocka",
+   "man": 3
+  },
+  {
+   "cz": "Špatně.",
+   "phien_am": "shpat-nhê",
+   "nghia": "Tệ.",
+   "nhom": "hoi-tham",
+   "nguon": "pes-kocka",
+   "man": 3
+  },
+  {
+   "cz": "Jak se jmenuješ?",
+   "phien_am": "iac sê mê-nu-iesh",
+   "nghia": "Bạn tên gì? (ty)",
+   "nhom": "ten",
+   "nguon": "pes-kocka",
+   "man": 3
+  },
+  {
+   "cz": "Jak se jmenujete?",
+   "phien_am": "iac sê mê-nu-iê-tê",
+   "nghia": "Ngài tên gì? (vy)",
+   "nhom": "ten",
+   "nguon": "pes-kocka",
+   "man": 3
+  },
+  {
+   "cz": "Jmenuju se …",
+   "phien_am": "mê-nu-iu sê …",
+   "nghia": "Tên tôi là …",
+   "nhom": "ten",
+   "nguon": "pes-kocka",
+   "man": 3
+  },
+  {
+   "cz": "A vy? / A ty?",
+   "phien_am": "a vi / a ti",
+   "nghia": "Còn ngài? / Còn bạn?",
+   "nhom": "ten",
+   "nguon": "pes-kocka",
+   "man": 3
+  },
+  {
+   "cz": "Jaké je vaše jméno?",
+   "phien_am": "ia-kê iê va-shê mê-nô",
+   "nghia": "Tên của ngài là gì?",
+   "nhom": "ten",
+   "nguon": "pes-kocka",
+   "man": 3
+  },
+  {
+   "cz": "Moje jméno je …",
+   "phien_am": "mô-iê mê-nô iê …",
+   "nghia": "Tên của tôi là …",
+   "nhom": "ten",
+   "nguon": "pes-kocka",
+   "man": 3
+  },
+  {
+   "cz": "Kdo je to?",
+   "phien_am": "gơ-đô iê tô",
+   "nghia": "Đây là ai?",
+   "nhom": "ai-cai-gi",
+   "nguon": "pes-kocka",
+   "man": 1
+  },
+  {
+   "cz": "Co je to?",
+   "phien_am": "tsô iê tô",
+   "nghia": "Đây là cái gì?",
+   "nhom": "ai-cai-gi",
+   "nguon": "pes-kocka",
+   "man": 1
+  },
+  {
+   "cz": "To je …",
+   "phien_am": "tô iê …",
+   "nghia": "Đây là … (một cái)",
+   "nhom": "ai-cai-gi",
+   "nguon": "pes-kocka",
+   "man": 1
+  },
+  {
+   "cz": "To jsou …",
+   "phien_am": "tô sâu …",
+   "nghia": "Đây là … (nhiều cái)",
+   "nhom": "ai-cai-gi",
+   "nguon": "pes-kocka",
+   "man": 8
+  },
+  {
+   "cz": "To jsou kalhoty.",
+   "phien_am": "tô sâu cal-hô-ti",
+   "nghia": "Đây là cái quần (luôn số nhiều).",
+   "nhom": "ai-cai-gi",
+   "nguon": "pes-kocka",
+   "man": 8
+  },
+  {
+   "cz": "To je kočka.",
+   "phien_am": "tô iê côch-ca",
+   "nghia": "Đây là con mèo.",
+   "nhom": "ai-cai-gi",
+   "nguon": "pes-kocka",
+   "man": 1
+  },
+  {
+   "cz": "Kdo jsi?",
+   "phien_am": "gơ-đô si",
+   "nghia": "Bạn là ai?",
+   "nhom": "la",
+   "nguon": "pes-kocka",
+   "man": 2
+  },
+  {
+   "cz": "Kdo jste?",
+   "phien_am": "gơ-đô stê",
+   "nghia": "Ngài là ai? / Các bạn là ai?",
+   "nhom": "la",
+   "nguon": "pes-kocka",
+   "man": 2
+  },
+  {
+   "cz": "My jsme kamarádi.",
+   "phien_am": "mi smê ca-ma-ra-đi",
+   "nghia": "Chúng tôi là bạn bè.",
+   "nhom": "la",
+   "nguon": "pes-kocka",
+   "man": 2
+  },
+  {
+   "cz": "Kde jsi?",
+   "phien_am": "gơ-đê si",
+   "nghia": "Bạn đang ở đâu?",
+   "nhom": "o-dau",
+   "nguon": "pes-kocka",
+   "man": 12
+  },
+  {
+   "cz": "Jsem doma.",
+   "phien_am": "sêm đô-ma",
+   "nghia": "Tôi đang ở nhà.",
+   "nhom": "o-dau",
+   "nguon": "so-tay",
+   "man": 12
+  },
+  {
+   "cz": "Já jsem na nádraží.",
+   "phien_am": "ia sêm na na-đra-gi",
+   "nghia": "Tôi đang ở nhà ga.",
+   "nhom": "o-dau",
+   "nguon": "pes-kocka",
+   "man": 12
+  },
+  {
+   "cz": "My jsme ve škole.",
+   "phien_am": "mi smê vê shcô-lê",
+   "nghia": "Chúng tôi ở trường.",
+   "nhom": "o-dau",
+   "nguon": "pes-kocka",
+   "man": 12
+  },
+  {
+   "cz": "Odkud jsi?",
+   "phien_am": "ôt-cut si",
+   "nghia": "Bạn từ đâu đến? (thân)",
+   "nhom": "que-quan",
+   "nguon": "pes-kocka",
+   "man": 12
+  },
+  {
+   "cz": "Odkud jste?",
+   "phien_am": "ôt-cut stê",
+   "nghia": "Ngài từ đâu đến? (lịch sự)",
+   "nhom": "que-quan",
+   "nguon": "pes-kocka",
+   "man": 12
+  },
+  {
+   "cz": "Jsem z Vietnamu.",
+   "phien_am": "sêm z vi-ết-na-mu",
+   "nghia": "Tôi đến từ Việt Nam.",
+   "nhom": "que-quan",
+   "nguon": "pes-kocka",
+   "man": 12
+  },
+  {
+   "cz": "Jsem Vietnamka.",
+   "phien_am": "sêm vi-ết-nam-ca",
+   "nghia": "Tôi là người Việt (nữ).",
+   "nhom": "que-quan",
+   "nguon": "pes-kocka",
+   "man": 10
+  },
+  {
+   "cz": "Já jsem Vietnamec.",
+   "phien_am": "ia sêm vi-ết-na-mêts",
+   "nghia": "Tôi là người Việt (nam).",
+   "nhom": "que-quan",
+   "nguon": "pes-kocka",
+   "man": 10
+  },
+  {
+   "cz": "Ano.",
+   "phien_am": "a-nô",
+   "nghia": "Vâng.",
+   "nhom": "co-khong",
+   "nguon": "pes-kocka",
+   "man": 9
+  },
+  {
+   "cz": "Ne.",
+   "phien_am": "nê",
+   "nghia": "Không.",
+   "nhom": "co-khong",
+   "nguon": "pes-kocka",
+   "man": 9
+  },
+  {
+   "cz": "Nejsem Číňanka, já jsem Vietnamka.",
+   "phien_am": "nê-sêm chi-nhan-ca, ia sêm vi-ết-nam-ca",
+   "nghia": "Tôi không phải người Trung Quốc, tôi là người Việt.",
+   "nhom": "que-quan",
+   "nguon": "pes-kocka",
+   "man": 9
+  },
+  {
+   "cz": "To je učitel. / To je učitelka.",
+   "phien_am": "tô iê u-chi-têl / u-chi-têl-ca",
+   "nghia": "Đó là giáo viên (nam / nữ).",
+   "nhom": "ai-cai-gi",
+   "nguon": "so-tay",
+   "man": 2
+  },
+  {
+   "cz": "To je kamarád. / To je kamarádka.",
+   "phien_am": "tô iê ca-ma-rát / ca-ma-rát-ca",
+   "nghia": "Đó là bạn (nam / nữ).",
+   "nhom": "ai-cai-gi",
+   "nguon": "so-tay",
+   "man": 2
+  },
+  {
+   "cz": "To je kniha.",
+   "phien_am": "tô iê cnhi-ha",
+   "nghia": "Đây là quyển sách.",
+   "nhom": "ai-cai-gi",
+   "nguon": "so-tay",
+   "man": 1
+  },
+  {
+   "cz": "To není doktorka.",
+   "phien_am": "tô nê-nhi đốc-to-ca",
+   "nghia": "Đó không phải bác sĩ nữ.",
+   "nhom": "ai-cai-gi",
+   "nguon": "so-tay",
+   "man": 9
+  },
+  {
+   "cz": "Co děláte za práci?",
+   "phien_am": "tsô điê-la-tê da pra-tsi?",
+   "nghia": "Bạn làm nghề gì?",
+   "nhom": "nghe",
+   "nguon": "so-tay",
+   "man": 10
+  },
+  {
+   "cz": "Jaké je vaše povolání?",
+   "phien_am": "ia-kê iê va-shê pô-vô-la-nhi?",
+   "nghia": "Nghề nghiệp của bạn là gì?",
+   "nhom": "nghe",
+   "nguon": "so-tay",
+   "man": 10
+  },
+  {
+   "cz": "Jsem kuchař. / Jsem kuchařka.",
+   "phien_am": "sêm cu-kharzh / cu-kharzh-ca",
+   "nghia": "Tôi là đầu bếp (nam / nữ).",
+   "nhom": "nghe",
+   "nguon": "so-tay",
+   "man": 10
+  },
+  {
+   "cz": "Pracuju jako řidič.",
+   "phien_am": "pra-tsu-iu ia-cô rzhi-đích",
+   "nghia": "Tôi làm tài xế.",
+   "nhom": "nghe",
+   "nguon": "so-tay",
+   "man": 10
+  },
+  {
+   "cz": "Pracuju jako manikérka.",
+   "phien_am": "pra-tsu-iu ia-cô ma-nhi-kêr-ca",
+   "nghia": "Tôi làm thợ làm móng (nữ).",
+   "nhom": "nghe",
+   "nguon": "so-tay",
+   "man": 10
+  },
+  {
+   "cz": "Z jakého státu jste?",
+   "phien_am": "dia-kê-hô sta-tu stê?",
+   "nghia": "Bạn là người nước nào?",
+   "nhom": "que-quan",
+   "nguon": "so-tay",
+   "man": 12
+  },
+  {
+   "cz": "Jdu domů.",
+   "phien_am": "đu đô-mu",
+   "nghia": "Tôi đi về nhà.",
+   "nhom": "o-dau",
+   "nguon": "so-tay",
+   "man": 4
+  },
+  {
+   "cz": "Kde je nádraží?",
+   "phien_am": "gơ-đê iê na-đra-gi?",
+   "nghia": "Nhà ga ở đâu?",
+   "nhom": "o-dau",
+   "nguon": "so-tay",
+   "man": 4
+  },
+  {
+   "cz": "Kde je letiště?",
+   "phien_am": "gơ-đê iê lê-ti-sh-tê?",
+   "nghia": "Sân bay ở đâu?",
+   "nhom": "o-dau",
+   "nguon": "so-tay",
+   "man": 4
+  },
+  {
+   "cz": "Kde je záchod?",
+   "phien_am": "gơ-đê iê da-khốt?",
+   "nghia": "Nhà vệ sinh ở đâu?",
+   "nhom": "o-dau",
+   "nguon": "so-tay",
+   "man": 4
+  },
+  {
+   "cz": "Další káva?",
+   "phien_am": "đau-shi ca-va?",
+   "nghia": "Thêm cà phê nữa nhé?",
+   "nhom": "doi-song",
+   "nguon": "so-tay",
+   "man": 5
+  },
+  {
+   "cz": "Ten pokoj je světlý.",
+   "phien_am": "tên pô-côi iê sviết-lí",
+   "nghia": "Căn phòng sáng.",
+   "nhom": "doi-song",
+   "nguon": "so-tay",
+   "man": 11
+  },
+  {
+   "cz": "Ta budova je bílá.",
+   "phien_am": "ta bu-đô-va iê bi-la",
+   "nghia": "Tòa nhà màu trắng.",
+   "nhom": "doi-song",
+   "nguon": "so-tay",
+   "man": 11
+  },
+  {
+   "cz": "To tričko je černé.",
+   "phien_am": "tô trích-cô iê chơ-nê",
+   "nghia": "Áo phông màu đen.",
+   "nhom": "doi-song",
+   "nguon": "so-tay",
+   "man": 11
+  },
+  {
+   "cz": "Ta tužka je hnědá.",
+   "phien_am": "ta tu-sh-ca iê hnhê-đa",
+   "nghia": "Bút chì màu nâu.",
+   "nhom": "doi-song",
+   "nguon": "so-tay",
+   "man": 11
+  }
+ ],
+ "meo_phat_am": [
+  "j đọc như i: já [ia], jak [iac]; trước s, m thì gần như câm: jsem [sêm]",
+  "Dấu sắc ´ = kéo dài hơi, không phải thanh sắc tiếng Việt: pán [pa-an]",
+  "č = ch · š = sh · ž = gi · ř = rzh (rung lưỡi) · ň = nh · ě = iê",
+  "c = ts (không phải x) · ch = kh: co [tsô], Čech [chekh]",
+  "Trọng âm luôn ở âm tiết đầu tiên",
+  "Cuối từ hóa vô thanh: d→t (had → HAT), v→f (lev → LEF)"
+ ],
+ "ghi_chu_bi_kip": "Mỗi màn có 1 bí kíp (luật chơi). Người chơi phải thuộc bí kíp mới qua được Cửa ải cuối màn. Bí kíp lấy từ 3 file PDF. 'than_chu' là câu ngắn để học thuộc.",
+ "bi_kip": [
+  {
+   "id": "BK0",
+   "man": 0,
+   "ten": "4 mật mã đọc chữ Séc",
+   "than_chu": "j = i · ´ = kéo dài · móc ˇ = âm đặc biệt · c = ts, ch = kh",
+   "giai_thich": "Tiếng Séc viết sao đọc vậy. Trọng âm luôn ở vần đầu. Thuộc 4 mật mã này là đọc được mọi từ trong game.",
+   "chi_tiet": [
+    "j đọc như i: já [ia], jak [iac]. Trước s, m gần như câm: jsem [sêm]",
+    "Dấu sắc ´ là kéo dài hơi, không phải thanh sắc: pán [pa-an]",
+    "Móc ˇ: č = ch · š = sh · ž = gi · ř = rzh · ň = nh · ě = iê",
+    "c = ts (không phải x) · ch = kh: co [tsô], Čech [chekh]"
+   ],
+   "vi_du": [
+    "já [ia]",
+    "pán [pa-an]",
+    "dobře [đô-brzhê]",
+    "co [tsô]",
+    "Čech [chekh]"
+   ],
+   "cau_hoi_thuoc": [
+    {
+     "hoi": "Chữ j đọc như chữ gì?",
+     "dap": "i",
+     "lua_chon": [
+      "i",
+      "gi",
+      "z"
+     ]
+    },
+    {
+     "hoi": "Chữ c đọc là?",
+     "dap": "ts",
+     "lua_chon": [
+      "ts",
+      "x",
+      "k"
+     ]
+    },
+    {
+     "hoi": "Chữ ch đọc là?",
+     "dap": "kh",
+     "lua_chon": [
+      "kh",
+      "ch",
+      "s"
+     ]
+    },
+    {
+     "hoi": "Dấu sắc ´ trong tiếng Séc nghĩa là?",
+     "dap": "kéo dài hơi",
+     "lua_chon": [
+      "kéo dài hơi",
+      "lên giọng",
+      "xuống giọng"
+     ]
+    },
+    {
+     "hoi": "Trọng âm rơi vào vần nào?",
+     "dap": "vần đầu",
+     "lua_chon": [
+      "vần đầu",
+      "vần cuối",
+      "vần giữa"
+     ]
+    }
+   ],
+   "nguon": "pes-kocka, a4"
+  },
+  {
+   "id": "BK1",
+   "man": 1,
+   "ten": "Luật đuôi từ: ông, bà, em bé",
+   "than_chu": "Phụ âm → TEN · -a → TA · -o → TO",
+   "giai_thich": "Mỗi danh từ có một người bạn đi kèm: TEN là ông, TA là bà, TO là em bé. Nhìn chữ cuối là đoán được: phụ âm vào giỏ TEN, -a vào giỏ TA, -o vào giỏ TO.",
+   "chi_tiet": [
+    "Đuôi phụ âm → TEN (khoảng 85%)",
+    "Đuôi -a → TA (khoảng 98%)",
+    "Đuôi -o → TO (gần 100%)"
+   ],
+   "vi_du": [
+    "TEN chléb",
+    "TA voda",
+    "TO mléko"
+   ],
+   "cau_hoi_thuoc": [
+    {
+     "hoi": "Từ kết thúc bằng phụ âm thường là?",
+     "dap": "TEN",
+     "lua_chon": [
+      "TEN",
+      "TA",
+      "TO"
+     ]
+    },
+    {
+     "hoi": "Từ kết thúc bằng -a thường là?",
+     "dap": "TA",
+     "lua_chon": [
+      "TEN",
+      "TA",
+      "TO"
+     ]
+    },
+    {
+     "hoi": "Từ kết thúc bằng -o là?",
+     "dap": "TO",
+     "lua_chon": [
+      "TEN",
+      "TA",
+      "TO"
+     ]
+    }
+   ],
+   "nguon": "so-tay, a4"
+  },
+  {
+   "id": "BK2",
+   "man": 2,
+   "ten": "Áo 'là' của mỗi người",
+   "than_chu": "já jsem · ty jsi · on/ona/to je · my jsme · vy jste · oni jsou",
+   "giai_thich": "Chữ 'là' (být) như chiếc áo: mỗi người mặc một chiếc riêng. Mặc nhầm áo thì câu sai. Hát theo nhịp vỗ tay cho dễ thuộc.",
+   "chi_tiet": [
+    "já (tôi) → jsem [sêm]",
+    "ty (bạn, thân) → jsi [si]",
+    "on / ona / to → je [iê]",
+    "my (chúng tôi) → jsme [smê]",
+    "vy (ngài, các bạn) → jste [stê]",
+    "oni (họ) → jsou [sâu]",
+    "Dễ nhầm: jsem (tôi) khác jsme (chúng tôi)"
+   ],
+   "vi_du": [
+    "Já jsem Dario.",
+    "To je učitel.",
+    "My jsme kamarádi."
+   ],
+   "cau_hoi_thuoc": [
+    {
+     "hoi": "já ___",
+     "dap": "jsem",
+     "lua_chon": [
+      "jsem",
+      "jsi",
+      "je"
+     ]
+    },
+    {
+     "hoi": "ty ___",
+     "dap": "jsi",
+     "lua_chon": [
+      "jsi",
+      "jste",
+      "je"
+     ]
+    },
+    {
+     "hoi": "on ___",
+     "dap": "je",
+     "lua_chon": [
+      "je",
+      "jsou",
+      "jsem"
+     ]
+    },
+    {
+     "hoi": "my ___",
+     "dap": "jsme",
+     "lua_chon": [
+      "jsme",
+      "jsem",
+      "jste"
+     ]
+    },
+    {
+     "hoi": "vy ___",
+     "dap": "jste",
+     "lua_chon": [
+      "jste",
+      "jsi",
+      "jsou"
+     ]
+    },
+    {
+     "hoi": "oni ___",
+     "dap": "jsou",
+     "lua_chon": [
+      "jsou",
+      "je",
+      "jsme"
+     ]
+    }
+   ],
+   "bai_hat": "Já jsem · ty jsi · on je · ona je · my jsme · vy jste · oni jsou!",
+   "nguon": "pes-kocka"
+  },
+  {
+   "id": "BK3",
+   "man": 3,
+   "ten": "Thân hay lịch sự: ty hay vy",
+   "than_chu": "Bạn bè, trẻ con → ty · Người lạ, người lớn → vy · Không chắc → vy",
+   "giai_thich": "Có hai cách gọi 'bạn'. Ty dùng với bạn bè, trẻ con (như 'cậu, em'). Vy dùng với người lạ, người lớn tuổi, cô bán hàng, cô giáo. Không chắc thì dùng vy.",
+   "chi_tiet": [
+    "Jak se máš? = hỏi thân (ty)",
+    "Jak se máte? = hỏi lịch sự (vy)",
+    "Jak se jmenuješ? (ty) · Jak se jmenujete? (vy)"
+   ],
+   "vi_du": [
+    "Với cô bán hàng: Jak se máte?",
+    "Với Su hoặc Ảnh Dương: Jak se máš?"
+   ],
+   "cau_hoi_thuoc": [
+    {
+     "hoi": "Nói với cô bán hàng ở chợ, dùng?",
+     "dap": "vy",
+     "lua_chon": [
+      "vy",
+      "ty"
+     ]
+    },
+    {
+     "hoi": "Nói với bạn thân, dùng?",
+     "dap": "ty",
+     "lua_chon": [
+      "ty",
+      "vy"
+     ]
+    },
+    {
+     "hoi": "Không chắc thì dùng?",
+     "dap": "vy",
+     "lua_chon": [
+      "vy",
+      "ty"
+     ]
+    },
+    {
+     "hoi": "Hỏi thăm cô bán hàng:",
+     "dap": "Jak se máte?",
+     "lua_chon": [
+      "Jak se máte?",
+      "Jak se máš?"
+     ]
+    }
+   ],
+   "nguon": "pes-kocka"
+  },
+  {
+   "id": "BK4",
+   "man": 4,
+   "ten": "Đuôi -í và nơi chốn -iště là em bé TO",
+   "than_chu": "-í → TO · -iště → TO (nơi chốn)",
+   "giai_thich": "Em bé TO còn có hai cái đuôi nữa: đuôi -í và đuôi -iště (thường là tên một nơi).",
+   "chi_tiet": [
+    "Đuôi -í → TO: nádraží, náměstí, nádobí, počasí",
+    "Đuôi -iště → TO, là nơi chốn: letiště, hřiště, parkoviště",
+    "Ngoại lệ: ta paní (bà, cô) đuôi -í nhưng là TA"
+   ],
+   "vi_du": [
+    "TO nádraží",
+    "TO letiště",
+    "TA paní ★"
+   ],
+   "cau_hoi_thuoc": [
+    {
+     "hoi": "Từ đuôi -í thường là?",
+     "dap": "TO",
+     "lua_chon": [
+      "TEN",
+      "TA",
+      "TO"
+     ]
+    },
+    {
+     "hoi": "Từ đuôi -iště là?",
+     "dap": "TO",
+     "lua_chon": [
+      "TEN",
+      "TA",
+      "TO"
+     ]
+    },
+    {
+     "hoi": "paní là?",
+     "dap": "TA",
+     "lua_chon": [
+      "TEN",
+      "TA",
+      "TO"
+     ]
+    }
+   ],
+   "nguon": "so-tay, a4"
+  },
+  {
+   "id": "BK5",
+   "man": 5,
+   "ten": "Bà TA có đuôi lạ: -ost, -ice, -ce, -ie",
+   "than_chu": "-ost, -ice, -ace, -ize, -ie, -ule → TA",
+   "giai_thich": "Bà TA không chỉ có đuôi -a. Gặp các đuôi -ost, -ice, -ace, -ize, -ie, -ule thì cũng là TA.",
+   "chi_tiet": [
+    "-ost → TA: radost",
+    "-ice → TA: ulice, opice, sklenice",
+    "-ace → TA: restaurace",
+    "-ize → TA: televize",
+    "-ie → TA: policie",
+    "-ule → TA: tabule"
+   ],
+   "vi_du": [
+    "TA radost",
+    "TA ulice",
+    "TA restaurace"
+   ],
+   "cau_hoi_thuoc": [
+    {
+     "hoi": "Từ đuôi -ost là?",
+     "dap": "TA",
+     "lua_chon": [
+      "TEN",
+      "TA",
+      "TO"
+     ]
+    },
+    {
+     "hoi": "Từ đuôi -ice là?",
+     "dap": "TA",
+     "lua_chon": [
+      "TEN",
+      "TA",
+      "TO"
+     ]
+    },
+    {
+     "hoi": "restaurace là?",
+     "dap": "TA",
+     "lua_chon": [
+      "TEN",
+      "TA",
+      "TO"
+     ]
+    }
+   ],
+   "nguon": "so-tay, a4"
+  },
+  {
+   "id": "BK6",
+   "man": 6,
+   "ten": "Kẻ phá luật 1: đàn ông đuôi -a, -ce vẫn là TEN",
+   "than_chu": "Chỉ đàn ông thì luôn là TEN, dù đuôi -a hay -ce",
+   "giai_thich": "Có những từ đuôi -a nhưng chỉ người đàn ông, nên vẫn là ông TEN. Từ đuôi -ce chỉ người cũng là TEN.",
+   "chi_tiet": [
+    "ten táta (bố), ten kolega, ten turista, ten fotbalista",
+    "ten soudce, ten průvodce (đuôi -ce chỉ người)"
+   ],
+   "vi_du": [
+    "TEN táta ★",
+    "TEN turista ★",
+    "TEN průvodce ★"
+   ],
+   "cau_hoi_thuoc": [
+    {
+     "hoi": "táta (bố) là?",
+     "dap": "TEN",
+     "lua_chon": [
+      "TEN",
+      "TA",
+      "TO"
+     ]
+    },
+    {
+     "hoi": "Từ đuôi -a nhưng chỉ đàn ông là?",
+     "dap": "TEN",
+     "lua_chon": [
+      "TEN",
+      "TA",
+      "TO"
+     ]
+    },
+    {
+     "hoi": "průvodce là?",
+     "dap": "TEN",
+     "lua_chon": [
+      "TEN",
+      "TA",
+      "TO"
+     ]
+    }
+   ],
+   "nguon": "so-tay, a4"
+  },
+  {
+   "id": "BK7",
+   "man": 7,
+   "ten": "Kẻ phá luật 2: phụ âm nhưng là bà TA",
+   "than_chu": "-ev, -oc, -ň → TA · Nhớ: kancelář, myš, postel, sůl, zeď, tramvaj, garáž",
+   "giai_thich": "Một số từ kết thúc bằng phụ âm nhưng lại là bà TA. Các đuôi -ev, -oc, -ň luôn là TA. Còn một nhóm nhỏ phải thuộc lòng.",
+   "chi_tiet": [
+    "-ev → TA: krev, mrkev, broskev, láhev",
+    "-oc → TA: noc, nemoc, pomoc",
+    "-ň → TA: píseň, skříň, dlaň",
+    "Thuộc lòng: kancelář, myš, postel, sůl, zeď, labuť, tramvaj, garáž"
+   ],
+   "vi_du": [
+    "TA mrkev ★",
+    "TA noc ★",
+    "TA postel ★"
+   ],
+   "cau_hoi_thuoc": [
+    {
+     "hoi": "Từ đuôi -ev là?",
+     "dap": "TA",
+     "lua_chon": [
+      "TEN",
+      "TA",
+      "TO"
+     ]
+    },
+    {
+     "hoi": "Từ đuôi -oc là?",
+     "dap": "TA",
+     "lua_chon": [
+      "TEN",
+      "TA",
+      "TO"
+     ]
+    },
+    {
+     "hoi": "postel là?",
+     "dap": "TA",
+     "lua_chon": [
+      "TEN",
+      "TA",
+      "TO"
+     ]
+    }
+   ],
+   "nguon": "so-tay, a4"
+  },
+  {
+   "id": "BK8",
+   "man": 8,
+   "ten": "Một cái hay nhiều cái",
+   "than_chu": "Một cái: To je … · Nhiều cái: To jsou …",
+   "giai_thich": "Chỉ vào một món thì nói To je. Nhiều món thì đổi thành To jsou. Cái quần (kalhoty) có 2 ống nên luôn là nhiều: To jsou kalhoty.",
+   "chi_tiet": [
+    "Kdo je to? = Đây là ai?",
+    "Co je to? = Đây là cái gì?",
+    "To je kočka. (một)",
+    "To jsou kalhoty. (nhiều)"
+   ],
+   "vi_du": [
+    "Co je to? To je jablko.",
+    "To jsou kalhoty."
+   ],
+   "cau_hoi_thuoc": [
+    {
+     "hoi": "Một quả táo: To ___ jablko.",
+     "dap": "je",
+     "lua_chon": [
+      "je",
+      "jsou"
+     ]
+    },
+    {
+     "hoi": "Cái quần: To ___ kalhoty.",
+     "dap": "jsou",
+     "lua_chon": [
+      "je",
+      "jsou"
+     ]
+    },
+    {
+     "hoi": "Hỏi 'Đây là cái gì?'",
+     "dap": "Co je to?",
+     "lua_chon": [
+      "Co je to?",
+      "Kdo je to?"
+     ]
+    },
+    {
+     "hoi": "Hỏi 'Đây là ai?'",
+     "dap": "Kdo je to?",
+     "lua_chon": [
+      "Kdo je to?",
+      "Co je to?"
+     ]
+    }
+   ],
+   "nguon": "pes-kocka"
+  },
+  {
+   "id": "BK9",
+   "man": 9,
+   "ten": "Nói 'không phải'",
+   "than_chu": "Thêm ne- trước 'là': jsem → nejsem · riêng je → není",
+   "giai_thich": "Muốn nói 'không phải', dán ne- vào ngay trước chữ 'là'. Riêng je đổi thành není.",
+   "chi_tiet": [
+    "jsem → nejsem [nê-sêm]",
+    "je → není [nê-nhi]",
+    "Ano = vâng · Ne = không"
+   ],
+   "vi_du": [
+    "To není doktorka.",
+    "Nejsem Číňanka, já jsem Vietnamka."
+   ],
+   "cau_hoi_thuoc": [
+    {
+     "hoi": "'Tôi không phải' = ?",
+     "dap": "nejsem",
+     "lua_chon": [
+      "nejsem",
+      "není",
+      "nejsi"
+     ]
+    },
+    {
+     "hoi": "'Đó không phải' = To ___",
+     "dap": "není",
+     "lua_chon": [
+      "není",
+      "neje",
+      "nejsem"
+     ]
+    },
+    {
+     "hoi": "'Vâng' = ?",
+     "dap": "Ano",
+     "lua_chon": [
+      "Ano",
+      "Ne"
+     ]
+    }
+   ],
+   "nguon": "pes-kocka, so-tay"
+  },
+  {
+   "id": "BK10",
+   "man": 10,
+   "ten": "Nữ = nam + -ka",
+   "than_chu": "Nghề và quốc tịch: nữ thêm -ka",
+   "giai_thich": "Muốn nói về phụ nữ, thường chỉ cần thêm -ka vào cuối từ của đàn ông. Mẹ, Su và Ảnh Dương phải tự giới thiệu đúng dạng nữ.",
+   "chi_tiet": [
+    "učitel → učitelka",
+    "prodavač → prodavačka",
+    "Vietnamec → Vietnamka",
+    "Čech → Češka",
+    "cizinec → cizinka",
+    "Một số đổi khác: kolega → kolegyně, lékárník → lékárnice"
+   ],
+   "vi_du": [
+    "Jsem Vietnamka. (nữ)",
+    "Já jsem Vietnamec. (nam)"
+   ],
+   "cau_hoi_thuoc": [
+    {
+     "hoi": "Cô giáo = ?",
+     "dap": "učitelka",
+     "lua_chon": [
+      "učitelka",
+      "učitel"
+     ]
+    },
+    {
+     "hoi": "Mẹ nói 'Tôi là người Việt':",
+     "dap": "Jsem Vietnamka.",
+     "lua_chon": [
+      "Jsem Vietnamka.",
+      "Jsem Vietnamec."
+     ]
+    },
+    {
+     "hoi": "Nữ thường thêm đuôi gì?",
+     "dap": "-ka",
+     "lua_chon": [
+      "-ka",
+      "-a",
+      "-ice"
+     ]
+    }
+   ],
+   "nguon": "pes-kocka, so-tay"
+  },
+  {
+   "id": "BK11",
+   "man": 11,
+   "ten": "Màu đi theo giống",
+   "than_chu": "TEN → -ý · TA → -á · TO → -é",
+   "giai_thich": "Màu sắc đổi đuôi theo người bạn đi kèm. Ông TEN thích -ý, bà TA thích -á, em bé TO thích -é. Phải đoán đúng giống trước rồi mới chọn được màu.",
+   "chi_tiet": [
+    "hnědý stůl (TEN)",
+    "bílá budova (TA)",
+    "černé tričko (TO)",
+    "modré auto (TO)",
+    "žlutá propiska (TA)"
+   ],
+   "vi_du": [
+    "Ten pokoj je světlý.",
+    "Ta tužka je hnědá.",
+    "To tričko je černé."
+   ],
+   "cau_hoi_thuoc": [
+    {
+     "hoi": "TEN đi với đuôi màu?",
+     "dap": "-ý",
+     "lua_chon": [
+      "-ý",
+      "-á",
+      "-é"
+     ]
+    },
+    {
+     "hoi": "TA đi với đuôi màu?",
+     "dap": "-á",
+     "lua_chon": [
+      "-ý",
+      "-á",
+      "-é"
+     ]
+    },
+    {
+     "hoi": "TO đi với đuôi màu?",
+     "dap": "-é",
+     "lua_chon": [
+      "-ý",
+      "-á",
+      "-é"
+     ]
+    },
+    {
+     "hoi": "auto màu xanh dương:",
+     "dap": "modré auto",
+     "lua_chon": [
+      "modré auto",
+      "modrý auto",
+      "modrá auto"
+     ]
+    }
+   ],
+   "nguon": "so-tay"
+  },
+  {
+   "id": "BK12",
+   "man": 12,
+   "ten": "Ở đâu và từ đâu",
+   "than_chu": "Kde = ở đâu · Odkud = từ đâu → Jsem z …",
+   "giai_thich": "Kde hỏi đang ở đâu, Odkud hỏi từ đâu đến. Chữ z (từ) như cục nam châm, hút đuôi tên nước biến dạng chút. Học thuộc cả cụm, không cần công thức.",
+   "chi_tiet": [
+    "Kde jsi? → Jsem doma.",
+    "Odkud jste? → Jsem z Vietnamu.",
+    "Nơi chốn: doma, ve škole, na nádraží, v parku, v Praze"
+   ],
+   "vi_du": [
+    "Kde jsi? Jsem doma.",
+    "Odkud jste? Jsem z Vietnamu."
+   ],
+   "cau_hoi_thuoc": [
+    {
+     "hoi": "Hỏi 'Bạn ở đâu?' (thân)",
+     "dap": "Kde jsi?",
+     "lua_chon": [
+      "Kde jsi?",
+      "Odkud jsi?"
+     ]
+    },
+    {
+     "hoi": "Hỏi 'Ngài từ đâu đến?'",
+     "dap": "Odkud jste?",
+     "lua_chon": [
+      "Odkud jste?",
+      "Kde jste?"
+     ]
+    },
+    {
+     "hoi": "'Tôi từ Việt Nam' = ?",
+     "dap": "Jsem z Vietnamu.",
+     "lua_chon": [
+      "Jsem z Vietnamu.",
+      "Jsem Vietnam.",
+      "Jsem v Vietnamu."
+     ]
+    }
+   ],
+   "nguon": "pes-kocka"
+  }
+ ],
+ "mau_sac": [
+  {
+   "ten": "červený / červená / červené",
+   "phien_am": "chơ-vê-ní / -ná / -nê",
+   "nghia": "đỏ"
+  },
+  {
+   "ten": "žlutý / žlutá / žluté",
+   "phien_am": "gi-lu-tí / -tá / -tê",
+   "nghia": "vàng"
+  },
+  {
+   "ten": "modrý / modrá / modré",
+   "phien_am": "mô-đrí / -đrá / -đrê",
+   "nghia": "xanh dương"
+  },
+  {
+   "ten": "zelený / zelená / zelené",
+   "phien_am": "dê-lê-ní / -ná / -nê",
+   "nghia": "xanh lá"
+  },
+  {
+   "ten": "černý / černá / černé",
+   "phien_am": "chơ-ní / chơ-ná / chơ-nê",
+   "nghia": "đen"
+  },
+  {
+   "ten": "bílý / bílá / bílé",
+   "phien_am": "bi-lí / bi-lá / bi-lê",
+   "nghia": "trắng"
+  },
+  {
+   "ten": "šedý / šedá / šedé",
+   "phien_am": "shê-đí / shê-đá / shê-đê",
+   "nghia": "xám"
+  },
+  {
+   "ten": "hnědý / hnědá / hnědé",
+   "phien_am": "hnhê-đí / -đá / -đê",
+   "nghia": "nâu"
+  },
+  {
+   "ten": "oranžový / oranžová / oranžové",
+   "phien_am": "ô-ran-giô-ví / -vá / -vê",
+   "nghia": "cam"
+  },
+  {
+   "ten": "růžový / růžová / růžové",
+   "phien_am": "ru-giô-ví / -vá / -vê",
+   "nghia": "hồng"
+  },
+  {
+   "ten": "fialový / fialová / fialové",
+   "phien_am": "fi-a-lô-ví / -vá / -vê",
+   "nghia": "tím"
+  },
+  {
+   "ten": "béžový / béžová / béžové",
+   "phien_am": "bê-giô-ví / -vá / -vê",
+   "nghia": "be"
+  },
+  {
+   "ten": "tyrkysový / tyrkysová / tyrkysové",
+   "phien_am": "tir-ki-sô-ví / -vá / -vê",
+   "nghia": "xanh ngọc"
+  },
+  {
+   "ten": "vínový / vínová / vínové",
+   "phien_am": "vi-nô-ví / -vá / -vê",
+   "nghia": "đỏ rượu vang"
+  },
+  {
+   "ten": "olivový / olivová / olivové",
+   "phien_am": "ô-li-vô-ví / -vá / -vê",
+   "nghia": "xanh olive"
+  },
+  {
+   "ten": "zlatý / zlatá / zlaté",
+   "phien_am": "dla-tí / dla-tá / dla-tê",
+   "nghia": "vàng kim"
+  },
+  {
+   "ten": "stříbrný / stříbrná / stříbrné",
+   "phien_am": "strzhi-bơ-ní / -ná / -nê",
+   "nghia": "bạc"
+  },
+  {
+   "ten": "bronzový / bronzová / bronzové",
+   "phien_am": "brôn-dô-ví / -vá / -vê",
+   "nghia": "đồng"
+  },
+  {
+   "ten": "barevný / barevná / barevné",
+   "phien_am": "ba-rêp-ní / -ná / -nê",
+   "nghia": "nhiều màu"
+  }
+ ],
+ "nghe_nghiep_cap": [
+  [
+   "učitel",
+   "učitelka",
+   "u-chi-têl / u-chi-têl-ca",
+   "giáo viên"
+  ],
+  [
+   "podnikatel",
+   "podnikatelka",
+   "pốt-nhi-ca-têl / -ca",
+   "doanh nhân"
+  ],
+  [
+   "ředitel",
+   "ředitelka",
+   "rzhê-đi-têl / -têl-ca",
+   "giám đốc"
+  ],
+  [
+   "kurýr",
+   "kurýrka",
+   "cu-rír / cu-rír-ca",
+   "shipper"
+  ],
+  [
+   "model",
+   "modelka",
+   "mô-đêl / mô-đêl-ca",
+   "người mẫu"
+  ],
+  [
+   "fotograf",
+   "fotografka",
+   "fô-tô-gráp / -gráp-ca",
+   "nhiếp ảnh gia"
+  ],
+  [
+   "manikér",
+   "manikérka",
+   "ma-nhi-kêr / -kêr-ca",
+   "thợ làm móng"
+  ],
+  [
+   "student",
+   "studentka",
+   "stu-đênt / stu-đênt-ca",
+   "sinh viên"
+  ],
+  [
+   "kamarád",
+   "kamarádka",
+   "ca-ma-rát / ca-ma-rát-ca",
+   "bạn bè"
+  ],
+  [
+   "spisovatel",
+   "spisovatelka",
+   "spi-sô-va-têl / -têl-ca",
+   "nhà văn"
+  ],
+  [
+   "asistent",
+   "asistentka",
+   "a-si-stênt / a-si-stênt-ca",
+   "trợ lý"
+  ],
+  [
+   "prodavač",
+   "prodavačka",
+   "prô-đa-vách / -vách-ca",
+   "người bán hàng"
+  ],
+  [
+   "uklízeč",
+   "uklízečka",
+   "u-cli-dếch / -dếch-ca",
+   "lao công"
+  ],
+  [
+   "právník",
+   "právnička",
+   "práp-nhíc / práp-nhích-ca",
+   "luật sư"
+  ],
+  [
+   "lékárník",
+   "lékárnice",
+   "lê-cár-nhíc / -nhi-tsê",
+   "dược sĩ"
+  ],
+  [
+   "úředník",
+   "úřednice",
+   "u-rzhết-nhíc / -nhi-tsê",
+   "nhân viên văn phòng"
+  ],
+  [
+   "dělník",
+   "dělnice",
+   "điêu-nhíc / điêu-nhi-tsê",
+   "công nhân"
+  ],
+  [
+   "skladník",
+   "skladnice",
+   "sclát-nhíc / sclát-nhi-tsê",
+   "nhân viên kho"
+  ],
+  [
+   "policista",
+   "policistka",
+   "pô-li-tsi-sta / -st-ca",
+   "cảnh sát"
+  ],
+  [
+   "kolega",
+   "kolegyně",
+   "cô-lê-ga / cô-lê-ghi-nhê",
+   "đồng nghiệp"
+  ],
+  [
+   "přítel",
+   "přítelkyně",
+   "przhi-têl / przhi-têl-ki-nhê",
+   "bạn trai / bạn gái"
+  ],
+  [
+   "zdravotní bratr",
+   "zdravotní sestra",
+   "đra-vốt-nhi bra-tơ / sê-stra",
+   "y tá"
+  ]
+ ],
+ "quoc_tich": [
+  {
+   "nuoc": "Séc",
+   "nam": "Čech [chekh]",
+   "nu": "Češka [chesh-ca]",
+   "tu_nuoc": "z Česka [s ches-ca]"
+  },
+  {
+   "nuoc": "Việt Nam",
+   "nam": "Vietnamec [vi-ết-na-mêts]",
+   "nu": "Vietnamka [vi-ết-nam-ca]",
+   "tu_nuoc": "z Vietnamu [z vi-ết-na-mu]"
+  },
+  {
+   "nuoc": "Trung Quốc",
+   "nam": "Číňan [chi-nhan]",
+   "nu": "Číňanka [chi-nhan-ca]",
+   "tu_nuoc": "z Číny [s chi-ni]"
+  },
+  {
+   "nuoc": "Người nước ngoài",
+   "nam": "cizinec [tsi-di-nêts]",
+   "nu": "cizinka [tsi-din-ca]",
+   "tu_nuoc": ""
+  },
+  {
+   "nuoc": "Ba Lan",
+   "nam": "",
+   "nu": "",
+   "tu_nuoc": "z Polska [s pôl-sca]"
+  },
+  {
+   "nuoc": "Thổ Nhĩ Kỳ",
+   "nam": "",
+   "nu": "",
+   "tu_nuoc": "z Turecka [s tu-rêts-ca]"
+  },
+  {
+   "nuoc": "Ý",
+   "nam": "",
+   "nu": "",
+   "tu_nuoc": "z Itálie [z i-ta-li-ê]"
+  }
+ ],
+ "noi_chon_cum": [
+  {
+   "cz": "doma",
+   "phien_am": "đô-ma",
+   "nghia": "ở nhà"
+  },
+  {
+   "cz": "ve škole",
+   "phien_am": "vê shcô-lê",
+   "nghia": "ở trường"
+  },
+  {
+   "cz": "na nádraží",
+   "phien_am": "na na-đra-gi",
+   "nghia": "ở nhà ga"
+  },
+  {
+   "cz": "v parku",
+   "phien_am": "f par-cu",
+   "nghia": "ở công viên"
+  },
+  {
+   "cz": "v Praze",
+   "phien_am": "f pra-zê",
+   "nghia": "ở Praha"
+  }
+ ],
+ "de_danh_sau": "Tính từ đối nghĩa (24 cặp, sổ tay phần 4) chưa dùng ở bản này.",
+ "ghi_chu_cau": "Mỗi câu có 'man' = màn mà câu này được học lần đầu (trùng với số bí kíp). Câu chỉ được dùng trong hội thoại từ màn đó trở đi."
+}

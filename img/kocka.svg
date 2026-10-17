@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><title>Kočka</title>
+<ellipse cx="60" cy="108" rx="34" ry="8" fill="#000" opacity=".08"/>
+<path d="M88 96 Q112 92 104 70" stroke="#F2A15A" stroke-width="8" fill="none" stroke-linecap="round"/>
+<ellipse cx="60" cy="92" rx="28" ry="19" fill="#F2A15A"/>
+<ellipse cx="60" cy="96" rx="14" ry="11" fill="#FFF4E2"/>
+<path d="M32 38 L36 12 L54 28 Z" fill="#F2A15A"/><path d="M37 32 L39 19 L48 28 Z" fill="#FFB7C2"/>
+<path d="M88 38 L84 12 L66 28 Z" fill="#F2A15A"/><path d="M83 32 L81 19 L72 28 Z" fill="#FFB7C2"/>
+<circle cx="60" cy="54" r="31" fill="#F2A15A"/>
+<path d="M50 26 Q52 34 50 38 M60 24 L60 36 M70 26 Q68 34 70 38" stroke="#D9803A" stroke-width="3" fill="none" stroke-linecap="round"/>
+<ellipse cx="60" cy="66" rx="14" ry="10" fill="#FFF4E2"/>
+<path d="M43 52 Q47 46 51 52" stroke="#2B2420" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M69 52 Q73 46 77 52" stroke="#2B2420" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M56 61 L64 61 L60 65 Z" fill="#FF7A8A"/>
+<path d="M60 65 Q56 70 52 67 M60 65 Q64 70 68 67" stroke="#2B2420" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M30 62 L44 64 M30 69 L44 67 M90 62 L76 64 M90 69 L76 67" stroke="#8A5A33" stroke-width="1.5" stroke-linecap="round"/>
+<circle cx="40" cy="58" r="4" fill="#FF9BA8" opacity=".55"/><circle cx="80" cy="58" r="4" fill="#FF9BA8" opacity=".55"/>
+</svg>

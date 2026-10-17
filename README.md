@@ -1,20 +1,18 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Đi chợ cùng Pes a Kočka
 
-# Run and deploy your AI Studio app
+Game học tiếng Séc vỡ lòng cho cả nhà (Bố, Mẹ, Xu Xu, Win Win), chạy trên trình duyệt điện thoại.
+Chỉ dùng HTML + CSS + JavaScript thuần, không cần cài đặt hay đóng gói.
 
-This contains everything you need to run your app locally.
+- Nội dung học: `data/tu-vung.json`
+- Ứng dụng cũ (AI Studio) đã được chuyển vào thư mục `app-cu/`.
 
-View your app in AI Studio: https://ai.studio/apps/drive/1tr3Q25GDKtzWszLPFsjlG2qqBkUxgJBU
+## Chạy thử trên máy tính
 
-## Run Locally
+Mở cửa sổ dòng lệnh trong thư mục này rồi gõ:
 
-**Prerequisites:**  Node.js
+```
+python3 -m http.server 8000
+```
 
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+Sau đó mở trình duyệt vào `http://localhost:8000`.
+(Mở thẳng file `index.html` bằng cách nhấp đúp sẽ không chạy, vì trình duyệt chặn đọc file dữ liệu.)
