@@ -288,3 +288,48 @@ p { margin: 0; }
 .huy-hieu.khoa { opacity: .5; }
 .huy-hieu-moi { display: flex; align-items: center; gap: 12px; justify-content: center; }
 .huy-hieu-moi .hh-hinh { font-size: 3rem; }
+
+/* ---------- Ôn hôm nay ---------- */
+.o-on {
+  display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+  background: var(--mat); border: 2px dashed var(--vien); border-radius: 18px; padding: 12px 14px; cursor: pointer;
+}
+.o-on .bieu-tuong { width: 48px; height: 48px; flex: none; border-radius: 50%; background: #E8E0D2; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+.o-on .noi-dung { flex: 1; min-width: 0; }
+.o-on.co-on { border: 2px solid var(--nhan); background: #FFF1E3; box-shadow: 0 3px 0 var(--nhan-dam); }
+.o-on.co-on .bieu-tuong { background: var(--nhan); }
+.o-on:active { transform: translateY(2px); }
+.o-cho-that .so { font-size: 1.3rem; }
+
+/* ---------- Tiến độ gia đình ---------- */
+.the-tien-do { gap: 14px; }
+.the-tien-do .dau-ho-so img { width: 56px; height: 56px; }
+.bieu-do { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; height: 120px; margin-top: 6px; align-items: end; }
+.bieu-do .cot { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; min-width: 0; }
+.bieu-do .cot i { display: block; width: 70%; max-width: 28px; background: var(--to); border-radius: 6px 6px 2px 2px; flex: none; max-height: calc(100% - 38px); }
+.bieu-do .so-phut { font-size: .75rem; font-weight: 800; min-height: 1.1em; font-variant-numeric: tabular-nums; }
+.bieu-do .thu { font-size: .75rem; color: var(--chu-nhat); margin-top: 2px; }
+.bieu-do .thu.nay { font-weight: 900; color: var(--chu); }
+.o-so { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; }
+.o-so > div { background: var(--nen); border-radius: 12px; padding: 8px 4px; display: flex; flex-direction: column; }
+.o-so b { font-size: 1.4rem; font-family: var(--font-tieu-de); font-variant-numeric: tabular-nums; }
+.o-so span { font-size: .8rem; color: var(--chu-nhat); }
+.ds-sai { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+.dong-sai { display: flex; align-items: center; gap: 8px; }
+.dong-sai > span:nth-child(2) { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.dong-sai .nut-tron { width: 36px; height: 36px; font-size: 1rem; flex: none; }
+.ds-bk { margin: 6px 0 0; padding-left: 20px; }
+
+/* ---------- Từ điển của mình ---------- */
+.o-tim { width: 100%; font: inherit; padding: 12px 14px; border-radius: 14px; border: 2px solid var(--vien); background: var(--mat); color: var(--chu); }
+.o-tim:focus { outline: none; border-color: var(--nhan); }
+.hang-loc { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip-loc { border: 2px solid var(--vien); background: var(--mat); border-radius: 999px; padding: 6px 12px; font-weight: 800; font-size: .9rem; cursor: pointer; min-height: 40px; }
+.chip-loc.chon-loc { background: var(--chu); color: #fff; border-color: var(--chu); }
+.ds-tu-dien { display: flex; flex-direction: column; gap: 8px; }
+.dong-tu { display: flex; align-items: center; gap: 10px; background: var(--mat); border: 1px solid var(--vien); border-radius: 14px; padding: 8px 10px; }
+.dong-tu.hay-sai { border-color: var(--sai); background: #FFF4F2; }
+.dong-tu .emoji { font-size: 1.6rem; width: 36px; text-align: center; flex: none; }
+.dong-tu .giua { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.dong-tu .nut-tron { flex: none; width: 40px; height: 40px; font-size: 1.05rem; }
+.canh-bao { color: var(--sai); font-weight: 800; font-size: .85rem; }

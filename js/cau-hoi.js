@@ -63,9 +63,14 @@ window.PK = window.PK || {};
     return null;
   }
 
+  // Xếp từ: đến hạn ôn và hay sai lên trước (từ đến hạn được cộng thêm như sai 3 lần).
   function uuTienSai(pool, tuDaCo) {
-    const sai = function (t) { return ((tuDaCo || {})[t.tu] || {}).sai || 0; };
-    return tron(pool).sort(function (a, b) { return sai(b) - sai(a); });
+    const bayGio = Date.now();
+    const diem = function (t) {
+      const m = (tuDaCo || {})[t.tu] || {};
+      return (m.sai || 0) + (PK.luu.denHan(m, bayGio) ? 3 : 0);
+    };
+    return tron(pool).sort(function (a, b) { return diem(b) - diem(a); });
   }
 
   // Bộ tạo câu cho màn có bí kíp về giống: một nửa chọn giỏ (ưu tiên từ minh họa bí kíp và từ hay sai), một nửa lạc nhóm.

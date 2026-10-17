@@ -297,6 +297,8 @@ window.PK = window.PK || {};
       // Thẻ câu mới học: phiên âm, nghĩa, 🔊 và 🎤 đọc theo.
       function theCauMoi(cz, nutXong) {
         const c = thongTin(cz) || {};
+        // Câu có trong dữ liệu thì vào hộp nhớ để ôn lại sau.
+        if (typeof c.man === 'number') PK.luu.danhDauMuc(hoSo.id, 'cau', c.cz);
         return h('div', { class: 'the' },
           h('div', { class: 'the-cau' },
             h('div', null,
@@ -378,6 +380,8 @@ window.PK = window.PK || {};
       const hh = PK.huyHieu.cua(so);
       PK.am.nhac('sao');
       PK.luu.capNhat(hoSo.id, function (dd) { dd.buoc[so] = 0; });
+      // Mọi câu của màn vào hộp nhớ (kể cả câu ghép "A / B" chỉ hiện từng nửa trong hội thoại).
+      if (!TH) PK.d.cau.forEach(function (c) { if (c.man === so) PK.luu.danhDauMuc(hoSo.id, 'cau', c.cz); });
       k.append(
         h('div', { class: 'the ket-qua' },
           h('h2', null, 'Qua Cửa ải! 🎉'),

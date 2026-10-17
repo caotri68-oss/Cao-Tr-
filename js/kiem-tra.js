@@ -197,6 +197,56 @@ window.PK = window.PK || {};
   });
   bao(loiHT.length === 0, 'Hội thoại màn 1 đến 12 (nam và nữ): ' + (loiHT.length ? loiHT.slice(0, 5).join('; ') : 'mỗi lượt chọn có đúng 1 đáp án, mọi câu đều tra được nghĩa'));
 
+  // ---- 5. Ôn lại thông minh ----
+  tieuDe('5. Ôn lại thông minh (hộp nhớ)');
+  const NGAY = 24 * 3600 * 1000;
+  const T0 = Date.UTC(2026, 0, 1);
+  const loiHop = [];
+  const m = { hop: 1, han: T0 + NGAY };
+  PK.luu.capNhatHop(m, true, T0);
+  if (m.hop !== 1) loiHop.push('đúng trước hạn không được lên hộp');
+  let gio = T0;
+  [2, 3, 4, 5].forEach(function (hop) {
+    gio = m.han; PK.luu.capNhatHop(m, true, gio);
+    if (m.hop !== hop || m.han !== gio + PK.luu.CHO[hop - 1] * NGAY) loiHop.push('lên hộp ' + hop + ' sai (đang ' + m.hop + ')');
+  });
+  gio = m.han; PK.luu.capNhatHop(m, true, gio);
+  if (!m.thuocLau || m.hop !== 5) loiHop.push('qua hộp 5 chưa thành "Đã thuộc lâu"');
+  PK.luu.capNhatHop(m, false, gio + 1);
+  if (m.hop !== 1 || m.thuocLau || m.han !== gio + 1 + NGAY) loiHop.push('sai không về hộp 1 (ôn sau 1 ngày)');
+  bao(loiHop.length === 0, 'Hộp nhớ 1/3/7/14/30 ngày, đúng lên hộp, sai về hộp 1, qua hộp 5 là "Đã thuộc lâu": ' + (loiHop.length ? loiHop.join('; ') : 'đúng'));
+
+  // Đề ôn: mọi từ, mọi câu, mọi bí kíp đến hạn cùng lúc → mỗi câu hỏi có đúng 1 đáp án, không lộ nghĩa.
+  const gia = { tu: {}, cau: {}, biKip: {}, man: {}, buoc: {}, phut: {} };
+  d.danh_tu.forEach(function (x) { gia.tu[x.tu] = { hoc: true, hop: 1, han: 1, dung: 0, sai: 0 }; });
+  d.cau.forEach(function (x) { gia.cau[x.cz] = { hoc: true, hop: 2, han: 2, dung: 0, sai: 0 }; });
+  d.bi_kip.forEach(function (b) { gia.biKip[b.id] = { mo: true, thuoc: true, hop: 1, han: 1 }; });
+  const loiOn = [];
+  let soCau = 0;
+  for (let lan = 0; lan < 40; lan++) {
+    const chon = PK.onTap.chonMuc(gia);
+    if (chon.muc.length !== 15) loiOn.push('lượt ôn không lấy đủ 15 mục');
+    if (chon.biKip.length !== 2) loiOn.push('lượt ôn không chen 2 câu bí kíp');
+    // Lấy cả từ lẫn câu: xoay vòng qua toàn bộ kho.
+    const tatCa = PK.luu.denHanOn(gia).filter(function (x) { return x.loai !== 'biKip'; });
+    const nhom = tatCa.slice((lan * 15) % tatCa.length).concat(tatCa).slice(0, 15);
+    const de = PK.onTap.taoDe({ muc: nhom, biKip: chon.biKip });
+    if (de.length !== nhom.length + chon.biKip.length) loiOn.push('lượt ' + lan + ': có câu ôn không hợp lệ bị bỏ');
+    de.forEach(function (q) {
+      soCau++;
+      if (!PK.cuaAi.hopLe(q)) loiOn.push('câu ôn sai: ' + q.hoi);
+      if (!/^(tu|cau|biKip):/.test(q.tuKhoa || '')) loiOn.push('câu ôn thiếu khoá ghi nhận: ' + q.hoi);
+      if (q.tuKhoa && q.tuKhoa.indexOf('biKip:') !== 0 && !q.anNghia) loiOn.push('câu ôn để lộ nghĩa: ' + q.hoi);
+      if (q.czHoi && !q.czHoi.khoa) loiOn.push('chữ hỏi tra được nghĩa: ' + q.hoi);
+    });
+  }
+  bao(loiOn.length === 0, 'Ôn hôm nay: ' + soCau + ' câu ôn (từ, câu, bí kíp) có đúng 1 đáp án, tối đa 15 mục + 2 câu bí kíp, nghĩa bị ẩn: ' + (loiOn.length ? Array.from(new Set(loiOn)).slice(0, 5).join('; ') : 'đúng'));
+
+  // ---- 6. Đi chợ thật ----
+  tieuDe('6. Đi chợ thật');
+  const coDL = !!(d.cho_that && PK.choThat.duLieu().tatCa.length);
+  bao(PK.choThat.daMo() === coDL, coDL ? 'File có phần cho_that: khu Đi chợ thật mở' : 'File chưa có phần cho_that: khu Đi chợ thật đang khóa, không lỗi');
+
   kq.append(h('h2', null, PK_KIEM.loi ? 'Có ' + PK_KIEM.loi + ' mục chưa đạt' : 'Tất cả đều đạt ✔'));
   document.title = PK_KIEM.loi ? 'KIEM-TRA: LOI' : 'KIEM-TRA: DAT';
 })();

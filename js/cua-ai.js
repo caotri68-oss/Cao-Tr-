@@ -11,6 +11,7 @@
 //   goiY: 'nghĩa' → có nút 💡 (không dùng ở Cửa ải); dùng gợi ý thì không tính "không cần gợi ý"
 //   nhac: 'lời nhắc khi sai' (nếu không có thì nhắc câu thần chú, trừ trong Cửa ải)
 //   tuKhoa: từ để ghi nhận đúng / sai
+//   anNghia: true → không có nút "?" ở các lựa chọn (câu hỏi kiểm tra chính nghĩa của từ)
 // }
 // khiXong(soDung, tong, ketQua[], khongGoiY[])
 window.PK = window.PK || {};
@@ -67,7 +68,7 @@ window.PK = window.PK || {};
         const nut = h('button', { class: 'chon' + (q.luaChonLon ? ' lon' : ''), 'data-dap': lc === q.dap ? '1' : null, onclick: function () { chon(lc, nut); } }, lc);
         cacNut.push(nut);
         return h('div', { class: 'dong-chon' }, nut,
-          (q.luaChonCz || coNghia(lc)) && !q.luaChonLon ? h('button', { class: 'nut-tron', 'aria-label': 'Xem nghĩa', onclick: function () { PK.ui.moTraNghia(lc); } }, '?') : null);
+          (q.luaChonCz || coNghia(lc)) && !q.luaChonLon && !q.anNghia ? h('button', { class: 'nut-tron', 'aria-label': 'Xem nghĩa', onclick: function () { PK.ui.moTraNghia(lc); } }, '?') : null);
       }));
 
       function chon(lc, nut) {
@@ -140,6 +141,9 @@ window.PK = window.PK || {};
               b.thuoc = true; b.diem = Math.max(b.diem || 0, dung);
             }
           });
+          // Hộp nhớ của bí kíp: qua cửa lần đầu thì vào hộp 1; đã có hộp thì đúng lên hộp, trượt về hộp 1.
+          if (sao) PK.luu.danhDauMuc(o.hoSo.id, 'biKip', o.bk.id);
+          PK.luu.ghiMuc(o.hoSo.id, 'biKip', o.bk.id, !!sao);
           if (sao) { o.tiep(); return; }
           PK.am.nhac('cham');
           o.khoaBiKip(false);

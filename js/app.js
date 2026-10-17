@@ -41,7 +41,49 @@ window.PK = window.PK || {};
           h('span', { class: 'ten-ho-so' }, hs.ten),
           chiSo(d));
       })),
-      h('button', { class: 'nut phu rong', onclick: caiDat }, '⚙️ Cài đặt'));
+      h('div', { class: 'hang-nut' },
+        h('button', { class: 'nut phu', onclick: function () { PK.tienDo.manHinh(vung, chonHoSo); } }, '👨‍👩‍👧 Tiến độ gia đình'),
+        h('button', { class: 'nut phu', onclick: caiDat }, '⚙️ Cài đặt')));
+  }
+
+  // Nút "Ôn hôm nay (N từ)" trên màn hình chính.
+  function oOnTap(hs) {
+    const d = PK.luu.doc(hs.id);
+    const n = PK.onTap.dem(d);
+    const soMuc = n.tu + n.cau;
+    let chu;
+    if (n.tong) chu = 'Ôn hôm nay (' + n.tong + ' ' + (n.cau && !n.tu ? 'câu' : 'từ') + ')';
+    else if (n.biKip) chu = 'Ôn hôm nay (' + n.biKip + ' bí kíp)';
+    else chu = 'Ôn hôm nay';
+    let phu;
+    if (soMuc || n.biKip) {
+      phu = (n.tong > soMuc ? 'Lượt này ôn ' + soMuc + ' mục, còn lại để lượt sau. ' : '') + (n.biKip ? 'Có ' + n.biKip + ' câu ôn bí kíp. ' : '') + 'Khoảng 3–5 phút, không bắt buộc.';
+    } else {
+      const sau = PK.luu.hanTiepTheo(d);
+      phu = sau ? 'Chưa có từ đến hạn. Đợt ôn tới: ' + new Date(sau).toLocaleDateString('vi-VN') + '.' : 'Học từ ở các màn, hôm sau từ sẽ đến hạn ôn.';
+    }
+    return h('button', { class: 'o-on' + (soMuc || n.biKip ? ' co-on' : ''), onclick: function () { PK.onTap.chay(vung, hs, function () { nhaHoSo(hs); }); } },
+      h('span', { class: 'bieu-tuong' }, '🔁'),
+      h('span', { class: 'noi-dung' }, h('b', null, chu), h('div', { class: 'nhat' }, phu)));
+  }
+
+  // Ô "Đi chợ thật": khóa cho tới khi tu-vung.json có phần cho_that.
+  function oChoThat(hs) {
+    const mo = PK.choThat.daMo();
+    const dl = PK.choThat.duLieu();
+    return h('button', {
+      class: 'o-man o-cho-that' + (mo ? '' : ' khoa'),
+      'aria-disabled': mo ? null : 'true',
+      onclick: function () {
+        if (!mo) { PK.ui.thongBao('🔒 Khu này mở khi file từ vựng có phần "cho_that" (số đếm, giá tiền, câu mua bán).'); return; }
+        PK.choThat.chay(vung, hs, function () { nhaHoSo(hs); });
+      }
+    },
+      h('span', { class: 'so' }, mo ? '🛒' : '🔒'),
+      h('span', { class: 'noi-dung' },
+        h('b', null, '🛒 Đi chợ thật'),
+        h('div', { class: 'nhat' }, mo ? dl.tatCa.length + ' mục: số đếm, giá tiền, hỏi mua hàng' + (dl.boQua ? ' · ' + dl.boQua + ' mục thiếu chữ bị bỏ qua' : '')
+          : 'Sắp mở: số đếm, giá tiền, hỏi mua hàng')));
   }
 
   // ---------- Vào hồ sơ ----------
@@ -76,10 +118,13 @@ window.PK = window.PK || {};
       h('div', { class: 'dau-ho-so' }, h('img', { src: hs.anh, alt: '' }),
         h('div', null, h('h2', null, 'Xin chào, ' + hs.ten + '!'), chiSo(d))),
       xongMan0 ? '' : PK.ui.loi('pes', 'Lần đầu đến chợ? Bắt đầu từ Màn 0 nhé, tụi mình hướng dẫn hết!'),
+      oOnTap(hs),
       h('div', { class: 'hang-nut' },
+        h('button', { class: 'nut phu', onclick: function () { PK.tuDienCuaMinh.manHinh(vung, hs, function () { nhaHoSo(hs); }); } }, '📖 Từ điển của mình'),
         h('button', { class: 'nut phu', onclick: function () { PK.biKip.manHinhSo(vung, hs, function () { nhaHoSo(hs); }); } }, '📜 Sổ bí kíp'),
         h('button', { class: 'nut phu', onclick: function () { meoDoc(hs); } }, '🔤 Mẹo đọc chữ Séc'),
-        h('button', { class: 'nut phu', onclick: function () { PK.huyHieu.bang(hs); } }, '🏅 Huy hiệu')),
+        h('button', { class: 'nut phu', onclick: function () { PK.huyHieu.bang(hs); } }, '🏅 Huy hiệu'),
+        h('button', { class: 'nut phu', onclick: function () { PK.tienDo.manHinh(vung, function () { nhaHoSo(hs); }); } }, '👨‍👩‍👧 Tiến độ gia đình')),
       h('div', { class: 'danh-sach-man' }, soMan.map(function (so) {
         const m = d.man[so] || {};
         const mo = PK.luu.manDaMo(d, so);
@@ -98,7 +143,7 @@ window.PK = window.PK || {};
             h('b', null, 'Màn ' + so + ' · ' + (TEN_MAN[so] || 'Màn tổng hợp')),
             h('div', { class: 'nhat' }, tomTat + (so === 0 || PK.manChoi.daLam(so) ? '' : ' · 🛠 sắp có'))),
           m.qua ? h('span', { class: 'sao', 'aria-label': m.sao + ' sao' }, '★'.repeat(m.sao) + '☆'.repeat(3 - m.sao)) : null);
-      })));
+      }), oChoThat(hs)));
   }
 
   // ---------- Mẹo đọc chữ Séc ----------

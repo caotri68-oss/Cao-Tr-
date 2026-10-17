@@ -184,6 +184,7 @@ window.PK = window.PK || {};
       { ten: 'hoc-cau', ve: function (k, tiep) {
         const n = nutTiep('Đi chào cô bán hàng →'); n.onclick = tiep;
         const ds = PK.d.cau.filter(function (c) { return c.man === SO_MAN; });
+        ds.forEach(function (c) { PK.luu.danhDauMuc(hoSo.id, 'cau', c.cz); });
         k.append(
           PK.ui.loi('pes', 'Trước khi vào chợ, học 5 câu chào hỏi đã. Chạm 🔊 để nghe, 🎤 để đọc theo.'),
           h('div', { style: 'display:flex;flex-direction:column;gap:12px' }, ds.map(function (c) {
