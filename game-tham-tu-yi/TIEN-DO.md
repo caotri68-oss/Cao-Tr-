@@ -29,7 +29,7 @@ Ghi chú dữ liệu:
 - `biologie`, `sirup`: PDF không ghi nghĩa, để trống, không tự thêm.
 - Bí kíp có `"nguon": "bo_sung"` hoặc `"PDF + bo_sung"` là phần thêm theo chương trình trường Séc (người dùng đã đồng ý bổ sung).
 - **Chỉ che y/ý ở gốc từ**: chữ y/ý đầu tiên đứng ngay sau chữ lưỡng tính (hàm `viTriChe` trong `kiem-tra-du-lieu.cjs`). Không hỏi y/i ở đuôi từ (nový, lysý, pysky).
-- **Lỗi nghi ngờ trong PDF, giữ nguyên chờ người dùng quyết**: câu ví dụ của `být` là "Chci být lékařka." Ngữ pháp chuẩn là "Chci být lékařkou." (sau být dùng cách 7).
+- Câu ví dụ của `být` đã sửa theo yêu cầu người dùng: "Chci být lékařkou." (PDF ghi "lékařka"; sau být dùng cách 7).
 
 ## Quyết định đã chốt (chưa có trong prompt gốc)
 
@@ -46,10 +46,13 @@ Ghi chú dữ liệu:
 
 ## Còn chờ người dùng trả lời
 
-1. Bố và Mẹ chơi với tên Ánh Dương, hay mỗi người một hồ sơ riêng?
-2. Thoại truyện: chỉ dùng từ trong 80 từ, hay được thêm câu Séc đơn giản kèm nghĩa Việt?
-3. Chọn ý tưởng tăng độ hấp dẫn nào (đề xuất: cốt truyện "Kẻ trộm chữ Y", trùm mỗi phố là một từ trong bảng, bí kíp thành phép thuật, sưu tập thẻ 80 từ, vụ án hôm nay, con làm cô giáo, đọc thuộc theo nhịp).
-4. Câu "Chci být lékařka." sửa thành "lékařkou" hay giữ nguyên như PDF?
+1. Thoại truyện: chỉ dùng từ trong 80 từ, hay được thêm câu Séc đơn giản kèm nghĩa Việt?
+2. Chọn ý tưởng tăng độ hấp dẫn nào (đề xuất: cốt truyện "Kẻ trộm chữ Y", trùm mỗi phố là một từ trong bảng, bí kíp thành phép thuật, sưu tập thẻ 80 từ, vụ án hôm nay, con làm cô giáo, đọc thuộc theo nhịp).
+
+## Đã trả lời
+
+- Bố và Mẹ có **hồ sơ riêng**, không dùng tên Ánh Dương. Hồ sơ: Bố, Mẹ, chị Xu, Ánh Dương (4 hồ sơ).
+- Câu ví dụ của `být` đã sửa thành "Chci být lékařkou."
 
 ## Giai đoạn tiếp theo
 
