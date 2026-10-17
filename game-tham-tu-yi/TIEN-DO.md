@@ -104,6 +104,7 @@ Kiểm tra: bot gieo hồ sơ đã qua 7 phố rồi chơi Vụ án hôm nay, S�
 - `data/tu-cau.json`: 203 chữ Séc xuất hiện trong câu ví dụ, bí kíp, truyện, thoại và quiz nhưng không nằm trong 80 từ chính (ví dụ muốn, lékařkou, Honza, Praha, Ruzyně) đều có nghĩa tiếng Việt. Các nghĩa này do người làm game bổ sung, không lấy từ PDF.
 - Hai từ bẫy PDF để trống nghĩa (`biologie`, `sirup`) đã có nghĩa, ghi rõ là từ mượn không có trong PDF.
 - Kiểm tra: mọi chữ Séc trong dữ liệu đều tra được nghĩa. Câu dài luôn đi kèm nghĩa cả câu (trường `vn`).
+- Rà soát lại bằng `cong-cu/ra-soat-nghia.cjs`: 80 từ chính, từ cùng nhà, từ bẫy, cặp nghe giống, ví dụ, bí kíp, bảng chữ, truyện và quiz, 513 chữ khác nhau, đều có nghĩa (228 chữ phụ trong `tu-cau.json`). Chạy lại script này mỗi khi thêm từ mới.
 
 ### Bổ sung: bí kíp đầy đủ và học lại khi sai
 
