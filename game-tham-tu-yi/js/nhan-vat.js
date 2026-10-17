@@ -1,5 +1,6 @@
 // Nhân vật vẽ bằng SVG (tự vẽ, không dùng hình có bản quyền) và khung lời thoại.
 import { h } from './dom.js';
+import { anhHoSo } from './luu-tien-do.js';
 import { czCau } from './dich.js';
 import { nutNghe } from './am-thanh.js';
 
@@ -61,6 +62,13 @@ const TEN = { cu: 'Cú Sýček', anhduong: 'Ánh Dương', xu: 'Chị Xu', me: '
 export function hinh(ai, lop = 'hinh') {
   const o = h('span', { class: lop, html: HINH[ai] || HINH.cu });
   return o;
+}
+
+// Hình hồ sơ: ảnh bố mẹ đã chọn trên máy này, nếu không có thì dùng hình vẽ.
+export function hinhHoSo(id, lop = 'hinh') {
+  const anh = anhHoSo(id);
+  if (!anh) return hinh(id, lop);
+  return h('span', { class: lop }, h('img', { src: anh, alt: '', style: 'width:100%;height:100%;border-radius:50%;object-fit:cover' }));
 }
 
 // Một câu thoại: { ai, vn, cz? }. Câu Séc chạm được và có nút nghe.

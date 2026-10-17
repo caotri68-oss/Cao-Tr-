@@ -1,9 +1,9 @@
 // Khởi động game: tải dữ liệu, chọn hồ sơ, bản đồ chợ Chữ.
 import { h, manHinh } from './dom.js';
 import { D, taiDuLieu, tenPho } from './du-lieu.js';
-import { HO_SO, docHoSo, chonHoSo, hoSo, doiTen, thongKe, caiDat, luuCaiDat, ghiLanChoi } from './luu-tien-do.js';
+import { HO_SO, docHoSo, chonHoSo, hoSo, doiTen, thongKe, caiDat, luuCaiDat, ghiLanChoi, anhHoSo, luuAnhHoSo } from './luu-tien-do.js';
 import { coGiongSec, daBietGiong, huongDanCaiGiong, doc } from './am-thanh.js';
-import { hinh, cuNoi } from './nhan-vat.js';
+import { hinh, hinhHoSo, cuNoi } from './nhan-vat.js';
 import { vaoVanPhong } from './van-phong.js';
 import { vaoPho, PHO } from './pho.js';
 import { trangSoBiKip, theBiKip } from './so-bi-kip.js';
@@ -30,7 +30,7 @@ function chonNguoiChoi() {
     const hs = docHoSo(g.id);
     const tk = thongKe(hs);
     return h('button', { class: 'the-ho-so' + (g.chinh ? ' chinh' : ''), type: 'button', onclick: () => vaoGame(g.id) },
-      hinh(g.id, 'hinh-hs'),
+      hinhHoSo(g.id, 'hinh-hs'),
       g.chinh ? h('span', { class: 'nhan' }, 'Nhân vật chính') : null,
       h('span', { class: 'ten-hs' }, hs.ten),
       h('span', { class: 'so-lieu' }, `${tk.phoQua} phố · ${tk.sao}★ · ${tk.tuDaHoc} từ · ${tk.biKip} bí kíp`));
@@ -44,6 +44,21 @@ function chonNguoiChoi() {
     h('button', { class: 'nut nut-nho', type: 'button', onclick: trangDoiTen }, '✏️ Đổi tên hồ sơ'));
 }
 
+// Cắt ảnh thành hình vuông ở giữa, thu về 200px, lưu dạng JPEG nhỏ.
+async function anhThanhHinhTron(file) {
+  const url = URL.createObjectURL(file);
+  try {
+    const anh = await new Promise((ok, loi) => { const i = new Image(); i.onload = () => ok(i); i.onerror = loi; i.src = url; });
+    const co = Math.min(anh.width, anh.height);
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = 200;
+    canvas.getContext('2d').drawImage(anh, (anh.width - co) / 2, (anh.height - co) / 2, co, co, 0, 0, 200, 200);
+    return canvas.toDataURL('image/jpeg', 0.85);
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
 function trangDoiTen() {
   manHinh(
     h('div', { class: 'thanh-tren' },
@@ -51,10 +66,23 @@ function trangDoiTen() {
       h('div', { class: 'tieu-de' }, 'Đổi tên hồ sơ')),
     ...HO_SO.map((g) => {
       const o = h('input', { type: 'text', id: 'ten-' + g.id, value: docHoSo(g.id).ten, maxlength: '20' });
+      const chonAnh = h('input', { type: 'file', accept: 'image/*', hidden: true, onchange: async (e) => {
+        const f = e.target.files[0];
+        if (!f) return;
+        try {
+          if (!luuAnhHoSo(g.id, await anhThanhHinhTron(f))) toast('Máy không lưu được ảnh này. Thử ảnh khác hoặc xóa bớt dữ liệu trình duyệt.');
+          else trangDoiTen();
+        } catch { toast('Không đọc được ảnh này. Thử ảnh khác.'); }
+      } });
       return h('div', { class: 'the' },
-        h('label', { for: 'ten-' + g.id, class: 'an-hien' }, hinh(g.id, 'hinh'), 'Hồ sơ ' + g.ten),
+        h('label', { for: 'ten-' + g.id, class: 'an-hien' }, hinhHoSo(g.id, 'hinh'), 'Hồ sơ ' + g.ten),
         o,
-        h('button', { class: 'nut nut-nho', type: 'button', onclick: () => { if (o.value.trim()) { doiTen(g.id, o.value.trim()); chonNguoiChoi(); } } }, 'Lưu tên'));
+        h('div', { class: 'hang-nut' },
+          h('button', { class: 'nut nut-nho', type: 'button', onclick: () => { if (o.value.trim()) { doiTen(g.id, o.value.trim()); chonNguoiChoi(); } } }, 'Lưu tên'),
+          h('button', { class: 'nut nut-nho', type: 'button', onclick: () => chonAnh.click() }, '🖼️ Chọn ảnh'),
+          anhHoSo(g.id) ? h('button', { class: 'nut nut-nho', type: 'button', onclick: () => { luuAnhHoSo(g.id, null); trangDoiTen(); } }, 'Dùng hình vẽ') : null),
+        h('p', { class: 'goi-y' }, 'Ảnh chỉ lưu trên máy này, không gửi đi đâu.'),
+        chonAnh);
     }));
 }
 
@@ -111,7 +139,7 @@ function banDo() {
 
   manHinh(
     h('div', { class: 'thanh-tren' },
-      hinh(hs.id, 'hinh-nho'),
+      hinhHoSo(hs.id, 'hinh-nho'),
       h('div', { class: 'tieu-de' }, hs.ten, h('small', {}, 'Bản đồ chợ Chữ')),
       h('button', { class: 'nut nut-tron nut-nho', type: 'button', 'aria-label': 'Cài đặt', onclick: trangCaiDat }, '⚙️')),
     daBietGiong() && !coGiongSec() ? h('button', { class: 'nut nut-nho', type: 'button', onclick: huongDanCaiGiong }, '🔇 Máy chưa có giọng Séc · xem cách cài') : null,

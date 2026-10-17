@@ -56,6 +56,18 @@ export function doiTen(id, ten) {
   if (hienTai && hienTai.id === id) hienTai.ten = ten;
 }
 
+// Ảnh đại diện do bố mẹ chọn, chỉ lưu trong trình duyệt của máy này (không vào repo, không gửi đi đâu).
+export function anhHoSo(id) {
+  try { return localStorage.getItem(KHOA + 'anh:' + id); } catch { return null; }
+}
+export function luuAnhHoSo(id, duLieu) {
+  try {
+    if (duLieu) localStorage.setItem(KHOA + 'anh:' + id, duLieu);
+    else localStorage.removeItem(KHOA + 'anh:' + id);
+    return true;
+  } catch { return false; }
+}
+
 export function caiDat() { return doc('cai-dat', { tatAm: false }); }
 export function luuCaiDat(c) { ghi('cai-dat', c); }
 
