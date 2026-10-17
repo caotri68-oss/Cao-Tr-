@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pes a Kočka</title>
+<link rel="stylesheet" href="fonts.css">
+<style>
+:root{
+  --navy:#1B3A6B; --navy2:#24508F; --ink:#2A3550; --muted:#5B6B86; --ipa:#3E6FB0;
+  --cream:#FFFBF2; --yellow:#F7C948; --yellow-l:#FFF4D4; --orange:#F39A2B;
+  --blue-l:#EAF3FD; --blue-b:#B9D5F2; --green-l:#EAF6E3; --green-b:#BFE0AE;
+  --amber-l:#FFF1D9; --amber-b:#F5CF8E; --purple-l:#F1EAFB; --purple-b:#CDB8EE;
+  --pink-l:#FDEBEB; --pink-b:#F3B9B9; --red:#D94848;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:A4;margin:0}
+html{background:#d9dde4}
+body{font-family:'Nunito',sans-serif;color:var(--ink);font-size:8.7pt;line-height:1.27;background:#d9dde4}
+.page{width:210mm;height:297mm;margin:8mm auto;padding:8mm 9mm 7mm;position:relative;overflow:hidden;
+  background:var(--cream);
+  background-image:radial-gradient(circle at 92% 6%,#E3EEFA 0,transparent 32%),radial-gradient(circle at 4% 98%,#FFF0CF 0,transparent 28%);
+  box-shadow:0 2px 14px rgba(0,0,0,.15);page-break-after:always;break-after:page}
+@media print{html,body{background:none}.page{margin:0;box-shadow:none}}
+.pg-no{position:absolute;top:6mm;right:8mm;background:var(--navy);color:#fff;font:700 9pt 'Baloo 2';padding:1.5mm 4mm;border-radius:20px;z-index:5}
+.cont{display:inline-flex;align-items:center;gap:2mm;background:var(--navy);color:#fff;font:700 9pt 'Baloo 2';padding:1mm 4mm 1mm 3mm;border-radius:0 20px 20px 0;margin-left:-9mm;padding-left:9mm;margin-bottom:3mm}
+b,strong{font-weight:800}
+.cz{font-weight:800;color:var(--navy)}
+.ipa{color:var(--ipa);font-weight:600;font-size:.92em}
+.vi{color:var(--ink)}
+.small{font-size:.86em;color:var(--muted)}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;height:57mm;margin:-8mm -9mm 0;padding:7mm 9mm 0}
+.hero svg.scene{position:absolute;right:0;top:0;width:90mm;height:58.5mm;-webkit-mask-image:radial-gradient(ellipse 125% 145% at 100% 0,#000 74%,transparent 100%);mask-image:radial-gradient(ellipse 125% 145% at 100% 0,#000 74%,transparent 100%)}
+.title{font:800 36pt/0.95 'Baloo 2';color:var(--navy);letter-spacing:-.5px;display:flex;align-items:center;gap:3mm;position:relative;z-index:2}
+.title .paw{font-size:24pt}
+.ribbon{position:relative;z-index:2;display:inline-block;margin:2mm 0 0 2mm;background:var(--yellow);color:var(--navy);font:700 15pt 'Baloo 2';padding:1mm 7mm 0.5mm;transform:rotate(-2deg);
+  clip-path:polygon(0 0,100% 0,97% 50%,100% 100%,0 100%,3% 50%);box-shadow:0 2px 0 #e0ae2a}
+.script{position:relative;z-index:2;font:400 17pt 'Pacifico';color:var(--navy);margin:1mm 0 0 30mm;transform:rotate(-3deg);display:inline-block}
+.tag{position:relative;z-index:2;margin-top:1.5mm;font-size:10pt;font-weight:600;color:var(--navy)}
+.tag span{background:linear-gradient(transparent 62%,#FBDD86 62%)}
+.steps{position:relative;z-index:2;display:inline-flex;align-items:center;gap:2.5mm;margin-top:3mm;background:#fff;border:1.5px solid var(--blue-b);border-radius:30px;padding:1.5mm 5mm;font-weight:700;color:var(--navy);font-size:9.5pt}
+.steps i{font-style:normal;font-size:12pt}
+
+/* ---------- generic ---------- */
+.row{display:grid;gap:3mm}
+.c2{grid-template-columns:1fr 1fr}.c3{grid-template-columns:repeat(3,1fr)}.c5{grid-template-columns:repeat(5,1fr)}
+.card{border-radius:3.5mm;padding:1.8mm 3.2mm;border:1.4px solid var(--blue-b);background:var(--blue-l)}
+.card.y{background:var(--amber-l);border-color:var(--amber-b)}
+.card.g{background:var(--green-l);border-color:var(--green-b)}
+.card.p{background:var(--purple-l);border-color:var(--purple-b)}
+.card.k{background:var(--pink-l);border-color:var(--pink-b)}
+.card.w{background:#fff}
+.mt{margin-top:3mm}.mt2{margin-top:2mm}.mt1{margin-top:1mm}
+
+.sec{display:flex;align-items:center;margin:2.6mm 0 1.6mm;position:relative}
+.sec .num{flex:none;width:11mm;height:11mm;border-radius:50%;background:var(--navy);color:#fff;font:800 17pt/11mm 'Baloo 2';text-align:center;z-index:2;box-shadow:0 0 0 2px var(--cream),0 0 0 3.2px var(--navy)}
+.sec .bar{margin-left:-4mm;padding:1mm 9mm 0.6mm 7mm;background:var(--navy);color:#fff;font:700 12.5pt 'Baloo 2';clip-path:polygon(0 0,100% 0,96% 100%,0 100%)}
+.sec .bar small{font:600 9.5pt 'Nunito';margin-left:2mm;opacity:.92}
+.sec .icon{font-size:15pt;margin-left:2mm}
+.lead{font-weight:700;color:var(--navy);margin:-0.5mm 0 2mm 1mm}
+
+.sub{display:flex;align-items:center;gap:2mm;margin:2.2mm 0 1.2mm}
+.sub .n{flex:none;width:6.2mm;height:6.2mm;border-radius:50%;background:var(--navy2);color:#fff;font:800 10pt/6.2mm 'Baloo 2';text-align:center}
+.sub h3{font:700 11.5pt 'Baloo 2';color:var(--navy)}
+.sub h3 small{font:600 8.6pt 'Nunito';color:var(--muted);margin-left:1.5mm}
+
+/* stage header */
+.stage{display:flex;align-items:center;gap:3mm;margin:3mm 0 1.6mm;background:linear-gradient(90deg,#fff 0,#fff 70%,transparent);border-radius:30px 0 0 30px}
+.stage .big{flex:none;width:12mm;height:12mm;border-radius:50%;background:var(--navy);color:#fff;font:800 19pt/12mm 'Baloo 2';text-align:center;box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--yellow)}
+.stage h2{font:800 15pt/1.05 'Baloo 2';color:var(--navy)}
+.stage h2 .pill{display:inline-block;background:var(--navy2);color:#fff;border-radius:20px;padding:0 3mm;font-size:11pt;margin-right:2mm;vertical-align:2px}
+.stage p{font-weight:700;color:var(--muted);font-size:9pt}
+.stage .emo{margin-left:auto;font-size:20pt;padding-right:2mm}
+
+/* phrase tiles */
+.tiles{display:grid;gap:2mm}
+.tile{background:#fff;border:1.3px solid var(--blue-b);border-radius:3mm;padding:1mm 1.2mm;text-align:center}
+.tile .e{font-size:12.5pt;line-height:1.1}
+.tile .cz{display:block;font-size:9.6pt;line-height:1.15}
+.tile .ipa{display:block}
+.tile .vi{display:block;font-size:8.4pt;color:var(--muted);line-height:1.2;margin-top:.3mm}
+
+/* Q/A dialog */
+.qa{display:grid;grid-template-columns:1fr 1fr;gap:1.3mm 3mm}
+.q,.a{position:relative;background:#fff;border:1.3px solid var(--blue-b);border-radius:3.5mm;padding:1mm 2.8mm}
+.a{background:var(--blue-l)}
+.q::after,.a::after{content:"";position:absolute;bottom:-1.6mm;width:2.6mm;height:2.6mm;background:inherit;border:inherit;border-top:none;border-left:none;transform:rotate(45deg)}
+.q::after{left:5mm;transform:rotate(45deg)}.a::after{right:5mm}
+.q .cz,.a .cz{font-size:9.3pt}
+.qa.y .a{background:var(--amber-l);border-color:var(--amber-b)}.qa.y .q{border-color:var(--amber-b)}
+.qa.g .a{background:var(--green-l);border-color:var(--green-b)}.qa.g .q{border-color:var(--green-b)}
+.qa.p .a{background:var(--purple-l);border-color:var(--purple-b)}.qa.p .q{border-color:var(--purple-b)}
+
+.tip{display:flex;gap:2.5mm;align-items:center;background:var(--yellow-l);border:1.3px dashed #E7B94A;border-radius:3.5mm;padding:1.3mm 3.5mm;font-size:8.5pt}
+.tip .ic{font-size:14pt;flex:none}
+.remember{display:flex;gap:2.5mm;align-items:center;background:linear-gradient(90deg,#FFE9A8,#FFF6DA);border-radius:3.5mm;padding:1.5mm 3.5mm;margin-top:2mm;font-size:9pt;border-left:4px solid var(--yellow)}
+.remember .ic{font-size:14pt}
+
+/* map */
+.map{display:flex;align-items:stretch;gap:2mm;margin-top:1mm}
+.signpost{flex:none;width:19mm;position:relative}
+.stop{flex:1;border-radius:3.5mm;padding:5.5mm 1.5mm 1.5mm;text-align:center;position:relative;border:1.4px solid}
+.stop .ico{position:absolute;top:-5.5mm;left:50%;transform:translateX(-50%);font-size:17pt}
+.stop h4{font:800 11pt 'Baloo 2';color:var(--navy);line-height:1}
+.stop p{font-size:8.6pt;font-weight:600;color:var(--muted);line-height:1.2;margin-top:.8mm}
+.arrow{align-self:center;color:var(--navy);font-weight:800}
+.s1{background:var(--blue-l);border-color:var(--blue-b)}.s2{background:var(--green-l);border-color:var(--green-b)}
+.s3{background:var(--amber-l);border-color:var(--amber-b)}.s4{background:var(--purple-l);border-color:var(--purple-b)}
+.s5{background:var(--pink-l);border-color:var(--pink-b)}.s5 h4{color:var(--red)}
+
+/* code cards */
+.code h4{font:800 10.5pt 'Baloo 2';color:var(--navy)}
+.code h4 .k{display:inline-block;width:5mm;color:var(--navy)}
+.code .ex{margin-top:.6mm}
+
+/* five strip */
+.five{display:flex;gap:2mm;align-items:stretch;margin-top:2.4mm;background:var(--amber-l);border:1.4px solid var(--amber-b);border-radius:4mm;padding:2mm}
+.five .badge{flex:none;width:21mm;background:var(--navy);color:#fff;border-radius:3mm;text-align:center;font:800 9.5pt/1.1 'Baloo 2';display:flex;flex-direction:column;justify-content:center;gap:.5mm}
+.five .badge i{font-style:normal;font-size:14pt}
+.five .it{flex:1;background:#fff;border-radius:3mm;text-align:center;padding:1.3mm 1mm;border:1px solid #F3DFB4}
+.five .it .cz{display:block;font-size:10pt;line-height:1.15}
+.five .it .ipa{display:block}
+.five .it .vi{display:block;font-size:8.2pt;color:var(--muted)}
+
+/* table */
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:9pt}
+th{background:var(--navy);color:#fff;font:700 9.5pt 'Baloo 2';text-align:left;padding:1.3mm 2.5mm}
+th:first-child{border-top-left-radius:3mm}th:last-child{border-top-right-radius:3mm}
+td{padding:.8mm 2.5mm;border-bottom:1px solid #E1E8F2;background:#fff}
+tr:nth-child(even) td{background:#F6F9FE}
+tr:last-child td:first-child{border-bottom-left-radius:3mm}tr:last-child td:last-child{border-bottom-right-radius:3mm}
+.tbl{border:1.3px solid var(--blue-b);border-radius:3.5mm;overflow:hidden}
+td .shirt{display:inline-block;background:var(--yellow);color:var(--navy);font-weight:800;border-radius:2mm;padding:0 2mm}
+
+.song{margin-top:2mm;text-align:center;background:var(--navy);color:#fff;border-radius:20px;padding:1.6mm 4mm;font-weight:700;font-size:9.2pt}
+.song b{color:var(--yellow)}
+.blank{display:inline-block;min-width:13mm;border-bottom:1.3px dashed var(--navy);margin:0 1mm;height:3.5mm}
+.blank.l{min-width:26mm}
+.check{display:inline-block;width:5mm;height:5mm;border:1.5px solid var(--navy);border-radius:1.3mm;vertical-align:-1.2mm;margin:0 .7mm;background:#fff}
+.upside{transform:rotate(180deg);font-size:8.2pt;color:var(--muted);text-align:center;margin-top:2mm;padding:1.6mm;border-top:1px dashed var(--amber-b)}
+.ill{position:absolute;pointer-events:none}
+.legend{font-size:8.6pt;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<!-- ===================== PAGE 1 ===================== -->
+<section class="page">
+  <div class="pg-no">Trang 1/5</div>
+  <div class="hero">
+    <svg class="scene" viewBox="0 0 460 300" aria-hidden="true">
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#DCEBFA"/><stop offset="1" stop-color="#FFFBF2" stop-opacity="0"/></linearGradient>
+        <linearGradient id="river" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8EC1EA"/><stop offset="1" stop-color="#CFE6F8"/></linearGradient>
+      </defs>
+      <rect x="40" y="0" width="420" height="260" fill="url(#sky)"/>
+      <!-- trees right -->
+      <g fill="#7FB86A" opacity=".9"><circle cx="430" cy="120" r="36"/><circle cx="452" cy="80" r="30"/><circle cx="405" cy="150" r="22"/></g>
+      <!-- castle complex -->
+      <g>
+        <rect x="150" y="105" width="210" height="60" fill="#F3E6D3"/>
+        <g fill="#E9D6BC">
+          <rect x="160" y="118" width="30" height="47"/><rect x="300" y="112" width="45" height="53"/>
+        </g>
+        <g fill="#C65B45"><polygon points="150,105 255,92 360,105"/><polygon points="296,112 322,96 349,112"/><polygon points="157,118 175,104 193,118"/></g>
+        <!-- cathedral towers -->
+        <g fill="#5F7FA6">
+          <rect x="222" y="45" width="26" height="70"/><polygon points="218,47 235,8 252,47"/>
+          <rect x="258" y="62" width="20" height="55"/><polygon points="255,64 268,28 281,64"/>
+          <rect x="198" y="72" width="16" height="45"/><polygon points="195,74 206,46 217,74"/>
+        </g>
+        <g fill="#3E5F8A"><circle cx="235" cy="70" r="5"/><rect x="230" y="85" width="10" height="16" rx="5"/><rect x="264" y="82" width="8" height="14" rx="4"/></g>
+        <g fill="#7A6A55" opacity=".55">
+          <rect x="165" y="128" width="5" height="8"/><rect x="176" y="128" width="5" height="8"/><rect x="306" y="124" width="5" height="8"/><rect x="318" y="124" width="5" height="8"/><rect x="330" y="124" width="5" height="8"/>
+          <rect x="205" y="135" width="4" height="7"/><rect x="215" y="135" width="4" height="7"/><rect x="250" y="135" width="4" height="7"/><rect x="260" y="135" width="4" height="7"/><rect x="280" y="135" width="4" height="7"/>
+        </g>
+      </g>
+      <!-- houses -->
+      <g>
+        <rect x="95" y="150" width="40" height="40" fill="#F6E2C6"/><polygon points="92,150 115,128 138,150" fill="#D86B4E"/>
+        <rect x="135" y="160" width="34" height="30" fill="#FBEFD9"/><polygon points="132,160 152,142 172,160" fill="#E07B55"/>
+        <rect x="350" y="150" width="40" height="40" fill="#F6E2C6"/><polygon points="347,150 370,130 393,150" fill="#D86B4E"/>
+        <g fill="#B79C7E" opacity=".6"><rect x="102" y="160" width="6" height="8"/><rect x="118" y="160" width="6" height="8"/><rect x="142" y="168" width="6" height="7"/><rect x="157" y="168" width="6" height="7"/><rect x="358" y="160" width="6" height="8"/><rect x="374" y="160" width="6" height="8"/></g>
+      </g>
+      <!-- trees left -->
+      <g fill="#93C77B"><circle cx="78" cy="170" r="20"/><circle cx="60" cy="182" r="15"/><circle cx="335" cy="175" r="14"/></g>
+      <!-- river -->
+      <path d="M40 205 Q250 190 460 205 L460 300 L40 300 Z" fill="url(#river)"/>
+      <!-- Charles bridge -->
+      <g fill="#C9B79C">
+        <rect x="40" y="190" width="420" height="14"/>
+        <rect x="40" y="185" width="420" height="5" fill="#B3A083"/>
+      </g>
+      <g fill="#8EC1EA">
+        <path d="M60 204 a26 22 0 0 1 52 0 Z"/><path d="M128 204 a26 22 0 0 1 52 0 Z"/><path d="M196 204 a26 22 0 0 1 52 0 Z"/><path d="M264 204 a26 22 0 0 1 52 0 Z"/><path d="M332 204 a26 22 0 0 1 52 0 Z"/><path d="M400 204 a26 22 0 0 1 52 0 Z"/>
+      </g>
+      <g fill="#C9B79C"><rect x="40" y="204" width="20" height="18"/><rect x="112" y="204" width="16" height="18"/><rect x="180" y="204" width="16" height="18"/><rect x="248" y="204" width="16" height="18"/><rect x="316" y="204" width="16" height="18"/><rect x="384" y="204" width="16" height="18"/></g>
+      <!-- bridge tower -->
+      <g><rect x="40" y="130" width="34" height="62" fill="#8D7A62"/><polygon points="36,132 57,100 78,132" fill="#4E5E78"/><rect x="51" y="160" width="12" height="30" rx="6" fill="#5B4A36"/></g>
+      <g stroke="#FFFFFF" stroke-width="2" opacity=".6" fill="none"><path d="M90 245 q20 -5 40 0"/><path d="M220 260 q25 -6 50 0"/><path d="M330 240 q18 -4 36 0"/></g>
+      <!-- wall -->
+      <path d="M210 262 L460 250 L460 300 L200 300 Z" fill="#E8DCCB"/>
+      <path d="M210 262 L460 250" stroke="#CBBBA4" stroke-width="3"/>
+
+      <!-- DOG -->
+      <g transform="translate(262,150)">
+        <ellipse cx="62" cy="120" rx="58" ry="40" fill="#C9874E"/>
+        <ellipse cx="62" cy="128" rx="34" ry="30" fill="#FFF3E2"/>
+        <!-- ears -->
+        <path d="M14 34 C-6 40 -4 92 14 96 C30 98 34 60 30 38 Z" fill="#8E5530"/>
+        <path d="M110 34 C130 40 128 92 110 96 C94 98 90 60 94 38 Z" fill="#8E5530"/>
+        <!-- head -->
+        <ellipse cx="62" cy="60" rx="50" ry="46" fill="#C9874E"/>
+        <path d="M62 30 C40 40 30 70 36 92 C46 108 78 108 88 92 C94 70 84 40 62 30 Z" fill="#FFF3E2"/>
+        <ellipse cx="62" cy="88" rx="26" ry="19" fill="#FFF3E2"/>
+        <!-- eyes -->
+        <circle cx="42" cy="58" r="8" fill="#2B1E16"/><circle cx="82" cy="58" r="8" fill="#2B1E16"/>
+        <circle cx="45" cy="55" r="2.8" fill="#fff"/><circle cx="85" cy="55" r="2.8" fill="#fff"/>
+        <ellipse cx="62" cy="77" rx="9" ry="6.5" fill="#2B1E16"/>
+        <path d="M50 86 Q62 96 74 86" stroke="#2B1E16" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+        <path d="M56 90 Q62 112 70 90 Z" fill="#F07C8C"/>
+        <path d="M63 92 L63 102" stroke="#D85E72" stroke-width="1.5"/>
+        <circle cx="30" cy="80" r="6" fill="#F9B4B4" opacity=".6"/><circle cx="94" cy="80" r="6" fill="#F9B4B4" opacity=".6"/>
+        <!-- bandana -->
+        <path d="M18 104 Q62 120 106 104 L96 120 Q62 160 30 120 Z" fill="#3E7DC9"/>
+        <path d="M18 104 Q62 120 106 104" stroke="#2C5E9E" stroke-width="3" fill="none"/>
+        <g fill="#fff" opacity=".85"><circle cx="50" cy="122" r="1.8"/><circle cx="64" cy="132" r="1.8"/><circle cx="76" cy="120" r="1.8"/><circle cx="62" cy="118" r="1.5"/></g>
+      </g>
+      <!-- CAT -->
+      <g transform="translate(370,186)">
+        <ellipse cx="44" cy="90" rx="42" ry="30" fill="#9FA6B2"/>
+        <polygon points="6,30 12,-6 36,18" fill="#9FA6B2"/><polygon points="82,30 76,-6 52,18" fill="#9FA6B2"/>
+        <polygon points="12,24 15,4 28,17" fill="#F4B7C0"/><polygon points="76,24 73,4 60,17" fill="#F4B7C0"/>
+        <ellipse cx="44" cy="44" rx="42" ry="34" fill="#A9B0BC"/>
+        <path d="M22 50 Q44 76 66 50 Q66 74 44 78 Q22 74 22 50 Z" fill="#fff"/>
+        <g stroke="#6F7684" stroke-width="3" stroke-linecap="round"><path d="M36 14 L38 24"/><path d="M44 12 L44 23"/><path d="M52 14 L50 24"/></g>
+        <path d="M24 42 Q30 36 36 42" stroke="#2B2B33" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+        <path d="M52 42 Q58 36 64 42" stroke="#2B2B33" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+        <path d="M41 52 L47 52 L44 56 Z" fill="#E87B8F"/>
+        <path d="M36 59 Q40 63 44 58 Q48 63 52 59" stroke="#2B2B33" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <g stroke="#6F7684" stroke-width="1.2"><path d="M4 50 L26 54"/><path d="M4 58 L26 58"/><path d="M84 50 L62 54"/><path d="M84 58 L62 58"/></g>
+        <circle cx="18" cy="56" r="5" fill="#F9B4B4" opacity=".6"/><circle cx="70" cy="56" r="5" fill="#F9B4B4" opacity=".6"/>
+        <path d="M14 74 Q44 88 74 74" stroke="#D94848" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <circle cx="44" cy="86" r="6" fill="#F2C230" stroke="#C9971A" stroke-width="1.5"/>
+      </g>
+    </svg>
+
+    <div class="title"><span class="paw">🐾</span>Pes a Kočka</div>
+    <div class="ribbon">Cẩm nang tiếng Séc vỡ lòng</div><br>
+    <div class="script">Học như ghép Lego</div>
+    <div class="tag"><span>Người lớn đọc là hiểu, trẻ con đọc cũng nhớ.</span></div>
+    <div class="steps"><i>👀</i> Nhìn → <i>🗣️</i> Đọc to theo [ ] → <i>⭐</i> Tô 1 sao.</div>
+  </div>
+
+  <div class="row c2" style="margin-top:2mm">
+    <div class="card y" style="display:flex;gap:3mm;align-items:center">
+      <div style="flex:none;width:11mm;height:11mm;border-radius:50%;background:var(--orange);color:#fff;font:800 17pt/11mm 'Baloo 2';text-align:center">1</div>
+      <div><div style="font:800 12pt 'Baloo 2';color:var(--navy)">Nhịp 1 · Chặng 1–2 🌱</div>Học thuộc cả cụm như câu cửa miệng, chưa cần hiểu ngữ pháp.</div>
+    </div>
+    <div class="card" style="display:flex;gap:3mm;align-items:center">
+      <div style="flex:none;width:11mm;height:11mm;border-radius:50%;background:var(--navy);color:#fff;font:800 17pt/11mm 'Baloo 2';text-align:center">2</div>
+      <div><div style="font:800 12pt 'Baloo 2';color:var(--navy)">Nhịp 2 · từ Chặng 3 🧩</div>Mở “ngăn kéo ngữ pháp”, bạn sẽ thấy các câu đã thuộc chỉ là những mảnh Lego ghép lại.</div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="num">2</div><div class="bar">Bản đồ 5 chặng <small>mỗi ngày 1 chặng, khoảng 15 phút</small></div><span class="icon">⏱️</span></div>
+  <div class="map" style="margin-top:5mm">
+    <div class="signpost">
+      <svg viewBox="0 0 80 90" width="100%" height="100%"><rect x="34" y="22" width="7" height="64" fill="#8E5E36"/><path d="M4 14 h58 l10 9 l-10 9 h-58 z" fill="#E2B15F" stroke="#8E5E36" stroke-width="2"/><text x="34" y="28" font-family="Baloo 2" font-weight="800" font-size="13" text-anchor="middle" fill="#5A3A1E">START</text><path d="M10 40 h52 l9 8 l-9 8 h-52 z" fill="#F0C77A" stroke="#8E5E36" stroke-width="2"/><text x="36" y="53" font-family="Baloo 2" font-weight="800" font-size="12" text-anchor="middle" fill="#5A3A1E">CÍL</text><path d="M14 86 q10 -16 18 0 q8 -14 14 0 q8 -16 16 0z" fill="#7FB86A"/></svg>
+    </div>
+    <div class="stop s1"><span class="ico">🤝</span><h4>Chặng 1</h4><p>Gặp nhau,<br>hỏi tên</p></div><span class="arrow">→</span>
+    <div class="stop s2"><span class="ico">👉</span><h4>Chặng 2</h4><p>Chỉ trỏ:<br>ai, cái gì</p></div><span class="arrow">→</span>
+    <div class="stop s3"><span class="ico">🔐</span><h4>Chặng 3</h4><p>Bí mật chữ<br>“là”</p></div><span class="arrow">→</span>
+    <div class="stop s4"><span class="ico">📍</span><h4>Chặng 4</h4><p>Ở đâu, từ đâu,<br>nước nào</p></div><span class="arrow">→</span>
+    <div class="stop s5"><span class="ico">🏆</span><h4>Chặng 5</h4><p>Thử thách +<br>tự kiểm tra</p></div>
+  </div>
+
+  <div class="sec"><div class="num">3</div><div class="bar">Khởi động: 4 mật mã “nhìn chữ đoán âm” <small>30 giây</small></div><span class="icon">⏱️</span></div>
+  <div class="lead">Tiếng Séc viết sao đọc vậy. Nhấn âm luôn rơi vào vần đầu của từ.</div>
+  <div class="row c2" style="gap:2mm 3mm">
+    <div class="card w code"><h4><span class="k">1.</span>Chữ j đọc như i</h4><div class="small">Trước s, m thì gần như câm</div>
+      <div class="ex"><span class="cz">já</span> <span class="ipa">[ia]</span> · <span class="cz">jak</span> <span class="ipa">[iac]</span> · <span class="cz">jsem</span> <span class="ipa">[sêm]</span> · <span class="cz">jmenuju</span> <span class="ipa">[mê-nu-iu]</span></div></div>
+    <div class="card w code"><h4><span class="k">2.</span>Dấu sắc ´ = kéo dài hơi</h4><div class="small">Không phải thanh sắc tiếng Việt</div>
+      <div class="ex"><span class="cz">pán</span> <span class="ipa">[pa-an]</span> · <span class="cz">nádraží</span> <span class="ipa">[na-đra-gi]</span></div></div>
+    <div class="card w code"><h4><span class="k">3.</span>Móc câu ˇ</h4>
+      <div><b>č</b> = ch · <b>š</b> = sh · <b>ž</b> = gi · <b>ř</b> = rzh <span class="small">(rung lưỡi)</span> · <b>ň</b> = nh · <b>ě</b> = iê</div>
+      <div class="ex"><span class="cz">Čech</span> <span class="ipa">[chekh]</span> · <span class="cz">Škola</span> <span class="ipa">[shcô-la]</span> · <span class="cz">dobře</span> <span class="ipa">[đô-brzhê]</span></div></div>
+    <div class="card w code"><h4><span class="k">4.</span>c và ch</h4>
+      <div><b>c</b> = ts <span class="small">(không phải “x”)</span> · <b>ch</b> = kh</div>
+      <div class="ex"><span class="cz">co</span> <span class="ipa">[tsô]</span> · <span class="cz">cizinec</span> <span class="ipa">[tsi-di-nêts]</span> · <span class="cz">Čech</span> <span class="ipa">[chekh]</span></div></div>
+  </div>
+  <div class="tip mt2"><span class="ic">💡</span><div>Phiên âm trong <b>[ ]</b> là cách đọc gần đúng bằng chữ Việt (chữ “d” không gạch = âm z). Nhờ cô giáo đọc mẫu thêm để chuẩn hơn.</div><div style="margin-left:auto;font:400 12pt 'Pacifico';color:var(--navy);white-space:nowrap">Có học nhé! 🐾</div></div>
+
+  <div class="stage"><div class="big">1</div><div><h2><span class="pill">Chặng 1</span>Gặp nhau</h2><p>Nhịp 1: học thuộc cả cụm, chưa cần ngữ pháp</p></div><span class="emo">🇨🇿</span></div>
+
+  <div class="sub"><span class="n">1</span><h3>Chào nhau</h3></div>
+  <div class="tiles c5">
+    <div class="tile"><div class="e">👋</div><span class="cz">Ahoj</span><span class="ipa">[a-hôi]</span><span class="vi">chào / tạm biệt (bạn bè)</span></div>
+    <div class="tile"><div class="e">🙂</div><span class="cz">Dobrý den</span><span class="ipa">[đô-bri đen]</span><span class="vi">chào (người lớn)</span></div>
+    <div class="tile"><div class="e">🌙</div><span class="cz">Na shledanou</span><span class="ipa">[na sclê-đa-nâu]</span><span class="vi">hẹn gặp lại</span></div>
+    <div class="tile"><div class="e">❤️</div><span class="cz">Děkuju</span><span class="ipa">[điê-cu-iu]</span><span class="vi">cảm ơn</span></div>
+    <div class="tile"><div class="e">🙏</div><span class="cz">Prosím</span><span class="ipa">[prô-sim]</span><span class="vi">xin mời / không có gì</span></div>
+  </div>
+
+  <div>
+      <div class="sub"><span class="n">2</span><h3>Hỏi thăm sức khỏe</h3></div>
+      <div class="qa">
+        <div class="q"><span class="cz">Jak se máš?</span> Bạn khỏe không? <span class="small">(thân, ty)</span> <span class="ipa">[iac sê mash]</span></div>
+        <div class="a"><span class="cz">Mám se dobře.</span> Tôi khỏe. <span class="ipa">[mam sê đô-brzhê]</span></div>
+        <div class="q"><span class="cz">Jak se máte?</span> Ngài khỏe không? <span class="small">(lịch sự, vy)</span> <span class="ipa">[iac sê ma-tê]</span></div>
+        <div class="a"><span class="cz">Jde to. / Ujde to.</span> Tạm được. <span class="ipa">[iđê tô / u-iđê tô]</span></div>
+      </div>
+      <div class="tiles c3 mt1">
+        <div class="tile" style="padding:1mm"><span class="e">😊</span> <span class="cz" style="display:inline">Dobře</span> <span class="ipa">[đô-brzhê]</span><span class="vi">khỏe</span></div>
+        <div class="tile" style="padding:1mm"><span class="e">😐</span> <span class="cz" style="display:inline">Jde to</span> <span class="ipa">[iđê tô]</span><span class="vi">tạm được</span></div>
+        <div class="tile" style="padding:1mm"><span class="e">😢</span> <span class="cz" style="display:inline">Špatně</span> <span class="ipa">[shpat-nhê]</span><span class="vi">tệ · <i>Mám se špatně</i> = tôi không khỏe</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="five">
+    <div class="badge"><i>⭐</i>5 từ mẫu<br>để đọc</div>
+    <div class="it"><span class="cz">já</span><span class="ipa">[ia]</span><span class="vi">tôi (j = i)</span></div>
+    <div class="it"><span class="cz">pán</span><span class="ipa">[pa-an]</span><span class="vi">quý ông (´ = kéo dài)</span></div>
+    <div class="it"><span class="cz">dobře</span><span class="ipa">[đô-brzhê]</span><span class="vi">tốt (ř = rzh)</span></div>
+    <div class="it"><span class="cz">co</span><span class="ipa">[tsô]</span><span class="vi">cái gì (c = ts)</span></div>
+    <div class="it"><span class="cz">Čech</span><span class="ipa">[chekh]</span><span class="vi">người Séc (č = ch)</span></div>
+  </div>
+</section>
+
+<!-- ===================== PAGE 2 ===================== -->
+<section class="page">
+  <div class="pg-no">Trang 2/5</div>
+  <div class="cont">↳ Chặng 1 · Gặp nhau (tiếp)</div>
+
+  <div class="sub" style="margin-top:0"><span class="n">3</span><h3>ty hay vy? <small>hai cách gọi “bạn”</small></h3></div>
+  <div class="row c2">
+      <div class="card g" style="padding:2mm 3mm"><div style="display:flex;gap:2mm;align-items:center"><span style="font-size:16pt;white-space:nowrap;flex:none">🧒👧</span><div><span class="cz">ty</span> <span class="ipa">[ti]</span> · <b>thân mật</b><br>Bạn bè, trẻ con. Giống “mày, cậu, em”.</div></div></div>
+      <div class="card" style="padding:2mm 3mm"><div style="display:flex;gap:2mm;align-items:center"><span style="font-size:16pt;white-space:nowrap;flex:none">🧑‍💼👩‍🏫</span><div><span class="cz">vy</span> <span class="ipa">[vi]</span> · <b>lịch sự</b><br>Người lạ, người lớn tuổi, cô giáo, công sở, cả nhóm. Không chắc thì dùng <b>vy</b>.</div></div></div>
+    </div>
+
+  <div class="sub"><span class="n">4</span><h3>Hỏi tên và nói tên</h3></div>
+  <div class="qa">
+    <div class="q"><span class="cz">Jak se jmenuješ?</span> Bạn tên gì? <span class="small">(ty)</span> <span class="ipa">[iac sê mê-nu-iesh]</span></div>
+    <div class="a"><span class="cz">Jmenuju se Trí.</span> Tên tôi là Trí. <span class="ipa">[mê-nu-iu sê tri]</span></div>
+    <div class="q"><span class="cz">Jak se jmenujete?</span> Ngài tên gì? <span class="small">(vy)</span> <span class="ipa">[iac sê mê-nu-iê-tê]</span></div>
+    <div class="a"><span class="cz">A vy? / A ty?</span> Còn ngài / còn bạn? <span class="ipa">[a vi / a ti]</span></div>
+  </div>
+  <div class="tip mt2"><span class="ic">✏️</span><div>Viết tên bạn: <span class="cz">Jmenuju se</span> <span class="blank l" style="min-width:45mm"></span> <span class="small">(trong giấy tờ viết: <i>jmenuji se</i>)</span></div></div>
+
+  <div class="sub"><span class="n">5</span><h3>Tên và họ trên giấy tờ <small>ở ủy ban, bệnh viện, sân bay 🛂</small></h3></div>
+  <div class="card w" style="padding:1.6mm 3.5mm;margin-bottom:2mm"><span class="cz">jméno</span> <span class="ipa">[mê-nô]</span> = <b>tên</b> &nbsp;·&nbsp; <span class="cz">příjmení</span> <span class="ipa">[przhi-i-mnê-nhi]</span> = <b>họ</b></div>
+  <div class="qa y">
+    <div class="q"><span class="cz">Jaké je vaše jméno?</span> Tên của ngài là gì? <span class="ipa">[ia-kê iê va-shê mê-nô]</span></div>
+    <div class="a"><span class="cz">Moje jméno je Trí.</span> Tên của tôi là Trí. <span class="ipa">[mô-iê mê-nô iê tri]</span></div>
+    <div class="q"><span class="cz">Jaké je vaše příjmení?</span> Họ của ngài là gì? <span class="ipa">[ia-kê iê va-shê przhi-i-mnê-nhi]</span></div>
+    <div class="a"><span class="cz">Moje příjmení je Đỗ.</span> Họ của tôi là Đỗ. <span class="ipa">[mô-iê przhi-i-mnê-nhi iê đô]</span></div>
+  </div>
+  <div class="tiles c3 mt2">
+    <div class="tile"><span class="e">🙋</span> <span class="cz" style="display:inline">moje</span> <span class="ipa">[mô-iê]</span><span class="vi">của tôi</span></div>
+    <div class="tile"><span class="e">🧒</span> <span class="cz" style="display:inline">tvoje</span> <span class="ipa">[tvô-iê]</span><span class="vi">của bạn (giống ty)</span></div>
+    <div class="tile"><span class="e">🧑‍🏫</span> <span class="cz" style="display:inline">vaše</span> <span class="ipa">[va-shê]</span><span class="vi">của ngài (giống vy)</span></div>
+  </div>
+  <div class="qa y mt2">
+    <div class="q"><span class="cz">Vaše pasy, prosím!</span> Xin cho xem hộ chiếu. <span class="ipa">[va-shê pa-si prô-sim]</span></div>
+    <div class="a"><span class="cz">Jak se píše vaše jméno?</span> Tên ngài viết thế nào? <span class="ipa">[iac sê pi-shê va-shê mê-nô]</span></div>
+    <div class="q"><span class="cz">Jak se hláskuje vaše jméno?</span> Tên ngài đánh vần thế nào? <span class="ipa">[iac sê hlas-cu-iê va-shê mê-nô]</span></div>
+    <div class="a"><span class="cz">T-R-Í … Trí:</span> T, R, Í … <span class="ipa">[tê-êr-i]</span></div>
+  </div>
+  <div class="remember"><span class="ic">⭐</span><div><b>Nhớ:</b> <span class="cz">Jak se máš/máte?</span> hỏi thăm · <span class="cz">Jak se jmenuješ/jmenujete?</span> hỏi tên · <span class="cz">Jmenuju se…</span> nói tên · <span class="cz">jméno</span> tên, <span class="cz">příjmení</span> họ · <span class="cz">moje / tvoje / vaše</span> của tôi / bạn / ngài.</div></div>
+
+  <div class="stage"><div class="big">2</div><div><h2><span class="pill">Chặng 2</span>Chỉ trỏ: ai đây, cái gì đây?</h2><p>Như đi cùng một đứa trẻ chỉ tay hỏi mọi thứ</p></div><span class="emo">👉</span></div>
+  <div class="sub" style="margin-top:0"><span class="n">1</span><h3>Nạp từ trước <small>người · con vật · đồ vật</small></h3></div>
+  <div class="tiles" style="grid-template-columns:repeat(6,1fr)">
+    <div class="tile"><div class="e">👦</div><span class="cz">kluk</span><span class="ipa">[cluc]</span><span class="vi">con trai</span></div>
+    <div class="tile"><div class="e">👧</div><span class="cz">holka</span><span class="ipa">[hôl-ca]</span><span class="vi">con gái</span></div>
+    <div class="tile"><div class="e">👨</div><span class="cz">pán</span><span class="ipa">[pa-an]</span><span class="vi">quý ông</span></div>
+    <div class="tile"><div class="e">👩</div><span class="cz">paní</span><span class="ipa">[pa-nhi]</span><span class="vi">quý bà</span></div>
+    <div class="tile"><div class="e">👨‍🏫</div><span class="cz">učitel</span><span class="ipa">[u-chi-têl]</span><span class="vi">thầy giáo</span></div>
+    <div class="tile"><div class="e">👩‍🏫</div><span class="cz">učitelka</span><span class="ipa">[u-chi-tel-ca]</span><span class="vi">cô giáo</span></div>
+    <div class="tile"><div class="e">🎭</div><span class="cz">herec</span><span class="ipa">[hê-rets]</span><span class="vi">diễn viên nam</span></div>
+    <div class="tile"><div class="e">🛒</div><span class="cz">prodavačka</span><span class="ipa">[prô-đa-vach-ca]</span><span class="vi">cô bán hàng</span></div>
+    <div class="tile"><div class="e">🗂️</div><span class="cz">sekretářka</span><span class="ipa">[sê-crê-tarzh-ca]</span><span class="vi">cô thư ký</span></div>
+    <div class="tile"><div class="e">🐱</div><span class="cz">kočka</span><span class="ipa">[côch-ca]</span><span class="vi">con mèo</span></div>
+    <div class="tile"><div class="e">🐶</div><span class="cz">pes</span><span class="ipa">[pês]</span><span class="vi">con chó</span></div>
+    <div class="tile"><div class="e">👑</div><span class="cz">koruna</span><span class="ipa">[cô-ru-na]</span><span class="vi">đồng curon (gốc: vương miện)</span></div>
+    <div class="tile"><div class="e">👖</div><span class="cz">kalhoty</span><span class="ipa">[cal-hô-ti]</span><span class="vi">cái quần</span></div>
+    <div class="tile"><div class="e">🏠</div><span class="cz">dům</span><span class="ipa">[đum]</span><span class="vi">ngôi nhà</span></div>
+    <div class="tile"><div class="e">🚗</div><span class="cz">auto</span><span class="ipa">[ao-tô]</span><span class="vi">xe hơi</span></div>
+    <div class="tile"><div class="e">🍎</div><span class="cz">jablko</span><span class="ipa">[ia-blcô]</span><span class="vi">quả táo</span></div>
+    <div class="tile"><div class="e">💧</div><span class="cz">voda</span><span class="ipa">[vô-đa]</span><span class="vi">nước</span></div>
+    <div class="tile"><div class="e">📚</div><span class="cz">kniha</span><span class="ipa">[cnhi-ha]</span><span class="vi">quyển sách</span></div>
+  </div>
+  <div class="tip mt2"><span class="ic">💡</span><div><b>Mẹo đoán từ:</b> nghề của phụ nữ gần như luôn thêm đuôi <b>-ka</b> ở cuối: <span class="cz">učitel → učitelka</span>, <span class="cz">prodavač → prodavačka</span>. Dễ đoán!</div></div>
+
+</section>
+
+<!-- ===================== PAGE 3 ===================== -->
+<section class="page">
+  <div class="pg-no">Trang 3/5</div>
+  <div class="cont">↳ Chặng 1–2 · ôn nhanh rồi chỉ trỏ tiếp</div>
+  <div class="five" style="margin:0 0 1mm">
+    <div class="badge"><i>⭐</i>5 câu<br>cần thuộc</div>
+    <div class="it"><span class="cz">Ahoj!</span><span class="ipa">[a-hôi]</span><span class="vi">chào bạn</span></div>
+    <div class="it"><span class="cz">Děkuju</span><span class="ipa">[điê-cu-iu]</span><span class="vi">cảm ơn</span></div>
+    <div class="it"><span class="cz">Jak se máte?</span><span class="ipa">[iac sê ma-tê]</span><span class="vi">Ngài khỏe không?</span></div>
+    <div class="it"><span class="cz">Jmenuju se …</span><span class="ipa">[mê-nu-iu sê]</span><span class="vi">Tên tôi là …</span></div>
+    <div class="it"><span class="cz">Na shledanou</span><span class="ipa">[na sclê-đa-nâu]</span><span class="vi">hẹn gặp lại</span></div>
+  </div>
+
+  <div class="sub" style="margin-top:0"><span class="n">2</span><h3>Chỉ vào NGƯỜI: <span style="color:var(--orange)">Kdo</span> = ai 🧑</h3></div>
+  <div class="qa g">
+    <div class="q"><span class="cz">Kdo je to?</span> Đây là ai? <span class="ipa">[gơ-đô iê tô]</span></div>
+    <div class="a"><span class="cz">To je učitel. / To je učitelka.</span> Đây là thầy giáo. / cô giáo. <span class="ipa">[tô iê u-chi-têl / u-chi-tel-ca]</span></div>
+    <div class="q"><span class="cz">Kdo je on?</span> Anh ấy là ai? <span class="ipa">[gơ-đô iê ôn]</span></div>
+    <div class="a"><span class="cz">On je herec.</span> Anh ấy là diễn viên. <span class="ipa">[ôn iê hê-rets]</span></div>
+    <div class="q"><span class="cz">Kdo je ona?</span> Cô ấy là ai? <span class="ipa">[gơ-đô iê ô-na]</span></div>
+    <div class="a"><span class="cz">Ona je Maria.</span> Cô ấy là Maria. <span class="ipa">[ô-na iê ma-ri-a]</span></div>
+  </div>
+
+  <div class="sub"><span class="n">3</span><h3>Chỉ vào ĐỒ VẬT, CON VẬT: <span style="color:var(--orange)">Co</span> = cái gì 🐱</h3></div>
+  <div class="qa g">
+    <div class="q"><span class="cz">Co je to?</span> Đây là cái gì? <span class="ipa">[tsô iê tô]</span></div>
+    <div class="a"><span class="cz">To je kočka.</span> Đây là con mèo. <span class="ipa">[tô iê côch-ca]</span></div>
+  </div>
+  <div class="tip mt2" style="background:var(--pink-l);border-color:var(--pink-b)"><span class="ic">👖</span><div><b>Chú ý cái quần (kalhoty):</b> người Séc nghĩ rất ngộ, cái quần có 2 ống nên luôn là <b>số nhiều</b>. Nhiều thứ thì không dùng <span class="cz">je</span>, phải đổi thành <span class="cz">jsou</span> <span class="ipa">[sâu]</span>.</div></div>
+  <div class="qa g mt2">
+    <div class="q"><span class="cz">Co je to?</span> Đây là cái gì? <span class="ipa">[tsô iê tô]</span></div>
+    <div class="a"><span class="cz">To jsou kalhoty.</span> Đây là cái quần. <span class="ipa">[tô sâu cal-hô-ti]</span></div>
+  </div>
+  <div class="remember"><span class="ic">⭐</span><div><b>Nhớ:</b> <span class="cz">Kdo je to?</span> = ai đây · <span class="cz">Co je to?</span> = cái gì đây. Một cái: <span class="cz">To je</span>. Nhiều cái (như quần): <span class="cz">To jsou</span>.</div></div>
+
+  <div class="stage"><div class="big">3</div><div><h2><span class="pill">Chặng 3</span>Bí mật của chữ “là”</h2><p>Nhịp 2: mở ngăn kéo ngữ pháp. Mỗi người mặc một chiếc áo “là” riêng</p></div><span class="emo">👕</span></div>
+  <div class="tbl">
+  <table>
+    <tr><th style="width:36%">Ai nói</th><th style="width:16%">Áo “là”</th><th>Ví dụ (câu bạn đã gặp)</th></tr>
+    <tr><td><span class="cz">já</span> <span class="ipa">[ia]</span> · tôi</td><td><span class="shirt">jsem</span> <span class="ipa">[sêm]</span></td><td><span class="cz">Já jsem Dario.</span> Tôi là Dario.</td></tr>
+    <tr><td><span class="cz">ty</span> <span class="ipa">[ti]</span> · bạn (thân)</td><td><span class="shirt">jsi</span> <span class="ipa">[si]</span></td><td><span class="cz">Kdo jsi?</span> Bạn là ai?</td></tr>
+    <tr><td><span class="cz">on · ona · to</span> · anh ấy, cô ấy, đây</td><td><span class="shirt">je</span> <span class="ipa">[iê]</span></td><td><span class="cz">To je učitel.</span> Đây là thầy giáo.</td></tr>
+    <tr><td><span class="cz">my</span> <span class="ipa">[mi]</span> · chúng tôi</td><td><span class="shirt">jsme</span> <span class="ipa">[smê]</span></td><td><span class="cz">My jsme kamarádi.</span> Chúng tôi là bạn bè.</td></tr>
+    <tr><td><span class="cz">vy</span> <span class="ipa">[vi]</span> · ngài, các bạn</td><td><span class="shirt">jste</span> <span class="ipa">[stê]</span></td><td><span class="cz">Kdo jste?</span> Ngài là ai?</td></tr>
+    <tr><td><span class="cz">oni</span> <span class="ipa">[ô-nhi]</span> · họ</td><td><span class="shirt">jsou</span> <span class="ipa">[sâu]</span></td><td><span class="cz">Oni jsou Pavel a Tom.</span> Họ là Pavel và Tom.</td></tr>
+  </table>
+  </div>
+  <div class="song">🎵 Bài hát 6 chiếc áo (vỗ tay theo nhịp): <b>Já jsem · ty jsi · on je · ona je · my jsme · vy jste · oni jsou!</b></div>
+  <div class="tip mt2"><span class="ic">⚠️</span><div><b>Dễ nhầm:</b> <span class="cz">jsem</span> (tôi, một người) khác <span class="cz">jsme</span> (chúng tôi, nhiều người). Chữ “m” cuối của <i>jsem</i> ngắn, chữ “m” của <i>jsme</i> nằm trước chữ e.</div></div>
+
+  <div class="sub"><span class="n">1</span><h3>Đọc to các câu ghép 🗣️</h3></div>
+  <div class="qa p">
+    <div class="q"><span class="cz">Kdo jsi?</span> Bạn là ai? <span class="ipa">[gơ-đô si]</span></div>
+    <div class="a"><span class="cz">Já jsem Dario.</span> Tôi là Dario. <span class="ipa">[ia sêm đa-ri-ô]</span></div>
+    <div class="q"><span class="cz">Kdo jste?</span> Ngài là ai? <span class="ipa">[gơ-đô stê]</span></div>
+    <div class="a"><span class="cz">Já jsem Pavel Novák.</span> Tôi là Pavel Novák. <span class="ipa">[ia sêm pa-vêl nô-vac]</span></div>
+    <div class="q"><span class="cz">Kdo jste?</span> <span class="small">(cả nhóm)</span> Các bạn là ai? <span class="ipa">[gơ-đô stê]</span></div>
+    <div class="a"><span class="cz">My jsme kamarádi.</span> Chúng tôi là bạn bè. <span class="ipa">[mi smê ca-ma-ra-đi]</span></div>
+    <div class="q"><span class="cz">Kdo jsou oni?</span> Họ là ai? <span class="ipa">[gơ-đô sâu ô-nhi]</span></div>
+    <div class="a"><span class="cz">Oni jsou Pavel a Tom.</span> Họ là Pavel và Tom. <span class="ipa">[ô-nhi sâu pa-vêl a tôm]</span></div>
+  </div>
+
+  <div class="five">
+    <div class="badge"><i>⭐</i>5 câu<br>cần thuộc</div>
+    <div class="it"><span class="cz">Kdo je to?</span><span class="ipa">[gơ-đô iê tô]</span><span class="vi">Đây là ai?</span></div>
+    <div class="it"><span class="cz">Co je to?</span><span class="ipa">[tsô iê tô]</span><span class="vi">Đây là cái gì?</span></div>
+    <div class="it"><span class="cz">To je …</span><span class="ipa">[tô iê]</span><span class="vi">Đây là … (một)</span></div>
+    <div class="it"><span class="cz">To jsou …</span><span class="ipa">[tô sâu]</span><span class="vi">Đây là … (nhiều)</span></div>
+    <div class="it"><span class="cz">učitelka</span><span class="ipa">[u-chi-tel-ca]</span><span class="vi">nữ = nam + -ka</span></div>
+  </div>
+</section>
+
+<!-- ===================== PAGE 4 ===================== -->
+<section class="page">
+  <div class="pg-no">Trang 4/5</div>
+  <div class="cont">↳ Chặng 3 · Bí mật chữ “là” (tiếp)</div>
+
+  <div class="sub" style="margin-top:0"><span class="n">2</span><h3>2 tuyệt chiêu nói như người bản xứ 🥷</h3></div>
+  <div class="card w" style="padding:2mm 3.5mm"><b>1. Nói tắt cho sang.</b> Nhìn <span class="cz">jsem</span> là biết “tôi”, nhìn <span class="cz">jste</span> là biết “ngài”, nên người Séc hay bỏ luôn <i>já, ty, vy</i>.</div>
+  <div class="qa p mt2">
+    <div class="q"><span class="cz">Jste cizinka?</span> Chị là người nước ngoài à? <span class="ipa">[stê tsi-din-ca]</span></div>
+    <div class="a"><span class="cz">Ano, jsem cizinka.</span> Vâng, tôi là người nước ngoài. <span class="ipa">[a-nô sêm tsi-din-ca]</span></div>
+  </div>
+  <div class="card w mt2" style="padding:2mm 3.5mm"><b>2. Muốn nói “không phải là”:</b> dán <b style="color:var(--red)">ne-</b> ngay trước chữ “là”: <span class="cz">jsem → nejsem</span> <span class="ipa">[nê-sêm]</span>. Riêng <span class="cz">je</span> đổi thành <span class="cz">není</span> <span class="ipa">[nê-nhi]</span>.<br>Ví dụ: <span class="cz">To není doktorka.</span> <span class="ipa">[tô nê-nhi đôc-tôr-ca]</span> = Đó không phải bác sĩ nữ.</div>
+  <div class="tip mt2"><span class="ic">🎯</span><div><b>Điền áo “là” đúng</b> (jsem · jsi · je · jsme):&nbsp; 1. Já <span class="blank"></span> holka &nbsp; 2. Ty <span class="blank"></span> kluk &nbsp; 3. On <span class="blank"></span> pes &nbsp; 4. My <span class="blank"></span> kamarádi</div></div>
+  <div class="remember"><span class="ic">⭐</span><div><b>Nhớ:</b> Đủ 6 áo: <span class="cz">já jsem · ty jsi · on/ona/to je · my jsme · vy jste · oni jsou</span>. Muốn phủ định: thêm <b>ne-</b>.</div></div>
+
+  <div class="stage"><div class="big">4</div><div><h2><span class="pill">Chặng 4</span>Ở đâu, từ đâu, người nước nào</h2><p>Bộ “áo là” còn một nghĩa thứ hai: <b>đang ở</b></p></div><span class="emo">📍</span></div>
+
+  <div class="sub" style="margin-top:0"><span class="n">1</span><h3>Hỏi đang ở đâu: <span style="color:var(--orange)">Kde</span> = ở đâu <small>sau ve, na, v tên nơi chốn đổi đuôi nhẹ: học thuộc cả cụm</small></h3></div>
+  <div class="tiles c5">
+    <div class="tile"><div class="e">🏠</div><span class="cz">doma</span><span class="ipa">[đô-ma]</span><span class="vi">ở nhà</span></div>
+    <div class="tile"><div class="e">🏫</div><span class="cz">ve škole</span><span class="ipa">[vê shcô-lê]</span><span class="vi">ở trường</span></div>
+    <div class="tile"><div class="e">🚉</div><span class="cz">na nádraží</span><span class="ipa">[na na-đra-gi]</span><span class="vi">ở nhà ga</span></div>
+    <div class="tile"><div class="e">🌳</div><span class="cz">v parku</span><span class="ipa">[f par-cu]</span><span class="vi">ở công viên</span></div>
+    <div class="tile"><div class="e">🏙️</div><span class="cz">v Praze</span><span class="ipa">[f pra-zê]</span><span class="vi">ở Praha</span></div>
+  </div>
+  <div class="qa mt2">
+    <div class="q"><span class="cz">Kde jsi?</span> Bạn đang ở đâu? <span class="ipa">[gơ-đê si]</span></div>
+    <div class="a"><span class="cz">Já jsem na nádraží.</span> Tôi đang ở nhà ga. <span class="ipa">[ia sêm na na-đra-gi]</span></div>
+    <div class="q"><span class="cz">Kde jste?</span> Các bạn đang ở đâu? <span class="ipa">[gơ-đê stê]</span></div>
+    <div class="a"><span class="cz">My jsme ve škole.</span> Chúng tôi ở trường. <span class="ipa">[mi smê vê shcô-lê]</span></div>
+  </div>
+
+  <div class="sub"><span class="n">2</span><h3>Hỏi từ đâu đến: <span style="color:var(--orange)">Odkud</span> = từ đâu <small>thân: <i>Odkud jsi?</i> · lịch sự: <i>Odkud jste?</i> [ôt-cut stê]</small></h3></div>
+  <div class="tip"><span class="ic">🧲</span><div>Chữ <b>z</b> = “từ” giống một cục nam châm: đứng trước tên nước nào, nó hút đuôi nước ấy biến dạng chút: <span class="cz">Vietnam → z Vietnamu</span>. Không cần công thức, đọc quen cả cặp.</div></div>
+  <div class="tiles mt2" style="grid-template-columns:repeat(6,1fr)">
+    <div class="tile"><div class="e">🇻🇳</div><span class="cz">z Vietnamu</span><span class="ipa">[z vi-ết-na-mu]</span><span class="vi">từ Việt Nam</span></div>
+    <div class="tile"><div class="e">🇨🇿</div><span class="cz">z Česka</span><span class="ipa">[s ches-ca]</span><span class="vi">từ Séc</span></div>
+    <div class="tile"><div class="e">🇨🇳</div><span class="cz">z Číny</span><span class="ipa">[s chi-ni]</span><span class="vi">từ Trung Quốc</span></div>
+    <div class="tile"><div class="e">🇵🇱</div><span class="cz">z Polska</span><span class="ipa">[s pôl-sca]</span><span class="vi">từ Ba Lan</span></div>
+    <div class="tile"><div class="e">🇹🇷</div><span class="cz">z Turecka</span><span class="ipa">[s tu-rêts-ca]</span><span class="vi">từ Thổ Nhĩ Kỳ</span></div>
+    <div class="tile"><div class="e">🇮🇹</div><span class="cz">z Itálie</span><span class="ipa">[z i-ta-li-ê]</span><span class="vi">từ Ý</span></div>
+  </div>
+  <div class="qa y mt2">
+    <div class="q"><span class="cz">Odkud jsi?</span> Bạn từ đâu đến? <span class="ipa">[ôt-cut si]</span></div>
+    <div class="a"><span class="cz">Já jsem z Vietnamu.</span> Tôi từ Việt Nam. <span class="ipa">[ia sêm z vi-ết-na-mu]</span></div>
+    <div class="q"><span class="cz">Odkud je on?</span> Anh ấy từ đâu đến? <span class="ipa">[ôt-cut iê ôn]</span></div>
+    <div class="a"><span class="cz">On je z Polska.</span> Anh ấy từ Ba Lan. <span class="ipa">[ôn iê s pôl-sca]</span></div>
+    <div class="q"><span class="cz">Odkud jsou Tom a Mario?</span> Tom và Mario từ đâu? <span class="ipa">[ôt-cut sâu tôm a ma-ri-ô]</span></div>
+    <div class="a"><span class="cz">Oni jsou z Itálie.</span> Họ từ Ý. <span class="ipa">[ô-nhi sâu z i-ta-li-ê]</span></div>
+    <div class="q"><span class="cz">Vy jste z Turecka?</span> Ngài từ Thổ Nhĩ Kỳ à? <span class="ipa">[vi stê s tu-rêts-ca]</span></div>
+    <div class="a"><span class="cz">Ano, jsem.</span> Vâng, đúng vậy. <span class="ipa">[a-nô sêm]</span></div>
+  </div>
+  <div class="tip mt2"><span class="ic">❓</span><div>Hỏi “có phải không?” giữ nguyên câu rồi <b>lên giọng ở cuối</b>. <span class="cz">Ano</span> <span class="ipa">[a-nô]</span> = vâng · <span class="cz">Ne</span> <span class="ipa">[nê]</span> = không. Người ta hỏi “<i>vy jste…?</i>” thì bạn đáp <span class="cz">jsem</span>.</div></div>
+
+  <div class="sub"><span class="n">3</span><h3>Người nước nào? <small>Nam và nữ quy tắc y hệt nghề nghiệp: nữ thêm -ka</small></h3></div>
+  <div class="tbl">
+  <table>
+    <tr><th style="width:24%"></th><th>Đàn ông</th><th>Phụ nữ (+ -ka)</th><th>Nhiều người <span style="font-weight:600;font-size:8pt">(chỉ cần nhận ra)</span></th></tr>
+    <tr><td>🇨🇿 Séc</td><td><span class="cz">Čech</span> <span class="ipa">[chekh]</span></td><td><span class="cz">Češka</span> <span class="ipa">[chesh-ca]</span></td><td><span class="cz">Češi</span> <span class="ipa">[chê-shi]</span></td></tr>
+    <tr><td>🇻🇳 Việt Nam</td><td><span class="cz">Vietnamec</span> <span class="ipa">[vi-ết-na-mêts]</span></td><td><span class="cz">Vietnamka</span> <span class="ipa">[vi-ết-nam-ca]</span></td><td><span class="cz">Vietnamci</span></td></tr>
+    <tr><td>🇨🇳 Trung Quốc</td><td><span class="cz">Číňan</span> <span class="ipa">[chi-nhan]</span></td><td><span class="cz">Číňanka</span> <span class="ipa">[chi-nhan-ca]</span></td><td><span class="cz">Číňané</span></td></tr>
+    <tr><td>🌍 Người nước ngoài</td><td><span class="cz">cizinec</span> <span class="ipa">[tsi-di-nêts]</span></td><td><span class="cz">cizinka</span> <span class="ipa">[tsi-din-ca]</span></td><td><span class="cz">cizinci</span></td></tr>
+  </table>
+  </div>
+</section>
+
+<!-- ===================== PAGE 5 ===================== -->
+<section class="page">
+  <div class="pg-no">Trang 5/5</div>
+  <div class="cont">↳ Chặng 4 · Ở đâu, từ đâu, nước nào (tiếp)</div>
+  <div class="qa y">
+    <div class="q"><span class="cz">Jste Číňanka?</span> Chị là người Trung Quốc à? <span class="ipa">[stê chi-nhan-ca]</span></div>
+    <div class="a"><span class="cz">Nejsem Číňanka, já jsem Vietnamka.</span> Tôi không phải người Trung Quốc, tôi là người Việt. <span class="ipa">[nê-sêm chi-nhan-ca, ia sêm vi-ết-nam-ca]</span></div>
+  </div>
+  <div class="remember"><span class="ic">⭐</span><div><b>Nhớ:</b> <span class="cz">Kde</span> = ở đâu (ve / na / v) · <span class="cz">Odkud</span> = từ đâu, đáp <span class="cz">Jsem z…</span> · nữ = nam + <b>-ka</b> · không phải = thêm <b>ne-</b>.</div></div>
+  <div class="five">
+    <div class="badge"><i>⭐</i>5 câu<br>cần thuộc</div>
+    <div class="it"><span class="cz">Kde jsi?</span><span class="ipa">[gơ-đê si]</span><span class="vi">Bạn ở đâu?</span></div>
+    <div class="it"><span class="cz">Jsem doma</span><span class="ipa">[sêm đô-ma]</span><span class="vi">Tôi ở nhà</span></div>
+    <div class="it"><span class="cz">Odkud jsi?</span><span class="ipa">[ôt-cut si]</span><span class="vi">Bạn từ đâu?</span></div>
+    <div class="it"><span class="cz">Jsem z Vietnamu</span><span class="ipa">[sêm z vi-ết-na-mu]</span><span class="vi">Tôi từ Việt Nam</span></div>
+    <div class="it"><span class="cz">Jsem Vietnamka</span><span class="ipa">[sêm vi-ết-nam-ca]</span><span class="vi">Tôi là người Việt (nữ)</span></div>
+  </div>
+
+
+  <div class="stage"><div class="big">5</div><div><h2><span class="pill" style="background:var(--red)">Chặng 5</span>Thử thách và tự kiểm tra</h2><p>Ghép đủ mảnh Lego, rồi tự chấm điểm</p></div><span class="emo">🏆</span></div>
+
+  <div class="sub" style="margin-top:0"><span class="n">1</span><h3>Ghép Lego: gặp một người lạ <small>dùng cả 4 chặng 🧱</small></h3></div>
+  <div class="qa p">
+    <div class="q"><span class="cz">Dobrý den. Jak se máte?</span> Chào bạn. Bạn khỏe không? <span class="ipa">[đô-bri đen. iac sê ma-tê]</span></div>
+    <div class="a"><span class="cz">Mám se dobře. A vy?</span> Tôi khỏe. Còn bạn? <span class="ipa">[mam sê đô-brzhê. a vi]</span></div>
+    <div class="q"><span class="cz">Jde to. Jak se jmenujete?</span> Tạm được. Bạn tên là gì? <span class="ipa">[iđê tô. iac sê mê-nu-iê-tê]</span></div>
+    <div class="a"><span class="cz">Jmenuju se Trí. Já jsem Vietnamec.</span> Tôi tên Trí. Tôi là người Việt. <span class="ipa">[mê-nu-iu sê tri. ia sêm vi-ết-na-mêts]</span></div>
+    <div class="q"><span class="cz">Odkud jste? Kde jste?</span> Bạn từ đâu? Đang ở đâu? <span class="ipa">[ôt-cut stê. gơ-đê stê]</span></div>
+    <div class="a"><span class="cz">Jsem z Vietnamu. Jsem na nádraží.</span> Tôi từ Việt Nam. Tôi ở nhà ga. <span class="ipa">[sêm z vi-ết-na-mu. sêm na na-đra-gi]</span></div>
+    <div class="q"><span class="cz">Dobře. Na shledanou!</span> Tốt. Hẹn gặp lại! <span class="ipa">[đô-brzhê. na sclê-đa-nâu]</span></div>
+    <div class="a"><span class="cz">Na shledanou!</span> Hẹn gặp lại! <span class="ipa">[na sclê-đa-nâu]</span></div>
+  </div>
+
+  <div class="sub"><span class="n">2</span><h3>Thử thách: câu dài chỉ là ghép Lego</h3></div>
+  <div class="row" style="grid-template-columns:0.9fr 1.5fr;gap:3mm">
+    <div class="card y" style="display:flex;flex-direction:column;justify-content:center">
+      <div style="font-size:20pt">🐕🏠</div>
+      <div class="cz" style="font-size:11pt">Vidím jednoho psa, on stojí před domem.</div>
+      <div class="ipa">[vi-đim iêd-nô-hô psa, ôn stô-i przhêt đô-mêm]</div>
+      <div class="mt1">Tôi nhìn thấy một con chó, nó đang đứng trước ngôi nhà.</div>
+    </div>
+    <div class="tbl">
+    <table style="font-size:8.6pt">
+      <tr><th style="width:24%">Mảnh ghép</th><th style="width:24%">Đọc</th><th>Nghĩa và mẹo</th></tr>
+      <tr><td class="cz">Vidím</td><td class="ipa">vi-đim</td><td>Tôi nhìn thấy.</td></tr>
+      <tr><td class="cz">jednoho psa</td><td class="ipa">iêd-nô-hô psa</td><td>Một con chó. Gốc là <i>jeden pes</i>; bị “nhìn thấy” thì đổi đuôi thành <i>psa</i>.</td></tr>
+      <tr><td class="cz">on stojí</td><td class="ipa">ôn stô-i</td><td>Nó (chú chó đực) đang đứng.</td></tr>
+      <tr><td class="cz">před domem</td><td class="ipa">przhêt đô-mêm</td><td>Phía trước ngôi nhà. <i>před</i> = phía trước; <i>dům</i> sau <i>před</i> đổi thành <i>domem</i>, giống tên nước đổi đuôi sau chữ z. Bài sau học kỹ, hôm nay chỉ cần nhận ra.</td></tr>
+    </table>
+    </div>
+  </div>
+
+  <div class="sub"><span class="n">3</span><h3>Tự kiểm tra <small>che đáp án in ngược cuối trang · đúng 8/10 là bạn đã nắm bài</small></h3></div>
+  <div class="row c2" style="gap:2mm 3mm">
+    <div class="card w"><b>A. Điền chữ “là”:</b> 1. Já <span class="blank"></span> Vietnamec · 2. My <span class="blank"></span> ve škole · 3. On <span class="blank"></span> herec · 4. Vy <span class="blank"></span> z Turecka? · 5. Oni <span class="blank"></span> z Itálie · 6. Ty <span class="blank"></span> kluk</div>
+    <div class="card w"><b>B. Nối:</b> 1. Kdo je to? · 2. Odkud jste? · 3. Kde jsi? · 4. Jak se máte?<br>→ a. Já jsem na nádraží · b. To je učitelka · c. Mám se dobře · d. Jsem z Vietnamu</div>
+    <div class="card w"><b>C. Đổi sang nữ:</b> Vietnamec → <span class="blank l"></span> · učitel → <span class="blank l"></span> · cizinec → <span class="blank l"></span> · prodavač → <span class="blank l"></span></div>
+    <div class="card w"><b>D. Dịch sang tiếng Séc:</b><br>1. Tôi không phải người Trung Quốc. <span class="blank l"></span><br>2. Tên tôi là … <span class="blank l"></span></div>
+  </div>
+  <div class="card y mt2" style="display:flex;align-items:center;gap:2mm;padding:2mm 3.5mm"><span style="font-size:15pt">🏅</span><b>Huy hiệu:</b> tô 1 ô sau mỗi chặng <span class="check"></span><span class="check"></span><span class="check"></span><span class="check"></span><span class="check"></span> và làm xong bài A–D. <span style="margin-left:auto">Ký tên: <span class="blank l" style="min-width:32mm"></span></span></div>
+  <div class="upside">Đáp án (lật ngược trang để xem): <b>A:</b> 1 jsem · 2 jsme · 3 je · 4 jste · 5 jsou · 6 jsi. <b>B:</b> 1-b · 2-d · 3-a · 4-c. <b>C:</b> Vietnamka · učitelka · cizinka · prodavačka. <b>D:</b> 1 Nejsem Číňan(ka). · 2 Jmenuju se … / Moje jméno je … <b>Điền ở Chặng 3:</b> jsem · jsi · je · jsme.</div>
+
+  <div class="five">
+    <div class="badge"><i>⭐</i>5 câu<br>cần thuộc</div>
+    <div class="it"><span class="cz">Jak se máte?</span><span class="ipa">[iac sê ma-tê]</span><span class="vi">Ngài khỏe không?</span></div>
+    <div class="it"><span class="cz">Jmenuju se …</span><span class="ipa">[mê-nu-iu sê]</span><span class="vi">Tên tôi là …</span></div>
+    <div class="it"><span class="cz">Odkud jste?</span><span class="ipa">[ôt-cut stê]</span><span class="vi">Ngài từ đâu?</span></div>
+    <div class="it"><span class="cz">Jsem z Vietnamu</span><span class="ipa">[sêm z vi-ết-na-mu]</span><span class="vi">Tôi từ Việt Nam</span></div>
+    <div class="it"><span class="cz">Na shledanou</span><span class="ipa">[na sclê-đa-nâu]</span><span class="vi">hẹn gặp lại</span></div>
+  </div>
+</section>
+
+</body>
+</html>
