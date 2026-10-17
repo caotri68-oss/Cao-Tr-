@@ -115,8 +115,8 @@
       "giai_thich": "Chữ cứng là h, ch, k, r. Sau những chữ này, luôn viết y. Ví dụ: ryba (cá) có r, nên viết y, không viết i. Đây là luật dễ nhất, cứ nhìn chữ đứng trước là biết.",
       "chi_tiet": [
         "Bước 1: nhìn chữ đứng ngay trước y hoặc i.",
-        "Bước 2: nếu chữ đó là h, ch, k, r thì viết y.",
-        "Chữ d, t, n không cố định: nghe mềm (ticho, dítě, nic) thì viết i; nghe cứng (ty) thì viết y. Với d, t, n phải nhớ từng từ."
+        "Bước 2: nếu là h, ch, k, r (chữ cứng) thì viết y.",
+        "Bước 3: nếu là d, t, n thì nghe: nghe mềm (như “đi, ti, ni”) viết i; nghe cứng viết y."
       ],
       "vi_du": [
         {
@@ -192,7 +192,100 @@
           ],
           "dap_an": "i"
         }
-      ]
+      ],
+      "bang_chu": {
+        "tieu_de": "Bảng chữ cứng",
+        "ghi_chu": "Chữ cứng là 4 chữ: h, ch, k, r. Sau chúng luôn viết y. Ngoài ra có d, t, n là chữ “đổi tính”: nghe mềm viết i, nghe cứng viết y.",
+        "chu": [
+          {
+            "chu": "h",
+            "doc": "đọc “hờ”",
+            "vd": [
+              {
+                "cz": "hory",
+                "vn": "những ngọn núi"
+              }
+            ]
+          },
+          {
+            "chu": "ch",
+            "doc": "đọc “kh”",
+            "vd": [
+              {
+                "cz": "chyba",
+                "vn": "lỗi"
+              }
+            ]
+          },
+          {
+            "chu": "k",
+            "doc": "đọc “c/k”",
+            "vd": [
+              {
+                "cz": "kytka",
+                "vn": "bó hoa nhỏ"
+              }
+            ]
+          },
+          {
+            "chu": "r",
+            "doc": "đọc “rờ”, lưỡi rung nhẹ",
+            "vd": [
+              {
+                "cz": "ryba",
+                "vn": "cá"
+              }
+            ]
+          }
+        ],
+        "dac_biet": {
+          "tieu_de": "Chữ đổi tính: d, t, n",
+          "chu": [
+            {
+              "chu": "d",
+              "doc": "đọc “đờ”. Nghe mềm viết di, nghe cứng viết dy",
+              "vd": [
+                {
+                  "cz": "dítě",
+                  "vn": "đứa trẻ (mềm → di)"
+                },
+                {
+                  "cz": "dým",
+                  "vn": "khói (cứng → dý)"
+                }
+              ]
+            },
+            {
+              "chu": "t",
+              "doc": "đọc “tờ”. Nghe mềm viết ti, nghe cứng viết ty",
+              "vd": [
+                {
+                  "cz": "ticho",
+                  "vn": "yên lặng (mềm → ti)"
+                },
+                {
+                  "cz": "tyč",
+                  "vn": "cây gậy (cứng → ty)"
+                }
+              ]
+            },
+            {
+              "chu": "n",
+              "doc": "đọc “nờ”. Nghe mềm viết ni, nghe cứng viết ny",
+              "vd": [
+                {
+                  "cz": "nic",
+                  "vn": "không có gì (mềm → ni)"
+                },
+                {
+                  "cz": "nyní",
+                  "vn": "bây giờ (cứng → ny)"
+                }
+              ]
+            }
+          ]
+        }
+      }
     },
     {
       "ma": "BK2",
@@ -280,7 +373,103 @@
           ],
           "dap_an": "i"
         }
-      ]
+      ],
+      "bang_chu": {
+        "tieu_de": "Bảng chữ mềm",
+        "ghi_chu": "Chữ mềm là 9 chữ: ž, š, č, ř, c, j, ď, ť, ň. Sau chúng luôn viết i. Với ď, ť, ň, khi đứng trước i thì bỏ dấu móc: viết di, ti, ni.",
+        "chu": [
+          {
+            "chu": "ž",
+            "doc": "đọc “zh” (như g trong tiếng Pháp “je”)",
+            "vd": [
+              {
+                "cz": "život",
+                "vn": "cuộc sống"
+              }
+            ]
+          },
+          {
+            "chu": "š",
+            "doc": "đọc “sh”",
+            "vd": [
+              {
+                "cz": "šít",
+                "vn": "may (quần áo)"
+              }
+            ]
+          },
+          {
+            "chu": "č",
+            "doc": "đọc “ch”",
+            "vd": [
+              {
+                "cz": "čistý",
+                "vn": "sạch"
+              }
+            ]
+          },
+          {
+            "chu": "ř",
+            "doc": "đọc “rzh” (khó nhất)",
+            "vd": [
+              {
+                "cz": "řidič",
+                "vn": "tài xế"
+              }
+            ]
+          },
+          {
+            "chu": "c",
+            "doc": "đọc “ts”",
+            "vd": [
+              {
+                "cz": "cizinec",
+                "vn": "người nước ngoài"
+              }
+            ]
+          },
+          {
+            "chu": "j",
+            "doc": "đọc “y” (như “yêu”)",
+            "vd": [
+              {
+                "cz": "jídlo",
+                "vn": "đồ ăn"
+              }
+            ]
+          },
+          {
+            "chu": "ď",
+            "doc": "d mềm, đọc gần “đi” nhẹ",
+            "vd": [
+              {
+                "cz": "dítě",
+                "vn": "đứa trẻ (viết di)"
+              }
+            ]
+          },
+          {
+            "chu": "ť",
+            "doc": "t mềm, đọc gần “ti” nhẹ",
+            "vd": [
+              {
+                "cz": "ticho",
+                "vn": "yên lặng (viết ti)"
+              }
+            ]
+          },
+          {
+            "chu": "ň",
+            "doc": "đọc “nh”",
+            "vd": [
+              {
+                "cz": "nic",
+                "vn": "không có gì (viết ni)"
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "ma": "BK3",
@@ -371,7 +560,121 @@
           ],
           "dap_an": "Khi từ có trong bảng hoặc là họ hàng"
         }
-      ]
+      ],
+      "bang_chu": {
+        "tieu_de": "Bảng chữ lưỡng tính",
+        "ghi_chu": "Chữ lưỡng tính là 8 chữ: b, f, l, m, p, s, v, z. Sau chúng có khi y, có khi i. Phải soi bảng 80 từ để quyết.",
+        "chu": [
+          {
+            "chu": "b",
+            "doc": "đọc “bờ”",
+            "vd": [
+              {
+                "cz": "být",
+                "vn": "là (y)"
+              },
+              {
+                "cz": "bída",
+                "vn": "nghèo khó (i)"
+              }
+            ]
+          },
+          {
+            "chu": "f",
+            "doc": "đọc “phờ”",
+            "vd": [
+              {
+                "cz": "film",
+                "vn": "phim (i)"
+              }
+            ]
+          },
+          {
+            "chu": "l",
+            "doc": "đọc “lờ”",
+            "vd": [
+              {
+                "cz": "lyže",
+                "vn": "ván trượt tuyết (y)"
+              },
+              {
+                "cz": "líbit se",
+                "vn": "thích (i)"
+              }
+            ]
+          },
+          {
+            "chu": "m",
+            "doc": "đọc “mờ”",
+            "vd": [
+              {
+                "cz": "myš",
+                "vn": "chuột nhắt (y)"
+              },
+              {
+                "cz": "míč",
+                "vn": "quả bóng (i)"
+              }
+            ]
+          },
+          {
+            "chu": "p",
+            "doc": "đọc “pờ”",
+            "vd": [
+              {
+                "cz": "pyl",
+                "vn": "phấn hoa (y)"
+              },
+              {
+                "cz": "pivo",
+                "vn": "bia (i)"
+              }
+            ]
+          },
+          {
+            "chu": "s",
+            "doc": "đọc “sờ”",
+            "vd": [
+              {
+                "cz": "sýr",
+                "vn": "phô mai (y)"
+              },
+              {
+                "cz": "síla",
+                "vn": "sức mạnh (i)"
+              }
+            ]
+          },
+          {
+            "chu": "v",
+            "doc": "đọc “vờ”",
+            "vd": [
+              {
+                "cz": "výr",
+                "vn": "cú đại bàng (y)"
+              },
+              {
+                "cz": "víno",
+                "vn": "rượu vang (i)"
+              }
+            ]
+          },
+          {
+            "chu": "z",
+            "doc": "đọc “z” (như s kêu)",
+            "vd": [
+              {
+                "cz": "jazyk",
+                "vn": "cái lưỡi (y)"
+              },
+              {
+                "cz": "zima",
+                "vn": "mùa đông (i)"
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "ma": "BK4",

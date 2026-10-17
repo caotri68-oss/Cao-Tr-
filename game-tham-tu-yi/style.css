@@ -355,3 +355,19 @@ input[type="text"] {
   border: 6px double var(--y); background: linear-gradient(#fff, #fff8e3);
 }
 .bang-tham-tu .ten-bang { font-family: var(--font-to); font-size: 2rem; font-weight: 800; color: var(--y); }
+
+/* Bảng chữ cứng / mềm / lưỡng tính */
+.bang-chu { display: flex; flex-direction: column; gap: 8px; }
+.luoi-chu { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-top: 6px; }
+.o-chu { background: #fff; border: 2px solid var(--vien); border-radius: 14px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; }
+.o-chu .chu-lon { font-family: var(--font-to); font-weight: 800; font-size: 2rem; line-height: 1; color: var(--muc); }
+.o-chu .vd-nho { font-size: .9rem; }
+.tong-hop { display: flex; flex-direction: column; gap: 10px; }
+.dong-chu { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.dong-chu .nhan-loai { font-weight: 800; font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; min-width: 92px; color: var(--muc-nhat); }
+.chip-chu { min-width: 40px; height: 40px; padding: 0 8px; border-radius: 10px; display: inline-grid; place-items: center; font-family: var(--font-to); font-weight: 800; font-size: 1.3rem; border: 2px solid var(--muc); }
+.chip-chu.cung { background: #ffe6e6; }
+.chip-chu.dtn { background: #fff3c4; }
+.chip-chu.mem { background: #dcefff; }
+.chip-chu.luong { background: #e3f6e8; }
+.the-bi-kip .ma { padding-right: 112px; }

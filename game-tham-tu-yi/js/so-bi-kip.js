@@ -36,6 +36,20 @@ export function moSoBiKipNhanh() {
 }
 
 // Trang Sổ bí kíp đầy đủ.
+// Bảng tổng hợp 3 loại chữ, luôn nằm ở đầu Sổ bí kíp.
+function bangBaLoai() {
+  const lay = (ma) => (biKip(ma).bang_chu || {});
+  const dong = (nhan, ds, lop) => h('div', { class: 'dong-chu' },
+    h('span', { class: 'nhan-loai' }, nhan), ds.map((c) => h('span', { class: 'chip-chu ' + lop, lang: 'cs' }, c)));
+  return h('div', { class: 'the tong-hop' },
+    h('h3', {}, '🔤 Bảng 3 loại chữ'),
+    dong('Cứng → y', (lay('BK1').chu || []).map((c) => c.chu), 'cung'),
+    dong('Đổi tính d t n', (lay('BK1').dac_biet?.chu || []).map((c) => c.chu), 'dtn'),
+    dong('Mềm → i', (lay('BK2').chu || []).map((c) => c.chu), 'mem'),
+    dong('Lưỡng tính', (lay('BK3').chu || []).map((c) => c.chu), 'luong'),
+    h('p', { class: 'goi-y' }, 'Cứng: sau chữ này viết y. Mềm: sau chữ này viết i. Lưỡng tính: phải soi bảng 80 từ. Chạm vào từng bí kíp bên dưới để xem cách đọc và ví dụ của từng chữ.'));
+}
+
 export function trangSoBiKip(quayVe) {
   const hs = hoSo();
   const dong = D.bi_kip.map((b) => {
@@ -53,6 +67,7 @@ export function trangSoBiKip(quayVe) {
     h('div', { class: 'thanh-tren' },
       h('button', { class: 'nut nut-tron nut-nho', type: 'button', 'aria-label': 'Về bản đồ', onclick: quayVe }, '←'),
       h('div', { class: 'tieu-de' }, '📜 Sổ bí kíp', h('small', {}, `Đã mở ${Object.keys(hs.biKip).length}/${D.bi_kip.length}`))),
+    bangBaLoai(),
     ...dong);
 }
 

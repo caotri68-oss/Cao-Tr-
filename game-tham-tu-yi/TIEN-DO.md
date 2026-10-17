@@ -112,6 +112,12 @@ Kiểm tra: bot gieo hồ sơ đã qua 7 phố rồi chơi Vụ án hôm nay, S�
 - **Sửa lỗi luật:** bản cũ ghi "d, t, n luôn viết y". Sai. d, t, n viết **i khi nghe mềm** (ticho, dítě, nic) và **y khi nghe cứng** (ty). Đã sửa trong BK1 và thêm ví dụ.
 - Sửa một câu hỏi BK2 viết sai ("Myji" là chữ y, không phải chữ mềm).
 
+### Bổ sung: bảng chữ cứng / mềm / lưỡng tính
+
+- Mỗi thẻ BK1, BK2, BK3 có **bảng chữ** (`bang_chu` trong `bi_kip`): từng chữ cái, cách đọc, ví dụ có dịch. Cứng: h, ch, k, r. Chữ đổi tính d, t, n (nghe mềm viết i, nghe cứng viết y). Mềm: ž š č ř c j ď ť ň. Lưỡng tính: b f l m p s v z.
+- Đầu **Sổ bí kíp** có "Bảng 3 loại chữ" tổng hợp, dùng màu riêng cho từng loại.
+- Mọi từ ví dụ trong bảng đều tra được nghĩa (`data/tu-cau.json`).
+
 ## Quyết định đã chốt (chưa có trong prompt gốc)
 
 1. **Nhân vật**: Ánh Dương (em, dấu sắc, không phải "Ảnh") là **nhân vật chính xuyên suốt**, game nhập vai. Chị là **Xu** (hiển thị "chị Xu"), đồng hành trong truyện. Cả hai là nữ. Hồ sơ: Bố, Mẹ, chị Xu, Ánh Dương.

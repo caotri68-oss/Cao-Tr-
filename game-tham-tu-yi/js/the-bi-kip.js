@@ -3,6 +3,22 @@ import { h } from './dom.js';
 import { czChu } from './dich.js';
 import { nutNghe } from './am-thanh.js';
 
+// Bảng các chữ cái: từng chữ, cách đọc, ví dụ có dịch.
+function oChu(c) {
+  return h('div', { class: 'o-chu' },
+    h('div', { class: 'chu-lon', lang: 'cs' }, c.chu),
+    h('div', { class: 'goi-y' }, c.doc),
+    ...c.vd.map((v) => h('div', { class: 'vd-nho' }, h('span', { lang: 'cs', style: 'font-weight:800' }, czChu(v.cz)), ' = ', v.vn)));
+}
+export function bangChu(bang) {
+  if (!bang) return null;
+  return h('div', { class: 'bang-chu' },
+    h('b', {}, bang.tieu_de),
+    h('p', { class: 'goi-y' }, bang.ghi_chu),
+    h('div', { class: 'luoi-chu' }, bang.chu.map(oChu)),
+    bang.dac_biet ? h('div', {}, h('b', {}, bang.dac_biet.tieu_de), h('div', { class: 'luoi-chu' }, bang.dac_biet.chu.map(oChu))) : null);
+}
+
 function viDu(ds) {
   return h('div', {},
     h('b', {}, 'Ví dụ (có dịch):'),
@@ -21,6 +37,7 @@ export function theBiKip(bk, { thuoc = false } = {}) {
     h('span', { class: 'ma' }, `Bí kíp ${bk.ma} · ${bk.ten}`),
     h('div', { class: 'than-chu' }, bk.than_chu),
     h('p', {}, bk.giai_thich),
+    bangChu(bk.bang_chu),
     bk.chi_tiet?.length ? h('div', {}, h('b', {}, 'Các bước làm:'), h('ol', { style: 'margin:6px 0 0;padding-left:22px;display:flex;flex-direction:column;gap:6px' }, bk.chi_tiet.map((c) => h('li', {}, c)))) : null,
     bk.vi_du?.length ? viDu(bk.vi_du) : null,
     bk.nguon && bk.nguon !== 'PDF' ? h('p', { class: 'goi-y' }, 'Có phần bổ sung theo chương trình trường Séc.') : null,
