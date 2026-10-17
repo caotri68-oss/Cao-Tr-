@@ -111,9 +111,11 @@ window.PK = window.PK || {};
   }
 
   // Số sao theo điểm Cửa ải (10 câu): 10 → 3 sao, 9 → 2 sao, 8 → 1 sao.
-  function soSao(dung, tong) {
+  // nguong: số câu đúng tối thiểu để qua (mặc định 8 trên 10). Qua rồi thì 3 sao nếu đúng hết, 2 sao nếu thiếu 1 câu, còn lại 1 sao.
+  function soSao(dung, tong, nguong) {
+    const can = nguong || Math.ceil(tong * 0.8);
     const thieu = tong - dung;
-    if (dung < Math.ceil(tong * 0.8)) return 0;
+    if (dung < can) return 0;
     return thieu === 0 ? 3 : thieu === 1 ? 2 : 1;
   }
 
@@ -121,6 +123,7 @@ window.PK = window.PK || {};
   // o = { hoSo, so, bk, deThi(): câu hỏi[], khoaBiKip(bool), tiep() }
   function vaoCuaAi(k, o) {
     const h = PK.ui.h;
+    const nguong = o.nguong || 8;
     function batDau() {
       k.replaceChildren();
       o.khoaBiKip(true);
@@ -130,7 +133,7 @@ window.PK = window.PK || {};
         cauHoi: o.deThi(),
         ghiNhan: function (tu, dung) { PK.luu.ghiTu(o.hoSo.id, tu, dung); },
         khiXong: function (dung, tong) {
-          const sao = soSao(dung, tong);
+          const sao = soSao(dung, tong, nguong);
           PK.luu.capNhat(o.hoSo.id, function (d) {
             const m = d.man[o.so] = d.man[o.so] || { qua: false, sao: 0, diemCao: 0, lanThu: 0 };
             m.lanThu++;
@@ -149,14 +152,14 @@ window.PK = window.PK || {};
           o.khoaBiKip(false);
           k.replaceChildren(
             h('div', { class: 'the ket-qua' }, h('h2', null, 'Đúng ' + dung + '/' + tong)),
-            PK.ui.loi('kocka', 'Gần tới rồi! Cần 8 câu đúng để qua cửa. Sao đã có vẫn giữ nguyên. Mình xem lại bí kíp một chút nhé.', true),
+            PK.ui.loi('kocka', 'Gần tới rồi! Cần ' + nguong + ' câu đúng để qua cửa. Sao đã có vẫn giữ nguyên. Mình xem lại bí kíp một chút nhé.', true),
             PK.biKip.theBiKip(o.bk),
             h('button', { class: 'nut rong', onclick: function () { o.khoaBiKip(true); batDau(); } }, '🚪 Thử lại Cửa ải'));
         }
       });
     }
     k.append(
-      PK.ui.loi('pes', 'Tới Cửa ải rồi! Có 10 câu. Đúng từ 8 câu trở lên là qua cửa.'),
+      PK.ui.loi('pes', 'Tới Cửa ải rồi! Có 10 câu. Đúng từ ' + nguong + ' câu trở lên là qua cửa.'),
       PK.ui.loi('kocka', 'Nút 📜 bị khóa, phải tự nhớ bí kíp nhé. Chạm vào chữ Séc thì vẫn xem được nghĩa. Sẵn sàng chưa?', true),
       h('button', { class: 'nut rong', onclick: batDau }, '🚪 Vào Cửa ải'));
   }

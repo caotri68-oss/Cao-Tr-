@@ -369,6 +369,7 @@ window.PK = window.PK || {};
     function buocCuaAi(k, tiep) {
       PK.cuaAi.vaoCuaAi(k, {
         hoSo: hoSo, so: so, bk: bk, khoaBiKip: khoaBiKip, tiep: tiep,
+        nguong: PK.luu.nguongCuaAi(PK.luu.doc(hoSo.id), so),
         deThi: function () { return PK.cauHoi.deCuaAi(so, PK.luu.doc(hoSo.id).tu); }
       });
     }

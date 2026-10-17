@@ -105,6 +105,25 @@ window.PK = window.PK || {};
     }
   }
 
+  // Hai tùy chọn của từng hồ sơ: mở khóa mọi màn, và độ khó từ màn 8 trở lên.
+  function tuyChonHoSo(hs) {
+    const d = PK.luu.doc(hs.id);
+    const dk = PK.luu.DO_KHO.find(function (x) { return x.id === d.doKho; }) || PK.luu.DO_KHO[0];
+    return h('div', { class: 'hang-nut tuy-chon' },
+      h('button', { class: 'nut phu', onclick: function () {
+        PK.luu.capNhat(hs.id, function (x) { x.moKhoa = !x.moKhoa; });
+        PK.ui.thongBao(d.moKhoa ? '🔒 Đã khóa lại. Qua Cửa ải màn nào thì mở màn đó.' : '🔓 Đã mở hết các màn. Vẫn phải qua Cửa ải để có sao.', 2600);
+        nhaHoSo(hs);
+      } }, d.moKhoa ? '🔒 Khóa lại các màn' : '🔓 Mở khóa mọi màn'),
+      h('button', { class: 'nut phu', onclick: function () {
+        const i = PK.luu.DO_KHO.indexOf(dk);
+        const moi = PK.luu.DO_KHO[(i + 1) % PK.luu.DO_KHO.length];
+        PK.luu.capNhat(hs.id, function (x) { x.doKho = moi.id; });
+        PK.ui.thongBao('Từ màn 8 trở lên: qua Cửa ải cần ' + moi.nguong + '/10 (' + moi.ten.toLowerCase() + ').', 2600);
+        nhaHoSo(hs);
+      } }, 'Độ khó từ màn 8: ' + dk.ten + ' (' + dk.nguong + '/10)'));
+  }
+
   function nhaHoSo(hs) {
     const d = PK.luu.doc(hs.id);
     const soMan = PK.d.bi_kip.map(function (b) { return b.man; }).sort(function (a, b) { return a - b; }).concat([PK.manChoi.MAN_TONG_HOP]);
@@ -119,6 +138,7 @@ window.PK = window.PK || {};
         h('div', null, h('h2', null, 'Xin chào, ' + hs.ten + '!'), chiSo(d))),
       xongMan0 ? '' : PK.ui.loi('pes', 'Lần đầu đến chợ? Bắt đầu từ Màn 0 nhé, tụi mình hướng dẫn hết!'),
       oOnTap(hs),
+      tuyChonHoSo(hs),
       h('div', { class: 'hang-nut' },
         h('button', { class: 'nut phu', onclick: function () { PK.tuDienCuaMinh.manHinh(vung, hs, function () { nhaHoSo(hs); }); } }, '📖 Từ điển của mình'),
         h('button', { class: 'nut phu', onclick: function () { PK.biKip.manHinhSo(vung, hs, function () { nhaHoSo(hs); }); } }, '📜 Sổ bí kíp'),

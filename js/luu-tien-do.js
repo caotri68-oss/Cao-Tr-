@@ -35,7 +35,9 @@ window.PK = window.PK || {};
       cau: {},      // câu đã gặp, cùng cách lưu như từ
       buoc: {},     // bước đang dở của từng màn: "0": 3
       phut: {},     // "2026-10-17": số phút chơi
-      lanCuoi: 0
+      lanCuoi: 0,
+      moKhoa: false, // true: mở hết các màn (vẫn phải qua Cửa ải để có sao)
+      doKho: 'thuong' // độ khó từ màn 8 trở lên, xem DO_KHO
     };
   }
 
@@ -127,7 +129,21 @@ window.PK = window.PK || {};
     return { daHoc: ds.length, dangOn: ds.length - lau, thuocLau: lau };
   }
 
-  function manDaMo(d, so) { return so === 0 || !!(d.man[so - 1] && d.man[so - 1].qua); }
+  // Độ khó từ màn 8 trở lên: ngưỡng số câu đúng để qua Cửa ải (trên 10 câu). Màn 0 đến 7 luôn là 8/10.
+  const DO_KHO = [
+    { id: 'thuong', ten: 'Thường', nguong: 8 },
+    { id: 'de', ten: 'Dễ hơn', nguong: 7 },
+    { id: 'de-nhat', ten: 'Dễ nhất', nguong: 6 }
+  ];
+  const MAN_BAT_DAU_DO_KHO = 8;
+  function nguongCuaAi(d, so) {
+    if (so < MAN_BAT_DAU_DO_KHO) return 8;
+    const dk = DO_KHO.find(function (x) { return x.id === d.doKho; }) || DO_KHO[0];
+    return dk.nguong;
+  }
+
+  // Mở khóa: nếu hồ sơ bật "mở khóa mọi màn" thì mọi màn đều vào được.
+  function manDaMo(d, so) { return so === 0 || !!d.moKhoa || !!(d.man[so - 1] && d.man[so - 1].qua); }
 
   function caiDat() { return Object.assign({ amThanh: true }, docKhoa(KHOA_CAI_DAT) || {}); }
   function ghiCaiDat(c) { ghiKhoa(KHOA_CAI_DAT, c); }
@@ -149,5 +165,5 @@ window.PK = window.PK || {};
 
   PK.luu = { doc: doc, ghi: ghi, capNhat: capNhat, ghiTu: ghiTu, danhDauHoc: danhDauHoc, ghiMuc: ghiMuc, danhDauMuc: danhDauMuc,
     denHan: denHan, denHanOn: denHanOn, hanTiepTheo: hanTiepTheo, demHop: demHop, homNay: homNay, CHO: CHO, capNhatHop: capNhatHop,
-    thongKe: thongKe, manDaMo: manDaMo, caiDat: caiDat, ghiCaiDat: ghiCaiDat };
+    thongKe: thongKe, manDaMo: manDaMo, DO_KHO: DO_KHO, nguongCuaAi: nguongCuaAi, caiDat: caiDat, ghiCaiDat: ghiCaiDat };
 })();
