@@ -1,0 +1,113 @@
+/*
+ * FILE DỊCH — tất cả chữ trong game nằm ở đây.
+ * Muốn sửa chữ: tìm đúng khoá (ví dụ "menu.play") và sửa câu trong ngoặc kép.
+ * {name} trong câu là chỗ game tự điền số / tên vào, đừng xoá.
+ */
+window.I18N = {
+  vi: {
+    "lang.name": "Tiếng Việt",
+    "game.title": "Nông Trại Của Bà",
+    "game.subtitle": "Cùng Mi và các bạn thú hồi sinh nông trại!",
+    "lang.choose": "Chọn ngôn ngữ",
+    "menu.play": "Chơi",
+    "menu.continue": "Chơi tiếp",
+    "menu.newGame": "Chơi lại từ đầu",
+    "menu.settings": "Cài đặt",
+    "menu.records": "Kỷ lục",
+    "menu.level": "Màn {n}",
+    "settings.title": "Cài đặt",
+    "settings.music": "Nhạc nền",
+    "settings.sound": "Âm thanh",
+    "settings.vibrate": "Rung",
+    "settings.language": "Ngôn ngữ",
+    "settings.on": "Bật",
+    "settings.off": "Tắt",
+    "common.close": "Đóng",
+    "common.yes": "Đồng ý",
+    "common.no": "Thôi",
+    "confirm.reset.title": "Chơi lại từ đầu?",
+    "confirm.reset.text": "Toàn bộ sao, tiền và đồ đã mở sẽ bị xoá. Không lấy lại được đâu nhé!",
+    "toast.reset": "Đã xoá tiến trình. Bắt đầu lại nào!",
+    "toast.soon": "Màn chơi đang được xây… sắp xong rồi!",
+    "records.title": "Kỷ lục của em",
+    "records.empty": "Chưa có kỷ lục nào. Chơi màn đầu tiên đi!",
+    "rotate.hint": "Xoay dọc điện thoại để chơi thoải mái hơn nhé!"
+  },
+
+  cs: {
+    "lang.name": "Čeština",
+    "game.title": "Babiččina farma",
+    "game.subtitle": "Pomoz Mi a zvířátkům probudit farmu k životu!",
+    "lang.choose": "Vyber si jazyk",
+    "menu.play": "Hrát",
+    "menu.continue": "Pokračovat",
+    "menu.newGame": "Začít znovu",
+    "menu.settings": "Nastavení",
+    "menu.records": "Rekordy",
+    "menu.level": "Úroveň {n}",
+    "settings.title": "Nastavení",
+    "settings.music": "Hudba",
+    "settings.sound": "Zvuky",
+    "settings.vibrate": "Vibrace",
+    "settings.language": "Jazyk",
+    "settings.on": "Zap.",
+    "settings.off": "Vyp.",
+    "common.close": "Zavřít",
+    "common.yes": "Ano",
+    "common.no": "Ne",
+    "confirm.reset.title": "Začít úplně znovu?",
+    "confirm.reset.text": "Všechny hvězdičky, peníze i odemčené věci zmizí. Už je nepůjde vrátit!",
+    "toast.reset": "Hotovo, začínáme znovu!",
+    "toast.soon": "Na úrovni se ještě pracuje… brzy bude hotová!",
+    "records.title": "Tvoje rekordy",
+    "records.empty": "Zatím žádné rekordy. Zahraj si první úroveň!",
+    "rotate.hint": "Otoč telefon na výšku, bude se ti hrát lépe!"
+  },
+
+  en: {
+    "lang.name": "English",
+    "game.title": "Grandma's Farm",
+    "game.subtitle": "Help Mi and her animal friends bring the farm back to life!",
+    "lang.choose": "Choose your language",
+    "menu.play": "Play",
+    "menu.continue": "Continue",
+    "menu.newGame": "Start over",
+    "menu.settings": "Settings",
+    "menu.records": "Records",
+    "menu.level": "Level {n}",
+    "settings.title": "Settings",
+    "settings.music": "Music",
+    "settings.sound": "Sounds",
+    "settings.vibrate": "Vibration",
+    "settings.language": "Language",
+    "settings.on": "On",
+    "settings.off": "Off",
+    "common.close": "Close",
+    "common.yes": "Yes",
+    "common.no": "No",
+    "confirm.reset.title": "Start all over?",
+    "confirm.reset.text": "All your stars, coins and unlocked things will be gone. You can't get them back!",
+    "toast.reset": "All cleared. Let's start again!",
+    "toast.soon": "This level is still being built… almost done!",
+    "records.title": "Your records",
+    "records.empty": "No records yet. Go play the first level!",
+    "rotate.hint": "Turn your phone upright for the best fun!"
+  }
+};
+
+window.LANGS = ["vi", "cs", "en"];
+
+/* t("menu.level", {n: 3}) -> "Màn 3" */
+window.t = function (key, params) {
+  var lang = (window.Save && Save.data.lang) || "vi";
+  var dict = I18N[lang] || I18N.vi;
+  var s = dict[key];
+  if (s === undefined) s = I18N.en[key];
+  if (s === undefined) return key;
+  if (params) {
+    s = s.replace(/\{(\w+)\}/g, function (m, k) {
+      return params[k] !== undefined ? params[k] : m;
+    });
+  }
+  return s;
+};

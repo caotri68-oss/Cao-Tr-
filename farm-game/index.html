@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#bfe9ff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Nông Trại Của Bà</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <canvas id="view3d"></canvas>
+
+  <div id="ui">
+    <!-- Màn chọn ngôn ngữ (lần đầu mở game) -->
+    <section id="screen-lang" class="screen">
+      <div class="logo">
+        <div class="logo-title" data-t="game.title"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-title" data-t="lang.choose"></div>
+        <div class="lang-list" id="lang-list-start"></div>
+      </div>
+    </section>
+
+    <!-- Menu chính -->
+    <section id="screen-menu" class="screen">
+      <div class="topbar">
+        <div class="pill"><span class="ico-star"></span><span id="menu-stars">0</span></div>
+        <div class="pill"><span class="ico-coin"></span><span id="menu-coins">0</span></div>
+      </div>
+      <div class="logo">
+        <div class="logo-title" data-t="game.title"></div>
+        <div class="logo-sub" data-t="game.subtitle"></div>
+      </div>
+      <div class="menu-bottom">
+        <button class="btn btn-big btn-green" id="btn-play">
+          <svg viewBox="0 0 24 24" class="btn-ico"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+          <span id="btn-play-label" data-t="menu.play"></span>
+        </button>
+        <div class="menu-level" id="menu-level"></div>
+        <button class="btn btn-small btn-ghost" id="btn-new" data-t="menu.newGame"></button>
+        <div class="menu-icons">
+          <button class="btn-round" id="btn-records" aria-label="records">
+            <svg viewBox="0 0 24 24"><path d="M7 4h10v3a5 5 0 0 1-10 0zM5 5h2v2a2 2 0 0 1-2-2zm12 0h2a2 2 0 0 1-2 2zM11 12h2v4h3v3H8v-3h3z" fill="currentColor"/></svg>
+          </button>
+          <button class="btn-round" id="btn-settings" aria-label="settings">
+            <svg viewBox="0 0 24 24"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm8.4 2.1-1.9-.4a6.8 6.8 0 0 0-.7-1.6l1.1-1.6-1.9-1.9-1.6 1.1c-.5-.3-1-.5-1.6-.7L13.4 3h-2.8l-.4 1.9c-.6.2-1.1.4-1.6.7L7 4.5 5.1 6.4l1.1 1.6c-.3.5-.5 1-.7 1.6l-1.9.4v2.8l1.9.4c.2.6.4 1.1.7 1.6l-1.1 1.6L7 19.5l1.6-1.1c.5.3 1 .5 1.6.7l.4 1.9h2.8l.4-1.9c.6-.2 1.1-.4 1.6-.7l1.6 1.1 1.9-1.9-1.1-1.6c.3-.5.5-1 .7-1.6l1.9-.4z" fill="currentColor"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hộp thoại cài đặt -->
+    <div id="modal-settings" class="modal">
+      <div class="panel">
+        <div class="panel-title" data-t="settings.title"></div>
+        <div class="setting-row">
+          <span data-t="settings.music"></span>
+          <button class="toggle" data-setting="music"></button>
+        </div>
+        <div class="setting-row">
+          <span data-t="settings.sound"></span>
+          <button class="toggle" data-setting="sound"></button>
+        </div>
+        <div class="setting-row">
+          <span data-t="settings.vibrate"></span>
+          <button class="toggle" data-setting="vibrate"></button>
+        </div>
+        <div class="panel-sub" data-t="settings.language"></div>
+        <div class="lang-list compact" id="lang-list-settings"></div>
+        <button class="btn btn-mid btn-blue" data-close data-t="common.close"></button>
+      </div>
+    </div>
+
+    <!-- Hộp thoại xác nhận -->
+    <div id="modal-confirm" class="modal">
+      <div class="panel">
+        <div class="panel-title" id="confirm-title"></div>
+        <p class="panel-text" id="confirm-text"></p>
+        <div class="row">
+          <button class="btn btn-mid btn-ghost" id="confirm-no" data-t="common.no"></button>
+          <button class="btn btn-mid btn-red" id="confirm-yes" data-t="common.yes"></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hộp thoại kỷ lục -->
+    <div id="modal-records" class="modal">
+      <div class="panel">
+        <div class="panel-title" data-t="records.title"></div>
+        <div id="records-list" class="records-list"></div>
+        <button class="btn btn-mid btn-blue" data-close data-t="common.close"></button>
+      </div>
+    </div>
+
+    <div id="toast"></div>
+    <div id="rotate-hint" data-t="rotate.hint"></div>
+  </div>
+
+  <div id="loading"><div class="loading-dot"></div></div>
+
+  <script src="js/lib/three.min.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/save.js"></script>
+  <script src="js/models.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/menuScene.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
