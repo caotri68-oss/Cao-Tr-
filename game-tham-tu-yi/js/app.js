@@ -80,7 +80,7 @@ function trangDoiTen() {
         h('div', { class: 'hang-nut' },
           h('button', { class: 'nut nut-nho', type: 'button', onclick: () => { if (o.value.trim()) { doiTen(g.id, o.value.trim()); chonNguoiChoi(); } } }, 'Lưu tên'),
           h('button', { class: 'nut nut-nho', type: 'button', onclick: () => chonAnh.click() }, '🖼️ Chọn ảnh'),
-          anhHoSo(g.id) ? h('button', { class: 'nut nut-nho', type: 'button', onclick: () => { luuAnhHoSo(g.id, null); trangDoiTen(); } }, 'Dùng hình vẽ') : null),
+          anhHoSo(g.id) ? h('button', { class: 'nut nut-nho', type: 'button', onclick: () => { luuAnhHoSo(g.id, null); trangDoiTen(); } }, 'Bỏ ảnh đã chọn') : null),
         h('p', { class: 'goi-y' }, 'Ảnh chỉ lưu trên máy này, không gửi đi đâu.'),
         chonAnh);
     }));

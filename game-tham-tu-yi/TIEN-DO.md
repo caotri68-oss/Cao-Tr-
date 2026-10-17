@@ -68,6 +68,11 @@ Ghi chú thiết kế:
 - Ý tưởng "Kẻ trộm chữ Y" đang dùng làm khung truyện; các ý tưởng hấp dẫn khác chưa làm, chờ người dùng chọn.
 - Bản xem thử đăng ở claude.ai (link riêng tư). Ở đó micro bị chặn nên chỉ có nút "Mình đã đọc to"; khi đưa lên GitHub Pages (giai đoạn 6) micro sẽ dùng được.
 
+### Bổ sung sau giai đoạn 2
+
+- Ánh Dương dùng ảnh 3D tự vẽ `img/anh-duong.png` (300px, đã cắt tròn và che logo NASA trên áo). Ảnh này nằm trong repo, nên sẽ được đưa lên mạng cùng game. Anh xác nhận đây là hình minh họa tự vẽ, không phải ảnh chụp người thật.
+- Bố mẹ có thể chọn ảnh riêng cho từng hồ sơ bằng nút **🖼️ Chọn ảnh** (màn ✏️ Đổi tên hồ sơ). Ảnh đó chỉ lưu trong trình duyệt của máy đó, không vào repo.
+
 ## Quyết định đã chốt (chưa có trong prompt gốc)
 
 1. **Nhân vật**: Ánh Dương (em, dấu sắc, không phải "Ảnh") là **nhân vật chính xuyên suốt**, game nhập vai. Chị là **Xu** (hiển thị "chị Xu"), đồng hành trong truyện. Cả hai là nữ. Hồ sơ: Bố, Mẹ, chị Xu, Ánh Dương.
