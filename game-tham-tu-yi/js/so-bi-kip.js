@@ -1,7 +1,7 @@
 // Thẻ bí kíp, Sổ bí kíp và Luyện nhanh.
 import { h, manHinh, moBangNoi, tronMang } from './dom.js';
 import { D, biKip } from './du-lieu.js';
-import { czChu } from './dich.js';
+import { theBiKip } from './the-bi-kip.js';
 import { nutNghe, khoiDocTheo } from './am-thanh.js';
 import { hoSo, moBiKip } from './luu-tien-do.js';
 import { chayLuot, qLuat } from './cau-hoi.js';
@@ -9,19 +9,7 @@ import { chayLuot, qLuat } from './cau-hoi.js';
 const NOI_MO = { 0: 'Văn phòng thám tử' };
 const tenNoiMo = (man) => NOI_MO[man] || `phố ${man}`;
 
-export function theBiKip(bk, { thuoc = false } = {}) {
-  return h('div', { class: 'the the-bi-kip' },
-    thuoc ? h('span', { class: 'dau-thuoc' }, 'Đã thuộc ✓') : null,
-    h('span', { class: 'ma' }, `Bí kíp ${bk.ma} · ${bk.ten}`),
-    h('div', { class: 'than-chu' }, bk.than_chu),
-    h('p', {}, bk.giai_thich),
-    bk.chi_tiet?.length ? h('ul', {}, bk.chi_tiet.map((c) => h('li', {}, c))) : null,
-    bk.vi_du?.length ? h('div', { class: 'hang-nut', style: 'align-items:center' },
-      h('span', { class: 'goi-y' }, 'Ví dụ:'),
-      bk.vi_du.map((v) => h('span', { style: 'display:inline-flex;align-items:center;gap:4px' }, h('span', { lang: 'cs', style: 'font-weight:800;font-size:1.1rem' }, czChu(v)), nutNghe(v)))) : null,
-    bk.nguon && bk.nguon !== 'PDF' ? h('p', { class: 'goi-y' }, 'Có phần bổ sung theo chương trình trường Séc.') : null,
-  );
-}
+export { theBiKip };
 
 // Màn mở bí kíp: thẻ to, đọc to câu thần chú, bấm "Mình nhớ rồi".
 export function manMoBiKip(dsMa, { tieuDe = 'Bí kíp mới!', loiDan = null, khiXong }) {

@@ -105,6 +105,13 @@ Kiểm tra: bot gieo hồ sơ đã qua 7 phố rồi chơi Vụ án hôm nay, S�
 - Hai từ bẫy PDF để trống nghĩa (`biologie`, `sirup`) đã có nghĩa, ghi rõ là từ mượn không có trong PDF.
 - Kiểm tra: mọi chữ Séc trong dữ liệu đều tra được nghĩa. Câu dài luôn đi kèm nghĩa cả câu (trường `vn`).
 
+### Bổ sung: bí kíp đầy đủ và học lại khi sai
+
+- Khi trả lời sai (trong các vòng học), game hiện lại **cả thẻ bí kíp**: giải thích, các bước làm, ví dụ có dịch và nút nghe. Cửa ải không hiện (đó là bài kiểm tra).
+- Mỗi bí kíp (`data/tu-vung-yi.json` → `bi_kip`) có: giải thích dài, các bước làm, 3–6 ví dụ đơn giản có dịch và giải thích vì sao.
+- **Sửa lỗi luật:** bản cũ ghi "d, t, n luôn viết y". Sai. d, t, n viết **i khi nghe mềm** (ticho, dítě, nic) và **y khi nghe cứng** (ty). Đã sửa trong BK1 và thêm ví dụ.
+- Sửa một câu hỏi BK2 viết sai ("Myji" là chữ y, không phải chữ mềm).
+
 ## Quyết định đã chốt (chưa có trong prompt gốc)
 
 1. **Nhân vật**: Ánh Dương (em, dấu sắc, không phải "Ảnh") là **nhân vật chính xuyên suốt**, game nhập vai. Chị là **Xu** (hiển thị "chị Xu"), đồng hành trong truyện. Cả hai là nữ. Hồ sơ: Bố, Mẹ, chị Xu, Ánh Dương.

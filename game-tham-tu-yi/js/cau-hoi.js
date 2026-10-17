@@ -5,6 +5,7 @@ import { czChu, czCau, toMau } from './dich.js';
 import { doc, nutNghe, chuong, coGiongSec } from './am-thanh.js';
 import { ghiTu, ghiBiKip } from './luu-tien-do.js';
 import { cuNoi } from './nhan-vat.js';
+import { theBiKip } from './the-bi-kip.js';
 
 // ——— Công cụ chung ———
 
@@ -341,7 +342,7 @@ function nhomChuCai(c) {
 export function viDuCungMem() {
   const kq = [];
   for (const ma of ['BK1', 'BK2']) {
-    for (const cz of biKip(ma).vi_du) {
+    for (const { cz } of biKip(ma).vi_du) {
       const s = cz.toLowerCase();
       for (let i = 1; i < s.length; i++) {
         if ('yýií'.includes(s[i]) && (CUNG.includes(s[i - 1]) || MEM.includes(s[i - 1]))) {
@@ -533,8 +534,11 @@ export function chayLuot({ tieuDe, phuDe = '', cauHoi, cheDo = 'hoc', moSoBiKip 
       }
       noiDung.push(h('p', {}, ...giaiThich));
       if (!dung && cheDo !== 'cua_ai' && q.luat) {
+        // Trả lời sai: hiện lại cả thẻ bí kíp để con đọc lại luật, không chỉ nhắc một câu.
         const bk = biKip(q.luat);
-        if (bk) noiDung.push(h('div', { class: 'than-chu-nho' }, '📜 ' + bk.than_chu));
+        if (bk) noiDung.push(h('div', { class: 'the-hoc-lai' },
+          h('p', { class: 'goi-y' }, 'Con đọc lại luật này nhé, rồi thử câu tiếp theo:'),
+          theBiKip(bk)));
         const nhom = q.meoNhom && D.nhom.find((n) => n.chu === q.meoNhom);
         if (nhom && q.luat === 'BK4') noiDung.push(h('p', { class: 'goi-y' }, 'Mẹo: ' + nhom.meo));
       }
