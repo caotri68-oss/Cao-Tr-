@@ -21,7 +21,7 @@ Game nông trại 3D chạy trên trình duyệt (điện thoại + máy tính).
 
 ## Tiến độ
 - [x] Giai đoạn 1: khung dự án, menu, chọn ngôn ngữ, cài đặt, lưu
-- [ ] Giai đoạn 2: một màn chơi hoàn chỉnh
+- [x] Giai đoạn 2: màn chơi hoàn chỉnh (gieo, tưới, hái, giao đơn) — có 2 màn thử
 - [ ] Giai đoạn 3: âm thanh, nhạc, hiệu ứng
 - [ ] Giai đoạn 4: hệ thống màn, sao, tiền, mở khoá
 - [ ] Giai đoạn 5: cốt truyện + 30 màn

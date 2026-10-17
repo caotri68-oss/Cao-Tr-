@@ -174,7 +174,68 @@
     return g;
   }
 
+  // Khách hàng: thân + đầu + tóc, tuỳ chọn mũ. opts: shirt, hair, skin, hat(0..2)
+  function makeCustomer(o) {
+    var g = new THREE.Group();
+    var shirt = o.shirt, skin = o.skin || COLORS.skin, hair = o.hair;
+    g.add(mesh(new THREE.CylinderGeometry(0.2, 0.3, 0.6, 8), shirt, 0, 0.42, 0));
+    g.add(mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.2, 5), 0x6b5b95, -0.1, 0.08, 0));
+    g.add(mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.2, 5), 0x6b5b95, 0.1, 0.08, 0));
+    var head = new THREE.Group();
+    head.position.y = 0.97;
+    head.add(mesh(new THREE.IcosahedronGeometry(0.27, 1), skin, 0, 0, 0));
+    var h = mesh(new THREE.IcosahedronGeometry(0.29, 1), hair, 0, 0.09, -0.09);
+    h.scale.set(1, 0.8, 0.95);
+    head.add(h);
+    head.add(mesh(new THREE.SphereGeometry(0.035, 6, 4), COLORS.eye, -0.09, 0.0, 0.25));
+    head.add(mesh(new THREE.SphereGeometry(0.035, 6, 4), COLORS.eye, 0.09, 0.0, 0.25));
+    head.add(mesh(new THREE.SphereGeometry(0.045, 6, 4), COLORS.cheek, -0.16, -0.07, 0.2));
+    head.add(mesh(new THREE.SphereGeometry(0.045, 6, 4), COLORS.cheek, 0.16, -0.07, 0.2));
+    if (o.hat === 1) { // mũ rơm
+      head.add(mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.04, 10), 0xf3d58a, 0, 0.2, 0));
+      head.add(mesh(new THREE.CylinderGeometry(0.2, 0.24, 0.2, 8), 0xf3d58a, 0, 0.3, 0));
+    } else if (o.hat === 2) { // mũ len
+      head.add(mesh(new THREE.SphereGeometry(0.3, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), 0xff7a7a, 0, 0.12, 0));
+      head.add(mesh(new THREE.SphereGeometry(0.07, 6, 4), 0xffffff, 0, 0.44, 0));
+    }
+    g.add(head);
+    var armL = new THREE.Group();
+    armL.position.set(-0.24, 0.62, 0);
+    armL.add(mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.3, 5), shirt, 0, -0.15, 0));
+    armL.rotation.z = 0.25;
+    var armR = new THREE.Group();
+    armR.position.set(0.24, 0.62, 0);
+    armR.add(mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.3, 5), shirt, 0, -0.15, 0));
+    armR.rotation.z = -0.25;
+    g.add(armL, armR, blobShadow(0.35));
+    g.userData.head = head; g.userData.arm = armR; g.userData.armL = armL;
+    return g;
+  }
+
+  // Quầy hàng có mái che sọc màu
+  function makeStall(width) {
+    var g = new THREE.Group();
+    g.add(mesh(new THREE.BoxGeometry(width, 0.9, 0.9), COLORS.wood, 0, 0.45, 0));
+    g.add(mesh(new THREE.BoxGeometry(width + 0.1, 0.1, 1.1), COLORS.woodDark, 0, 0.93, 0.02));
+    [-1, 1].forEach(function (sx) {
+      g.add(mesh(new THREE.BoxGeometry(0.14, 2.3, 0.14), COLORS.woodDark, sx * (width / 2 - 0.1), 1.15, -0.35));
+    });
+    var n = 8, w = (width + 0.4) / n;
+    for (var i = 0; i < n; i++) {
+      var stripe = mesh(new THREE.BoxGeometry(w, 0.08, 1.7), i % 2 ? 0xffffff : 0xff8a8a, -width / 2 - 0.2 + w * (i + 0.5), 2.35, -0.05);
+      stripe.rotation.x = 0.28;
+      g.add(stripe);
+    }
+    // vài quả trưng bày trên quầy
+    [-2.4, -1.9, 1.9, 2.4].forEach(function (x, i) {
+      g.add(mesh(new THREE.IcosahedronGeometry(0.14, 0), i % 2 ? 0xff9a3c : 0xff5d5d, x, 1.1, 0.1));
+    });
+    g.add(blobShadow(width * 0.55));
+    return g;
+  }
+
   window.Models = {
+    makeCustomer: makeCustomer, makeStall: makeStall,
     COLORS: COLORS, mat: mat, mesh: mesh, blobShadow: blobShadow,
     makeIsland: makeIsland, makeTree: makeTree, makeBarn: makeBarn,
     makeFence: makeFence, makeCloud: makeCloud, makeFlower: makeFlower,

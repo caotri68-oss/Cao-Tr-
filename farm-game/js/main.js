@@ -53,6 +53,8 @@
     });
   }
 
+  window.App = { goMenu: goMenu };
+
   function start() {
     UI.init();
     UI.applyTexts();
@@ -67,7 +69,7 @@
 
     $("btn-play").addEventListener("click", function () {
       UI.feedback(20);
-      UI.toast(t("toast.soon")); // Giai đoạn 2 sẽ mở màn chơi ở đây
+      Game.start(Save.data.unlockedLevel);
     });
     $("btn-new").addEventListener("click", function () {
       UI.feedback();

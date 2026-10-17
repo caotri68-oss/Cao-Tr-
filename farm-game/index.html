@@ -52,6 +52,27 @@
       </div>
     </section>
 
+    <!-- Màn chơi -->
+    <section id="screen-game" class="screen game">
+      <div class="g-top">
+        <button class="btn-round small" id="g-pause" aria-label="pause"><svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1.5" fill="currentColor"/><rect x="14" y="5" width="4" height="14" rx="1.5" fill="currentColor"/></svg></button>
+        <div class="g-timer" id="g-timer">
+          <div class="g-time-row"><span class="g-clock"></span><span id="g-time">60</span></div>
+          <div class="g-timebar"><i id="g-timebar"></i></div>
+          <div class="g-goal" id="g-goal"></div>
+        </div>
+        <div class="pill" id="g-coin-pill"><span class="ico-coin" id="g-coin-ico"></span><span id="g-coins">0</span></div>
+      </div>
+      <div id="g-orders"></div>
+      <div id="g-tut" class="g-tut"></div>
+      <div class="g-bottom">
+        <div id="g-seeds" class="g-seeds"></div>
+        <div id="g-basket" class="g-basket"></div>
+      </div>
+      <div id="g-hand" class="g-hand"></div>
+      <div id="fx-layer"></div>
+    </section>
+
     <!-- Hộp thoại cài đặt -->
     <div id="modal-settings" class="modal">
       <div class="panel">
@@ -95,6 +116,37 @@
       </div>
     </div>
 
+    <div id="modal-intro" class="modal">
+      <div class="panel">
+        <div class="panel-title" id="intro-title"></div>
+        <div class="intro-goal"><span class="intro-ico" id="intro-ico"></span><span id="intro-goal"></span></div>
+        <button class="btn btn-big btn-green" id="intro-start" data-t="game.start"></button>
+      </div>
+    </div>
+
+    <div id="modal-pause" class="modal">
+      <div class="panel">
+        <div class="panel-title" data-t="game.paused"></div>
+        <button class="btn btn-mid btn-green" id="pause-resume" data-t="game.resume"></button>
+        <button class="btn btn-mid btn-ghost" id="pause-quit" data-t="game.quit"></button>
+      </div>
+    </div>
+
+    <div id="modal-result" class="modal">
+      <div class="panel result">
+        <div class="panel-title" id="res-title"></div>
+        <div class="res-stars" id="res-stars"></div>
+        <div class="res-line"><span data-t="result.score"></span><b id="res-score">0</b></div>
+        <div class="res-line"><span data-t="result.coins"></span><b><span class="ico-coin"></span> <span id="res-coins">0</span></b></div>
+        <div class="res-record" id="res-record" data-t="result.record"></div>
+        <button class="btn btn-mid btn-green" id="res-next" data-t="result.next"></button>
+        <div class="row">
+          <button class="btn btn-mid btn-blue" id="res-retry" data-t="result.retry"></button>
+          <button class="btn btn-mid btn-ghost" id="res-menu" data-t="game.quit"></button>
+        </div>
+      </div>
+    </div>
+
     <div id="toast"></div>
     <div id="rotate-hint" data-t="rotate.hint"></div>
   </div>
@@ -108,6 +160,11 @@
   <script src="js/engine.js"></script>
   <script src="js/menuScene.js"></script>
   <script src="js/ui.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/crops.js"></script>
+  <script src="js/fx.js"></script>
+  <script src="js/levels.js"></script>
+  <script src="js/game.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>
