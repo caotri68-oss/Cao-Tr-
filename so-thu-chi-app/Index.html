@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<style>
+  :root { --tim:#6d4aff; --tim-nhat:#f1edff; --xanh:#1a9e5c; --do:#d93a3a; --vang:#c98a00;
+          --chu:#1d1b2e; --phu:#6b6880; --nen:#faf9ff; --vien:#e0dcf2; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+         background:var(--nen); color:var(--chu); font-size:17px; }
+  main { max-width:520px; margin:0 auto; padding:16px 16px 80px; }
+  h1 { font-size:20px; margin:4px 0 12px; }
+  .the { background:#fff; border:1px solid var(--vien); border-radius:16px; padding:14px; margin-bottom:14px; }
+  .tomtat { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; text-align:center; }
+  .tomtat small { display:block; color:var(--phu); font-size:12px; }
+  .tomtat b { font-size:15px; }
+  .tab3 { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px; }
+  .tab3 button { padding:16px 0; font-size:19px; font-weight:700; border-radius:14px;
+                 border:2px solid var(--vien); background:#fff; color:var(--chu); }
+  .tab3 button.on[data-l="Thu"] { background:var(--xanh); border-color:var(--xanh); color:#fff; }
+  .tab3 button.on[data-l="Chi"] { background:var(--tim); border-color:var(--tim); color:#fff; }
+  .tab3 button.on[data-l="No"]  { background:var(--vang); border-color:var(--vang); color:#fff; }
+  label { display:block; font-size:14px; color:var(--phu); margin:12px 0 4px; }
+  input, select, textarea { width:100%; padding:13px; font-size:17px; border:1px solid var(--vien);
+         border-radius:12px; background:#fff; color:var(--chu); font-family:inherit; }
+  input#tien { font-size:28px; font-weight:700; }
+  .hang2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .luu { width:100%; margin-top:18px; padding:16px; font-size:19px; font-weight:700;
+         border:0; border-radius:14px; background:var(--tim); color:#fff; }
+  .luu:disabled { opacity:.5; }
+  .loi { color:var(--do); margin-top:10px; font-size:15px; }
+  .ok { background:#e9f8f0; border:1px solid #bfe8d3; }
+  .thanh { height:14px; background:#eee9ff; border-radius:7px; overflow:hidden; margin:8px 0 4px; }
+  .thanh i { display:block; height:100%; background:var(--xanh); }
+  .thanh i.vang { background:var(--vang); } .thanh i.do { background:var(--do); }
+  .gd { display:flex; justify-content:space-between; gap:8px; padding:10px 0; border-bottom:1px solid var(--vien); font-size:15px; }
+  .gd:last-child { border-bottom:0; }
+  .gd small { color:var(--phu); display:block; }
+  .gd .so { font-weight:700; white-space:nowrap; text-align:right; }
+  .gd .Thu { color:var(--xanh); }
+  .gd button { margin-top:4px; background:none; border:0; color:var(--do); font-size:13px; padding:0; }
+  .an { display:none; }
+  #cong { text-align:center; padding-top:60px; }
+</style>
+</head>
+<body>
+<main>
+  <div id="cong" class="an">
+    <h1>💜 Sổ thu chi nhà mình</h1>
+    <label>Mật khẩu của cả nhà</label>
+    <input id="mk" type="password" autocomplete="current-password">
+    <button class="luu" onclick="vao()">Vào sổ</button>
+    <div id="loiCong" class="loi"></div>
+  </div>
+
+  <div id="app" class="an">
+    <h1>💜 Sổ thu chi nhà mình</h1>
+    <div class="the tomtat">
+      <div><small>Tiền vào</small><b id="tVao">-</b></div>
+      <div><small>Tiền ra</small><b id="tRa">-</b></div>
+      <div><small>Còn lại</small><b id="tCon">-</b></div>
+    </div>
+
+    <label>Ai đang ghi?</label>
+    <select id="nguoi" onchange="luuNguoi()"></select>
+
+    <div class="tab3" style="margin-top:14px">
+      <button data-l="Thu" onclick="chon('Thu')">Thu</button>
+      <button data-l="Chi" class="on" onclick="chon('Chi')">Chi</button>
+      <button data-l="No" onclick="chon('No')">Nợ</button>
+    </div>
+
+    <div class="the">
+      <div id="khoiNo" class="an">
+        <label>Mượn thêm hay trả nợ?</label>
+        <select id="traMuon"><option value="TraNo">Trả nợ</option><option value="MuonNo">Mượn thêm</option></select>
+        <label>Với ai?</label>
+        <select id="voiAi"></select>
+      </div>
+
+      <div id="khoiDm">
+        <label>Danh mục</label>
+        <select id="dm" onchange="doiDm()"></select>
+      </div>
+
+      <div id="khoiNoiMua" class="an">
+        <label>Nơi mua</label>
+        <select id="noiMua"></select>
+      </div>
+
+      <label>Số tiền</label>
+      <div class="hang2" style="grid-template-columns:2fr 1fr">
+        <input id="tien" type="number" inputmode="decimal" min="0" step="any" placeholder="0">
+        <select id="donVi" onchange="doiDonVi()"><option>Kč</option><option>USD</option><option>EUR</option></select>
+      </div>
+      <div id="khoiTy" class="an">
+        <label>Tỷ giá (1 <span id="tenDv"></span> = ? Kč)</label>
+        <input id="tyGia" type="number" inputmode="decimal" step="any">
+      </div>
+
+      <label>Ngày</label>
+      <input id="ngay" type="date">
+
+      <label>Nội dung <span id="batBuoc" style="color:var(--do)"></span></label>
+      <input id="nd" type="text" maxlength="200" placeholder="(không bắt buộc)">
+
+      <button id="nutLuu" class="luu" onclick="luu()">Lưu</button>
+      <div id="loi" class="loi"></div>
+    </div>
+
+    <div id="ketQua" class="the ok an"></div>
+
+    <h1 style="font-size:17px">Mới ghi gần đây</h1>
+    <div class="the" id="ganDay"></div>
+  </div>
+</main>
+
+<script>
+var D = null, LOAI = 'Chi', MK = '';
+try { MK = localStorage.getItem('mk') || ''; } catch (e) {}
+var $ = function (id) { return document.getElementById(id); };
+var kč = function (n) { return Number(n).toLocaleString('vi-VN') + ' Kč'; };
+
+function ganMac() {
+  $('cong').classList.add('an'); $('app').classList.remove('an');
+}
+function vao() {
+  MK = $('mk').value;
+  $('loiCong').textContent = '';
+  google.script.run.withSuccessHandler(function (d) {
+    try { localStorage.setItem('mk', MK); } catch (e) {}
+    khoiTao(d);
+  }).withFailureHandler(function (e) {
+    $('loiCong').textContent = thongBao(e);
+    $('cong').classList.remove('an'); $('app').classList.add('an');
+  }).batDau(MK);
+}
+function thongBao(e) { return String((e && e.message) || e).replace(/^Error:\s*/, ''); }
+
+function khoiTao(d) {
+  D = d; ganMac();
+  var n = $('nguoi'); n.innerHTML = '';
+  d.nguoi.forEach(function (x) { n.add(new Option(x, x)); });
+  try { var s = localStorage.getItem('nguoi'); if (s && d.nguoi.indexOf(s) >= 0) n.value = s; } catch (e) {}
+  var v = $('voiAi'); v.innerHTML = '';
+  d.choMuon.forEach(function (x) { v.add(new Option(x, x)); });
+  var nm = $('noiMua'); nm.innerHTML = '';
+  d.noiMua.forEach(function (x) { nm.add(new Option(x, x)); });
+  $('ngay').value = d.homNay; $('ngay').max = d.homNay;
+  veTomTat(d.tomTat); veGanDay(d.ganDay); chon(LOAI);
+}
+function luuNguoi() { try { localStorage.setItem('nguoi', $('nguoi').value); } catch (e) {} }
+
+function chon(l) {
+  LOAI = l;
+  document.querySelectorAll('.tab3 button').forEach(function (b) { b.classList.toggle('on', b.dataset.l === l); });
+  $('khoiNo').classList.toggle('an', l !== 'No');
+  $('khoiDm').classList.toggle('an', l === 'No');
+  var dm = $('dm'); dm.innerHTML = '';
+  if (l !== 'No') {
+    var ds = l === 'Thu' ? D.danhMuc.thu : D.danhMuc.chi, nhom = {}, og;
+    ds.forEach(function (m) {
+      if (!nhom[m.nhom]) { og = document.createElement('optgroup'); og.label = m.nhom; dm.appendChild(og); nhom[m.nhom] = og; }
+      var o = new Option(m.ma + ' ' + m.ten, m.ma); nhom[m.nhom].appendChild(o);
+    });
+  }
+  doiDm(); $('loi').textContent = ''; $('ketQua').classList.add('an');
+}
+function doiDm() {
+  var ma = $('dm').value;
+  $('khoiNoiMua').classList.toggle('an', LOAI === 'No' || D.maCoNoiMua.indexOf(ma) < 0);
+  var text = $('dm').options[$('dm').selectedIndex];
+  var khac = LOAI === 'Chi' && text && /^C12 /.test(text.text);
+  $('batBuoc').textContent = khac ? '(bắt buộc với "Khác")' : '';
+}
+function doiDonVi() {
+  var dv = $('donVi').value;
+  $('khoiTy').classList.toggle('an', dv === 'Kč');
+  $('tenDv').textContent = dv; if (dv !== 'Kč') $('tyGia').value = D.tyGia[dv];
+}
+
+function luu() {
+  $('loi').textContent = ''; $('nutLuu').disabled = true; $('nutLuu').textContent = 'Đang lưu...';
+  var e = {
+    loai: LOAI === 'No' ? $('traMuon').value : LOAI,
+    nguoi: $('nguoi').value, ma: $('dm').value, noiMua: $('noiMua').value, voiAi: $('voiAi').value,
+    soTien: $('tien').value, donVi: $('donVi').value, tyGia: $('tyGia').value,
+    ngay: $('ngay').value, noiDung: $('nd').value
+  };
+  google.script.run.withSuccessHandler(function (r) {
+    $('nutLuu').disabled = false; $('nutLuu').textContent = 'Lưu';
+    $('tien').value = ''; $('nd').value = '';
+    veKetQua(r, e); veTomTat(r.tomTat); veGanDay(r.ganDay);
+  }).withFailureHandler(function (er) {
+    $('nutLuu').disabled = false; $('nutLuu').textContent = 'Lưu';
+    $('loi').textContent = thongBao(er);
+  }).luu(MK, e);
+}
+
+function veKetQua(r, e) {
+  var k = $('ketQua'); k.classList.remove('an'); k.innerHTML = '';
+  var t = document.createElement('div'); t.innerHTML = '<b>✅ Đã ghi vào sổ</b>'; k.appendChild(t);
+  var q = r.quy;
+  if (q) {
+    var p = document.createElement('div');
+    if (q.ten && q.duocTieu !== undefined) {
+      var pt = q.duocTieu ? Math.round(q.daTieu / q.duocTieu * 100) : 0;
+      var c = pt > 100 ? 'do' : pt >= 70 ? 'vang' : '';
+      p.innerHTML = '<div style="margin-top:6px"></div>';
+      var tx = document.createElement('div'); tx.textContent = q.ten + ': còn ' + kč(q.conLai) + ' (đã dùng ' + pt + '%)';
+      var th = document.createElement('div'); th.className = 'thanh';
+      var i = document.createElement('i'); i.className = c; i.style.width = Math.min(100, pt) + '%'; th.appendChild(i);
+      p.appendChild(tx); p.appendChild(th);
+      if (pt > 100) { var w = document.createElement('div'); w.className = 'loi'; w.textContent = 'Quỹ này đã vượt mức.'; p.appendChild(w); }
+    } else p.textContent = q.ghiChu || '';
+    k.appendChild(p);
+  }
+}
+function veTomTat(t) { $('tVao').textContent = t.vao; $('tRa').textContent = t.ra; $('tCon').textContent = t.conLai; }
+
+function veGanDay(ds) {
+  var box = $('ganDay'); box.innerHTML = '';
+  if (!ds.length) { box.textContent = 'Chưa có khoản nào.'; return; }
+  ds.forEach(function (g) {
+    var d = document.createElement('div'); d.className = 'gd';
+    var tr = document.createElement('div'), ph = document.createElement('div');
+    var a = document.createElement('div'); a.textContent = g.danhMuc || g.thuChi;
+    var s = document.createElement('small'); s.textContent = g.ngay + ' · ' + g.nguoi + (g.noiDung ? ' · ' + g.noiDung : '');
+    tr.appendChild(a); tr.appendChild(s);
+    var b = document.createElement('button'); b.textContent = 'Xoá khoản này';
+    b.onclick = function () { xoa(g); }; tr.appendChild(b);
+    ph.className = 'so ' + g.thuChi; ph.textContent = (g.thuChi === 'Thu' ? '+' : g.thuChi === 'Chi' ? '−' : '') + kč(g.soTien);
+    d.appendChild(tr); d.appendChild(ph); box.appendChild(d);
+  });
+}
+function xoa(g) {
+  if (!confirm('Xoá khoản ' + g.danhMuc + ' ' + kč(g.soTien) + ' ngày ' + g.ngay + '?')) return;
+  google.script.run.withSuccessHandler(function (r) { veTomTat(r.tomTat); veGanDay(r.ganDay); $('ketQua').classList.add('an'); })
+    .withFailureHandler(function (er) { alert(thongBao(er)); })
+    .xoa(MK, g.hang, g.dauThoiGian, g.soTien);
+}
+
+if (MK) vao(); else { $('cong').classList.remove('an'); }
+</script>
+</body>
+</html>
