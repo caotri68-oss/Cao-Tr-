@@ -10,3 +10,8 @@
 8. Thử: ghi Chi 10 Kč danh mục bất kỳ, xem hiện "Đã ghi vào sổ", rồi bấm **Xoá khoản này**.
 
 Sửa code về sau: Triển khai → **Quản lý triển khai** → bút chì → Phiên bản mới (link giữ nguyên).
+
+## Dùng trên điện thoại
+- **Android:** mở link bằng Chrome → menu ba chấm → **Thêm vào màn hình chính**.
+- **iPhone:** mở link bằng **Safari** → nút Chia sẻ → **Thêm vào Màn hình chính**.
+- Lần đầu nhập mật khẩu của nhà, máy sẽ nhớ. Nếu iPhone xoá dữ liệu trình duyệt thì nhập lại.

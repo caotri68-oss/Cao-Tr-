@@ -24,7 +24,9 @@ const COT_THEM_TIEU_DE = ['Mã danh mục', 'Nơi mua', 'Đơn vị tiền', 'S�
 function doGet() {
   return HtmlService.createHtmlOutputFromFile('Index')
     .setTitle('Sổ thu chi nhà mình')
-    .addMetaTag('viewport', 'width=device-width, initial-scale=1')
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1, viewport-fit=cover')
+    .addMetaTag('apple-mobile-web-app-capable', 'yes')
+    .addMetaTag('mobile-web-app-capable', 'yes')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
