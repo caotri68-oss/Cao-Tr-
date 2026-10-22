@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<meta name="color-scheme" content="light dark">
+<style>
+  :root {
+    --bg:#f7f5fc; --card:#ffffff; --fg:#1f1b33; --muted:#6a6582; --line:#e2ddf0;
+    --tim:#5b3fd9; --tim-fg:#ffffff; --tim-nhat:#efeaff; --xanh:#16804f; --vang:#a86a00; --do:#c93131;
+    --ok-bg:#e8f6ee; --ok-line:#b9e2ca;
+    --font:system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) { :root {
+    --bg:#15121f; --card:#1f1b2e; --fg:#efecfa; --muted:#a49fbd; --line:#383250;
+    --tim:#8f78ff; --tim-fg:#14102a; --tim-nhat:#2c2548; --xanh:#46c585; --vang:#e8b04a; --do:#ff7b7b;
+    --ok-bg:#16301f; --ok-line:#285a3a; } }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html { -webkit-text-size-adjust:100%; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.45 var(--font);
+         padding:max(12px, env(safe-area-inset-top,0px)) max(16px, env(safe-area-inset-right,0px))
+                 calc(72px + env(safe-area-inset-bottom,0px)) max(16px, env(safe-area-inset-left,0px)); }
+  main { max-width:520px; margin:0 auto; min-width:0; }
+  h1 { font-size:20px; margin:6px 0 12px; }
+  h2 { font-size:15px; margin:22px 0 8px; color:var(--muted); font-weight:600; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px; min-width:0; }
+  .tomtat { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; text-align:center; }
+  .tomtat small { display:block; color:var(--muted); font-size:12px; }
+  .tomtat b { font-size:15px; }
+  label { display:block; font-size:13px; color:var(--muted); margin:14px 0 5px; }
+  input, select { width:100%; padding:13px; font:16px var(--font); color:var(--fg); background:var(--card);
+                  border:1px solid var(--line); border-radius:10px; -webkit-appearance:none; appearance:none; }
+  select { background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);
+           background-position:calc(100% - 20px) 50%,calc(100% - 14px) 50%; background-size:6px 6px; background-repeat:no-repeat; padding-right:34px; }
+  input:focus-visible, select:focus-visible, button:focus-visible { outline:3px solid var(--tim); outline-offset:2px; }
+  #tien { font-size:26px; font-weight:700; }
+  .tab3 { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:14px 0; }
+  .tab3 button { padding:15px 0; font:700 18px var(--font); border-radius:12px; border:2px solid var(--line); background:var(--card); color:var(--fg); }
+  .tab3 button.on { background:var(--tim); border-color:var(--tim); color:var(--tim-fg); }
+  .row { display:grid; grid-template-columns:2fr 1fr; gap:8px; }
+
+  /* Danh mục: mỗi nhóm một khối riêng, nhóm nhỏ xếp hai cột cạnh nhau */
+  .nhom { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:6px; }
+  .khoi { border:1px solid var(--line); border-radius:12px; padding:10px; min-width:0; }
+  .khoi.rong { grid-column:1 / -1; }
+  .khoi h3 { font-size:13px; margin:0 0 8px; color:var(--muted); font-weight:700; }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; }
+  .khoi:not(.rong) .chips { flex-direction:column; flex-wrap:nowrap; }
+  .chip { min-height:44px; padding:8px 12px; border-radius:10px; border:1.5px solid var(--line); background:var(--card);
+          color:var(--fg); font:15px var(--font); text-align:left; line-height:1.25; }
+  .chip small { color:var(--muted); font-size:11px; margin-right:4px; }
+  .chip.on { background:var(--tim); border-color:var(--tim); color:var(--tim-fg); font-weight:700; }
+  .chip.on small { color:var(--tim-fg); opacity:.8; }
+  .chip[hidden], .khoi[hidden] { display:none; }
+  .daChon { margin-top:8px; font-size:14px; color:var(--muted); }
+  .daChon b { color:var(--fg); }
+
+  .luu { width:100%; margin-top:18px; padding:16px; font:700 18px var(--font); border:0; border-radius:12px; background:var(--tim); color:var(--tim-fg); }
+  .luu:disabled { opacity:.5; }
+  .loi { color:var(--do); font-size:14px; margin-top:10px; }
+  .ok { background:var(--ok-bg); border-color:var(--ok-line); margin-top:14px; }
+  .thanh { height:12px; background:var(--line); border-radius:6px; overflow:hidden; margin:8px 0 2px; }
+  .thanh i { display:block; height:100%; background:var(--xanh); }
+  .thanh i.vang { background:var(--vang); } .thanh i.do { background:var(--do); }
+  .gd { display:flex; justify-content:space-between; gap:10px; padding:10px 0; border-bottom:1px solid var(--line); font-size:15px; }
+  .gd:last-child { border-bottom:0; padding-bottom:0; } .gd:first-child { padding-top:0; }
+  .gd > div:first-child { min-width:0; }
+  .gd small { display:block; color:var(--muted); overflow-wrap:anywhere; }
+  .so { font-weight:700; white-space:nowrap; }
+  .so.Thu { color:var(--xanh); }
+  .xoa { margin-top:2px; background:none; border:0; padding:6px 0; color:var(--do); font:13px var(--font); }
+  .an { display:none; }
+  #cong { text-align:center; padding-top:60px; }
+</style>
+</head>
+<body>
+<main>
+  <div id="cong" class="an">
+    <h1>Sổ thu chi nhà mình</h1>
+    <label for="mk">Mật khẩu của cả nhà</label>
+    <input id="mk" type="password" autocomplete="current-password">
+    <button class="luu" onclick="vao()">Vào sổ</button>
+    <div id="loiCong" class="loi"></div>
+  </div>
+
+  <div id="app" class="an">
+    <h1>Sổ thu chi nhà mình</h1>
+    <div class="card tomtat">
+      <div><small>Tiền vào</small><b id="tVao">-</b></div>
+      <div><small>Tiền ra</small><b id="tRa">-</b></div>
+      <div><small>Còn lại</small><b id="tCon">-</b></div>
+    </div>
+
+    <label for="nguoi">Ai đang ghi?</label>
+    <select id="nguoi" onchange="luuNguoi()"></select>
+
+    <div class="tab3">
+      <button data-l="Thu" onclick="chon('Thu')">Thu</button>
+      <button data-l="Chi" class="on" onclick="chon('Chi')">Chi</button>
+      <button data-l="No" onclick="chon('No')">Nợ</button>
+    </div>
+
+    <div class="card">
+      <div id="khoiNo" class="an">
+        <label for="traMuon" style="margin-top:0">Trả nợ hay mượn thêm?</label>
+        <select id="traMuon"><option value="TraNo">Trả nợ</option><option value="MuonNo">Mượn thêm</option></select>
+        <label for="voiAi">Với ai?</label>
+        <select id="voiAi"></select>
+      </div>
+
+      <div id="khoiDm">
+        <label for="tim" style="margin-top:0">Danh mục</label>
+        <input id="tim" type="search" placeholder="Gõ để tìm, ví dụ: xăng, siêu thị" oninput="loc()" autocomplete="off">
+        <div class="nhom" id="nhom"></div>
+        <div class="daChon" id="daChon"></div>
+      </div>
+
+      <div id="khoiNoiMua" class="an">
+        <label for="noiMua">Nơi mua</label>
+        <select id="noiMua"></select>
+      </div>
+
+      <label for="tien">Số tiền</label>
+      <div class="row">
+        <input id="tien" type="number" inputmode="decimal" min="0" step="any" placeholder="0">
+        <select id="donVi" aria-label="Đơn vị tiền" onchange="doiDonVi()"><option>Kč</option><option>USD</option><option>EUR</option></select>
+      </div>
+      <div id="khoiTy" class="an">
+        <label for="tyGia">Tỷ giá (1 <span id="tenDv"></span> = ? Kč)</label>
+        <input id="tyGia" type="number" inputmode="decimal" step="any">
+      </div>
+
+      <label for="ngay">Ngày</label>
+      <input id="ngay" type="date">
+
+      <label for="nd">Nội dung <span id="batBuoc" style="color:var(--do)"></span></label>
+      <input id="nd" type="text" maxlength="200" placeholder="Không bắt buộc">
+
+      <button id="nutLuu" class="luu" onclick="luu()">Lưu</button>
+      <div id="loi" class="loi" role="alert"></div>
+    </div>
+
+    <div id="ketQua" class="card ok an"></div>
+
+    <h2>Mới ghi gần đây</h2>
+    <div class="card" id="ganDay"></div>
+  </div>
+</main>
+
+<script>
+var D = null, LOAI = 'Chi', MK = '', MA = '', TEN = '', XN = -1, GAN = [];
+var THU_TU = ['Sống còn', 'Văn hoá', 'Mong muốn', 'Bất ngờ', 'Để dành', 'Buôn bán'];
+try { MK = localStorage.getItem('mk') || ''; } catch (e) {}
+var $ = function (id) { return document.getElementById(id); };
+var kc = function (n) { return Number(n).toLocaleString('vi-VN') + ' Kč'; };
+function thongBao(e) { return String((e && e.message) || e).replace(/^Error:\s*/, ''); }
+
+function vao() {
+  MK = $('mk').value || MK; $('loiCong').textContent = '';
+  google.script.run.withSuccessHandler(function (d) {
+    try { localStorage.setItem('mk', MK); } catch (e) {}
+    khoiTao(d);
+  }).withFailureHandler(function (e) {
+    $('loiCong').textContent = thongBao(e);
+    $('cong').classList.remove('an'); $('app').classList.add('an');
+  }).batDau(MK);
+}
+
+function khoiTao(d) {
+  D = d; $('cong').classList.add('an'); $('app').classList.remove('an');
+  var n = $('nguoi'); n.innerHTML = '';
+  d.nguoi.forEach(function (x) { n.add(new Option(x, x)); });
+  try { var s = localStorage.getItem('nguoi'); if (s && d.nguoi.indexOf(s) >= 0) n.value = s; } catch (e) {}
+  var v = $('voiAi'); v.innerHTML = '';
+  d.choMuon.forEach(function (x) { v.add(new Option(x, x)); });
+  var nm = $('noiMua'); nm.innerHTML = '';
+  d.noiMua.forEach(function (x) { nm.add(new Option(x, x)); });
+  $('ngay').value = d.homNay; $('ngay').max = d.homNay;
+  veTomTat(d.tomTat); veGanDay(d.ganDay); chon(LOAI);
+}
+function luuNguoi() { try { localStorage.setItem('nguoi', $('nguoi').value); } catch (e) {} }
+
+function thuTuNhom(ten) {
+  for (var i = 0; i < THU_TU.length; i++) if (ten.indexOf(THU_TU[i]) >= 0) return i;
+  return 99;
+}
+
+function chon(l) {
+  LOAI = l; MA = ''; TEN = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.tab3 button'), function (b) { b.classList.toggle('on', b.getAttribute('data-l') === l); });
+  $('khoiNo').classList.toggle('an', l !== 'No');
+  $('khoiDm').classList.toggle('an', l === 'No');
+  $('tim').value = '';
+  var box = $('nhom'); box.innerHTML = '';
+  if (l !== 'No') {
+    var ds = l === 'Thu' ? D.danhMuc.thu : D.danhMuc.chi, nhom = {}, ten = [];
+    ds.forEach(function (m) { if (!nhom[m.nhom]) { nhom[m.nhom] = []; ten.push(m.nhom); } nhom[m.nhom].push(m); });
+    ten.sort(function (a, b) { return thuTuNhom(a) - thuTuNhom(b); });
+    ten.forEach(function (g) {
+      var k = document.createElement('div'); k.className = 'khoi' + (nhom[g].length > 4 || l === 'Thu' ? ' rong' : '');
+      var h = document.createElement('h3'); h.textContent = g; k.appendChild(h);
+      var c = document.createElement('div'); c.className = 'chips';
+      nhom[g].forEach(function (m) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.id = 'chip-' + m.ma;
+        b.setAttribute('data-ma', m.ma); b.setAttribute('data-ten', m.ten.toLowerCase() + ' ' + m.ma.toLowerCase());
+        var sm = document.createElement('small'); sm.textContent = m.ma; b.appendChild(sm);
+        b.appendChild(document.createTextNode(m.ten));
+        b.onclick = function () { chonDm(m); };
+        c.appendChild(b);
+      });
+      k.appendChild(c); box.appendChild(k);
+    });
+  }
+  chonDm(null); $('loi').textContent = ''; $('ketQua').classList.add('an');
+}
+
+function chonDm(m) {
+  MA = m ? m.ma : ''; TEN = m ? m.ten : '';
+  Array.prototype.forEach.call(document.querySelectorAll('.chip'), function (b) { b.classList.toggle('on', b.getAttribute('data-ma') === MA); });
+  $('daChon').textContent = '';
+  if (m) { var b = document.createElement('b'); b.textContent = m.ma + ' ' + m.ten; $('daChon').appendChild(document.createTextNode('Đã chọn: ')); $('daChon').appendChild(b); }
+  $('khoiNoiMua').classList.toggle('an', LOAI !== 'Chi' || D.maCoNoiMua.indexOf(MA) < 0);
+  $('batBuoc').textContent = LOAI === 'Chi' && TEN === 'Khác' ? '(bắt buộc với "Khác")' : '';
+}
+
+function loc() {
+  var q = $('tim').value.trim().toLowerCase();
+  Array.prototype.forEach.call(document.querySelectorAll('.chip'), function (b) {
+    b.hidden = q !== '' && b.getAttribute('data-ten').indexOf(q) < 0;
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.khoi'), function (k) {
+    k.hidden = k.querySelectorAll('.chip:not([hidden])').length === 0;
+  });
+}
+
+function doiDonVi() {
+  var dv = $('donVi').value;
+  $('khoiTy').classList.toggle('an', dv === 'Kč');
+  $('tenDv').textContent = dv; if (dv !== 'Kč') $('tyGia').value = D.tyGia[dv];
+}
+
+function luu() {
+  $('loi').textContent = '';
+  if (LOAI !== 'No' && !MA) { $('loi').textContent = 'Chọn danh mục.'; return; }
+  $('nutLuu').disabled = true; $('nutLuu').textContent = 'Đang lưu...';
+  var e = {
+    loai: LOAI === 'No' ? $('traMuon').value : LOAI,
+    nguoi: $('nguoi').value, ma: MA, noiMua: $('noiMua').value, voiAi: $('voiAi').value,
+    soTien: $('tien').value, donVi: $('donVi').value, tyGia: $('tyGia').value,
+    ngay: $('ngay').value, noiDung: $('nd').value
+  };
+  google.script.run.withSuccessHandler(function (r) {
+    $('nutLuu').disabled = false; $('nutLuu').textContent = 'Lưu';
+    $('tien').value = ''; $('nd').value = '';
+    veKetQua(r); veTomTat(r.tomTat); veGanDay(r.ganDay);
+  }).withFailureHandler(function (er) {
+    $('nutLuu').disabled = false; $('nutLuu').textContent = 'Lưu';
+    $('loi').textContent = thongBao(er);
+  }).luu(MK, e);
+}
+
+function veKetQua(r) {
+  var k = $('ketQua'); k.classList.remove('an'); k.innerHTML = '';
+  var t = document.createElement('b'); t.textContent = '✅ Đã ghi vào sổ'; k.appendChild(t);
+  var q = r.quy; if (!q) return;
+  var p = document.createElement('div'); p.style.marginTop = '8px';
+  if (q.ten && q.duocTieu !== undefined) {
+    var pt = q.duocTieu ? Math.round(q.daTieu / q.duocTieu * 100) : 0, c = pt > 100 ? 'do' : pt >= 70 ? 'vang' : '';
+    var tx = document.createElement('div');
+    tx.textContent = q.ten + ': ' + (q.conLai < 0 ? 'vượt ' + kc(-q.conLai) : 'còn ' + kc(q.conLai)) + ' (đã dùng ' + pt + '%)';
+    var th = document.createElement('div'); th.className = 'thanh';
+    var i = document.createElement('i'); i.className = c; i.style.width = Math.min(100, pt) + '%'; th.appendChild(i);
+    p.appendChild(tx); p.appendChild(th);
+  } else p.textContent = q.ghiChu || '';
+  k.appendChild(p);
+}
+
+function veTomTat(t) { $('tVao').textContent = t.vao; $('tRa').textContent = t.ra; $('tCon').textContent = t.conLai; }
+
+function veGanDay(ds) {
+  GAN = ds || GAN; XN = -1; var box = $('ganDay'); box.innerHTML = '';
+  if (!GAN.length) { box.textContent = 'Chưa có khoản nào.'; return; }
+  GAN.forEach(function (g, idx) {
+    var d = document.createElement('div'); d.className = 'gd';
+    var l = document.createElement('div'), a = document.createElement('div'), s = document.createElement('small');
+    a.textContent = g.danhMuc || g.thuChi;
+    s.textContent = g.ngay + ' · ' + g.nguoi + (g.noiDung ? ' · ' + g.noiDung : '');
+    l.appendChild(a); l.appendChild(s);
+    var b = document.createElement('button'); b.className = 'xoa'; b.textContent = 'Xoá khoản này';
+    b.onclick = function () {
+      if (b.getAttribute('data-xn') !== '1') { b.setAttribute('data-xn', '1'); b.textContent = 'Bấm lần nữa để xoá thật'; return; }
+      xoa(g);
+    };
+    l.appendChild(b);
+    var so = document.createElement('div'); so.className = 'so ' + g.thuChi;
+    so.textContent = (g.thuChi === 'Thu' ? '+' : g.thuChi === 'Chi' ? '−' : '') + kc(g.soTien);
+    d.appendChild(l); d.appendChild(so); box.appendChild(d);
+  });
+}
+
+function xoa(g) {
+  google.script.run.withSuccessHandler(function (r) { veTomTat(r.tomTat); veGanDay(r.ganDay); $('ketQua').classList.add('an'); })
+    .withFailureHandler(function (er) { $('loi').textContent = thongBao(er); })
+    .xoa(MK, g.hang, g.dauThoiGian, g.soTien);
+}
+
+if (MK) vao(); else $('cong').classList.remove('an');
+</script>
+</body>
+</html>
