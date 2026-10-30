@@ -208,14 +208,14 @@ public class MainActivity extends Activity {
         chooseSaved(SIM_KEYS, SIM_WORDS, "sim", DEFAULT_SIM);
         chooseSaved(NUM_KEYS, NUM_WORDS, "num", DEFAULT_NUM);
         web.postDelayed(new Runnable() {
-            @Override public void run() { runFill(json, wanted.toString(), false); }
+            @Override public void run() { runFill(json, wanted.toString(), false, n); }
         }, 1200);
         web.postDelayed(new Runnable() {
-            @Override public void run() { runFill(json, wanted.toString(), true); }
+            @Override public void run() { runFill(json, wanted.toString(), true, n); }
         }, 2500);
     }
 
-    private void runFill(String json, final String wanted, final boolean report) {
+    private void runFill(String json, final String wanted, final boolean report, final int n) {
         web.evaluateJavascript(String.format(JS_ALL, json), new ValueCallback<String>() {
             @Override public void onReceiveValue(String r) {
                 if (!report) return;
@@ -227,7 +227,7 @@ public class MainActivity extends Activity {
                     }
                 }
                 String msg = missing.length() == 0
-                        ? "Đã điền xong, hãy kiểm tra lại từng ô"
+                        ? "Đã điền xong lần " + n + " (SĐT " + String.format("%04d", n) + "), kiểm tra lại từng ô"
                         : "Chưa điền được: " + missing + "(chạm ô đó rồi bấm nút nhỏ)";
                 Toast.makeText(MainActivity.this, msg, Toast.LENGTH_LONG).show();
             }
