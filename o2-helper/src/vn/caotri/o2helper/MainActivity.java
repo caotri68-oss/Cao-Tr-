@@ -108,7 +108,7 @@ public class MainActivity extends Activity {
             + "if(!e.checked){e.click();if(!e.checked&&e.labels&&e.labels[0])e.labels[0].click();}"
             + "return e.checked?'ok':'fail';}return 'no';})()";
 
-    private static final String[] SLOT_NAMES = {"Trang 1", "Trang 2", "Trang 3"};
+    private static final String[] SLOT_NAMES = {"Trang 1", "Trang 2", "Trang 3", "Trang 4"};
     private int slot = 0;
     private EditText urlField;
     private Button[] tabs = new Button[SLOT_NAMES.length];
@@ -133,11 +133,14 @@ public class MainActivity extends Activity {
         for (int i = 0; i < SLOT_NAMES.length; i++) {
             final int idx = i;
             tabs[i] = new Button(this);
-            tabs[i].setText(SLOT_NAMES[i]);
+            tabs[i].setText(nameOf(i));
             tabs[i].setAllCaps(false);
             tabs[i].setTextSize(12);
             tabs[i].setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) { openSlot(idx); }
+            });
+            tabs[i].setOnLongClickListener(new View.OnLongClickListener() {
+                @Override public boolean onLongClick(View v) { showRename(idx); return true; }
             });
             tabRow.addView(tabs[i], new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         }
@@ -149,6 +152,11 @@ public class MainActivity extends Activity {
         urlField.setSingleLine(true);
         urlField.setTextSize(13);
         urlField.setHint("Dán địa chỉ trang web");
+        TextView tip = new TextView(this);
+        tip.setText("Giữ lâu một nút trang để đổi tên. Mỗi trang có địa chỉ riêng, bấm Lưu & mở để đổi địa chỉ.");
+        tip.setTextSize(11);
+        tip.setPadding(16, 4, 16, 4);
+        top.addView(tip);
         urlField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
         urlRow.addView(urlField, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         Button save = new Button(this);
@@ -242,6 +250,31 @@ public class MainActivity extends Activity {
 
     private void openSlot(int i) {
         openSlot(i, true);
+    }
+
+    private String nameOf(int i) {
+        return prefs.getString("name" + i, SLOT_NAMES[i]);
+    }
+
+    /** Giữ lâu một nút trang để đổi tên trang. */
+    private void showRename(final int i) {
+        final EditText et = new EditText(this);
+        et.setSingleLine(true);
+        et.setText(nameOf(i));
+        new AlertDialog.Builder(this)
+                .setTitle("Đổi tên trang")
+                .setView(et)
+                .setPositiveButton("Lưu", new DialogInterface.OnClickListener() {
+                    @Override public void onClick(DialogInterface d, int w) {
+                        String n = et.getText().toString().trim();
+                        if (n.length() > 0) {
+                            prefs.edit().putString("name" + i, n).apply();
+                            tabs[i].setText(n);
+                        }
+                    }
+                })
+                .setNegativeButton("Đóng", null)
+                .show();
     }
 
     /** Mở địa chỉ đã lưu của trang i. Mỗi trang có địa chỉ riêng. */
