@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Outline;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.InsetDrawable;
@@ -17,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
+import android.view.ViewTreeObserver;
 import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -293,6 +295,23 @@ public class MainActivity extends Activity {
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
         setContentView(root);
+
+        // Khi bàn phím mở, ẩn thanh trên và thanh dưới để trang web có đủ chỗ hiển thị ô đang nhập.
+        root.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            private boolean open = false;
+            @Override public void onGlobalLayout() {
+                Rect r = new Rect();
+                root.getWindowVisibleDisplayFrame(r);
+                int screen = root.getRootView().getHeight();
+                boolean nowOpen = screen - r.bottom > screen * 0.15;
+                if (nowOpen != open) {
+                    open = nowOpen;
+                    int vis = open ? View.GONE : View.VISIBLE;
+                    top.setVisibility(vis);
+                    panel.setVisibility(vis);
+                }
+            }
+        });
 
         if (state == null) {
             openSlot(0);
