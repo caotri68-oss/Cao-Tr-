@@ -1,0 +1,10 @@
+; Engine configuration file.
+; Mở project này bằng Godot: Import → chọn file project.godot.
+
+config_version=5
+
+[application]
+
+config/name="Đảo Hình Que"
+run/main_scene="res://main.tscn"
+config/icon="res://icon.svg"
