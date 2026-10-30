@@ -6,9 +6,10 @@
 3. Bấm nút ▶ (hoặc phím **F5**) để chạy.
 
 ## Điều khiển
-- Phím mũi tên: di chuyển người que.
+- Phím mũi tên: di chuyển người que (không đi xuống nước).
 
 ## Cấu trúc
 - `project.godot`: cấu hình project.
 - `main.tscn`: scene chính (chỉ là một node gắn script).
-- `main.gd`: toàn bộ thế giới, cây, người que và điều khiển.
+- `main.gd`: địa hình đảo, cây rung, người que, camera bám theo.
+- `water.gdshader`: shader nước (sóng, bọt bờ, phản chiếu). Công thức địa hình trùng với `main.gd`.
