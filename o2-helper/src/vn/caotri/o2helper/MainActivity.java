@@ -14,6 +14,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -70,6 +72,21 @@ public class MainActivity extends Activity {
     private static final String JS_FOCUSED = "(function(v){" + JS_COMMON
             + "var e=document.activeElement;if(!e||(e.tagName!=='INPUT'&&e.tagName!=='TEXTAREA'))return 'no';"
             + "setv(e,v);return 'ok';})(%s)";
+
+    /** %s = mảng từ khoá (đã bỏ dấu, chữ thường). Bấm radio đầu tiên có nhãn chứa từ khoá. */
+    private static final String JS_RADIO = "(function(words){" + "function norm(s){return (s||'').toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g,'');}"
+            + "var rs=document.querySelectorAll('input[type=radio]');"
+            + "for(var i=0;i<rs.length;i++){var e=rs[i];var c=e.closest('label')||e.parentElement;"
+            + "var t=norm(c?c.textContent:'');"
+            + "for(var j=0;j<words.length;j++){if(t.indexOf(words[j])>=0){if(!e.checked)e.click();return 'ok';}}}"
+            + "return 'no';})(%s)";
+
+    private static final String[] SIM_KEYS = {"esim", "plastic"};
+    private static final String[] SIM_LABELS = {"Digitální eSIM (e-mail)", "Plastová SIM (pošta)"};
+    private static final String[][] SIM_WORDS = {{"esim"}, {"plastova"}};
+    private static final String[] NUM_KEYS = {"new", "port"};
+    private static final String[] NUM_LABELS = {"Nové číslo", "Převod stávajícího čísla"};
+    private static final String[][] NUM_WORDS = {{"vezmu si nove"}, {"prevedu"}};
 
     private WebView web;
     private SharedPreferences prefs;
@@ -190,8 +207,26 @@ public class MainActivity extends Activity {
                         ? "Đã điền xong, hãy kiểm tra lại từng ô"
                         : "Chưa điền được: " + missing + "(chạm ô đó rồi bấm nút nhỏ)";
                 Toast.makeText(MainActivity.this, msg, Toast.LENGTH_LONG).show();
+                chooseSaved(SIM_KEYS, SIM_WORDS, "sim");
+                chooseSaved(NUM_KEYS, NUM_WORDS, "num");
             }
         });
+    }
+
+    private void chooseSaved(String[] keys, String[][] words, String pref) {
+        String saved = prefs.getString(pref, "");
+        for (int i = 0; i < keys.length; i++) {
+            if (keys[i].equals(saved)) {
+                StringBuilder arr = new StringBuilder("[");
+                for (int j = 0; j < words[i].length; j++) {
+                    if (j > 0) arr.append(',');
+                    arr.append(JSONObject.quote(words[i][j]));
+                }
+                arr.append(']');
+                web.evaluateJavascript(String.format(JS_RADIO, arr), null);
+                return;
+            }
+        }
     }
 
     private void fillFocused(String key) {
@@ -225,6 +260,9 @@ public class MainActivity extends Activity {
             fields[i] = et;
             box.addView(et);
         }
+        final RadioGroup sim = radioGroup(box, SIM_LABELS, SIM_KEYS, prefs.getString("sim", ""));
+        final RadioGroup num = radioGroup(box, NUM_LABELS, NUM_KEYS, prefs.getString("num", ""));
+
         ScrollView sv = new ScrollView(this);
         sv.addView(box);
         new AlertDialog.Builder(this)
@@ -236,10 +274,35 @@ public class MainActivity extends Activity {
                         for (int i = 0; i < KEYS.length; i++) {
                             ed.putString(KEYS[i], fields[i].getText().toString().trim());
                         }
+                        ed.putString("sim", selectedKey(sim, SIM_KEYS));
+                        ed.putString("num", selectedKey(num, NUM_KEYS));
                         ed.apply();
                     }
                 })
                 .setNegativeButton("Đóng", null)
                 .show();
+    }
+
+    private RadioGroup radioGroup(LinearLayout box, String[] labels, String[] keys, String current) {
+        TextView title = new TextView(this);
+        title.setText(labels.length == 2 && keys[0].equals("esim") ? "Loại SIM" : "Số điện thoại");
+        title.setTextSize(13);
+        title.setPadding(0, 24, 0, 0);
+        box.addView(title);
+        RadioGroup g = new RadioGroup(this);
+        for (int i = 0; i < labels.length; i++) {
+            RadioButton rb = new RadioButton(this);
+            rb.setText(labels[i]);
+            rb.setTag(keys[i]);
+            rb.setChecked(keys[i].equals(current));
+            g.addView(rb);
+        }
+        box.addView(g);
+        return g;
+    }
+
+    private String selectedKey(RadioGroup g, String[] keys) {
+        View v = g.findViewById(g.getCheckedRadioButtonId());
+        return v == null ? "" : (String) v.getTag();
     }
 }
