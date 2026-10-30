@@ -14,6 +14,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.EditText;
@@ -93,6 +94,12 @@ public class MainActivity extends Activity {
     private static final String[] NUM_KEYS = {"new", "port"};
     private static final String[] NUM_LABELS = {"Nové číslo", "Převod stávajícího čísla"};
     private static final String[][] NUM_WORDS = {{"vezmu si nove"}, {"prevedu"}};
+
+    /** Chỉ tích ô đồng ý (không bấm nút đặt hàng). Chạy khi người dùng đã bật công tắc. */
+    private static final String JS_CONSENT = "(function(){var cs=document.querySelectorAll('input[type=checkbox]');"
+            + "for(var i=0;i<cs.length;i++){var e=cs[i];var c=e.closest('label')||e.parentElement;"
+            + "var t=(c?c.textContent:'').toLowerCase();"
+            + "if(t.indexOf('souhlas')>=0){if(!e.checked)e.click();return 'ok';}}return 'no';})()";
 
     private WebView web;
     private SharedPreferences prefs;
@@ -211,7 +218,12 @@ public class MainActivity extends Activity {
             @Override public void run() { runFill(json, wanted.toString(), false, n); }
         }, 1200);
         web.postDelayed(new Runnable() {
-            @Override public void run() { runFill(json, wanted.toString(), true, n); }
+            @Override public void run() {
+                runFill(json, wanted.toString(), true, n);
+                if (prefs.getBoolean("autoconsent", false)) {
+                    web.evaluateJavascript(JS_CONSENT, null);
+                }
+            }
         }, 2500);
     }
 
@@ -307,6 +319,11 @@ public class MainActivity extends Activity {
             fields[i] = et;
             box.addView(et);
         }
+        final CheckBox consent = new CheckBox(this);
+        consent.setText("Tự tích ô đồng ý điều khoản (chỉ bật khi bạn đã đọc điều khoản)");
+        consent.setTextSize(12);
+        consent.setChecked(prefs.getBoolean("autoconsent", false));
+        box.addView(consent);
         final RadioGroup sim = radioGroup(box, SIM_LABELS, SIM_KEYS, emptyTo(prefs.getString("sim", ""), DEFAULT_SIM));
         final RadioGroup num = radioGroup(box, NUM_LABELS, NUM_KEYS, emptyTo(prefs.getString("num", ""), DEFAULT_NUM));
 
@@ -321,6 +338,7 @@ public class MainActivity extends Activity {
                         for (int i = 0; i < KEYS.length; i++) {
                             ed.putString(KEYS[i], fields[i].getText().toString().trim());
                         }
+                        ed.putBoolean("autoconsent", consent.isChecked());
                         ed.putString("sim", selectedKey(sim, SIM_KEYS));
                         ed.putString("num", selectedKey(num, NUM_KEYS));
                         ed.apply();
