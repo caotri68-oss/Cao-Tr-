@@ -108,6 +108,11 @@ public class MainActivity extends Activity {
             + "if(!e.checked){e.click();if(!e.checked&&e.labels&&e.labels[0])e.labels[0].click();}"
             + "return e.checked?'ok':'fail';}return 'no';})()";
 
+    private static final String[] SLOT_NAMES = {"Trang 1", "Trang 2", "Trang 3"};
+    private int slot = 0;
+    private EditText urlField;
+    private Button[] tabs = new Button[SLOT_NAMES.length];
+
     private WebView web;
     private SharedPreferences prefs;
 
@@ -118,6 +123,45 @@ public class MainActivity extends Activity {
 
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
+
+        LinearLayout top = new LinearLayout(this);
+        top.setOrientation(LinearLayout.VERTICAL);
+        top.setBackgroundColor(Color.parseColor("#EEEEEE"));
+
+        LinearLayout tabRow = new LinearLayout(this);
+        tabRow.setOrientation(LinearLayout.HORIZONTAL);
+        for (int i = 0; i < SLOT_NAMES.length; i++) {
+            final int idx = i;
+            tabs[i] = new Button(this);
+            tabs[i].setText(SLOT_NAMES[i]);
+            tabs[i].setAllCaps(false);
+            tabs[i].setTextSize(12);
+            tabs[i].setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) { openSlot(idx); }
+            });
+            tabRow.addView(tabs[i], new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        }
+        top.addView(tabRow);
+
+        LinearLayout urlRow = new LinearLayout(this);
+        urlRow.setOrientation(LinearLayout.HORIZONTAL);
+        urlField = new EditText(this);
+        urlField.setSingleLine(true);
+        urlField.setTextSize(13);
+        urlField.setHint("Dán địa chỉ trang web");
+        urlField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
+        urlRow.addView(urlField, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        Button save = new Button(this);
+        save.setText("Lưu & mở");
+        save.setAllCaps(false);
+        save.setTextSize(12);
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) { saveAndOpen(); }
+        });
+        urlRow.addView(save, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        top.addView(urlRow);
+        root.addView(top, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
         web = new WebView(this);
         WebSettings s = web.getSettings();
@@ -178,9 +222,11 @@ public class MainActivity extends Activity {
         setContentView(root);
 
         if (state == null) {
-            web.loadUrl(START_URL);
+            openSlot(0);
         } else {
             web.restoreState(state);
+            slot = state.getInt("slot", 0);
+            openSlot(slot, false);
         }
         if (!prefs.contains("first")) {
             showSettings();
@@ -191,6 +237,40 @@ public class MainActivity extends Activity {
     protected void onSaveInstanceState(Bundle out) {
         super.onSaveInstanceState(out);
         web.saveState(out);
+        out.putInt("slot", slot);
+    }
+
+    private void openSlot(int i) {
+        openSlot(i, true);
+    }
+
+    /** Mở địa chỉ đã lưu của trang i. Mỗi trang có địa chỉ riêng. */
+    private void openSlot(int i, boolean load) {
+        slot = i;
+        String u = prefs.getString("url" + i, i == 0 ? START_URL : "");
+        urlField.setText(u);
+        for (int k = 0; k < tabs.length; k++) {
+            tabs[k].setBackgroundColor(k == i ? Color.parseColor("#BBDEFB") : Color.parseColor("#DDDDDD"));
+        }
+        if (!load) return;
+        if (u.length() == 0) {
+            web.loadUrl("about:blank");
+            Toast.makeText(this, "Chưa có địa chỉ, dán vào rồi bấm Lưu & mở", Toast.LENGTH_SHORT).show();
+        } else {
+            web.loadUrl(u);
+        }
+    }
+
+    private void saveAndOpen() {
+        String u = urlField.getText().toString().trim();
+        if (u.length() == 0) {
+            Toast.makeText(this, "Hãy dán địa chỉ trước", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!u.startsWith("http://") && !u.startsWith("https://")) u = "https://" + u;
+        prefs.edit().putString("url" + slot, u).apply();
+        urlField.setText(u);
+        web.loadUrl(u);
     }
 
     @Override
