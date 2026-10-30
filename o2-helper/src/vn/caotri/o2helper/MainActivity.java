@@ -191,7 +191,7 @@ public class MainActivity extends Activity {
         prefs.edit().putInt("counter", n).apply();
         try {
             for (int i = 0; i < KEYS.length; i++) {
-                String v = prefs.getString(KEYS[i], defaultFor(KEYS[i]));
+                String v = valueOf(KEYS[i]);
                 v = v.replace("{rand4}", String.format("%04d", n));
                 data.put(KEYS[i], v);
                 if (v.length() > 0) wanted.append(KEYS[i]).append(',');
@@ -236,6 +236,17 @@ public class MainActivity extends Activity {
 
     private static String emptyTo(String v, String def) {
         return v.length() == 0 ? def : v;
+    }
+
+    /**
+     * Số điện thoại và email luôn theo mẫu có {rand4}. Nếu còn giá trị cũ không có mẫu
+     * (đã lưu trước đây), dùng lại mẫu mặc định để bộ đếm vẫn hoạt động.
+     */
+    private String valueOf(String key) {
+        String v = prefs.getString(key, "");
+        boolean templated = key.equals("phone") || key.equals("email");
+        if (v.length() == 0 || (templated && !v.contains("{rand4}"))) return defaultFor(key);
+        return v;
     }
 
     private String defaultFor(String key) {
@@ -289,7 +300,7 @@ public class MainActivity extends Activity {
         for (int i = 0; i < KEYS.length; i++) {
             EditText et = new EditText(this);
             et.setHint(LABELS[i]);
-            et.setText(prefs.getString(KEYS[i], defaultFor(KEYS[i])));
+            et.setText(valueOf(KEYS[i]));
             et.setSingleLine(true);
             if (KEYS[i].equals("phone")) et.setInputType(InputType.TYPE_CLASS_PHONE);
             if (KEYS[i].equals("email")) et.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
