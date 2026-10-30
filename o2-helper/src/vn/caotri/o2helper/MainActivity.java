@@ -22,6 +22,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Random;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -80,6 +82,13 @@ public class MainActivity extends Activity {
             + "var t=norm(c?c.textContent:'');"
             + "for(var j=0;j<words.length;j++){if(t.indexOf(words[j])>=0){if(!e.checked)e.click();return 'ok';}}}"
             + "return 'no';})(%s)";
+
+    /** {rand4} được thay bằng 4 số ngẫu nhiên mỗi lần bấm "Điền tất cả". */
+    private static final String DEFAULT_PHONE = "77536{rand4}";
+    private static final String DEFAULT_EMAIL = "g{rand4}a@gmail.com";
+    private static final String DEFAULT_SIM = "plastic";
+    private static final String DEFAULT_NUM = "new";
+    private final Random rnd = new Random();
 
     private static final String[] SIM_KEYS = {"esim", "plastic"};
     private static final String[] SIM_LABELS = {"Digitální eSIM (e-mail)", "Plastová SIM (pošta)"};
@@ -183,7 +192,8 @@ public class MainActivity extends Activity {
         final StringBuilder wanted = new StringBuilder();
         try {
             for (int i = 0; i < KEYS.length; i++) {
-                String v = prefs.getString(KEYS[i], "");
+                String v = prefs.getString(KEYS[i], defaultFor(KEYS[i]));
+                v = fresh(v);
                 data.put(KEYS[i], v);
                 if (v.length() > 0) wanted.append(KEYS[i]).append(',');
             }
@@ -196,8 +206,8 @@ public class MainActivity extends Activity {
         }
         final String json = data.toString();
         // Chọn loại SIM / số điện thoại trước, vì ô địa chỉ chỉ hiện sau khi chọn.
-        chooseSaved(SIM_KEYS, SIM_WORDS, "sim");
-        chooseSaved(NUM_KEYS, NUM_WORDS, "num");
+        chooseSaved(SIM_KEYS, SIM_WORDS, "sim", DEFAULT_SIM);
+        chooseSaved(NUM_KEYS, NUM_WORDS, "num", DEFAULT_NUM);
         web.postDelayed(new Runnable() {
             @Override public void run() { runFill(json, wanted.toString(), false); }
         }, 1200);
@@ -225,8 +235,27 @@ public class MainActivity extends Activity {
         });
     }
 
-    private void chooseSaved(String[] keys, String[][] words, String pref) {
-        String saved = prefs.getString(pref, "");
+    private static String emptyTo(String v, String def) {
+        return v.length() == 0 ? def : v;
+    }
+
+    private String defaultFor(String key) {
+        if (key.equals("phone")) return DEFAULT_PHONE;
+        if (key.equals("email")) return DEFAULT_EMAIL;
+        return "";
+    }
+
+    /** Thay mỗi {rand4} bằng 4 chữ số ngẫu nhiên mới. */
+    private String fresh(String v) {
+        while (v.contains("{rand4}")) {
+            v = v.replaceFirst("\\{rand4\\}", String.format("%04d", rnd.nextInt(10000)));
+        }
+        return v;
+    }
+
+    private void chooseSaved(String[] keys, String[][] words, String pref, String def) {
+        String saved = prefs.getString(pref, def);
+        if (saved.length() == 0) saved = def;
         for (int i = 0; i < keys.length; i++) {
             if (keys[i].equals(saved)) {
                 StringBuilder arr = new StringBuilder("[");
@@ -261,19 +290,23 @@ public class MainActivity extends Activity {
         LinearLayout box = new LinearLayout(this);
         box.setOrientation(LinearLayout.VERTICAL);
         box.setPadding(32, 16, 32, 0);
+        TextView note = new TextView(this);
+        note.setText("{rand4} = 4 số ngẫu nhiên, đổi mỗi lần bấm Điền tất cả.");
+        note.setTextSize(11);
+        box.addView(note);
         final EditText[] fields = new EditText[KEYS.length];
         for (int i = 0; i < KEYS.length; i++) {
             EditText et = new EditText(this);
             et.setHint(LABELS[i]);
-            et.setText(prefs.getString(KEYS[i], ""));
+            et.setText(prefs.getString(KEYS[i], defaultFor(KEYS[i])));
             et.setSingleLine(true);
             if (KEYS[i].equals("phone")) et.setInputType(InputType.TYPE_CLASS_PHONE);
             if (KEYS[i].equals("email")) et.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
             fields[i] = et;
             box.addView(et);
         }
-        final RadioGroup sim = radioGroup(box, SIM_LABELS, SIM_KEYS, prefs.getString("sim", ""));
-        final RadioGroup num = radioGroup(box, NUM_LABELS, NUM_KEYS, prefs.getString("num", ""));
+        final RadioGroup sim = radioGroup(box, SIM_LABELS, SIM_KEYS, emptyTo(prefs.getString("sim", ""), DEFAULT_SIM));
+        final RadioGroup num = radioGroup(box, NUM_LABELS, NUM_KEYS, emptyTo(prefs.getString("num", ""), DEFAULT_NUM));
 
         ScrollView sv = new ScrollView(this);
         sv.addView(box);
@@ -297,7 +330,7 @@ public class MainActivity extends Activity {
 
     private RadioGroup radioGroup(LinearLayout box, String[] labels, String[] keys, String current) {
         TextView title = new TextView(this);
-        title.setText(labels.length == 2 && keys[0].equals("esim") ? "Loại SIM" : "Số điện thoại");
+        title.setText(keys[0].equals("esim") ? "Loại SIM" : "Số điện thoại");
         title.setTextSize(13);
         title.setPadding(0, 24, 0, 0);
         box.addView(title);
