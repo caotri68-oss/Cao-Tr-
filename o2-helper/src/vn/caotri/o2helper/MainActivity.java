@@ -194,11 +194,25 @@ public class MainActivity extends Activity {
             Toast.makeText(this, "Chưa có dữ liệu, bấm Sửa dữ liệu để nhập", Toast.LENGTH_SHORT).show();
             return;
         }
-        web.evaluateJavascript(String.format(JS_ALL, data.toString()), new ValueCallback<String>() {
+        final String json = data.toString();
+        // Chọn loại SIM / số điện thoại trước, vì ô địa chỉ chỉ hiện sau khi chọn.
+        chooseSaved(SIM_KEYS, SIM_WORDS, "sim");
+        chooseSaved(NUM_KEYS, NUM_WORDS, "num");
+        web.postDelayed(new Runnable() {
+            @Override public void run() { runFill(json, wanted.toString(), false); }
+        }, 1200);
+        web.postDelayed(new Runnable() {
+            @Override public void run() { runFill(json, wanted.toString(), true); }
+        }, 2500);
+    }
+
+    private void runFill(String json, final String wanted, final boolean report) {
+        web.evaluateJavascript(String.format(JS_ALL, json), new ValueCallback<String>() {
             @Override public void onReceiveValue(String r) {
+                if (!report) return;
                 String done = r == null ? "" : r.replace("\"", "");
                 StringBuilder missing = new StringBuilder();
-                for (String k : wanted.toString().split(",")) {
+                for (String k : wanted.split(",")) {
                     if (k.length() > 0 && !(("," + done + ",").contains("," + k + ","))) {
                         missing.append(k).append(' ');
                     }
@@ -207,8 +221,6 @@ public class MainActivity extends Activity {
                         ? "Đã điền xong, hãy kiểm tra lại từng ô"
                         : "Chưa điền được: " + missing + "(chạm ô đó rồi bấm nút nhỏ)";
                 Toast.makeText(MainActivity.this, msg, Toast.LENGTH_LONG).show();
-                chooseSaved(SIM_KEYS, SIM_WORDS, "sim");
-                chooseSaved(NUM_KEYS, NUM_WORDS, "num");
             }
         });
     }
