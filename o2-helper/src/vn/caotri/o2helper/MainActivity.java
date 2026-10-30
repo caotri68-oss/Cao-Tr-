@@ -95,11 +95,18 @@ public class MainActivity extends Activity {
     private static final String[] NUM_LABELS = {"Nové číslo", "Převod stávajícího čísla"};
     private static final String[][] NUM_WORDS = {{"vezmu si nove"}, {"prevedu"}};
 
-    /** Chỉ tích ô đồng ý (không bấm nút đặt hàng). Chạy khi người dùng đã bật công tắc. */
+    /**
+     * Tích ô đồng ý điều khoản. Ô trên O2 có thể là ô ẩn kèm nhãn riêng, nên thử bấm
+     * chính ô, rồi bấm nhãn của ô. Chỉ xét ô có đoạn chữ chứa "souhlas" và ngắn.
+     * Không bấm nút đặt hàng.
+     */
     private static final String JS_CONSENT = "(function(){var cs=document.querySelectorAll('input[type=checkbox]');"
-            + "for(var i=0;i<cs.length;i++){var e=cs[i];var c=e.closest('label')||e.parentElement;"
-            + "var t=(c?c.textContent:'').toLowerCase();"
-            + "if(t.indexOf('souhlas')>=0){if(!e.checked)e.click();return 'ok';}}return 'no';})()";
+            + "for(var i=0;i<cs.length;i++){var e=cs[i];var n=e.parentElement;"
+            + "for(var k=0;k<4&&n;k++){var t=(n.textContent||'').toLowerCase();"
+            + "if(t.indexOf('souhlas')>=0&&t.length<400)break;n=n.parentElement;}"
+            + "if(!n||(n.textContent||'').toLowerCase().indexOf('souhlas')<0)continue;"
+            + "if(!e.checked){e.click();if(!e.checked&&e.labels&&e.labels[0])e.labels[0].click();}"
+            + "return e.checked?'ok':'fail';}return 'no';})()";
 
     private WebView web;
     private SharedPreferences prefs;
@@ -221,7 +228,15 @@ public class MainActivity extends Activity {
             @Override public void run() {
                 runFill(json, wanted.toString(), true, n);
                 if (prefs.getBoolean("autoconsent", false)) {
-                    web.evaluateJavascript(JS_CONSENT, null);
+                    web.evaluateJavascript(JS_CONSENT, new ValueCallback<String>() {
+                        @Override public void onReceiveValue(String r) {
+                            String res = r == null ? "" : r.replace("\"", "");
+                            if (!res.equals("ok")) {
+                                Toast.makeText(MainActivity.this,
+                                        "Chưa tích được ô đồng ý (" + res + "), hãy tự tích", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
                 }
             }
         }, 2500);
