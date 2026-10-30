@@ -83,6 +83,11 @@ public class MainActivity extends Activity {
             + "return 'no';})(%s)";
 
     /** {rand4} được thay bằng bộ đếm 4 chữ số, tăng 1 mỗi lần bấm "Điền tất cả". */
+    /** Ba địa chỉ, mỗi địa chỉ lưu đường / thành phố / PSČ riêng; "addr" là địa chỉ đang dùng. */
+    private static final String[] ADDR_KEYS = {"street", "city", "zip"};
+    private static final String[] ADDR_LABELS = {"Đường + số nhà", "Thành phố (město)", "Mã bưu chính (PSČ)"};
+    private static final int ADDR_COUNT = 3;
+
     private static final String DEFAULT_PHONE = "77536{rand4}";
     private static final String DEFAULT_EMAIL = "g{rand4}a@gmail.com";
     private static final String DEFAULT_SIM = "plastic";
@@ -114,6 +119,7 @@ public class MainActivity extends Activity {
     private Button[] tabs = new Button[SLOT_NAMES.length];
 
     private WebView web;
+    private Button addrBtn;
     private SharedPreferences prefs;
 
     @Override
@@ -205,6 +211,13 @@ public class MainActivity extends Activity {
             @Override public void onClick(View v) { showSettings(); }
         });
         row1.addView(cfg, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        addrBtn = new Button(this);
+        addrBtn.setText("Đ/c " + (addrIdx() + 1));
+        addrBtn.setAllCaps(false);
+        addrBtn.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) { cycleAddress(); }
+        });
+        row1.addView(addrBtn, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         panel.addView(row1);
 
         LinearLayout row2 = new LinearLayout(this);
@@ -318,7 +331,7 @@ public class MainActivity extends Activity {
         prefs.edit().putInt("counter", n).apply();
         try {
             for (int i = 0; i < KEYS.length; i++) {
-                String v = valueOf(KEYS[i]);
+                String v = valueOf(store(KEYS[i]));
                 v = v.replace("{rand4}", String.format("%04d", n));
                 data.put(KEYS[i], v);
                 if (v.length() > 0) wanted.append(KEYS[i]).append(',');
@@ -413,7 +426,7 @@ public class MainActivity extends Activity {
     }
 
     private void fillFocused(String key) {
-        String value = prefs.getString(key, "");
+        String value = prefs.getString(store(key), "");
         if (value.length() == 0) {
             Toast.makeText(this, "Chưa có dữ liệu, bấm Sửa dữ liệu để nhập", Toast.LENGTH_SHORT).show();
             return;
@@ -436,24 +449,38 @@ public class MainActivity extends Activity {
         note.setText("{rand4} = bộ đếm 4 số, tăng 1 mỗi lần bấm Điền tất cả.");
         note.setTextSize(11);
         box.addView(note);
-        final EditText[] fields = new EditText[KEYS.length];
-        for (int i = 0; i < KEYS.length; i++) {
-            EditText et = new EditText(this);
-            et.setHint(LABELS[i]);
-            et.setText(valueOf(KEYS[i]));
-            et.setSingleLine(true);
-            if (KEYS[i].equals("phone")) et.setInputType(InputType.TYPE_CLASS_PHONE);
-            if (KEYS[i].equals("email")) et.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-            fields[i] = et;
-            box.addView(et);
+
+        final EditText first = editField(box, "Tên (jméno)", valueOf("first"), 0);
+        final EditText last = editField(box, "Họ (příjmení)", valueOf("last"), 0);
+        final EditText phone = editField(box, "SĐT (không cần +420)", valueOf("phone"), InputType.TYPE_CLASS_PHONE);
+        final EditText email = editField(box, "Email", valueOf("email"),
+                InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+
+        final EditText[][] addr = new EditText[ADDR_COUNT][ADDR_KEYS.length];
+        for (int a = 0; a < ADDR_COUNT; a++) {
+            TextView title = new TextView(this);
+            title.setText("Địa chỉ " + (a + 1));
+            title.setTextSize(13);
+            title.setPadding(0, 24, 0, 0);
+            box.addView(title);
+            for (int j = 0; j < ADDR_KEYS.length; j++) {
+                addr[a][j] = editField(box, ADDR_LABELS[j], prefs.getString(ADDR_KEYS[j] + a, ""), 0);
+            }
         }
+        final RadioGroup active = radioGroup(box, "Địa chỉ đang dùng",
+                new String[]{"Địa chỉ 1", "Địa chỉ 2", "Địa chỉ 3"},
+                new String[]{"0", "1", "2"}, String.valueOf(addrIdx()));
+
         final CheckBox consent = new CheckBox(this);
         consent.setText("Tự tích ô đồng ý điều khoản (chỉ bật khi bạn đã đọc điều khoản)");
         consent.setTextSize(12);
         consent.setChecked(prefs.getBoolean("autoconsent", false));
         box.addView(consent);
-        final RadioGroup sim = radioGroup(box, SIM_LABELS, SIM_KEYS, emptyTo(prefs.getString("sim", ""), DEFAULT_SIM));
-        final RadioGroup num = radioGroup(box, NUM_LABELS, NUM_KEYS, emptyTo(prefs.getString("num", ""), DEFAULT_NUM));
+
+        final RadioGroup sim = radioGroup(box, "Loại SIM", SIM_LABELS, SIM_KEYS,
+                emptyTo(prefs.getString("sim", ""), DEFAULT_SIM));
+        final RadioGroup num = radioGroup(box, "Số điện thoại", NUM_LABELS, NUM_KEYS,
+                emptyTo(prefs.getString("num", ""), DEFAULT_NUM));
 
         ScrollView sv = new ScrollView(this);
         sv.addView(box);
@@ -463,39 +490,78 @@ public class MainActivity extends Activity {
                 .setPositiveButton("Lưu", new DialogInterface.OnClickListener() {
                     @Override public void onClick(DialogInterface d, int w) {
                         SharedPreferences.Editor ed = prefs.edit();
-                        for (int i = 0; i < KEYS.length; i++) {
-                            ed.putString(KEYS[i], fields[i].getText().toString().trim());
+                        ed.putString("first", first.getText().toString().trim());
+                        ed.putString("last", last.getText().toString().trim());
+                        ed.putString("phone", phone.getText().toString().trim());
+                        ed.putString("email", email.getText().toString().trim());
+                        for (int a = 0; a < ADDR_COUNT; a++) {
+                            for (int j = 0; j < ADDR_KEYS.length; j++) {
+                                ed.putString(ADDR_KEYS[j] + a, addr[a][j].getText().toString().trim());
+                            }
                         }
+                        String ai = selectedKey(active);
+                        ed.putInt("addr", ai.length() == 0 ? 0 : Integer.parseInt(ai));
                         ed.putBoolean("autoconsent", consent.isChecked());
-                        ed.putString("sim", selectedKey(sim, SIM_KEYS));
-                        ed.putString("num", selectedKey(num, NUM_KEYS));
+                        ed.putString("sim", selectedKey(sim));
+                        ed.putString("num", selectedKey(num));
                         ed.apply();
+                        addrBtn.setText("Đ/c " + (addrIdx() + 1));
                     }
                 })
                 .setNegativeButton("Đóng", null)
                 .show();
     }
 
-    private RadioGroup radioGroup(LinearLayout box, String[] labels, String[] keys, String current) {
-        TextView title = new TextView(this);
-        title.setText(keys[0].equals("esim") ? "Loại SIM" : "Số điện thoại");
-        title.setTextSize(13);
-        title.setPadding(0, 24, 0, 0);
-        box.addView(title);
+    private EditText editField(LinearLayout box, String hint, String text, int inputType) {
+        EditText et = new EditText(this);
+        if (inputType != 0) et.setInputType(inputType);
+        et.setSingleLine(true);
+        et.setHint(hint);
+        et.setText(text);
+        box.addView(et);
+        return et;
+    }
+
+    private RadioGroup radioGroup(LinearLayout box, String title, String[] labels, String[] keys, String current) {
+        TextView t = new TextView(this);
+        t.setText(title);
+        t.setTextSize(13);
+        t.setPadding(0, 24, 0, 0);
+        box.addView(t);
         RadioGroup g = new RadioGroup(this);
         for (int i = 0; i < labels.length; i++) {
             RadioButton rb = new RadioButton(this);
+            rb.setId(View.generateViewId());
             rb.setText(labels[i]);
             rb.setTag(keys[i]);
-            rb.setChecked(keys[i].equals(current));
             g.addView(rb);
+            if (keys[i].equals(current)) g.check(rb.getId());
         }
         box.addView(g);
         return g;
     }
 
-    private String selectedKey(RadioGroup g, String[] keys) {
+    private String selectedKey(RadioGroup g) {
         View v = g.findViewById(g.getCheckedRadioButtonId());
         return v == null ? "" : (String) v.getTag();
+    }
+
+    private int addrIdx() {
+        return prefs.getInt("addr", 0);
+    }
+
+    /** Khóa lưu thực tế: đường / thành phố / PSČ đi theo địa chỉ đang dùng. */
+    private String store(String key) {
+        for (String k : ADDR_KEYS) {
+            if (k.equals(key)) return key + addrIdx();
+        }
+        return key;
+    }
+
+    private void cycleAddress() {
+        int n = (addrIdx() + 1) % ADDR_COUNT;
+        prefs.edit().putInt("addr", n).apply();
+        addrBtn.setText("Đ/c " + (n + 1));
+        Toast.makeText(this, "Đang dùng địa chỉ " + (n + 1), Toast.LENGTH_SHORT).show();
     }
 }
