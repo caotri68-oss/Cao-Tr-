@@ -9,7 +9,7 @@ rm -rf "$OUT" && mkdir -p "$OUT/classes"
 
 javac --release 8 -cp "$ANDROID_JAR" -d "$OUT/classes" src/vn/caotri/o2helper/*.java
 dalvik-exchange --dex --output="$OUT/classes.dex" "$OUT/classes"
-aapt package -f -M AndroidManifest.xml -I "$ANDROID_JAR" -F "$OUT/unsigned.apk"
+aapt package -f -M AndroidManifest.xml -S res -I "$ANDROID_JAR" -F "$OUT/unsigned.apk"
 (cd "$OUT" && aapt add unsigned.apk classes.dex >/dev/null)
 zipalign -f 4 "$OUT/unsigned.apk" "$OUT/aligned.apk"
 

@@ -5,10 +5,18 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Outline;
+import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.InsetDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewOutlineProvider;
 import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -18,6 +26,7 @@ import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -122,119 +131,162 @@ public class MainActivity extends Activity {
     private Button addrBtn;
     private SharedPreferences prefs;
 
+    /** Màu nền (trên, dưới) của từng nút nhỏ ở hàng dưới cùng. */
+    private static final int[][] CHIP_COLORS = {
+            {0xFFFFE0B2, 0xFFFFCC80}, {0xFFF8BBD0, 0xFFF48FB1}, {0xFFC5CAE9, 0xFF9FA8DA},
+            {0xFFB2EBF2, 0xFF80DEEA}, {0xFFC8E6C9, 0xFFA5D6A7}, {0xFFFFF9C4, 0xFFFFF59D},
+            {0xFFE1BEE7, 0xFFCE93D8}};
+
     @Override
     protected void onCreate(Bundle state) {
         super.onCreate(state);
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        if (getActionBar() != null) getActionBar().hide();
+        getWindow().setStatusBarColor(0xFF6A3DE8);
 
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
+        root.setBackground(new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
+                new int[]{0xFFF3E5F5, 0xFFE1F5FE}));
 
+        // Đầu trang: tiêu đề, 4 trang, ô địa chỉ web
         LinearLayout top = new LinearLayout(this);
         top.setOrientation(LinearLayout.VERTICAL);
-        top.setBackgroundColor(Color.parseColor("#EEEEEE"));
+        GradientDrawable topBg = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,
+                new int[]{0xFF6A3DE8, 0xFF2979FF});
+        float r = dp(26);
+        topBg.setCornerRadii(new float[]{0, 0, 0, 0, r, r, r, r});
+        top.setBackground(topBg);
+        top.setPadding(dp(12), dp(10), dp(12), dp(14));
+        top.setElevation(dp(10));
+
+        TextView title = new TextView(this);
+        title.setText("⚡ O2 Điền nhanh");
+        title.setTextColor(Color.WHITE);
+        title.setTextSize(20);
+        title.setTypeface(Typeface.DEFAULT_BOLD);
+        top.addView(title);
+        TextView sub = new TextView(this);
+        sub.setText("Điền form thật nhanh. Đồng ý và gửi đơn bạn tự làm.");
+        sub.setTextColor(0xCCFFFFFF);
+        sub.setTextSize(11);
+        sub.setPadding(0, 0, 0, dp(6));
+        top.addView(sub);
 
         LinearLayout tabRow = new LinearLayout(this);
         tabRow.setOrientation(LinearLayout.HORIZONTAL);
         for (int i = 0; i < SLOT_NAMES.length; i++) {
             final int idx = i;
-            tabs[i] = new Button(this);
-            tabs[i].setText(nameOf(i));
-            tabs[i].setAllCaps(false);
-            tabs[i].setTextSize(12);
+            tabs[i] = pill(nameOf(i), 0xFFFFFFFF, 0xFFFFFFFF, Color.WHITE, 12);
             tabs[i].setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) { openSlot(idx); }
             });
             tabs[i].setOnLongClickListener(new View.OnLongClickListener() {
                 @Override public boolean onLongClick(View v) { showRename(idx); return true; }
             });
-            tabRow.addView(tabs[i], new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+            tabRow.addView(tabs[i], lp(1f));
         }
         top.addView(tabRow);
 
         LinearLayout urlRow = new LinearLayout(this);
         urlRow.setOrientation(LinearLayout.HORIZONTAL);
+        urlRow.setGravity(Gravity.CENTER_VERTICAL);
         urlField = new EditText(this);
+        urlField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
         urlField.setSingleLine(true);
         urlField.setTextSize(13);
         urlField.setHint("Dán địa chỉ trang web");
-        TextView tip = new TextView(this);
-        tip.setText("Giữ lâu một nút trang để đổi tên. Mỗi trang có địa chỉ riêng, bấm Lưu & mở để đổi địa chỉ.");
-        tip.setTextSize(11);
-        tip.setPadding(16, 4, 16, 4);
-        top.addView(tip);
-        urlField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
-        urlRow.addView(urlField, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        Button save = new Button(this);
-        save.setText("Lưu & mở");
-        save.setAllCaps(false);
-        save.setTextSize(12);
+        urlField.setHintTextColor(0xFF9E9E9E);
+        urlField.setTextColor(0xFF2B2B3B);
+        urlField.setBackground(shape(0xFFFFFFFF, 0xFFFFFFFF, 20));
+        urlField.setPadding(dp(14), dp(8), dp(14), dp(8));
+        urlRow.addView(urlField, lp(1f));
+        Button save = pill("💾 Lưu & mở", 0xFF00E676, 0xFF00C853, 0xFF0B3D1E, 12);
         save.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) { saveAndOpen(); }
         });
-        urlRow.addView(save, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        urlRow.addView(save, lp(0f));
         top.addView(urlRow);
+
+        TextView tip = new TextView(this);
+        tip.setText("Giữ lâu một nút trang để đổi tên trang.");
+        tip.setTextColor(0xCCFFFFFF);
+        tip.setTextSize(10);
+        tip.setPadding(dp(4), dp(4), 0, 0);
+        top.addView(tip);
         root.addView(top, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
+        // Trang web nằm trong thẻ bo tròn, nổi lên
+        FrameLayout card = new FrameLayout(this);
+        card.setBackground(shape(0xFFFFFFFF, 0xFFFFFFFF, 20));
+        card.setElevation(dp(6));
+        card.setOutlineProvider(new ViewOutlineProvider() {
+            @Override public void getOutline(View v, Outline o) {
+                o.setRoundRect(0, 0, v.getWidth(), v.getHeight(), dp(20));
+            }
+        });
+        card.setClipToOutline(true);
         web = new WebView(this);
         WebSettings s = web.getSettings();
         s.setJavaScriptEnabled(true);
         s.setDomStorageEnabled(true);
         web.setWebViewClient(new WebViewClient());
-        root.addView(web, new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f));
+        card.addView(web, new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        LinearLayout.LayoutParams cardLp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f);
+        cardLp.setMargins(dp(10), dp(12), dp(10), dp(10));
+        root.addView(card, cardLp);
 
+        // Thanh dưới: các nút điền
         LinearLayout panel = new LinearLayout(this);
         panel.setOrientation(LinearLayout.VERTICAL);
-        panel.setBackgroundColor(Color.parseColor("#EEEEEE"));
+        GradientDrawable panelBg = new GradientDrawable();
+        panelBg.setColor(0xFFFFFFFF);
+        panelBg.setCornerRadii(new float[]{r, r, r, r, 0, 0, 0, 0});
+        panel.setBackground(panelBg);
+        panel.setPadding(dp(10), dp(10), dp(10), dp(8));
+        panel.setElevation(dp(14));
 
         TextView hint = new TextView(this);
-        hint.setText("Bấm \"Điền tất cả\", hoặc chạm vào một ô rồi bấm nút nhỏ bên dưới. Đồng ý điều khoản và gửi đơn bạn tự làm.");
+        hint.setText("Bấm ⚡ Điền tất cả, hoặc chạm vào một ô rồi bấm nút nhỏ. Đồng ý điều khoản và gửi đơn bạn tự làm.");
+        hint.setTextColor(0xFF6B6B7B);
         hint.setTextSize(11);
-        hint.setPadding(16, 6, 16, 2);
+        hint.setPadding(dp(4), 0, dp(4), dp(4));
         panel.addView(hint);
 
         LinearLayout row1 = new LinearLayout(this);
         row1.setOrientation(LinearLayout.HORIZONTAL);
-        Button all = new Button(this);
-        all.setText("Điền tất cả");
-        all.setAllCaps(false);
+        Button all = pill("⚡ Điền tất cả", 0xFFFF9100, 0xFFFF4081, Color.WHITE, 16);
+        all.setPadding(0, dp(14), 0, dp(14));
         all.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) { fillAll(); }
         });
-        row1.addView(all, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 2f));
-        Button cfg = new Button(this);
-        cfg.setText("Sửa dữ liệu");
-        cfg.setAllCaps(false);
+        row1.addView(all, lp(2f));
+        Button cfg = pill("⚙️ Sửa", 0xFF7C4DFF, 0xFF536DFE, Color.WHITE, 13);
         cfg.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) { showSettings(); }
         });
-        row1.addView(cfg, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        addrBtn = new Button(this);
-        addrBtn.setText("Đ/c " + (addrIdx() + 1));
-        addrBtn.setAllCaps(false);
+        row1.addView(cfg, lp(1f));
+        addrBtn = pill("📍 Đ/c " + (addrIdx() + 1), 0xFF00BFA5, 0xFF1DE9B6, Color.WHITE, 13);
         addrBtn.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) { cycleAddress(); }
         });
-        row1.addView(addrBtn, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        row1.addView(addrBtn, lp(1f));
         panel.addView(row1);
 
         LinearLayout row2 = new LinearLayout(this);
         row2.setOrientation(LinearLayout.HORIZONTAL);
         for (int i = 0; i < KEYS.length; i++) {
             final String key = KEYS[i];
-            Button b = new Button(this);
-            b.setText(SHORT[i]);
-            b.setTextSize(10);
-            b.setAllCaps(false);
-            b.setMinWidth(0);
-            b.setMinimumWidth(0);
-            b.setPadding(0, 0, 0, 0);
+            Button b = pill(SHORT[i], CHIP_COLORS[i][0], CHIP_COLORS[i][1], 0xFF3D2C6B, 10);
+            b.setPadding(0, dp(8), 0, dp(8));
+            b.setElevation(dp(2));
             b.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) { fillFocused(key); }
             });
-            row2.addView(b, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+            row2.addView(b, lp(1f));
         }
         panel.addView(row2);
         root.addView(panel, new LinearLayout.LayoutParams(
@@ -252,6 +304,81 @@ public class MainActivity extends Activity {
         if (!prefs.contains("first")) {
             showSettings();
         }
+    }
+
+    private int dp(float v) {
+        return (int) (v * getResources().getDisplayMetrics().density + 0.5f);
+    }
+
+    private GradientDrawable shape(int c1, int c2, float radiusDp) {
+        GradientDrawable g = new GradientDrawable(GradientDrawable.Orientation.TL_BR, new int[]{c1, c2});
+        g.setCornerRadius(dp(radiusDp));
+        return g;
+    }
+
+    private int darker(int c) {
+        float[] hsv = new float[3];
+        Color.colorToHSV(c, hsv);
+        hsv[2] *= 0.82f;
+        return Color.HSVToColor(Color.alpha(c), hsv);
+    }
+
+    private LinearLayout.LayoutParams lp(float weight) {
+        LinearLayout.LayoutParams p = weight > 0
+                ? new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, weight)
+                : new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        p.setMargins(dp(3), dp(3), dp(3), dp(3));
+        return p;
+    }
+
+    /** Nút bo tròn có màu chuyển, đổ bóng nổi, và nhún nhẹ khi chạm. */
+    private Button pill(String text, int c1, int c2, int textColor, float sp) {
+        Button b = new Button(this);
+        b.setText(text);
+        b.setAllCaps(false);
+        b.setTextSize(sp);
+        b.setTextColor(textColor);
+        b.setTypeface(Typeface.DEFAULT_BOLD);
+        b.setMinWidth(0);
+        b.setMinimumWidth(0);
+        b.setMinHeight(0);
+        b.setMinimumHeight(0);
+        b.setPadding(dp(8), dp(10), dp(8), dp(10));
+        StateListDrawable sl = new StateListDrawable();
+        sl.addState(new int[]{android.R.attr.state_pressed}, shape(darker(c1), darker(c2), 22));
+        sl.addState(new int[]{}, shape(c1, c2, 22));
+        b.setBackground(sl);
+        b.setStateListAnimator(null);
+        b.setElevation(dp(4));
+        b.setOnTouchListener(new View.OnTouchListener() {
+            @Override public boolean onTouch(View v, MotionEvent e) {
+                int a = e.getAction();
+                if (a == MotionEvent.ACTION_DOWN) {
+                    v.animate().scaleX(0.94f).scaleY(0.94f).setDuration(80).start();
+                } else if (a == MotionEvent.ACTION_UP || a == MotionEvent.ACTION_CANCEL) {
+                    v.animate().scaleX(1f).scaleY(1f).setDuration(120).start();
+                }
+                return false;
+            }
+        });
+        return b;
+    }
+
+    /** Trang đang chọn: vàng cam nổi lên; các trang còn lại: kính mờ. */
+    private void styleTab(Button b, boolean selected) {
+        if (selected) {
+            b.setBackground(shape(0xFFFFC107, 0xFFFF6D00, 22));
+            b.setElevation(dp(8));
+        } else {
+            b.setBackground(shape(0x40FFFFFF, 0x30FFFFFF, 22));
+            b.setElevation(0);
+        }
+        b.setTextColor(Color.WHITE);
+    }
+
+    private void roundDialog(AlertDialog d) {
+        d.getWindow().setBackgroundDrawable(
+                new InsetDrawable(shape(0xFFFFFFFF, 0xFFF3E5F5, 24), dp(16)));
     }
 
     @Override
@@ -274,7 +401,7 @@ public class MainActivity extends Activity {
         final EditText et = new EditText(this);
         et.setSingleLine(true);
         et.setText(nameOf(i));
-        new AlertDialog.Builder(this)
+        roundDialog(new AlertDialog.Builder(this)
                 .setTitle("Đổi tên trang")
                 .setView(et)
                 .setPositiveButton("Lưu", new DialogInterface.OnClickListener() {
@@ -287,7 +414,7 @@ public class MainActivity extends Activity {
                     }
                 })
                 .setNegativeButton("Đóng", null)
-                .show();
+                .show());
     }
 
     /** Mở địa chỉ đã lưu của trang i. Mỗi trang có địa chỉ riêng. */
@@ -296,7 +423,7 @@ public class MainActivity extends Activity {
         String u = prefs.getString("url" + i, i == 0 ? START_URL : "");
         urlField.setText(u);
         for (int k = 0; k < tabs.length; k++) {
-            tabs[k].setBackgroundColor(k == i ? Color.parseColor("#BBDEFB") : Color.parseColor("#DDDDDD"));
+            styleTab(tabs[k], k == i);
         }
         if (!load) return;
         if (u.length() == 0) {
@@ -484,7 +611,7 @@ public class MainActivity extends Activity {
 
         ScrollView sv = new ScrollView(this);
         sv.addView(box);
-        new AlertDialog.Builder(this)
+        roundDialog(new AlertDialog.Builder(this)
                 .setTitle("Thông tin của bạn (lưu trên máy)")
                 .setView(sv)
                 .setPositiveButton("Lưu", new DialogInterface.OnClickListener() {
@@ -505,11 +632,11 @@ public class MainActivity extends Activity {
                         ed.putString("sim", selectedKey(sim));
                         ed.putString("num", selectedKey(num));
                         ed.apply();
-                        addrBtn.setText("Đ/c " + (addrIdx() + 1));
+                        addrBtn.setText("📍 Đ/c " + (addrIdx() + 1));
                     }
                 })
                 .setNegativeButton("Đóng", null)
-                .show();
+                .show());
     }
 
     private EditText editField(LinearLayout box, String hint, String text, int inputType) {
@@ -561,7 +688,7 @@ public class MainActivity extends Activity {
     private void cycleAddress() {
         int n = (addrIdx() + 1) % ADDR_COUNT;
         prefs.edit().putInt("addr", n).apply();
-        addrBtn.setText("Đ/c " + (n + 1));
+        addrBtn.setText("📍 Đ/c " + (n + 1));
         Toast.makeText(this, "Đang dùng địa chỉ " + (n + 1), Toast.LENGTH_SHORT).show();
     }
 }
