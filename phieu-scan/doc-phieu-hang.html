@@ -2,122 +2,242 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
 <title>Đọc phiếu hàng</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
+  /* Giấy phiếu: nền xám lạnh, mực xanh đen, một màu nhấn xanh dương trầm.
+     Mã hàng đặt chữ đơn cách như nhãn kho; mỗi sản phẩm là một thẻ gọn. */
   :root {
-    --bg: #f5f6f8; --card: #fff; --text: #1b1f27; --muted: #667085; --line: #e3e6eb;
-    --accent: #0b6bcb; --accent-text: #fff; --ok: #137a3a; --warn: #b54708; --bad: #b42318;
-    --warn-bg: #fff4e5; --bad-bg: #fdecea;
+    --bg: #eceff3;
+    --surface: #fbfcfd;
+    --ink: #1b2431;
+    --muted: #5b6676;
+    --line: #d8dde5;
+    --accent: #2b5bb0;
+    --accent-ink: #ffffff;
+    --accent-soft: #e3ebf8;
+    --ok: #2c7a58;       --ok-soft: #e1f1ea;
+    --warn: #9a5b12;     --warn-soft: #fbefdc;
+    --bad: #aa3c2c;      --bad-soft: #f9e3df;
+    --font-ui: "Instrument Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-code: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    --r-card: 14px; --r-ctl: 10px;
   }
   @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #12151a; --card: #1b2028; --text: #e8eaee; --muted: #9aa3b2; --line: #2d3440;
-      --accent: #4c9aff; --accent-text: #0b1220; --ok: #4cc27a; --warn: #f0a24a; --bad: #ff7b72;
-      --warn-bg: #3a2a12; --bad-bg: #3d1a18;
+    :root:not([data-theme="light"]) {
+      --bg: #11161f; --surface: #1a212d; --ink: #e5e9f0; --muted: #98a3b4; --line: #2b3444;
+      --accent: #86aaee; --accent-ink: #0d1626; --accent-soft: #22304a;
+      --ok: #6cc59b; --ok-soft: #1d3329; --warn: #e5aa62; --warn-soft: #3a2c17; --bad: #f08d7b; --bad-soft: #3d2420;
+      color-scheme: dark;
     }
   }
+  :root[data-theme="dark"] {
+    --bg: #11161f; --surface: #1a212d; --ink: #e5e9f0; --muted: #98a3b4; --line: #2b3444;
+    --accent: #86aaee; --accent-ink: #0d1626; --accent-soft: #22304a;
+    --ok: #6cc59b; --ok-soft: #1d3329; --warn: #e5aa62; --warn-soft: #3a2c17; --bad: #f08d7b; --bad-soft: #3d2420;
+    color-scheme: dark;
+  }
+
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--text);
-    font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-  main { max-width: 900px; margin: 0 auto; padding: 16px; }
-  h1 { font-size: 1.25rem; margin: 4px 0 12px; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
-  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-  button, .btn { font: inherit; border: 1px solid var(--line); background: var(--card); color: var(--text);
-    border-radius: 10px; padding: 10px 14px; cursor: pointer; min-height: 44px; }
-  button.primary, .btn.primary { background: var(--accent); color: var(--accent-text); border-color: var(--accent); font-weight: 600; }
-  button:disabled { opacity: .5; cursor: default; }
-  input[type=text], input[type=password], select { font: inherit; color: var(--text); background: var(--card);
-    border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; min-height: 40px; }
-  label { font-size: .85rem; color: var(--muted); display: block; margin-bottom: 4px; }
-  .grow { flex: 1 1 220px; }
-  .hint { color: var(--muted); font-size: .85rem; margin: 6px 0 0; }
-  #status { min-height: 1.4em; margin: 8px 0; }
-  #status.err { color: var(--bad); }
-  #preview { max-width: 100%; max-height: 220px; border-radius: 8px; display: none; margin-top: 10px; }
-  .tablewrap { overflow-x: auto; }
-  table { border-collapse: collapse; width: 100%; min-width: 560px; }
-  th, td { border-bottom: 1px solid var(--line); padding: 4px 6px; text-align: left; vertical-align: middle; }
-  th { font-size: .8rem; color: var(--muted); font-weight: 600; }
-  td input { width: 100%; border: 1px solid transparent; background: transparent; border-radius: 6px; padding: 6px; font: inherit; color: var(--text); }
-  td input:focus { border-color: var(--accent); background: var(--card); outline: none; }
-  td.pol { width: 56px; } td.kod { width: 170px; } td.st { width: 34px; text-align: center; }
-  td.kod input { font-variant-numeric: tabular-nums; letter-spacing: .02em; }
-  tr.warn td.kod input { background: var(--warn-bg); }
-  tr.bad td.kod input { background: var(--bad-bg); }
-  .st-ok { color: var(--ok); } .st-warn { color: var(--warn); } .st-bad { color: var(--bad); }
-  td a.look { display: block; padding: 10px 6px; min-height: 44px; color: var(--accent); text-decoration: underline;
-    font-variant-numeric: tabular-nums; letter-spacing: .02em; word-break: break-all; }
-  button.on { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
-  .lk-title { font-weight: 600; word-break: break-all; }
-  a.btn { text-decoration: none; display: inline-flex; align-items: center; }
-  .del { padding: 2px 8px; min-height: 32px; }
-  .count { color: var(--muted); font-size: .9rem; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 400 15px/1.5 var(--font-ui); }
+  main, .actionbar .inner { max-width: 720px; margin: 0 auto; }
+  main { padding-block: 14px 24px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  button, .btn { font: 500 15px/1 var(--font-ui); color: var(--ink); background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-ctl); min-height: 44px; padding: 0 14px; white-space: nowrap; display: inline-flex; align-items: center; justify-content: center;
+    gap: 8px; cursor: pointer; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+  button:hover, .btn:hover { border-color: var(--muted); }
+  button:focus-visible, .btn:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button.primary, .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+  button.primary:hover, .btn.primary:hover { filter: brightness(1.06); }
+  button:disabled { opacity: .45; cursor: default; }
+  .ic { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
   .sr { position: absolute; left: -9999px; }
+
+  /* đầu trang */
+  .top { display: flex; align-items: center; justify-content: space-between; padding: 4px 0 12px; }
+  .brand { font-weight: 700; font-size: 1.2rem; letter-spacing: -.01em; display: flex; align-items: center; gap: 10px; }
+  .brand i { width: 26px; height: 26px; border-radius: 7px; background: var(--ink); display: grid; place-items: center; }
+  .brand i svg { width: 15px; height: 15px; stroke: var(--bg); fill: none; stroke-width: 2; stroke-linecap: round; }
+  .icon-btn { width: 44px; padding: 0; }
+
+  /* ba bước */
+  .steps { list-style: none; display: flex; gap: 6px; margin: 0 0 12px; padding: 0; font-size: .8rem; color: var(--muted); }
+  .steps li { flex: 1; display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 9px; border: 1px solid transparent; }
+  .steps b { font: 600 .75rem var(--font-code); width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; border: 1px solid var(--line); }
+  .steps li.now { background: var(--surface); border-color: var(--line); color: var(--ink); font-weight: 600; }
+  .steps li.now b { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .steps li.done b { background: var(--ok-soft); border-color: transparent; color: var(--ok); }
+
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card); padding: 14px; margin-bottom: 12px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .grow { flex: 1 1 200px; min-width: 0; }
+  label.cap, .cap { display: block; font-size: .7rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  input[type=text], input[type=password], select { font: 400 15px var(--font-ui); color: var(--ink); background: var(--bg); border: 1px solid var(--line);
+    border-radius: 9px; padding: 0 10px; min-height: 44px; width: 100%; }
+  .hint { color: var(--muted); font-size: .8rem; margin: 8px 0 0; }
+
+  /* chụp ảnh */
+  .capture .row .btn { flex: 1 1 150px; }
+  .shot { display: none; margin-top: 12px; gap: 12px; align-items: center; }
+  .shot.on { display: flex; }
+  .shot img { width: 72px; height: 72px; object-fit: cover; border-radius: 10px; border: 1px solid var(--line); flex: none; }
+  #status { min-width: 0; font-size: .9rem; color: var(--muted); }
+  #status.err { color: var(--bad); }
+  .bar { height: 3px; border-radius: 3px; background: var(--line); overflow: hidden; margin-top: 12px; }
+  .bar i { display: block; height: 100%; width: 38%; background: var(--accent); border-radius: 3px; animation: slide 1.2s ease-in-out infinite; }
+  @keyframes slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(270%); } }
+  @media (prefers-reduced-motion: reduce) { .bar i { animation: none; width: 100%; opacity: .5; } }
+
+  /* kết quả */
+  .res-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 18px 0 8px; }
+  h2 { font-size: 1.05rem; font-weight: 700; margin: 0; letter-spacing: -.005em; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; font: 600 .72rem/1 var(--font-ui); letter-spacing: .02em; padding: 6px 9px;
+    border-radius: 999px; background: var(--bg); color: var(--muted); border: 1px solid var(--line); min-height: 0; white-space: nowrap; }
+  .chip.ok { background: var(--ok-soft); color: var(--ok); border-color: transparent; }
+  .chip.warn { background: var(--warn-soft); color: var(--warn); border-color: transparent; }
+  .chip.bad { background: var(--bad-soft); color: var(--bad); border-color: transparent; }
+  button.chip { cursor: pointer; }
+  button.chip[aria-pressed="true"] { outline: 2px solid var(--warn); outline-offset: 1px; }
+  .tools { display: flex; gap: 6px; }
+  .tools button { min-height: 36px; padding: 0 12px; font-size: .85rem; }
+  button.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+  .list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .item { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: grid; gap: 8px; min-width: 0; }
+  .item.warn { background: color-mix(in srgb, var(--warn-soft) 55%, var(--surface)); }
+  .item.bad { background: color-mix(in srgb, var(--bad-soft) 55%, var(--surface)); }
+  .l1 { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .pol { font: 600 .85rem var(--font-code); min-width: 34px; height: 30px; padding: 0 8px; display: inline-grid; place-items: center; border-radius: 8px;
+    background: var(--bg); color: var(--ink); border: 1px solid var(--line); text-decoration: none; flex: none; }
+  .kod { font: 600 1rem var(--font-code); letter-spacing: .02em; color: var(--ink); text-decoration: none; min-width: 0; overflow-wrap: anywhere; flex: 1; }
+  a.pol, a.kod { cursor: pointer; }
+  a.pol:hover, a.kod:hover { color: var(--accent); }
+  a.kod { text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 4px; text-decoration-thickness: 1.5px; }
+  a.kod:hover { text-decoration-color: var(--accent); }
+  .name { color: var(--ink); font-size: .95rem; line-height: 1.4; overflow-wrap: anywhere; }
+  .item.edit { grid-template-columns: 72px 1fr; align-items: center; }
+  .item.edit .full { grid-column: 1 / -1; }
+  .item.edit input { font-family: var(--font-code); }
+  .item.edit input.nm { font-family: var(--font-ui); }
+  .item .foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .del { min-height: 36px; padding: 0 12px; font-size: .85rem; color: var(--bad); }
+
+  .empty { border: 1.5px dashed var(--line); border-radius: var(--r-card); padding: 26px 18px; text-align: center; color: var(--muted); }
+  .empty strong { display: block; color: var(--ink); font-size: 1rem; margin-bottom: 4px; }
+  .lk-title { font: 600 .95rem var(--font-code); overflow-wrap: anywhere; }
+  .lk .row { margin-top: 10px; }
+
+  /* thanh thao tác cố định cuối màn hình */
+  .actionbar { position: sticky; bottom: 0; z-index: 5; background: color-mix(in srgb, var(--bg) 92%, transparent); border-top: 1px solid var(--line);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    padding-block: 10px max(10px, env(safe-area-inset-bottom, 0px));
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .actionbar .inner { display: flex; gap: 8px; }
+  .actionbar .primary { flex: 1 1 auto; }
+  .actionbar button:not(.primary) { padding: 0 12px; }
 </style>
 </head>
 <body>
 <main>
-  <h1>Đọc phiếu hàng</h1>
+  <header class="top">
+    <div class="brand">
+      <i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h9"/></svg></i>
+      Phiếu hàng
+    </div>
+    <button id="settingsBtn" type="button" class="icon-btn" aria-label="Cài đặt" title="Cài đặt">
+      <svg class="ic" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg>
+    </button>
+  </header>
 
-  <section class="card">
+  <ol class="steps" id="steps" aria-label="Các bước">
+    <li data-s="1"><b>1</b>Chụp</li>
+    <li data-s="2"><b>2</b>Kiểm tra</li>
+    <li data-s="3"><b>3</b>Sao chép</li>
+  </ol>
+
+  <section class="card capture">
     <div class="row">
-      <label class="btn primary" for="cam" style="margin:0;color:var(--accent-text)">📷 Chụp ảnh</label>
-      <label class="btn" for="pick" style="margin:0">🖼️ Chọn ảnh có sẵn</label>
+      <label class="btn primary" for="cam">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M3 8a2 2 0 0 1 2-2h2.5l1.5-2h6l1.5 2H19a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.5"/></svg>
+        Chụp ảnh
+      </label>
+      <label class="btn" for="pick">
+        <svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M21 16l-5-5-8 9"/></svg>
+        Chọn ảnh
+      </label>
       <input id="cam" class="sr" type="file" accept="image/*" capture="environment">
       <input id="pick" class="sr" type="file" accept="image/*">
-      <button id="settingsBtn" type="button" style="margin-left:auto">⚙️ Cài đặt</button>
     </div>
-    <img id="preview" alt="Ảnh vừa chọn">
-    <div id="status" role="status" aria-live="polite"></div>
-    <p class="hint">Mỗi ảnh mới sẽ được thêm vào cuối bảng. Nếu phiếu dài, chụp nhiều ảnh liên tiếp.</p>
+    <div class="shot" id="shot">
+      <img id="preview" alt="Ảnh vừa chọn">
+      <div id="status" role="status" aria-live="polite"></div>
+    </div>
+    <div class="bar" id="progress" hidden><i></i></div>
+    <p class="hint" id="firstHint">Chụp thẳng, đủ sáng, thấy cả cột Pol., Kód và Název zboží. Phiếu dài thì chụp nhiều ảnh, mỗi ảnh được thêm vào cuối danh sách.</p>
   </section>
 
   <section class="card" id="settings" hidden>
     <div class="row">
       <div class="grow">
-        <label for="provider">Dịch vụ đọc ảnh</label>
-        <select id="provider" style="width:100%">
+        <label class="cap" for="provider">Dịch vụ đọc ảnh</label>
+        <select id="provider">
           <option value="claude">Claude</option>
           <option value="gemini">Gemini</option>
         </select>
       </div>
       <div class="grow" id="keyWrap">
-        <label for="apikey">API key</label>
-        <input id="apikey" type="password" autocomplete="off" style="width:100%" placeholder="Dán API key vào đây">
+        <label class="cap" for="apikey">API key</label>
+        <input id="apikey" type="password" autocomplete="off" placeholder="Dán API key vào đây">
       </div>
     </div>
-    <p class="hint">Key chỉ được lưu trong trình duyệt của thiết bị này và chỉ gửi tới dịch vụ bạn chọn. Không dùng trang này trên máy dùng chung.</p>
-    <div class="row" style="margin-top:8px">
+    <p class="hint">Key chỉ lưu trong trình duyệt của thiết bị này và chỉ gửi tới dịch vụ bạn chọn. Không dùng trên máy dùng chung.</p>
+    <div class="row" style="margin-top:10px">
       <button id="saveKey" type="button" class="primary">Lưu</button>
       <button id="clearKey" type="button">Xoá key đã lưu</button>
     </div>
   </section>
 
-  <section class="card">
-    <div class="row" style="justify-content:space-between">
-      <strong>Kết quả <span class="count" id="count"></span></strong>
-      <span class="row"><button id="editMode" type="button" aria-pressed="false">✏️ Sửa</button><button id="clearAll" type="button" disabled>Xoá bảng</button></span>
+  <section id="results" aria-label="Kết quả">
+    <div class="res-head">
+      <h2>Kết quả</h2>
+      <div class="tools">
+        <button id="editMode" type="button" aria-pressed="false" disabled>
+          <svg class="ic" viewBox="0 0 24 24"><path d="M4 20l1-4L16 5l3 3L8 19z"/></svg><span id="editLbl">Sửa</span>
+        </button>
+        <button id="clearAll" type="button" disabled>Xoá hết</button>
+      </div>
     </div>
-    <div class="tablewrap">
-      <table>
-        <thead><tr><th>Pol.</th><th>Kód (chỉ phần số)</th><th>Název zboží</th><th></th><th></th></tr></thead>
-        <tbody id="rows"></tbody>
-      </table>
+    <div class="chips" id="chips" hidden></div>
+    <div id="lookup" class="card lk" hidden></div>
+    <div class="empty" id="empty">
+      <strong>Chưa có dòng nào</strong>
+      Mỗi sản phẩm sẽ hiện thành một thẻ: số thứ tự, mã số và tên hàng.
     </div>
-    <div id="lookup" class="card" hidden style="margin:10px 0 0"></div>
-    <p class="hint" id="tip" hidden>Chạm vào số thứ tự hoặc mã để tìm ảnh sản phẩm trên Google Hình ảnh. Muốn sửa chữ trong bảng, bấm ✏️ Sửa.</p>
-    <p class="hint" id="legend" hidden>✓ mã đúng chuẩn EAN-13 · ⚠ mã sai độ dài hoặc chữ số kiểm tra, hãy so lại với ảnh. Bạn có thể sửa trực tiếp trong bảng.</p>
-    <div class="row" style="margin-top:10px">
-      <button id="copyAll" type="button" class="primary" disabled>Sao chép cả bảng</button>
-      <button id="copyKod" type="button" disabled>Chỉ cột Kód</button>
-      <button id="copyName" type="button" disabled>Chỉ cột Název</button>
-      <button id="csv" type="button" disabled>Tải CSV</button>
-    </div>
-    <p class="hint">Dán vào Excel: đặt cột Kód ở dạng Text trước, nếu không Excel sẽ đổi mã 13 số thành 8,59556E+12.</p>
+    <ul class="list" id="rows"></ul>
+    <p class="hint" id="tip" hidden>Chạm vào số thứ tự hoặc mã để tìm ảnh sản phẩm trên Google Hình ảnh. Muốn chỉnh chữ, bấm Sửa.</p>
+    <p class="hint" id="xl" hidden>Dán vào Excel: đặt cột Kód ở dạng Text trước, nếu không Excel đổi mã 13 số thành 8,59556E+12.</p>
   </section>
 </main>
+
+<div class="actionbar" id="bar" hidden>
+  <div class="inner">
+    <button id="copyAll" type="button" class="primary">
+      <svg class="ic" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>Sao chép
+    </button>
+    <button id="copyKod" type="button">Kód</button>
+    <button id="copyName" type="button">Tên</button>
+    <button id="csv" type="button" aria-label="Tải CSV" title="Tải CSV">
+      <svg class="ic" viewBox="0 0 24 24"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>CSV
+    </button>
+  </div>
+</div>
 
 <script>
 /* Xử lý kết quả đọc từ ảnh phiếu: tách Pol., bỏ tiền tố ở cột Kód, giữ mã số + tên hàng. */
@@ -181,30 +301,7 @@
   'use strict';
   var P = window.PhieuParse;
   var $ = function (id) { return document.getElementById(id); };
-  var rows = [], editMode = false;
-  function imageSearchUrl(r, withName) {
-    var q = withName ? [r.kod, r.nazev].join(' ').trim() : (r.kod || r.nazev || '');
-    return 'https://www.google.com/search?udm=2&q=' + encodeURIComponent(q);
-  }
-  function showLookup(r) {
-    var box = $('lookup'); box.textContent = ''; box.hidden = false;
-    var t = document.createElement('div'); t.className = 'lk-title';
-    t.textContent = 'Tìm ảnh: ' + (r.kod || r.nazev); box.appendChild(t);
-    if (r.nazev) { var n = document.createElement('div'); n.className = 'hint'; n.textContent = r.nazev; box.appendChild(n); }
-    var row = document.createElement('div'); row.className = 'row'; row.style.marginTop = '8px';
-    function link(label, href) {
-      var a = document.createElement('a'); a.className = 'btn'; a.textContent = label; a.href = href;
-      a.target = '_blank'; a.rel = 'noopener'; row.appendChild(a);
-    }
-    link('Google ảnh (mã)', imageSearchUrl(r, false));
-    if (r.kod && r.nazev) link('Google ảnh (mã + tên)', imageSearchUrl(r, true));
-    link('Bing ảnh', 'https://www.bing.com/images/search?q=' + encodeURIComponent(r.kod || r.nazev));
-    if (r.kod) {
-      var c = document.createElement('button'); c.type = 'button'; c.textContent = 'Sao chép mã';
-      c.onclick = function () { copy(r.kod, 'Đã sao chép mã ' + r.kod + '.'); }; row.appendChild(c);
-    }
-    box.appendChild(row);
-  }
+  var rows = [], editMode = false, onlyWarn = false;
 
   // --- lưu cài đặt (có thể bị chặn trong chế độ riêng tư) ---
   function store(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
@@ -253,7 +350,11 @@
     setStatus('Đã xoá key.');
   };
 
-  function setStatus(msg, isErr) { var s = $('status'); s.textContent = msg || ''; s.className = isErr ? 'err' : ''; }
+  function setStatus(msg, isErr) {
+    var s = $('status'); s.textContent = msg || ''; s.className = isErr ? 'err' : '';
+    if (msg) $('shot').classList.add('on');
+  }
+  function setBusy(b) { $('progress').hidden = !b; }
 
   // --- xử lý ảnh: thu nhỏ để gửi nhanh, vẫn đủ nét để đọc chữ nhỏ ---
   function loadImage(file) {
@@ -265,12 +366,17 @@
       img.src = url;
     });
   }
-  function toJpegBase64(img, maxSide) {
+  function drawScaled(img, maxSide) {
     var w = img.naturalWidth, h = img.naturalHeight, k = Math.min(1, maxSide / Math.max(w, h));
-    var c = document.createElement('canvas');
-    c.width = Math.round(w * k); c.height = Math.round(h * k);
+    var c = document.createElement('canvas'); c.width = Math.round(w * k); c.height = Math.round(h * k);
     c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-    return c.toDataURL('image/jpeg', 0.9).split(',')[1];
+    return c;
+  }
+  function toJpegBase64(img, maxSide) { return drawScaled(img, maxSide).toDataURL('image/jpeg', 0.9).split(',')[1]; }
+  function toJpegBlob(img, maxSide) {
+    return new Promise(function (resolve, reject) {
+      drawScaled(img, maxSide).toBlob(function (b) { b ? resolve(b) : reject(new Error('Không xử lý được ảnh.')); }, 'image/jpeg', 0.9);
+    });
   }
 
   var PROMPT =
@@ -338,14 +444,6 @@
   function askViewer(blob) {
     return viewerSample(PROMPT, { images: blob, cache: false }).then(function (r) { return r.text; });
   }
-  function toJpegBlob(img, maxSide) {
-    return new Promise(function (resolve, reject) {
-      var w = img.naturalWidth, h = img.naturalHeight, k = Math.min(1, maxSide / Math.max(w, h));
-      var c = document.createElement('canvas'); c.width = Math.round(w * k); c.height = Math.round(h * k);
-      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-      c.toBlob(function (b) { b ? resolve(b) : reject(new Error('Không xử lý được ảnh.')); }, 'image/jpeg', 0.9);
-    });
-  }
   function viewerErr(e) {
     var map = { not_granted: 'Bạn chưa cho phép trang này dùng Claude. Tải lại trang và bấm Cho phép.',
       rate_limited: 'Đang đạt giới hạn dùng Claude. Thử lại sau ít phút.',
@@ -360,9 +458,9 @@
     if (!file || busy) return;
     var provider = $('provider').value, key = load('ps_key_' + provider);
     if (provider !== 'viewer' && !key) { $('settings').hidden = false; setStatus('Hãy dán API key và bấm Lưu trước.', true); return; }
-    busy = true; setStatus('Đang đọc ảnh… (thường mất 10–30 giây)');
+    busy = true; setBusy(true); setStatus('Đang đọc ảnh, thường mất 10–30 giây…');
     loadImage(file).then(function (r) {
-      var p = $('preview'); p.src = r.url; p.style.display = 'block';
+      var p = $('preview'); p.src = r.url;
       if (provider === 'viewer') return toJpegBlob(r.img, 2000).then(askViewer);
       return (provider === 'gemini' ? askGemini : askClaude)(key, toJpegBase64(r.img, 2000));
     }).then(function (text) {
@@ -370,63 +468,117 @@
       if (!added.length) throw new Error('Không đọc được dòng nào. Thử chụp lại gần và thẳng hơn.');
       rows = rows.concat(added); render();
       var warn = added.filter(function (r) { return P.status(r.kod) !== 'ok'; }).length;
-      setStatus('Đã thêm ' + added.length + ' dòng.' + (warn ? ' Có ' + warn + ' mã cần kiểm tra lại (đánh dấu ⚠).' : ''));
+      setStatus('Đã thêm ' + added.length + ' dòng.' + (warn ? ' ' + warn + ' mã cần kiểm tra lại.' : ' Tất cả mã khớp EAN.'));
     }).catch(function (e) {
       var m = provider === 'viewer' ? viewerErr(e) : (e && e.message || String(e));
       if (/Failed to fetch|NetworkError|Load failed/i.test(m)) m = 'Không kết nối được. Kiểm tra mạng rồi thử lại.';
       setStatus(m, true);
-    }).then(function () { busy = false; $('cam').value = ''; $('pick').value = ''; });
+    }).then(function () { busy = false; setBusy(false); $('cam').value = ''; $('pick').value = ''; });
   }
   $('cam').onchange = function () { handleFile(this.files[0]); };
   $('pick').onchange = function () { handleFile(this.files[0]); };
 
-  // --- bảng kết quả ---
-  var ICON = { ok: ['✓', 'st-ok', 'Mã đúng chuẩn EAN-13'], check: ['⚠', 'st-warn', 'Sai chữ số kiểm tra, có thể đọc sai số'],
-    len: ['⚠', 'st-warn', 'Mã không đủ 13 số'], bad: ['✕', 'st-bad', 'Mã có ký tự không phải số'], empty: ['✕', 'st-bad', 'Chưa có mã'] };
+  // --- tìm ảnh sản phẩm ---
+  function imageSearchUrl(r, withName) {
+    var q = withName ? [r.kod, r.nazev].join(' ').trim() : (r.kod || r.nazev || '');
+    return 'https://www.google.com/search?udm=2&q=' + encodeURIComponent(q);
+  }
+  function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+  function showLookup(r) {
+    var box = $('lookup'); box.textContent = ''; box.hidden = false;
+    box.appendChild(el('div', 'cap', 'Tìm ảnh sản phẩm'));
+    box.appendChild(el('div', 'lk-title', r.kod || r.nazev));
+    if (r.nazev) box.appendChild(el('div', 'hint', r.nazev));
+    var row = el('div', 'row');
+    function link(label, href) {
+      var a = el('a', 'btn', label); a.href = href; a.target = '_blank'; a.rel = 'noopener'; row.appendChild(a);
+    }
+    link('Google ảnh (mã)', imageSearchUrl(r, false));
+    if (r.kod && r.nazev) link('Google ảnh (mã + tên)', imageSearchUrl(r, true));
+    link('Bing ảnh', 'https://www.bing.com/images/search?q=' + encodeURIComponent(r.kod || r.nazev));
+    if (r.kod) {
+      var c = el('button', null, 'Sao chép mã'); c.type = 'button';
+      c.onclick = function () { copy(r.kod, 'Đã sao chép mã ' + r.kod + '.'); }; row.appendChild(c);
+    }
+    var x = el('button', null, 'Đóng'); x.type = 'button'; x.onclick = function () { box.hidden = true; }; row.appendChild(x);
+    box.appendChild(row);
+  }
+
+  // --- danh sách kết quả ---
+  var CHIP = { ok: ['ok', 'Khớp EAN'], check: ['warn', 'Sai số kiểm tra'], len: ['warn', 'Không đủ 13 số'], bad: ['bad', 'Có ký tự lạ'], empty: ['bad', 'Chưa có mã'] };
+
+  function itemView(r) {
+    var st = P.status(r.kod);
+    var li = el('li', 'item' + (st === 'ok' ? '' : (st === 'check' || st === 'len' ? ' warn' : ' bad')));
+    if (editMode) {
+      li.classList.add('edit');
+      var pol = textInput(r, 'pol', 'Số thứ tự'); li.appendChild(pol);
+      var kod = textInput(r, 'kod', 'Mã'); kod.inputMode = 'numeric'; li.appendChild(kod);
+      var nm = textInput(r, 'nazev', 'Tên hàng'); nm.className = 'nm'; var w = el('div', 'full'); w.appendChild(nm); li.appendChild(w);
+      var foot = el('div', 'foot full'); var chip = el('span', 'chip ' + CHIP[st][0], CHIP[st][1]); foot.appendChild(chip);
+      var d = el('button', 'del', 'Xoá dòng'); d.type = 'button';
+      d.onclick = function () { rows.splice(rows.indexOf(r), 1); render(); }; foot.appendChild(d); li.appendChild(foot);
+      return li;
+    }
+    var l1 = el('div', 'l1'), canLook = !!(r.kod || r.nazev);
+    var p = el(canLook ? 'a' : 'span', 'pol', r.pol || '—');
+    var k = el(canLook ? 'a' : 'span', 'kod', r.kod || '—');
+    if (canLook) [p, k].forEach(function (a) {
+      a.href = imageSearchUrl(r, false); a.target = '_blank'; a.rel = 'noopener'; a.title = 'Tìm ảnh trên Google: ' + (r.kod || r.nazev);
+      a.addEventListener('click', function () { showLookup(r); });
+    });
+    l1.appendChild(p); l1.appendChild(k); l1.appendChild(el('span', 'chip ' + CHIP[st][0], CHIP[st][1]));
+    li.appendChild(l1); li.appendChild(el('div', 'name', r.nazev));
+    return li;
+  }
+  function textInput(r, field, label) {
+    var inp = document.createElement('input'); inp.type = 'text'; inp.value = r[field]; inp.setAttribute('aria-label', label);
+    inp.onchange = function () { r[field] = field === 'kod' ? inp.value.replace(/[^0-9]/g, '') : inp.value.trim(); render(); };
+    return inp;
+  }
 
   function render() {
-    var tb = $('rows'); tb.textContent = '';
-    rows.forEach(function (r, i) {
-      var tr = document.createElement('tr');
-      var st = P.status(r.kod);
-      tr.className = st === 'ok' ? '' : (st === 'check' || st === 'len' ? 'warn' : 'bad');
-      tr.appendChild(cell('pol', r, 'pol', i, 'Pol.'));
-      tr.appendChild(cell('kod', r, 'kod', i, 'Kód'));
-      tr.appendChild(cell('', r, 'nazev', i, 'Název zboží'));
-      var s = document.createElement('td'); s.className = 'st ' + ICON[st][1]; s.textContent = ICON[st][0]; s.title = ICON[st][2]; tr.appendChild(s);
-      var d = document.createElement('td'); var b = document.createElement('button');
-      b.type = 'button'; b.className = 'del'; b.textContent = '✕'; b.setAttribute('aria-label', 'Xoá dòng ' + (r.pol || i + 1));
-      b.onclick = function () { rows.splice(i, 1); render(); }; d.appendChild(b); tr.appendChild(d);
-      tb.appendChild(tr);
-    });
+    var list = $('rows'); list.textContent = '';
     var any = rows.length > 0;
-    ['copyAll', 'copyKod', 'copyName', 'csv', 'clearAll'].forEach(function (id) { $(id).disabled = !any; });
-    $('count').textContent = any ? '(' + rows.length + ' dòng)' : '';
-    if (!any || editMode) $('lookup').hidden = true;
-    $('legend').hidden = !any; $('tip').hidden = !any || editMode;
-  }
-  function cell(cls, r, field, i, label) {
-    var td = document.createElement('td'); if (cls) td.className = cls;
-    if (!editMode && (field === 'pol' || field === 'kod') && (r.kod || r.nazev)) {
-      var a = document.createElement('a'); a.className = 'look'; a.textContent = r[field] || '—';
-      a.href = imageSearchUrl(r, false); a.target = '_blank'; a.rel = 'noopener';
-      a.addEventListener('click', function () { showLookup(r); });
-      a.title = 'Tìm ảnh trên Google: ' + (r.kod || r.nazev);
-      td.appendChild(a); return td;
+    var warnN = rows.filter(function (r) { return P.status(r.kod) !== 'ok'; }).length;
+    if (!warnN) onlyWarn = false;
+    rows.forEach(function (r) { if (!onlyWarn || P.status(r.kod) !== 'ok') list.appendChild(itemView(r)); });
+
+    var chips = $('chips'); chips.textContent = ''; chips.hidden = !any;
+    if (any) {
+      chips.appendChild(el('span', 'chip', rows.length + ' dòng'));
+      if (rows.length - warnN) chips.appendChild(el('span', 'chip ok', (rows.length - warnN) + ' khớp EAN'));
+      if (warnN) {
+        var b = el('button', 'chip warn', warnN + ' cần kiểm tra' + (onlyWarn ? ' · đang lọc' : '')); b.type = 'button';
+        b.setAttribute('aria-pressed', onlyWarn); b.title = 'Chỉ hiện các dòng cần kiểm tra';
+        b.onclick = function () { onlyWarn = !onlyWarn; render(); }; chips.appendChild(b);
+      }
     }
-    var inp = document.createElement('input'); inp.type = 'text'; inp.value = r[field]; inp.setAttribute('aria-label', label + ' dòng ' + (i + 1));
-    if (field === 'kod') inp.inputMode = 'numeric';
-    inp.onchange = function () {
-      r[field] = field === 'kod' ? inp.value.replace(/[^0-9]/g, '') : inp.value.trim();
-      render();
-    };
-    td.appendChild(inp); return td;
+    $('empty').hidden = any; $('bar').hidden = !any; $('tip').hidden = !any || editMode; $('xl').hidden = !any;
+    $('firstHint').hidden = any;
+    $('editMode').disabled = !any; $('clearAll').disabled = !any;
+    if (!any || editMode) $('lookup').hidden = true;
+
+    // ba bước: Chụp -> Kiểm tra -> Sao chép
+    var now = !any ? 1 : (warnN ? 2 : 3);
+    [].forEach.call($('steps').children, function (li) {
+      var n = Number(li.getAttribute('data-s'));
+      li.className = n === now ? 'now' : (n < now ? 'done' : '');
+      li.querySelector('b').textContent = n < now ? '✓' : String(n);
+    });
   }
+
   $('editMode').onclick = function () {
     editMode = !editMode; this.classList.toggle('on', editMode); this.setAttribute('aria-pressed', editMode);
-    this.textContent = editMode ? '✓ Xong' : '✏️ Sửa'; render();
+    $('editLbl').textContent = editMode ? 'Xong' : 'Sửa'; render();
   };
-  $('clearAll').onclick = function () { if (confirm('Xoá toàn bộ bảng?')) { rows = []; render(); setStatus(''); } };
+  $('clearAll').onclick = function () {
+    // Không dùng confirm(): khung xem của Artifact không hiện hộp thoại. Bấm lần hai để xác nhận.
+    var b = this;
+    if (b.getAttribute('data-arm') === '1') { rows = []; b.removeAttribute('data-arm'); b.textContent = 'Xoá hết'; render(); setStatus(''); return; }
+    b.setAttribute('data-arm', '1'); b.textContent = 'Bấm lại để xoá';
+    setTimeout(function () { b.removeAttribute('data-arm'); b.textContent = 'Xoá hết'; }, 3000);
+  };
 
   // --- xuất kết quả ---
   function copy(text, okMsg) {
@@ -442,7 +594,7 @@
     }
   }
   $('copyAll').onclick = function () {
-    copy(rows.map(function (r) { return [r.pol, r.kod, r.nazev].join('\t'); }).join('\n'), 'Đã sao chép cả bảng (dán được vào Excel/Sheets).');
+    copy(rows.map(function (r) { return [r.pol, r.kod, r.nazev].join('\t'); }).join('\n'), 'Đã sao chép cả bảng, dán được vào Excel hoặc Sheets.');
   };
   $('copyKod').onclick = function () { copy(rows.map(function (r) { return r.kod; }).join('\n'), 'Đã sao chép cột Kód.'); };
   $('copyName').onclick = function () { copy(rows.map(function (r) { return r.nazev; }).join('\n'), 'Đã sao chép cột Název.'); };
@@ -453,14 +605,14 @@
       return [q(r.pol), '="' + r.kod + '"', q(r.nazev)].join(';');
     }));
     var blob = new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+    var name = 'phieu-hang-' + new Date().toISOString().slice(0, 10) + '.csv';
     if (viewerDownloads) {
-      viewerDownloads.save({ filename: 'phieu-hang-' + new Date().toISOString().slice(0, 10) + '.csv', data: blob })
+      viewerDownloads.save({ filename: name, data: blob })
         .then(function () { setStatus('Đã lưu file CSV.'); },
               function (e) { if (!e || e.code !== 'declined') setStatus('Không lưu được CSV: ' + ((e && e.message) || ''), true); });
       return;
     }
-    var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-    a.download = 'phieu-hang-' + new Date().toISOString().slice(0, 10) + '.csv';
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
   };
