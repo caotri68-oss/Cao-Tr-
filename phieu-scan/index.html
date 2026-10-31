@@ -47,6 +47,9 @@
   tr.warn td.kod input { background: var(--warn-bg); }
   tr.bad td.kod input { background: var(--bad-bg); }
   .st-ok { color: var(--ok); } .st-warn { color: var(--warn); } .st-bad { color: var(--bad); }
+  td a.look { display: block; padding: 10px 6px; min-height: 44px; color: var(--accent); text-decoration: underline;
+    font-variant-numeric: tabular-nums; letter-spacing: .02em; word-break: break-all; }
+  button.on { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
   .del { padding: 2px 8px; min-height: 32px; }
   .count { color: var(--muted); font-size: .9rem; }
   .sr { position: absolute; left: -9999px; }
@@ -93,7 +96,7 @@
   <section class="card">
     <div class="row" style="justify-content:space-between">
       <strong>Kết quả <span class="count" id="count"></span></strong>
-      <button id="clearAll" type="button" disabled>Xoá bảng</button>
+      <span class="row"><button id="editMode" type="button" aria-pressed="false">✏️ Sửa</button><button id="clearAll" type="button" disabled>Xoá bảng</button></span>
     </div>
     <div class="tablewrap">
       <table>
@@ -101,6 +104,7 @@
         <tbody id="rows"></tbody>
       </table>
     </div>
+    <p class="hint" id="tip" hidden>Chạm vào số thứ tự hoặc mã để tìm ảnh sản phẩm trên Google Hình ảnh. Muốn sửa chữ trong bảng, bấm ✏️ Sửa.</p>
     <p class="hint" id="legend" hidden>✓ mã đúng chuẩn EAN-13 · ⚠ mã sai độ dài hoặc chữ số kiểm tra, hãy so lại với ảnh. Bạn có thể sửa trực tiếp trong bảng.</p>
     <div class="row" style="margin-top:10px">
       <button id="copyAll" type="button" class="primary" disabled>Sao chép cả bảng</button>
@@ -118,7 +122,11 @@
   'use strict';
   var P = window.PhieuParse;
   var $ = function (id) { return document.getElementById(id); };
-  var rows = [];
+  var rows = [], editMode = false;
+  function imageSearchUrl(r) {
+    var q = r.kod || r.nazev || '';
+    return 'https://www.google.com/search?tbm=isch&q=' + encodeURIComponent(q);
+  }
 
   // --- lưu cài đặt (có thể bị chặn trong chế độ riêng tư) ---
   function store(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
@@ -316,10 +324,16 @@
     var any = rows.length > 0;
     ['copyAll', 'copyKod', 'copyName', 'csv', 'clearAll'].forEach(function (id) { $(id).disabled = !any; });
     $('count').textContent = any ? '(' + rows.length + ' dòng)' : '';
-    $('legend').hidden = !any;
+    $('legend').hidden = !any; $('tip').hidden = !any || editMode;
   }
   function cell(cls, r, field, i, label) {
     var td = document.createElement('td'); if (cls) td.className = cls;
+    if (!editMode && (field === 'pol' || field === 'kod') && (r.kod || r.nazev)) {
+      var a = document.createElement('a'); a.className = 'look'; a.textContent = r[field] || '—';
+      a.href = imageSearchUrl(r); a.target = '_blank'; a.rel = 'noopener noreferrer';
+      a.title = 'Tìm ảnh trên Google: ' + (r.kod || r.nazev);
+      td.appendChild(a); return td;
+    }
     var inp = document.createElement('input'); inp.type = 'text'; inp.value = r[field]; inp.setAttribute('aria-label', label + ' dòng ' + (i + 1));
     if (field === 'kod') inp.inputMode = 'numeric';
     inp.onchange = function () {
@@ -328,6 +342,10 @@
     };
     td.appendChild(inp); return td;
   }
+  $('editMode').onclick = function () {
+    editMode = !editMode; this.classList.toggle('on', editMode); this.setAttribute('aria-pressed', editMode);
+    this.textContent = editMode ? '✓ Xong' : '✏️ Sửa'; render();
+  };
   $('clearAll').onclick = function () { if (confirm('Xoá toàn bộ bảng?')) { rows = []; render(); setStatus(''); } };
 
   // --- xuất kết quả ---
