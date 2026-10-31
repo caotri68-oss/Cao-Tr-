@@ -50,6 +50,8 @@
   td a.look { display: block; padding: 10px 6px; min-height: 44px; color: var(--accent); text-decoration: underline;
     font-variant-numeric: tabular-nums; letter-spacing: .02em; word-break: break-all; }
   button.on { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+  .lk-title { font-weight: 600; word-break: break-all; }
+  a.btn { text-decoration: none; display: inline-flex; align-items: center; }
   .del { padding: 2px 8px; min-height: 32px; }
   .count { color: var(--muted); font-size: .9rem; }
   .sr { position: absolute; left: -9999px; }
@@ -104,6 +106,7 @@
         <tbody id="rows"></tbody>
       </table>
     </div>
+    <div id="lookup" class="card" hidden style="margin:10px 0 0"></div>
     <p class="hint" id="tip" hidden>Chạm vào số thứ tự hoặc mã để tìm ảnh sản phẩm trên Google Hình ảnh. Muốn sửa chữ trong bảng, bấm ✏️ Sửa.</p>
     <p class="hint" id="legend" hidden>✓ mã đúng chuẩn EAN-13 · ⚠ mã sai độ dài hoặc chữ số kiểm tra, hãy so lại với ảnh. Bạn có thể sửa trực tiếp trong bảng.</p>
     <div class="row" style="margin-top:10px">
@@ -179,9 +182,28 @@
   var P = window.PhieuParse;
   var $ = function (id) { return document.getElementById(id); };
   var rows = [], editMode = false;
-  function imageSearchUrl(r) {
-    var q = r.kod || r.nazev || '';
-    return 'https://www.google.com/search?tbm=isch&q=' + encodeURIComponent(q);
+  function imageSearchUrl(r, withName) {
+    var q = withName ? [r.kod, r.nazev].join(' ').trim() : (r.kod || r.nazev || '');
+    return 'https://www.google.com/search?udm=2&q=' + encodeURIComponent(q);
+  }
+  function showLookup(r) {
+    var box = $('lookup'); box.textContent = ''; box.hidden = false;
+    var t = document.createElement('div'); t.className = 'lk-title';
+    t.textContent = 'Tìm ảnh: ' + (r.kod || r.nazev); box.appendChild(t);
+    if (r.nazev) { var n = document.createElement('div'); n.className = 'hint'; n.textContent = r.nazev; box.appendChild(n); }
+    var row = document.createElement('div'); row.className = 'row'; row.style.marginTop = '8px';
+    function link(label, href) {
+      var a = document.createElement('a'); a.className = 'btn'; a.textContent = label; a.href = href;
+      a.target = '_blank'; a.rel = 'noopener'; row.appendChild(a);
+    }
+    link('Google ảnh (mã)', imageSearchUrl(r, false));
+    if (r.kod && r.nazev) link('Google ảnh (mã + tên)', imageSearchUrl(r, true));
+    link('Bing ảnh', 'https://www.bing.com/images/search?q=' + encodeURIComponent(r.kod || r.nazev));
+    if (r.kod) {
+      var c = document.createElement('button'); c.type = 'button'; c.textContent = 'Sao chép mã';
+      c.onclick = function () { copy(r.kod, 'Đã sao chép mã ' + r.kod + '.'); }; row.appendChild(c);
+    }
+    box.appendChild(row);
   }
 
   // --- lưu cài đặt (có thể bị chặn trong chế độ riêng tư) ---
@@ -380,13 +402,15 @@
     var any = rows.length > 0;
     ['copyAll', 'copyKod', 'copyName', 'csv', 'clearAll'].forEach(function (id) { $(id).disabled = !any; });
     $('count').textContent = any ? '(' + rows.length + ' dòng)' : '';
+    if (!any || editMode) $('lookup').hidden = true;
     $('legend').hidden = !any; $('tip').hidden = !any || editMode;
   }
   function cell(cls, r, field, i, label) {
     var td = document.createElement('td'); if (cls) td.className = cls;
     if (!editMode && (field === 'pol' || field === 'kod') && (r.kod || r.nazev)) {
       var a = document.createElement('a'); a.className = 'look'; a.textContent = r[field] || '—';
-      a.href = imageSearchUrl(r); a.target = '_blank'; a.rel = 'noopener noreferrer';
+      a.href = imageSearchUrl(r, false); a.target = '_blank'; a.rel = 'noopener';
+      a.addEventListener('click', function () { showLookup(r); });
       a.title = 'Tìm ảnh trên Google: ' + (r.kod || r.nazev);
       td.appendChild(a); return td;
     }
