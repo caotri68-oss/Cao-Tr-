@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đọc phiếu hàng</title>
+<style>
+  :root {
+    --bg: #f5f6f8; --card: #fff; --text: #1b1f27; --muted: #667085; --line: #e3e6eb;
+    --accent: #0b6bcb; --accent-text: #fff; --ok: #137a3a; --warn: #b54708; --bad: #b42318;
+    --warn-bg: #fff4e5; --bad-bg: #fdecea;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12151a; --card: #1b2028; --text: #e8eaee; --muted: #9aa3b2; --line: #2d3440;
+      --accent: #4c9aff; --accent-text: #0b1220; --ok: #4cc27a; --warn: #f0a24a; --bad: #ff7b72;
+      --warn-bg: #3a2a12; --bad-bg: #3d1a18;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 900px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 1.25rem; margin: 4px 0 12px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  button, .btn { font: inherit; border: 1px solid var(--line); background: var(--card); color: var(--text);
+    border-radius: 10px; padding: 10px 14px; cursor: pointer; min-height: 44px; }
+  button.primary, .btn.primary { background: var(--accent); color: var(--accent-text); border-color: var(--accent); font-weight: 600; }
+  button:disabled { opacity: .5; cursor: default; }
+  input[type=text], input[type=password], select { font: inherit; color: var(--text); background: var(--card);
+    border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; min-height: 40px; }
+  label { font-size: .85rem; color: var(--muted); display: block; margin-bottom: 4px; }
+  .grow { flex: 1 1 220px; }
+  .hint { color: var(--muted); font-size: .85rem; margin: 6px 0 0; }
+  #status { min-height: 1.4em; margin: 8px 0; }
+  #status.err { color: var(--bad); }
+  #preview { max-width: 100%; max-height: 220px; border-radius: 8px; display: none; margin-top: 10px; }
+  .tablewrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; min-width: 560px; }
+  th, td { border-bottom: 1px solid var(--line); padding: 4px 6px; text-align: left; vertical-align: middle; }
+  th { font-size: .8rem; color: var(--muted); font-weight: 600; }
+  td input { width: 100%; border: 1px solid transparent; background: transparent; border-radius: 6px; padding: 6px; font: inherit; color: var(--text); }
+  td input:focus { border-color: var(--accent); background: var(--card); outline: none; }
+  td.pol { width: 56px; } td.kod { width: 170px; } td.st { width: 34px; text-align: center; }
+  td.kod input { font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+  tr.warn td.kod input { background: var(--warn-bg); }
+  tr.bad td.kod input { background: var(--bad-bg); }
+  .st-ok { color: var(--ok); } .st-warn { color: var(--warn); } .st-bad { color: var(--bad); }
+  .del { padding: 2px 8px; min-height: 32px; }
+  .count { color: var(--muted); font-size: .9rem; }
+  .sr { position: absolute; left: -9999px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Đọc phiếu hàng</h1>
+
+  <section class="card">
+    <div class="row">
+      <label class="btn primary" for="cam" style="margin:0;color:var(--accent-text)">📷 Chụp ảnh</label>
+      <label class="btn" for="pick" style="margin:0">🖼️ Chọn ảnh có sẵn</label>
+      <input id="cam" class="sr" type="file" accept="image/*" capture="environment">
+      <input id="pick" class="sr" type="file" accept="image/*">
+      <button id="settingsBtn" type="button" style="margin-left:auto">⚙️ Cài đặt</button>
+    </div>
+    <img id="preview" alt="Ảnh vừa chọn">
+    <div id="status" role="status" aria-live="polite"></div>
+    <p class="hint">Mỗi ảnh mới sẽ được thêm vào cuối bảng. Nếu phiếu dài, chụp nhiều ảnh liên tiếp.</p>
+  </section>
+
+  <section class="card" id="settings" hidden>
+    <div class="row">
+      <div class="grow">
+        <label for="provider">Dịch vụ đọc ảnh</label>
+        <select id="provider" style="width:100%">
+          <option value="claude">Claude</option>
+          <option value="gemini">Gemini</option>
+        </select>
+      </div>
+      <div class="grow" id="keyWrap">
+        <label for="apikey">API key</label>
+        <input id="apikey" type="password" autocomplete="off" style="width:100%" placeholder="Dán API key vào đây">
+      </div>
+    </div>
+    <p class="hint">Key chỉ được lưu trong trình duyệt của thiết bị này và chỉ gửi tới dịch vụ bạn chọn. Không dùng trang này trên máy dùng chung.</p>
+    <div class="row" style="margin-top:8px">
+      <button id="saveKey" type="button" class="primary">Lưu</button>
+      <button id="clearKey" type="button">Xoá key đã lưu</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="row" style="justify-content:space-between">
+      <strong>Kết quả <span class="count" id="count"></span></strong>
+      <button id="clearAll" type="button" disabled>Xoá bảng</button>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Pol.</th><th>Kód (chỉ phần số)</th><th>Název zboží</th><th></th><th></th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <p class="hint" id="legend" hidden>✓ mã đúng chuẩn EAN-13 · ⚠ mã sai độ dài hoặc chữ số kiểm tra, hãy so lại với ảnh. Bạn có thể sửa trực tiếp trong bảng.</p>
+    <div class="row" style="margin-top:10px">
+      <button id="copyAll" type="button" class="primary" disabled>Sao chép cả bảng</button>
+      <button id="copyKod" type="button" disabled>Chỉ cột Kód</button>
+      <button id="copyName" type="button" disabled>Chỉ cột Název</button>
+      <button id="csv" type="button" disabled>Tải CSV</button>
+    </div>
+    <p class="hint">Dán vào Excel: đặt cột Kód ở dạng Text trước, nếu không Excel sẽ đổi mã 13 số thành 8,59556E+12.</p>
+  </section>
+</main>
+
+<script>
+/* Xử lý kết quả đọc từ ảnh phiếu: tách Pol., bỏ tiền tố ở cột Kód, giữ mã số + tên hàng. */
+(function (root) {
+  'use strict';
+
+  // Bỏ phần chữ ở đầu cột Kód (vd "AROMVUN-85955 56487037" -> "8595556487037").
+  function cleanKod(raw) {
+    var s = String(raw == null ? '' : raw).replace(/\s+/g, '');
+    if (!s) return '';
+    var dash = s.lastIndexOf('-');
+    var tail = dash >= 0 ? s.slice(dash + 1) : (s.match(/\d{8,}$/) || [''])[0];
+    return tail.replace(/[^0-9]/g, '');
+  }
+
+  // Kiểm tra chữ số cuối của mã EAN-13 để phát hiện đọc sai số.
+  function eanOk(code) {
+    if (!/^\d{13}$/.test(code)) return false;
+    var sum = 0;
+    for (var i = 0; i < 12; i++) sum += Number(code[i]) * (i % 2 === 0 ? 1 : 3);
+    return (10 - (sum % 10)) % 10 === Number(code[12]);
+  }
+
+  function status(code) {
+    if (!code) return 'empty';
+    if (!/^\d+$/.test(code)) return 'bad';
+    if (code.length !== 13) return 'len';
+    return eanOk(code) ? 'ok' : 'check';
+  }
+
+  // Lấy mảng JSON từ câu trả lời của mô hình (có thể bọc trong ```).
+  function parseModelJson(text) {
+    var t = String(text || '').trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
+    var start = t.indexOf('[');
+    var end = t.lastIndexOf(']');
+    if (start < 0 || end < start) throw new Error('Không thấy danh sách dòng trong câu trả lời.');
+    var arr = JSON.parse(t.slice(start, end + 1));
+    if (!Array.isArray(arr)) throw new Error('Kết quả không phải danh sách.');
+    return arr;
+  }
+
+  function toRows(arr) {
+    return arr.map(function (r) {
+      var kod = cleanKod(r.kod);
+      return {
+        pol: String(r.pol == null ? '' : r.pol).trim(),
+        kod: kod,
+        nazev: String(r.nazev == null ? '' : r.nazev).replace(/\s+/g, ' ').trim(),
+      };
+    });
+  }
+
+  var api = { cleanKod: cleanKod, eanOk: eanOk, status: status, parseModelJson: parseModelJson, toRows: toRows };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  else root.PhieuParse = api;
+})(typeof self !== 'undefined' ? self : this);
+
+</script>
+<script>
+(function () {
+  'use strict';
+  var P = window.PhieuParse;
+  var $ = function (id) { return document.getElementById(id); };
+  var rows = [];
+
+  // --- lưu cài đặt (có thể bị chặn trong chế độ riêng tư) ---
+  function store(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
+  function load(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }
+
+  $('provider').value = load('ps_provider') || 'claude';
+  $('apikey').value = load('ps_key_' + $('provider').value);
+
+  // Khi chạy trong Artifact của claude.ai: dùng Claude của người xem, không cần API key.
+  var viewerSample = null, viewerDownloads = null;
+  function syncKeyField() {
+    var v = $('provider').value === 'viewer';
+    $('apikey').disabled = v; $('keyWrap').style.opacity = v ? '.4' : '1';
+    $('clearKey').disabled = v;
+    $('apikey').value = v ? '' : load('ps_key_' + $('provider').value);
+  }
+  function initViewer() {
+    if (!window.claude || !window.claude.use) { if (!$('apikey').value) $('settings').hidden = false; return; }
+    Promise.all([window.claude.use('sample'), window.claude.use('downloads')]).then(function (r) {
+      viewerSample = r[0]; viewerDownloads = r[1];
+      if (!viewerSample) return;
+      return viewerSample.limits().catch(function () { return null; }).then(function (lim) {
+        if (!lim || !lim.images) { viewerSample = null; return; }
+        var o = document.createElement('option'); o.value = 'viewer'; o.textContent = 'Claude trong app (không cần key)';
+        $('provider').insertBefore(o, $('provider').firstChild);
+        var saved = load('ps_provider');
+        if (!saved || saved === 'viewer' || !load('ps_key_' + saved)) $('provider').value = 'viewer';
+        syncKeyField();
+      });
+    }).catch(function () {}).then(function () {
+      if ($('provider').value !== 'viewer' && !$('apikey').value) $('settings').hidden = false;
+    });
+  }
+
+  $('settingsBtn').onclick = function () { $('settings').hidden = !$('settings').hidden; };
+  $('provider').onchange = function () { syncKeyField(); };
+  $('saveKey').onclick = function () {
+    store('ps_provider', $('provider').value);
+    if ($('provider').value !== 'viewer') store('ps_key_' + $('provider').value, $('apikey').value.trim());
+    setStatus('Đã lưu cài đặt.');
+    $('settings').hidden = true;
+  };
+  $('clearKey').onclick = function () {
+    store('ps_key_' + $('provider').value, null);
+    $('apikey').value = '';
+    setStatus('Đã xoá key.');
+  };
+
+  function setStatus(msg, isErr) { var s = $('status'); s.textContent = msg || ''; s.className = isErr ? 'err' : ''; }
+
+  // --- xử lý ảnh: thu nhỏ để gửi nhanh, vẫn đủ nét để đọc chữ nhỏ ---
+  function loadImage(file) {
+    return new Promise(function (resolve, reject) {
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function () { resolve({ img: img, url: url }); };
+      img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('Không mở được ảnh này.')); };
+      img.src = url;
+    });
+  }
+  function toJpegBase64(img, maxSide) {
+    var w = img.naturalWidth, h = img.naturalHeight, k = Math.min(1, maxSide / Math.max(w, h));
+    var c = document.createElement('canvas');
+    c.width = Math.round(w * k); c.height = Math.round(h * k);
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    return c.toDataURL('image/jpeg', 0.9).split(',')[1];
+  }
+
+  var PROMPT =
+    'Ảnh là một phiếu hàng có bảng với các cột: Pol., Kód, Název zboží (và các cột khác). ' +
+    'Hãy đọc MỌI dòng của bảng, từ trên xuống dưới, và trả về DUY NHẤT một mảng JSON, không thêm chữ nào khác. ' +
+    'Mỗi phần tử có đúng 3 trường: "pol" (số thứ tự ở cột Pol.), ' +
+    '"kod" (toàn bộ nội dung cột Kód đúng như in, nối các dòng bị ngắt thành một chuỗi, giữ cả phần chữ ở đầu), ' +
+    '"nazev" (toàn bộ tên hàng ở cột Název zboží đúng như in, nối các dòng bị ngắt, giữ nguyên dấu tiếng Séc và lỗi chính tả nếu có). ' +
+    'Bỏ qua các cột khác và phần tiêu đề phía trên bảng. ' +
+    'Không tự đoán: nếu một ký tự không đọc được, thay bằng "?".';
+
+  function apiError(res, body) {
+    var m = '';
+    try { var j = JSON.parse(body); m = (j.error && (j.error.message || j.error)) || ''; } catch (e) {}
+    if (res.status === 401 || res.status === 403) return 'API key không đúng hoặc không có quyền (' + res.status + '). ' + m;
+    if (res.status === 429) return 'Đã vượt giới hạn dùng của key (429). Thử lại sau ít phút. ' + m;
+    return 'Lỗi từ dịch vụ (' + res.status + '). ' + m;
+  }
+
+  function askClaude(key, b64) {
+    return fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-5-5',
+        max_tokens: 8000,
+        messages: [{ role: 'user', content: [
+          { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: b64 } },
+          { type: 'text', text: PROMPT }
+        ] }]
+      })
+    }).then(function (res) {
+      return res.text().then(function (t) {
+        if (!res.ok) throw new Error(apiError(res, t));
+        var j = JSON.parse(t);
+        return (j.content || []).map(function (b) { return b.text || ''; }).join('');
+      });
+    });
+  }
+
+  function askGemini(key, b64) {
+    var url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + encodeURIComponent(key);
+    return fetch(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ inlineData: { mimeType: 'image/jpeg', data: b64 } }, { text: PROMPT }] }],
+        generationConfig: { responseMimeType: 'application/json', temperature: 0 }
+      })
+    }).then(function (res) {
+      return res.text().then(function (t) {
+        if (!res.ok) throw new Error(apiError(res, t));
+        var j = JSON.parse(t);
+        var parts = (((j.candidates || [])[0] || {}).content || {}).parts || [];
+        return parts.map(function (p) { return p.text || ''; }).join('');
+      });
+    });
+  }
+
+  function askViewer(blob) {
+    return viewerSample(PROMPT, { images: blob, cache: false }).then(function (r) { return r.text; });
+  }
+  function toJpegBlob(img, maxSide) {
+    return new Promise(function (resolve, reject) {
+      var w = img.naturalWidth, h = img.naturalHeight, k = Math.min(1, maxSide / Math.max(w, h));
+      var c = document.createElement('canvas'); c.width = Math.round(w * k); c.height = Math.round(h * k);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      c.toBlob(function (b) { b ? resolve(b) : reject(new Error('Không xử lý được ảnh.')); }, 'image/jpeg', 0.9);
+    });
+  }
+  function viewerErr(e) {
+    var map = { not_granted: 'Bạn chưa cho phép trang này dùng Claude. Tải lại trang và bấm Cho phép.',
+      rate_limited: 'Đang đạt giới hạn dùng Claude. Thử lại sau ít phút.',
+      image_rejected: 'Ảnh không dùng được. Thử ảnh khác.', refused: 'Claude từ chối đọc ảnh này.',
+      empty_completion: 'Claude không trả lời. Thử chụp lại rõ hơn.', upstream_error: 'Lỗi tạm thời. Thử lại.',
+      session_expired: 'Hết phiên đăng nhập, hãy tải lại trang.' };
+    return (e && map[e.code]) || (e && e.message) || String(e);
+  }
+
+  var busy = false;
+  function handleFile(file) {
+    if (!file || busy) return;
+    var provider = $('provider').value, key = load('ps_key_' + provider);
+    if (provider !== 'viewer' && !key) { $('settings').hidden = false; setStatus('Hãy dán API key và bấm Lưu trước.', true); return; }
+    busy = true; setStatus('Đang đọc ảnh… (thường mất 10–30 giây)');
+    loadImage(file).then(function (r) {
+      var p = $('preview'); p.src = r.url; p.style.display = 'block';
+      if (provider === 'viewer') return toJpegBlob(r.img, 2000).then(askViewer);
+      return (provider === 'gemini' ? askGemini : askClaude)(key, toJpegBase64(r.img, 2000));
+    }).then(function (text) {
+      var added = P.toRows(P.parseModelJson(text));
+      if (!added.length) throw new Error('Không đọc được dòng nào. Thử chụp lại gần và thẳng hơn.');
+      rows = rows.concat(added); render();
+      var warn = added.filter(function (r) { return P.status(r.kod) !== 'ok'; }).length;
+      setStatus('Đã thêm ' + added.length + ' dòng.' + (warn ? ' Có ' + warn + ' mã cần kiểm tra lại (đánh dấu ⚠).' : ''));
+    }).catch(function (e) {
+      var m = provider === 'viewer' ? viewerErr(e) : (e && e.message || String(e));
+      if (/Failed to fetch|NetworkError|Load failed/i.test(m)) m = 'Không kết nối được. Kiểm tra mạng rồi thử lại.';
+      setStatus(m, true);
+    }).then(function () { busy = false; $('cam').value = ''; $('pick').value = ''; });
+  }
+  $('cam').onchange = function () { handleFile(this.files[0]); };
+  $('pick').onchange = function () { handleFile(this.files[0]); };
+
+  // --- bảng kết quả ---
+  var ICON = { ok: ['✓', 'st-ok', 'Mã đúng chuẩn EAN-13'], check: ['⚠', 'st-warn', 'Sai chữ số kiểm tra, có thể đọc sai số'],
+    len: ['⚠', 'st-warn', 'Mã không đủ 13 số'], bad: ['✕', 'st-bad', 'Mã có ký tự không phải số'], empty: ['✕', 'st-bad', 'Chưa có mã'] };
+
+  function render() {
+    var tb = $('rows'); tb.textContent = '';
+    rows.forEach(function (r, i) {
+      var tr = document.createElement('tr');
+      var st = P.status(r.kod);
+      tr.className = st === 'ok' ? '' : (st === 'check' || st === 'len' ? 'warn' : 'bad');
+      tr.appendChild(cell('pol', r, 'pol', i, 'Pol.'));
+      tr.appendChild(cell('kod', r, 'kod', i, 'Kód'));
+      tr.appendChild(cell('', r, 'nazev', i, 'Název zboží'));
+      var s = document.createElement('td'); s.className = 'st ' + ICON[st][1]; s.textContent = ICON[st][0]; s.title = ICON[st][2]; tr.appendChild(s);
+      var d = document.createElement('td'); var b = document.createElement('button');
+      b.type = 'button'; b.className = 'del'; b.textContent = '✕'; b.setAttribute('aria-label', 'Xoá dòng ' + (r.pol || i + 1));
+      b.onclick = function () { rows.splice(i, 1); render(); }; d.appendChild(b); tr.appendChild(d);
+      tb.appendChild(tr);
+    });
+    var any = rows.length > 0;
+    ['copyAll', 'copyKod', 'copyName', 'csv', 'clearAll'].forEach(function (id) { $(id).disabled = !any; });
+    $('count').textContent = any ? '(' + rows.length + ' dòng)' : '';
+    $('legend').hidden = !any;
+  }
+  function cell(cls, r, field, i, label) {
+    var td = document.createElement('td'); if (cls) td.className = cls;
+    var inp = document.createElement('input'); inp.type = 'text'; inp.value = r[field]; inp.setAttribute('aria-label', label + ' dòng ' + (i + 1));
+    if (field === 'kod') inp.inputMode = 'numeric';
+    inp.onchange = function () {
+      r[field] = field === 'kod' ? inp.value.replace(/[^0-9]/g, '') : inp.value.trim();
+      render();
+    };
+    td.appendChild(inp); return td;
+  }
+  $('clearAll').onclick = function () { if (confirm('Xoá toàn bộ bảng?')) { rows = []; render(); setStatus(''); } };
+
+  // --- xuất kết quả ---
+  function copy(text, okMsg) {
+    var done = function () { setStatus(okMsg); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, fallback);
+    } else fallback();
+    function fallback() {
+      var t = document.createElement('textarea'); t.value = text; t.style.position = 'fixed'; t.style.opacity = '0';
+      document.body.appendChild(t); t.select();
+      try { document.execCommand('copy'); done(); } catch (e) { setStatus('Không sao chép được, hãy chọn và sao chép thủ công.', true); }
+      document.body.removeChild(t);
+    }
+  }
+  $('copyAll').onclick = function () {
+    copy(rows.map(function (r) { return [r.pol, r.kod, r.nazev].join('\t'); }).join('\n'), 'Đã sao chép cả bảng (dán được vào Excel/Sheets).');
+  };
+  $('copyKod').onclick = function () { copy(rows.map(function (r) { return r.kod; }).join('\n'), 'Đã sao chép cột Kód.'); };
+  $('copyName').onclick = function () { copy(rows.map(function (r) { return r.nazev; }).join('\n'), 'Đã sao chép cột Název.'); };
+  $('csv').onclick = function () {
+    function q(v) { return '"' + String(v).replace(/"/g, '""') + '"'; }
+    // ="..." để Excel giữ mã 13 số dạng chữ, không đổi sang số khoa học.
+    var lines = ['Pol.;Kód;Název zboží'].concat(rows.map(function (r) {
+      return [q(r.pol), '="' + r.kod + '"', q(r.nazev)].join(';');
+    }));
+    var blob = new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+    if (viewerDownloads) {
+      viewerDownloads.save({ filename: 'phieu-hang-' + new Date().toISOString().slice(0, 10) + '.csv', data: blob })
+        .then(function () { setStatus('Đã lưu file CSV.'); },
+              function (e) { if (!e || e.code !== 'declined') setStatus('Không lưu được CSV: ' + ((e && e.message) || ''), true); });
+      return;
+    }
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = 'phieu-hang-' + new Date().toISOString().slice(0, 10) + '.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+  };
+
+  render();
+  initViewer();
+})();
+</script>
+</body>
+</html>
