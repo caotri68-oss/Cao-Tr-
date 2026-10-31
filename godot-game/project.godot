@@ -1,5 +1,5 @@
 ; Engine configuration file.
-; Mở project này bằng Godot: Import → chọn file project.godot.
+; Mở project này bằng Godot 4: Import → chọn file project.godot.
 
 config_version=5
 
@@ -8,3 +8,17 @@ config_version=5
 config/name="Đảo Hình Que"
 run/main_scene="res://main.tscn"
 config/icon="res://icon.svg"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+
+[rendering]
+
+anti_aliasing/quality/msaa_3d=2
+anti_aliasing/quality/screen_space_aa=1
+lights_and_shadows/directional_shadow/size=4096
+lights_and_shadows/directional_shadow/soft_shadow_filter_quality=4
+textures/default_filters/anisotropic_filtering_level=3
