@@ -78,7 +78,7 @@
           <option value="gemini">Gemini</option>
         </select>
       </div>
-      <div class="grow">
+      <div class="grow" id="keyWrap">
         <label for="apikey">API key</label>
         <input id="apikey" type="password" autocomplete="off" style="width:100%" placeholder="Dán API key vào đây">
       </div>
@@ -126,13 +126,38 @@
 
   $('provider').value = load('ps_provider') || 'claude';
   $('apikey').value = load('ps_key_' + $('provider').value);
-  if (!$('apikey').value) $('settings').hidden = false;
+
+  // Khi chạy trong Artifact của claude.ai: dùng Claude của người xem, không cần API key.
+  var viewerSample = null, viewerDownloads = null;
+  function syncKeyField() {
+    var v = $('provider').value === 'viewer';
+    $('apikey').disabled = v; $('keyWrap').style.opacity = v ? '.4' : '1';
+    $('clearKey').disabled = v;
+    $('apikey').value = v ? '' : load('ps_key_' + $('provider').value);
+  }
+  function initViewer() {
+    if (!window.claude || !window.claude.use) { if (!$('apikey').value) $('settings').hidden = false; return; }
+    Promise.all([window.claude.use('sample'), window.claude.use('downloads')]).then(function (r) {
+      viewerSample = r[0]; viewerDownloads = r[1];
+      if (!viewerSample) return;
+      return viewerSample.limits().catch(function () { return null; }).then(function (lim) {
+        if (!lim || !lim.images) { viewerSample = null; return; }
+        var o = document.createElement('option'); o.value = 'viewer'; o.textContent = 'Claude trong app (không cần key)';
+        $('provider').insertBefore(o, $('provider').firstChild);
+        var saved = load('ps_provider');
+        if (!saved || saved === 'viewer' || !load('ps_key_' + saved)) $('provider').value = 'viewer';
+        syncKeyField();
+      });
+    }).catch(function () {}).then(function () {
+      if ($('provider').value !== 'viewer' && !$('apikey').value) $('settings').hidden = false;
+    });
+  }
 
   $('settingsBtn').onclick = function () { $('settings').hidden = !$('settings').hidden; };
-  $('provider').onchange = function () { $('apikey').value = load('ps_key_' + $('provider').value); };
+  $('provider').onchange = function () { syncKeyField(); };
   $('saveKey').onclick = function () {
     store('ps_provider', $('provider').value);
-    store('ps_key_' + $('provider').value, $('apikey').value.trim());
+    if ($('provider').value !== 'viewer') store('ps_key_' + $('provider').value, $('apikey').value.trim());
     setStatus('Đã lưu cài đặt.');
     $('settings').hidden = true;
   };
@@ -224,16 +249,36 @@
     });
   }
 
+  function askViewer(blob) {
+    return viewerSample(PROMPT, { images: blob, cache: false }).then(function (r) { return r.text; });
+  }
+  function toJpegBlob(img, maxSide) {
+    return new Promise(function (resolve, reject) {
+      var w = img.naturalWidth, h = img.naturalHeight, k = Math.min(1, maxSide / Math.max(w, h));
+      var c = document.createElement('canvas'); c.width = Math.round(w * k); c.height = Math.round(h * k);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      c.toBlob(function (b) { b ? resolve(b) : reject(new Error('Không xử lý được ảnh.')); }, 'image/jpeg', 0.9);
+    });
+  }
+  function viewerErr(e) {
+    var map = { not_granted: 'Bạn chưa cho phép trang này dùng Claude. Tải lại trang và bấm Cho phép.',
+      rate_limited: 'Đang đạt giới hạn dùng Claude. Thử lại sau ít phút.',
+      image_rejected: 'Ảnh không dùng được. Thử ảnh khác.', refused: 'Claude từ chối đọc ảnh này.',
+      empty_completion: 'Claude không trả lời. Thử chụp lại rõ hơn.', upstream_error: 'Lỗi tạm thời. Thử lại.',
+      session_expired: 'Hết phiên đăng nhập, hãy tải lại trang.' };
+    return (e && map[e.code]) || (e && e.message) || String(e);
+  }
+
   var busy = false;
   function handleFile(file) {
     if (!file || busy) return;
     var provider = $('provider').value, key = load('ps_key_' + provider);
-    if (!key) { $('settings').hidden = false; setStatus('Hãy dán API key và bấm Lưu trước.', true); return; }
+    if (provider !== 'viewer' && !key) { $('settings').hidden = false; setStatus('Hãy dán API key và bấm Lưu trước.', true); return; }
     busy = true; setStatus('Đang đọc ảnh… (thường mất 10–30 giây)');
     loadImage(file).then(function (r) {
       var p = $('preview'); p.src = r.url; p.style.display = 'block';
-      var b64 = toJpegBase64(r.img, 2000);
-      return (provider === 'gemini' ? askGemini : askClaude)(key, b64);
+      if (provider === 'viewer') return toJpegBlob(r.img, 2000).then(askViewer);
+      return (provider === 'gemini' ? askGemini : askClaude)(key, toJpegBase64(r.img, 2000));
     }).then(function (text) {
       var added = P.toRows(P.parseModelJson(text));
       if (!added.length) throw new Error('Không đọc được dòng nào. Thử chụp lại gần và thẳng hơn.');
@@ -241,7 +286,7 @@
       var warn = added.filter(function (r) { return P.status(r.kod) !== 'ok'; }).length;
       setStatus('Đã thêm ' + added.length + ' dòng.' + (warn ? ' Có ' + warn + ' mã cần kiểm tra lại (đánh dấu ⚠).' : ''));
     }).catch(function (e) {
-      var m = e && e.message || String(e);
+      var m = provider === 'viewer' ? viewerErr(e) : (e && e.message || String(e));
       if (/Failed to fetch|NetworkError|Load failed/i.test(m)) m = 'Không kết nối được. Kiểm tra mạng rồi thử lại.';
       setStatus(m, true);
     }).then(function () { busy = false; $('cam').value = ''; $('pick').value = ''; });
@@ -310,6 +355,12 @@
       return [q(r.pol), '="' + r.kod + '"', q(r.nazev)].join(';');
     }));
     var blob = new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+    if (viewerDownloads) {
+      viewerDownloads.save({ filename: 'phieu-hang-' + new Date().toISOString().slice(0, 10) + '.csv', data: blob })
+        .then(function () { setStatus('Đã lưu file CSV.'); },
+              function (e) { if (!e || e.code !== 'declined') setStatus('Không lưu được CSV: ' + ((e && e.message) || ''), true); });
+      return;
+    }
     var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
     a.download = 'phieu-hang-' + new Date().toISOString().slice(0, 10) + '.csv';
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
@@ -317,6 +368,7 @@
   };
 
   render();
+  initViewer();
 })();
 </script>
 </body>
