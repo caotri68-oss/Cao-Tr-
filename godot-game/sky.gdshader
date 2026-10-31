@@ -25,7 +25,7 @@ float vnoise(vec2 p) {
 float fbm(vec2 p) {
 	float v = 0.0;
 	float a = 0.5;
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 3; i++) {
 		v += a * vnoise(p);
 		p = p * 2.07 + vec2(31.0, 17.0);
 		a *= 0.5;
@@ -55,7 +55,7 @@ void sky() {
 	if (y > 0.0) {
 		vec2 uv = dir.xz / (y + 0.18) * 0.9;
 		float n = fbm(uv * 1.3);
-		float detail = fbm(uv * 4.0 + 5.0);
+		float detail = vnoise(uv * 5.0 + 5.0);
 		float c = smoothstep(1.0 - cloud_cover, 1.0 - cloud_cover + 0.28, n * 0.8 + detail * 0.3);
 		float fade = smoothstep(0.0, 0.18, y);
 		// Mặt hướng về mặt trời sáng rực viền vàng, mặt khuất tối tím.

@@ -47,8 +47,6 @@ void fragment() {
 	vec3 c = mix(base_color, tip_color, k);
 	if (use_tex) {
 		c = texture(albedo_tex, UV * uv_scale).rgb;
-		NORMAL_MAP = texture(normal_tex, UV * uv_scale).rgb;
-		NORMAL_MAP_DEPTH = 1.2;
 		speck *= 0.3;
 	}
 	c *= (0.78 + speck) * (0.85 + 0.3 * v_tint);

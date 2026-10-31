@@ -40,14 +40,9 @@ float vnoise(vec2 p) {
 }
 
 float fbm(vec2 p) {
-	float v = 0.0;
-	float a = 0.5;
-	for (int i = 0; i < 3; i++) {
-		v += a * vnoise(p);
-		p = p * 2.03 + vec2(17.0, 9.0);
-		a *= 0.5;
-	}
-	return v;
+	float v = 0.5 * vnoise(p);
+	p = p * 2.03 + vec2(17.0, 9.0);
+	return v + 0.5 * vnoise(p) * 0.5 + 0.25;
 }
 
 void vertex() {
@@ -66,15 +61,12 @@ void fragment() {
 	vec2 q = world_pos.xz;
 	float t = TIME;
 
-	// Gợn nhỏ: độ dốc của hai lớp noise cuộn ngược chiều nhau.
-	vec2 u1 = q * 0.45 + vec2(t * 0.05, t * 0.03);
-	vec2 u2 = q * 1.3 - vec2(t * 0.06, -t * 0.045);
-	float e = 0.06;
-	float h1 = fbm(u1);
-	float h2 = fbm(u2);
-	vec2 g = vec2(fbm(u1 + vec2(e, 0.0)) - h1, fbm(u1 + vec2(0.0, e)) - h1) * 0.55
-		+ vec2(fbm(u2 + vec2(e, 0.0)) - h2, fbm(u2 + vec2(0.0, e)) - h2) * 0.30;
-	vec3 nw = normalize(w_normal + vec3(-g.x, 0.0, -g.y) * 2.2);
+	// Gợn nhỏ: tổng vài sóng sin (rẻ hơn noise).
+	vec2 g = vec2(
+		sin(q.y * 2.1 + t * 1.1) + sin(q.x * 3.3 - t * 0.9),
+		cos(q.x * 2.3 + t * 0.8) + cos(q.y * 3.1 - t * 1.0)
+	) * 0.035;
+	vec3 nw = normalize(w_normal + vec3(g.x, 0.0, g.y));
 	NORMAL = (VIEW_MATRIX * vec4(nw, 0.0)).xyz;
 
 	// Độ sâu so với đáy; dùng cùng hàm địa hình với terrain.gd.

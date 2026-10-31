@@ -1,39 +1,49 @@
 extends Node3D
 # Đảo Hình Que: dựng thế giới (trời, đảo, biển, rừng), người chơi, camera,
-# các đợt quái từ biển bò lên và hệ thống nâng cấp vũ khí.
+# cốt truyện, các đợt quái từ biển bò lên, cửa hàng nâng cấp.
+# Mặc định chạy ở mức đồ họa THẤP cho máy yếu (F2: đổi mức, F3: giảm rung).
 # Chạy thử tự động (không cần bấm gì): thêm tham số  -- --demo
 
 const Terrain = preload("res://terrain.gd")
 const Weapons = preload("res://weapons.gd")
 const Fx = preload("res://fx.gd")
+const Story = preload("res://story.gd")
 const PlayerScript = preload("res://player.gd")
 const MonsterScript = preload("res://monster.gd")
 const HudScript = preload("res://hud.gd")
 
 const SUN_DIR: Vector3 = Vector3(0.62, 0.42, -0.55)   # hướng TỚI mặt trời
 const TERRAIN_SIZE: float = 90.0
-const TERRAIN_GRID: int = 180
+const TERRAIN_GRID: int = 120
 const SPAWN_RADIUS: float = 28.0
+const FINAL_WAVE: int = 10
 
-enum Phase { MENU, FIGHT, SHOP, OVER }
+enum Phase { MENU, STORY, FIGHT, SHOP, OVER, VICTORY }
 
 var player: Node3D
 var cam: Camera3D
 var hud: CanvasLayer
+var env: Environment
+var sun: DirectionalLight3D
 var phase: Phase = Phase.MENU
 var wave: int = 0
 var queue: Array[String] = []
 var spawn_timer: float = 0.0
 var shake_amt: float = 0.0
+var shake_scale: float = 0.35
 var cam_pos: Vector3 = Vector3.ZERO
 var rng := RandomNumberGenerator.new()
 var demo: bool = false
 var demo_t: float = 0.0
 var spawn_radius: float = SPAWN_RADIUS
 var showcase: bool = false
-var env: Environment
-var low_quality: bool = false
+var god: bool = false
+var story_preview: bool = false
+var shop_preview: bool = false
 var cam_fix: PackedFloat64Array = PackedFloat64Array()
+var quality: int = 0
+var intro_done: bool = false
+var endless: bool = false
 
 func _ready() -> void:
 	rng.seed = 20261030
@@ -42,6 +52,15 @@ func _ready() -> void:
 			demo = true
 		elif a == "--showcase":
 			showcase = true
+		elif a == "--god":
+			god = true
+		elif a == "--story":
+			story_preview = true
+		elif a == "--shop":
+			shop_preview = true
+		elif a.begins_with("--startwave="):
+			wave = int(a.substr(12)) - 1
+			intro_done = true
 		elif a.begins_with("--cam="):
 			cam_fix = a.substr(6).split_floats(",")
 	if demo:
@@ -54,8 +73,14 @@ func _ready() -> void:
 	_build_player()
 	_build_camera()
 	_build_hud()
+	_apply_quality()
 	if showcase:
 		_build_showcase()
+		if shop_preview:
+			player.levels["sword"] = 3
+			hud.show_shop(5, 260, player.levels, 60.0, 100.0, player.passives)
+		if story_preview:
+			hud.show_story(Story.WAVES[5]["pages"], func(): pass)
 	elif demo:
 		player.ai_control = true
 		_on_start_wave()
@@ -81,47 +106,50 @@ func _setup_input() -> void:
 	_add_action("move_up", [KEY_W, KEY_UP])
 	_add_action("move_down", [KEY_S, KEY_DOWN])
 	_add_action("attack", [KEY_SPACE, KEY_J])
-	_add_action("skill", [KEY_E, KEY_K])
+	_add_action("heavy", [KEY_K])
+	_add_action("skill_e", [KEY_E])
+	_add_action("skill_r", [KEY_R])
+	_add_action("skill_q", [KEY_Q])
+	_add_action("block", [KEY_F])
 	_add_action("dodge", [KEY_SHIFT, KEY_L])
 	_add_action("weapon_1", [KEY_1])
 	_add_action("weapon_2", [KEY_2])
 	_add_action("weapon_3", [KEY_3])
-	_add_action("weapon_next", [KEY_Q])
+	_add_action("weapon_next", [KEY_TAB])
 	_add_action("confirm", [KEY_ENTER, KEY_KP_ENTER])
 
-func _toggle_quality() -> void:
-	low_quality = not low_quality
-	env.volumetric_fog_enabled = not low_quality
-	env.ssao_enabled = not low_quality
-	get_viewport().msaa_3d = Viewport.MSAA_DISABLED if low_quality else Viewport.MSAA_4X
-	hud.show_toast("Đồ họa: THẤP  (F2 để đổi)" if low_quality else "Đồ họa: CAO  (F2 để đổi)")
-
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_F2:
-		_toggle_quality()
-		return
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.physical_keycode == KEY_F2:
+			quality = 1 - quality
+			_apply_quality()
+			hud.show_toast("Đồ họa: THẤP" if quality == 0 else "Đồ họa: VỪA")
+			return
+		if event.physical_keycode == KEY_F3:
+			shake_scale = 0.0 if shake_scale > 0.0 else 0.35
+			PlayerScript.hitstop_on = shake_scale > 0.0
+			hud.show_toast("Rung màn hình: TẮT" if shake_scale == 0.0 else "Rung màn hình: nhẹ")
+			return
 	if event.is_action_pressed("confirm"):
 		match phase:
 			Phase.MENU, Phase.SHOP: _on_start_wave()
 			Phase.OVER: get_tree().reload_current_scene()
+			Phase.VICTORY: _on_continue()
 
 # ------------------------------------------------------------- môi trường
 
-func _noise_tex(freq: float, normal: bool, ramp: Array[Color] = [],
-		type: int = FastNoiseLite.TYPE_SIMPLEX_SMOOTH, size: int = 512, bump: float = 4.0) -> NoiseTexture2D:
+func _noise_tex(freq: float, ramp: Array[Color] = [],
+		type: int = FastNoiseLite.TYPE_SIMPLEX_SMOOTH, size: int = 256) -> NoiseTexture2D:
 	var n := FastNoiseLite.new()
 	n.noise_type = type
 	n.frequency = freq
-	n.fractal_octaves = 4
+	n.fractal_octaves = 3
 	var t := NoiseTexture2D.new()
 	t.noise = n
 	t.width = size
 	t.height = size
 	t.seamless = true
-	t.as_normal_map = normal
-	if normal:
-		t.bump_strength = bump
-	elif ramp.size() >= 2:
+	if ramp.size() >= 2:
 		var g := Gradient.new()
 		g.set_color(0, ramp[0])
 		g.set_color(1, ramp[ramp.size() - 1])
@@ -136,7 +164,7 @@ func _build_environment() -> void:
 	sky_mat.set_shader_parameter("sun_dir", SUN_DIR.normalized())
 	var sky := Sky.new()
 	sky.sky_material = sky_mat
-	sky.radiance_size = Sky.RADIANCE_SIZE_256
+	sky.radiance_size = Sky.RADIANCE_SIZE_64
 
 	env = Environment.new()
 	env.background_mode = Environment.BG_SKY
@@ -147,24 +175,16 @@ func _build_environment() -> void:
 	env.tonemap_mode = Environment.TONE_MAPPER_ACES
 	env.tonemap_exposure = 1.0
 	env.tonemap_white = 6.0
-	env.glow_enabled = true
+	env.glow_enabled = false
 	env.glow_intensity = 0.55
 	env.glow_bloom = 0.04
 	env.glow_hdr_threshold = 1.1
 	env.glow_blend_mode = Environment.GLOW_BLEND_MODE_SCREEN
-	env.ssao_enabled = true
-	env.ssao_radius = 1.6
-	env.ssao_intensity = 2.2
 	env.fog_enabled = true
 	env.fog_light_color = Color(0.74, 0.62, 0.58)
 	env.fog_density = 0.0045
 	env.fog_sun_scatter = 0.4
 	env.fog_sky_affect = 0.35
-	env.volumetric_fog_enabled = true
-	env.volumetric_fog_density = 0.006
-	env.volumetric_fog_albedo = Color(0.95, 0.78, 0.62)
-	env.volumetric_fog_length = 90.0
-	env.volumetric_fog_anisotropy = 0.6
 	env.adjustment_enabled = true
 	env.adjustment_contrast = 1.07
 	env.adjustment_saturation = 1.08
@@ -173,15 +193,12 @@ func _build_environment() -> void:
 	we.environment = env
 	add_child(we)
 
-	var sun := DirectionalLight3D.new()
+	sun = DirectionalLight3D.new()
 	sun.light_color = Color(1.0, 0.80, 0.60)
 	sun.light_energy = 2.6
 	sun.shadow_enabled = true
-	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS
-	sun.directional_shadow_max_distance = 90.0
-	sun.directional_shadow_blend_splits = true
-	sun.light_angular_distance = 0.8
-	sun.shadow_blur = 1.4
+	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL
+	sun.directional_shadow_max_distance = 45.0
 	add_child(sun)
 	sun.position = SUN_DIR.normalized() * 80.0
 	sun.look_at(Vector3.ZERO)
@@ -192,6 +209,24 @@ func _build_environment() -> void:
 	add_child(fill)
 	fill.position = Vector3(-0.6, 0.5, 0.6) * 80.0
 	fill.look_at(Vector3.ZERO)
+
+# Mức đồ họa: 0 = THẤP (mặc định, cho máy yếu), 1 = VỪA.
+func _apply_quality() -> void:
+	var vp: Viewport = get_viewport()
+	vp.msaa_3d = Viewport.MSAA_DISABLED
+	vp.screen_space_aa = Viewport.SCREEN_SPACE_AA_DISABLED
+	if quality == 0:
+		vp.scaling_3d_scale = 0.7
+		env.glow_enabled = false
+		sun.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL
+		sun.directional_shadow_max_distance = 40.0
+		RenderingServer.directional_shadow_atlas_set_size(1024, true)
+	else:
+		vp.scaling_3d_scale = 0.9
+		env.glow_enabled = true
+		sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
+		sun.directional_shadow_max_distance = 70.0
+		RenderingServer.directional_shadow_atlas_set_size(2048, true)
 
 # ------------------------------------------------------------------ địa hình
 
@@ -264,11 +299,7 @@ func _build_terrain() -> void:
 	mat.vertex_color_use_as_albedo = true
 	mat.vertex_color_is_srgb = true
 	mat.roughness = 0.95
-	mat.albedo_texture = _noise_tex(0.035, false, [Color(0.62, 0.62, 0.62), Color(0.88, 0.88, 0.88), Color(1.0, 1.0, 1.0)],
-		FastNoiseLite.TYPE_SIMPLEX_SMOOTH, 512)
-	mat.normal_enabled = true
-	mat.normal_texture = _noise_tex(0.06, true, [], FastNoiseLite.TYPE_SIMPLEX_SMOOTH, 512, 6.0)
-	mat.normal_scale = 1.0
+	mat.albedo_texture = _noise_tex(0.035, [Color(0.62, 0.62, 0.62), Color(0.88, 0.88, 0.88), Color(1.0, 1.0, 1.0)])
 	mat.uv1_triplanar = true
 	mat.uv1_world_triplanar = true
 	mat.uv1_scale = Vector3(0.35, 0.35, 0.35)
@@ -281,23 +312,24 @@ func _build_water() -> void:
 	var mat := ShaderMaterial.new()
 	mat.shader = load("res://water.gdshader")
 	var near := PlaneMesh.new()
-	near.size = Vector2(300, 300)
-	near.subdivide_width = 240
-	near.subdivide_depth = 240
+	near.size = Vector2(220, 220)
+	near.subdivide_width = 110
+	near.subdivide_depth = 110
 	var mi := MeshInstance3D.new()
 	mi.mesh = near
 	mi.material_override = mat
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(mi)
-	# Mặt biển xa tới chân trời (thấp hơn chút để không chồng lên mặt gần).
+	# Mặt biển xa tới chân trời: một mảnh phẳng, rẻ.
 	var far := PlaneMesh.new()
-	far.size = Vector2(4000, 4000)
-	far.subdivide_width = 24
-	far.subdivide_depth = 24
+	far.size = Vector2(3000, 3000)
+	var fm := StandardMaterial3D.new()
+	fm.albedo_color = Color(0.02, 0.12, 0.18)
+	fm.roughness = 0.12
 	var fi := MeshInstance3D.new()
 	fi.mesh = far
-	fi.material_override = mat
-	fi.position.y = -0.45
+	fi.material_override = fm
+	fi.position.y = -0.4
 	fi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(fi)
 
@@ -343,21 +375,21 @@ func _cylm(r_top: float, r_bot: float, h: float, seg: int = 8) -> CylinderMesh:
 	c.bottom_radius = r_bot
 	c.height = h
 	c.radial_segments = seg
-	c.rings = 2
+	c.rings = 1
 	return c
 
 func _pine_mesh(trunk_mat: Material, leaf_mat: Material) -> ArrayMesh:
 	var am := ArrayMesh.new()
-	var trunk_parts: Array = [[_cylm(0.09, 0.22, 2.4, 8), Transform3D(Basis(), Vector3(0, 1.2, 0))]]
+	var trunk_parts: Array = [[_cylm(0.09, 0.22, 2.4, 7), Transform3D(Basis(), Vector3(0, 1.2, 0))]]
 	_surface(trunk_parts).commit(am)
 	var leaf_parts: Array = []
-	var layers: Array = [[1.75, 2.0, 1.7], [1.45, 1.9, 2.8], [1.15, 1.7, 3.8], [0.85, 1.5, 4.8], [0.5, 1.3, 5.8]]
+	var layers: Array = [[1.75, 2.0, 1.7], [1.35, 1.9, 2.9], [0.95, 1.6, 4.0], [0.55, 1.4, 5.1]]
 	for L in layers:
 		var r: float = float(L[0]) * rng.randf_range(0.92, 1.08)
 		var hh: float = float(L[1])
 		var y0: float = float(L[2])
 		var b := Basis(Vector3.UP, rng.randf() * TAU)
-		leaf_parts.append([_cylm(0.0, r, hh, 9), Transform3D(b, Vector3(rng.randf_range(-0.08, 0.08), y0 + hh * 0.5, rng.randf_range(-0.08, 0.08)))])
+		leaf_parts.append([_cylm(0.0, r, hh, 8), Transform3D(b, Vector3(rng.randf_range(-0.08, 0.08), y0 + hh * 0.5, rng.randf_range(-0.08, 0.08)))])
 	_surface(leaf_parts).commit(am)
 	am.surface_set_material(0, trunk_mat)
 	am.surface_set_material(1, leaf_mat)
@@ -367,29 +399,28 @@ func _palm_mesh(trunk_mat: Material, leaf_mat: Material) -> ArrayMesh:
 	var am := ArrayMesh.new()
 	var trunk_parts: Array = []
 	var cur := Transform3D(Basis(Vector3.BACK, 0.12), Vector3.ZERO)
-	var seg_h: float = 0.95
-	for i in 7:
-		var rb: float = lerpf(0.24, 0.13, float(i) / 6.0)
-		var rt: float = lerpf(0.24, 0.13, float(i + 1) / 6.0)
-		trunk_parts.append([_cylm(rt, rb, seg_h, 8), cur * Transform3D(Basis(), Vector3(0, seg_h * 0.5, 0))])
+	var seg_h: float = 1.1
+	for i in 5:
+		var rb: float = lerpf(0.24, 0.13, float(i) / 4.0)
+		var rt: float = lerpf(0.24, 0.13, float(i + 1) / 4.0)
+		trunk_parts.append([_cylm(rt, rb, seg_h, 7), cur * Transform3D(Basis(), Vector3(0, seg_h * 0.5, 0))])
 		cur = cur.translated_local(Vector3(0, seg_h, 0))
-		cur = cur.rotated_local(Vector3.RIGHT, 0.075)
+		cur = cur.rotated_local(Vector3.RIGHT, 0.1)
 	_surface(trunk_parts).commit(am)
 	var leaf_parts: Array = []
-	var fronds: int = 13
+	var fronds: int = 9
 	for k in fronds:
 		var yawk: float = TAU * float(k) / float(fronds) + rng.randf_range(-0.15, 0.15)
 		var fx := cur * Transform3D(Basis(Vector3.UP, yawk), Vector3.ZERO)
 		fx = fx.rotated_local(Vector3.RIGHT, rng.randf_range(0.5, 1.0))
-		for s in 6:
-			var len: float = 0.55
-			var w: float = 0.5 * (1.0 - float(s) * 0.13)
-			for sgn in [-1.0, 1.0]:
-				var bx := BoxMesh.new()
-				bx.size = Vector3(w * 0.55, 0.02, len * 1.05)
-				leaf_parts.append([bx, fx * Transform3D(Basis(Vector3.BACK, sgn * 0.45), Vector3(sgn * w * 0.24, 0, -len * 0.5))])
+		for s in 4:
+			var len: float = 0.8
+			var w: float = 0.7 * (1.0 - float(s) * 0.17)
+			var bx := BoxMesh.new()
+			bx.size = Vector3(w, 0.02, len * 1.05)
+			leaf_parts.append([bx, fx * Transform3D(Basis(), Vector3(0, 0, -len * 0.5))])
 			fx = fx.translated_local(Vector3(0, 0, -len))
-			fx = fx.rotated_local(Vector3.RIGHT, -0.36)
+			fx = fx.rotated_local(Vector3.RIGHT, -0.5)
 	_surface(leaf_parts).commit(am)
 	am.surface_set_material(0, trunk_mat)
 	am.surface_set_material(1, leaf_mat)
@@ -398,13 +429,13 @@ func _palm_mesh(trunk_mat: Material, leaf_mat: Material) -> ArrayMesh:
 func _bush_mesh(leaf_mat: Material) -> ArrayMesh:
 	var am := ArrayMesh.new()
 	var parts: Array = []
-	for i in 4:
+	for i in 3:
 		var s := SphereMesh.new()
 		var r: float = rng.randf_range(0.42, 0.7)
 		s.radius = r
 		s.height = r * 1.5
-		s.radial_segments = 8
-		s.rings = 4
+		s.radial_segments = 7
+		s.rings = 3
 		parts.append([s, Transform3D(Basis(), Vector3(rng.randf_range(-0.45, 0.45), r * 0.55, rng.randf_range(-0.45, 0.45)))])
 	_surface(parts).commit(am)
 	am.surface_set_material(0, leaf_mat)
@@ -414,8 +445,8 @@ func _rock_mesh(mat: Material) -> ArrayMesh:
 	var sph := SphereMesh.new()
 	sph.radius = 1.0
 	sph.height = 2.0
-	sph.radial_segments = 10
-	sph.rings = 6
+	sph.radial_segments = 8
+	sph.rings = 5
 	var arr: Array = sph.get_mesh_arrays()
 	var v: PackedVector3Array = arr[Mesh.ARRAY_VERTEX]
 	var ind: PackedInt32Array = arr[Mesh.ARRAY_INDEX]
@@ -437,38 +468,32 @@ func _ground_ok(x: float, z: float, hmin: float, hmax: float, slope_max: float =
 	return (1.0 - Terrain.normal(x, z).y) < slope_max
 
 func _build_vegetation() -> void:
-	var bark_albedo := _noise_tex(0.05, false, [Color(0.12, 0.08, 0.05), Color(0.30, 0.22, 0.15), Color(0.45, 0.35, 0.25)],
-		FastNoiseLite.TYPE_SIMPLEX_SMOOTH, 512)
-	var bark_normal := _noise_tex(0.06, true, [], FastNoiseLite.TYPE_SIMPLEX_SMOOTH, 512, 9.0)
-	var trunk_mat := _foliage_mat(Color.WHITE, Color.WHITE, 4.0, 0.45, 0.5, 7.5, 0.9, 0.0)
+	var bark_albedo := _noise_tex(0.05, [Color(0.12, 0.08, 0.05), Color(0.30, 0.22, 0.15), Color(0.45, 0.35, 0.25)])
+	var trunk_mat := _foliage_mat(Color.WHITE, Color.WHITE, 4.0, 0.12, 0.5, 7.5, 0.9, 0.0)
 	trunk_mat.set_shader_parameter("use_tex", true)
 	trunk_mat.set_shader_parameter("albedo_tex", bark_albedo)
-	trunk_mat.set_shader_parameter("normal_tex", bark_normal)
-	var palm_trunk := _foliage_mat(Color.WHITE, Color.WHITE, 4.0, 0.55, 1.0, 6.0, 0.9, 0.0)
+	var palm_trunk := _foliage_mat(Color.WHITE, Color.WHITE, 4.0, 0.16, 1.0, 6.0, 0.9, 0.0)
 	palm_trunk.set_shader_parameter("use_tex", true)
 	palm_trunk.set_shader_parameter("albedo_tex", bark_albedo)
-	palm_trunk.set_shader_parameter("normal_tex", bark_normal)
 	palm_trunk.set_shader_parameter("uv_scale", Vector2(2.0, 1.0))
 
-	var pine_leaf := _foliage_mat(Color(0.03, 0.10, 0.05), Color(0.13, 0.26, 0.09), 7.0, 0.45, 0.5, 7.5, 0.9, 0.15)
-	var palm_leaf := _foliage_mat(Color(0.08, 0.22, 0.05), Color(0.32, 0.52, 0.12), 7.5, 0.65, 1.0, 6.0, 0.7, 0.55)
-	var bush_leaf := _foliage_mat(Color(0.04, 0.13, 0.05), Color(0.18, 0.32, 0.09), 1.2, 0.12, 0.1, 1.2)
-	var grass_mat := _foliage_mat(Color(0.05, 0.12, 0.03), Color(0.40, 0.52, 0.17), 0.8, 0.26, 0.0, 0.8, 0.9, 0.55)
+	var pine_leaf := _foliage_mat(Color(0.03, 0.10, 0.05), Color(0.13, 0.26, 0.09), 7.0, 0.14, 0.5, 7.5, 0.9, 0.15)
+	var palm_leaf := _foliage_mat(Color(0.08, 0.22, 0.05), Color(0.32, 0.52, 0.12), 7.5, 0.2, 1.0, 6.0, 0.7, 0.55)
+	var bush_leaf := _foliage_mat(Color(0.04, 0.13, 0.05), Color(0.18, 0.32, 0.09), 1.2, 0.05, 0.1, 1.2)
+	var grass_mat := _foliage_mat(Color(0.05, 0.12, 0.03), Color(0.40, 0.52, 0.17), 0.8, 0.1, 0.0, 0.8, 0.9, 0.55)
 
 	var placed: Array[Vector2] = []
 
 	var pine_xf: Array[Transform3D] = []
 	var tries: int = 0
-	while pine_xf.size() < 30 and tries < 4000:
+	while pine_xf.size() < 20 and tries < 3000:
 		tries += 1
 		var p := Vector2(rng.randf_range(-21, 21), rng.randf_range(-21, 21))
-		if not _ground_ok(p.x, p.y, 0.9, 5.0, 0.3):
-			continue
-		if p.length() < 8.0:
+		if not _ground_ok(p.x, p.y, 0.9, 5.0, 0.3) or p.length() < 8.0:
 			continue
 		var close: bool = false
 		for q in placed:
-			if q.distance_to(p) < 2.7:
+			if q.distance_to(p) < 3.0:
 				close = true
 				break
 		if close:
@@ -481,14 +506,14 @@ func _build_vegetation() -> void:
 
 	var palm_xf: Array[Transform3D] = []
 	tries = 0
-	while palm_xf.size() < 30 and tries < 4000:
+	while palm_xf.size() < 14 and tries < 3000:
 		tries += 1
 		var p := Vector2(rng.randf_range(-21, 21), rng.randf_range(-21, 21))
 		if not _ground_ok(p.x, p.y, 0.2, 1.0, 0.3) or p.length() < 7.0:
 			continue
 		var close: bool = false
 		for q in placed:
-			if q.distance_to(p) < 3.2:
+			if q.distance_to(p) < 3.4:
 				close = true
 				break
 		if close:
@@ -501,12 +526,10 @@ func _build_vegetation() -> void:
 
 	var bush_xf: Array[Transform3D] = []
 	tries = 0
-	while bush_xf.size() < 70 and tries < 4000:
+	while bush_xf.size() < 24 and tries < 3000:
 		tries += 1
 		var p := Vector2(rng.randf_range(-21, 21), rng.randf_range(-21, 21))
-		if not _ground_ok(p.x, p.y, 0.5, 3.5, 0.3):
-			continue
-		if p.length() < 5.5:
+		if not _ground_ok(p.x, p.y, 0.5, 3.5, 0.3) or p.length() < 5.5:
 			continue
 		var s: float = rng.randf_range(0.5, 1.0)
 		var b := Basis(Vector3.UP, rng.randf() * TAU) * Basis.from_scale(Vector3(s, s * rng.randf_range(0.8, 1.2), s))
@@ -516,22 +539,17 @@ func _build_vegetation() -> void:
 	var rock_mat := StandardMaterial3D.new()
 	rock_mat.albedo_color = Color(0.30, 0.30, 0.31)
 	rock_mat.roughness = 0.92
-	rock_mat.albedo_texture = _noise_tex(0.05, false, [Color(0.55, 0.55, 0.55), Color(1, 1, 1)],
-		FastNoiseLite.TYPE_CELLULAR, 512)
-	rock_mat.normal_enabled = true
-	rock_mat.normal_texture = _noise_tex(0.07, true, [], FastNoiseLite.TYPE_SIMPLEX_SMOOTH, 512, 8.0)
+	rock_mat.albedo_texture = _noise_tex(0.05, [Color(0.55, 0.55, 0.55), Color(1, 1, 1)], FastNoiseLite.TYPE_CELLULAR)
 	rock_mat.uv1_triplanar = true
 	rock_mat.uv1_world_triplanar = true
 	rock_mat.uv1_scale = Vector3(0.6, 0.6, 0.6)
 	var rock_xf: Array[Transform3D] = []
 	tries = 0
-	while rock_xf.size() < 90 and tries < 5000:
+	while rock_xf.size() < 36 and tries < 3000:
 		tries += 1
 		var p := Vector2(rng.randf_range(-24, 24), rng.randf_range(-24, 24))
 		var h: float = Terrain.h(p.x, p.y)
-		if h < -0.6 or h > 3.0:
-			continue
-		if p.length() < 6.0 and h > 0.5:
+		if h < -0.6 or h > 3.0 or (p.length() < 6.0 and h > 0.5):
 			continue
 		var big: bool = rng.randf() < 0.15
 		var sc: float = rng.randf_range(0.6, 1.2) if big else rng.randf_range(0.15, 0.45)
@@ -541,18 +559,17 @@ func _build_vegetation() -> void:
 	_scatter(_rock_mesh(rock_mat), rock_xf)
 
 	var blade := _cylm(0.0, 0.035, 0.75, 3)
-	blade.rings = 1
 	var grass_xf: Array[Transform3D] = []
 	tries = 0
-	while grass_xf.size() < 9000 and tries < 40000:
+	while grass_xf.size() < 2400 and tries < 20000:
 		tries += 1
 		var p := Vector2(rng.randf_range(-21, 21), rng.randf_range(-21, 21))
 		if not _ground_ok(p.x, p.y, 0.45, 4.0, 0.3):
 			continue
-		var sy: float = rng.randf_range(0.45, 1.05)
+		var sy: float = rng.randf_range(0.5, 1.1)
 		var b := Basis(Vector3.UP, rng.randf() * TAU) * Basis(Vector3.RIGHT, rng.randf_range(-0.25, 0.25)) \
-			* Basis.from_scale(Vector3(rng.randf_range(0.8, 1.4), sy, rng.randf_range(0.8, 1.4)))
-		grass_xf.append(Transform3D(b, Vector3(p.x, Terrain.h(p.x, p.y) + 0.37 * sy * 0.0, p.y)))
+			* Basis.from_scale(Vector3(rng.randf_range(0.9, 1.5), sy, rng.randf_range(0.9, 1.5)))
+		grass_xf.append(Transform3D(b, Vector3(p.x, Terrain.h(p.x, p.y), p.y)))
 	var grass_mesh := ArrayMesh.new()
 	_surface([[blade, Transform3D(Basis(), Vector3(0, 0.375, 0))]]).commit(grass_mesh)
 	grass_mesh.surface_set_material(0, grass_mat)
@@ -565,13 +582,13 @@ func _build_player() -> void:
 	player.world = self
 	player.position = Vector3(2.0, 0.0, 3.0)
 	add_child(player)
-	player.shake.connect(func(a: float): shake_amt = maxf(shake_amt, a))
+	player.shake.connect(func(a: float): shake_amt = maxf(shake_amt, a * shake_scale))
 	player.died.connect(_on_player_died)
 
 func _build_camera() -> void:
 	cam = Camera3D.new()
 	cam.fov = 56.0
-	cam.far = 1500.0
+	cam.far = 800.0
 	cam.near = 0.1
 	add_child(cam)
 	cam.current = true
@@ -586,6 +603,8 @@ func _build_hud() -> void:
 	hud.upgrade_weapon.connect(_on_upgrade)
 	hud.buy_heal.connect(_on_buy_heal)
 	hud.buy_max_hp.connect(_on_buy_max_hp)
+	hud.buy_passive.connect(_on_buy_passive)
+	hud.continue_endless.connect(_on_continue)
 	hud.restart.connect(func(): get_tree().reload_current_scene())
 	player.hp_changed.connect(hud.set_hp)
 	player.damaged.connect(hud.flash_damage)
@@ -597,11 +616,11 @@ func _build_hud() -> void:
 func _refresh_weapon_hud() -> void:
 	hud.set_weapon(player.weapon, player.levels)
 
-# Chế độ xem thử (-- --showcase): đặt sẵn 3 loại quái đứng yên để kiểm tra hình dáng.
+# Chế độ xem thử (-- --showcase): đặt sẵn các loại quái đứng yên để kiểm tra hình dáng.
 func _build_showcase() -> void:
 	hud.hide_menu()
 	player.position = Vector3(-1.5, 0.0, 5.0)
-	var spots := {"crab": Vector3(-4.0, 0, 1.0), "merman": Vector3(0.5, 0, 1.0), "kraken": Vector3(6.0, 0, -1.5)}
+	var spots := {"crab": Vector3(-4.0, 0, 1.0), "merman": Vector3(0.5, 0, 1.0), "jelly": Vector3(3.2, 0, 2.0), "kraken": Vector3(7.0, 0, -1.5)}
 	for kind in spots:
 		var m: Node3D = MonsterScript.new()
 		m.setup(kind, player, self, 1)
@@ -609,16 +628,29 @@ func _build_showcase() -> void:
 		m.frozen = true
 		add_child(m)
 
+# ------------------------------------------------------------------- cốt truyện
+
+func _begin_story(pages: Array, cb: Callable) -> void:
+	if demo:
+		cb.call()
+		return
+	get_tree().paused = true
+	hud.show_story(pages, func():
+		get_tree().paused = false
+		cb.call())
+
 # ------------------------------------------------------------------- đợt quái
 
 func _compose_wave(w: int) -> Array[String]:
 	var list: Array[String] = []
-	var n: int = 3 + w * 2
+	var n: int = mini(3 + w * 2, 30)
+	var p_mer: float = clampf(0.12 * float(w - 1), 0.0, 0.5) if w >= 2 else 0.0
+	var p_jel: float = clampf(0.07 * float(w - 3), 0.0, 0.3) if w >= 4 else 0.0
 	for i in n:
 		var r: float = rng.randf()
-		if w >= 3 and r < 0.22 + 0.03 * float(w):
-			list.append("merman")
-		elif w == 2 and r < 0.3:
+		if r < p_jel:
+			list.append("jelly")
+		elif r < p_jel + p_mer:
 			list.append("merman")
 		else:
 			list.append("crab")
@@ -628,22 +660,42 @@ func _compose_wave(w: int) -> Array[String]:
 	return list
 
 func _on_start_wave() -> void:
-	if phase == Phase.FIGHT or phase == Phase.OVER:
+	if phase == Phase.FIGHT or phase == Phase.OVER or phase == Phase.STORY or phase == Phase.VICTORY:
 		return
+	var pages: Array = []
+	if not intro_done:
+		intro_done = true
+		pages.append_array(Story.INTRO)
+	pages.append_array(Story.wave_pages(wave + 1))
+	phase = Phase.STORY
+	hud.hide_menu()
+	_begin_story(pages, _begin_wave)
+
+func _begin_wave() -> void:
 	wave += 1
 	queue = _compose_wave(wave)
 	spawn_timer = 0.8
 	phase = Phase.FIGHT
 	hud.hide_menu()
-	hud.show_toast("Đợt %d" % wave + ("  —  HẢI QUÁI XUẤT HIỆN!" if wave % 5 == 0 else ""))
+	hud.show_toast("Đợt %d  —  %s" % [wave, Story.title(wave)])
+
+func _spawn_at(kind: String, pos: Vector3) -> void:
+	var m: Node3D = MonsterScript.new()
+	m.setup(kind, player, self, wave)
+	m.position = pos
+	add_child(m)
+	m.died.connect(_on_monster_died)
+	m.summon.connect(_on_summon.bind(m))
 
 func _spawn_one(kind: String) -> void:
 	var ang: float = rng.randf() * TAU
-	var m: Node3D = MonsterScript.new()
-	m.setup(kind, player, self, wave)
-	m.position = Vector3(cos(ang) * spawn_radius, 0.0, sin(ang) * spawn_radius)
-	add_child(m)
-	m.died.connect(_on_monster_died)
+	_spawn_at(kind, Vector3(cos(ang) * spawn_radius, 0.0, sin(ang) * spawn_radius))
+
+func _on_summon(kind: String, count: int, boss: Node3D) -> void:
+	for i in count:
+		var ang: float = rng.randf() * TAU
+		var off := Vector3(cos(ang), 0.0, sin(ang)) * rng.randf_range(3.0, 5.5)
+		_spawn_at(kind, boss.global_position + off)
 
 func _monsters_left() -> int:
 	return get_tree().get_nodes_in_group("monsters").size() + queue.size()
@@ -652,14 +704,47 @@ func _on_monster_died(m: Node3D) -> void:
 	var g: int = int(m.get("gold"))
 	player.gold += g
 	hud.set_gold(player.gold)
+	if player.kill_heal > 0.0:
+		player.heal(player.kill_heal)
 	Fx.damage_text(self, m.global_position + Vector3(0, float(m.get("height")) + 0.6, 0), "+%d" % g, Color(1.0, 0.82, 0.3))
 
 func _on_player_died() -> void:
 	phase = Phase.OVER
 	hud.show_game_over(wave - 1)
 
+func _on_wave_cleared() -> void:
+	var bonus: int = 20 + wave * 5
+	player.gold += bonus
+	hud.set_gold(player.gold)
+	hud.show_toast("Quét sạch! +%d vàng" % bonus)
+	if wave == 5:
+		# Mảnh Tâm Biển: thưởng sau trùm đầu.
+		player.dmg_mult *= 1.15
+		player.full_heal()
+	var pages: Array = Story.clear_pages(wave).duplicate()
+	var finale: bool = wave == FINAL_WAVE and not endless
+	if finale:
+		pages.append_array(Story.ENDING)
+	phase = Phase.STORY
+	_begin_story(pages, _after_clear.bind(finale))
+
+func _after_clear(finale: bool) -> void:
+	if finale:
+		phase = Phase.VICTORY
+		hud.show_victory()
+	else:
+		phase = Phase.SHOP
+		_open_shop()
+
+func _on_continue() -> void:
+	if phase != Phase.VICTORY:
+		return
+	endless = true
+	phase = Phase.SHOP
+	_open_shop()
+
 func _open_shop() -> void:
-	hud.show_shop(wave, player.gold, player.levels, player.hp, player.max_hp)
+	hud.show_shop(wave, player.gold, player.levels, player.hp, player.max_hp, player.passives)
 
 func _on_upgrade(id: String) -> void:
 	var lvl: int = int(player.levels[id])
@@ -673,6 +758,16 @@ func _on_upgrade(id: String) -> void:
 	hud.set_gold(player.gold)
 	_refresh_weapon_hud()
 	hud.show_toast("%s lên Lv %d!" % [Weapons.wname(id), lvl + 1])
+	_open_shop()
+
+func _on_buy_passive(id: String) -> void:
+	var lvl: int = int(player.passives[id])
+	var cost: int = (50 if id == "speed" else 60) * (lvl + 1)
+	if lvl >= 5 or player.gold < cost:
+		return
+	player.gold -= cost
+	player.add_passive(id)
+	hud.set_gold(player.gold)
 	_open_shop()
 
 func _on_buy_heal() -> void:
@@ -699,17 +794,17 @@ func _process(delta: float) -> void:
 		if spawn_timer <= 0.0 and not queue.is_empty():
 			_spawn_one(queue.pop_front())
 			spawn_timer = maxf(0.45, 2.0 - float(wave) * 0.1)
-		hud.set_wave(wave, _monsters_left())
+		hud.set_wave(wave, _monsters_left(), Story.title(wave))
 		if queue.is_empty() and get_tree().get_nodes_in_group("monsters").is_empty():
-			phase = Phase.SHOP
-			var bonus: int = 20 + wave * 5
-			player.gold += bonus
-			hud.set_gold(player.gold)
-			hud.show_toast("Quét sạch! +%d vàng" % bonus)
-			_open_shop()
-			hud.set_wave(wave, 0)
-	if player.skill_cd_total > 0.0:
-		hud.set_skill(1.0 - player.skill_cd_left / player.skill_cd_total)
+			hud.set_wave(wave, 0, Story.title(wave))
+			_on_wave_cleared()
+	var lvl: int = int(player.levels[player.weapon])
+	for s in Weapons.SLOTS:
+		var ratio: float = 0.0
+		if Weapons.unlocked(s, lvl):
+			ratio = 1.0 - float(player.skill_left[s]) / maxf(0.01, float(player.skill_total[s]))
+		hud.set_skill_ratio(s, ratio)
+	hud.set_skill_ratio("K", 1.0 if player.atk_cd <= 0.0 else 0.4)
 	if demo:
 		_demo_ai(delta)
 	_update_camera(delta)
@@ -730,13 +825,21 @@ func _update_camera(delta: float) -> void:
 # Điều khiển tự động để chạy thử/kiểm tra (chỉ khi có tham số --demo).
 func _demo_ai(delta: float) -> void:
 	demo_t += delta
+	if god and player.st != player.St.DEAD:
+		player.hp = player.max_hp
 	if int(demo_t * 2.0) != int((demo_t - delta) * 2.0) and int(demo_t) % 5 == 0 and int(demo_t * 2.0) % 2 == 0:
-		print("[demo] t=%ds đợt=%d vàng=%d máu=%d quái=%d vũ khí=%s cấp=%s" % [int(demo_t), wave, player.gold, int(player.hp), _monsters_left(), player.weapon, str(player.levels)])
+		print("[demo] t=%ds đợt=%d vàng=%d máu=%d quái=%d vũ khí=%s cấp=%s phụ=%s" % [int(demo_t), wave, player.gold, int(player.hp), _monsters_left(), player.weapon, str(player.levels), str(player.passives)])
 	if phase == Phase.SHOP:
 		for id in Weapons.IDS:
 			while int(player.levels[id]) < Weapons.MAX_LEVEL and player.gold >= Weapons.upgrade_cost(int(player.levels[id])):
 				_on_upgrade(id)
+		for pid in ["speed", "vamp"]:
+			_on_buy_passive(pid)
+		if player.hp < player.max_hp * 0.6:
+			_on_buy_heal()
 		_on_start_wave()
+	elif phase == Phase.VICTORY:
+		_on_continue()
 	var wi: int = int(demo_t / 7.0) % Weapons.IDS.size()
 	player.set_weapon(Weapons.IDS[wi])
 	var best: Node3D = null
@@ -749,8 +852,11 @@ func _demo_ai(delta: float) -> void:
 			best = m
 	player.in_move = Vector2.ZERO
 	player.in_attack = false
-	player.in_skill = false
+	player.in_heavy = false
+	player.in_block = false
 	player.in_roll = false
+	for s in Weapons.SLOTS:
+		player.in_skill[s] = false
 	if best != null:
 		var dv: Vector3 = best.global_position - player.global_position
 		dv.y = 0.0
@@ -758,5 +864,8 @@ func _demo_ai(delta: float) -> void:
 		if best_d > reach * 0.85:
 			player.in_move = Vector2(dv.x, dv.z).normalized()
 		player.in_attack = best_d < reach + 1.2
-		player.in_skill = best_d < 4.5 and rng.randf() < 0.04
+		player.in_heavy = best_d < reach + 0.8 and rng.randf() < 0.01
+		player.in_block = best_d < 3.0 and rng.randf() < 0.05
 		player.in_roll = rng.randf() < 0.004
+		for s in Weapons.SLOTS:
+			player.in_skill[s] = best_d < 6.0 and rng.randf() < 0.03

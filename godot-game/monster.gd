@@ -4,12 +4,12 @@ extends Node3D
 
 const Terrain = preload("res://terrain.gd")
 const Fx = preload("res://fx.gd")
+const Projectile = preload("res://projectile.gd")
 
 signal died(monster: Node3D)
+signal summon(kind: String, count: int)
 
 enum S { EMERGE, MOVE, WINDUP, STRIKE, RECOVER, STAGGER, DEAD }
-
-static var _skin_normal: NoiseTexture2D
 
 var kind: String = "crab"
 var player: Node3D
@@ -35,6 +35,10 @@ var flash: float = 0.0
 var anim_t: float = 0.0
 var walk_amt: float = 0.0
 var struck: bool = false
+var stun_time: float = 0.3
+var is_king: bool = false
+var enraged: bool = false
+var sep_t: float = 0.0
 var frozen: bool = false   # chỉ dùng khi xem thử hình dáng
 
 var body: Node3D
@@ -60,10 +64,22 @@ func setup(p_kind: String, p_player: Node3D, p_world: Node3D, wave: int) -> void
 			max_hp = 90.0; speed_land = 3.0; speed_swim = 3.8; dmg = 14.0; reach = 2.0
 			radius = 0.6; windup_time = 0.6; recover_time = 0.9; gold = 14
 			height = 2.5; submerge = 0.9
+		"jelly":
+			max_hp = 55.0; speed_land = 2.4; speed_swim = 2.7; dmg = 13.0; reach = 9.0
+			radius = 0.7; windup_time = 0.9; recover_time = 1.4; gold = 12
+			height = 2.6; submerge = 0.0
 		"kraken":
 			max_hp = 560.0; speed_land = 2.0; speed_swim = 2.5; dmg = 28.0; reach = 3.6
 			radius = 1.7; windup_time = 0.95; recover_time = 1.3; gold = 120
 			height = 4.0; submerge = 1.3
+	if kind == "kraken" and wave >= 10:
+		is_king = true
+		max_hp *= 2.4
+		dmg *= 1.25
+		gold = 400
+		radius = 2.3
+		reach = 4.6
+		height = 5.4
 	var scale_wave: float = 1.0 + 0.12 * float(wave - 1)
 	max_hp *= scale_wave
 	dmg *= 1.0 + 0.07 * float(wave - 1)
@@ -82,22 +98,6 @@ func _mat(color: Color, rough: float = 0.4, metal: float = 0.08, flashable: bool
 	m.rim_enabled = true
 	m.rim = 0.35
 	m.rim_tint = 0.5
-	if _skin_normal == null:
-		var n := FastNoiseLite.new()
-		n.noise_type = FastNoiseLite.TYPE_CELLULAR
-		n.frequency = 0.06
-		_skin_normal = NoiseTexture2D.new()
-		_skin_normal.noise = n
-		_skin_normal.as_normal_map = true
-		_skin_normal.bump_strength = 5.0
-		_skin_normal.seamless = true
-		_skin_normal.width = 256
-		_skin_normal.height = 256
-	m.normal_enabled = true
-	m.normal_texture = _skin_normal
-	m.normal_scale = 0.9
-	m.uv1_scale = Vector3(3, 3, 3)
-	m.uv1_triplanar = true
 	if flashable:
 		mats.append(m)
 	return m
@@ -151,7 +151,10 @@ func _build_model() -> void:
 	match kind:
 		"crab": _build_crab()
 		"merman": _build_merman()
+		"jelly": _build_jelly()
 		"kraken": _build_kraken()
+	if is_king:
+		body.scale = Vector3.ONE * 1.35
 
 func _build_crab() -> void:
 	var shell := _mat(Color(0.42, 0.10, 0.07), 0.5, 0.05)
@@ -223,8 +226,8 @@ func _build_merman() -> void:
 		legs.append(hip)
 
 func _build_kraken() -> void:
-	var skin := _mat(Color(0.30, 0.06, 0.16), 0.3, 0.12)
-	var skin2 := _mat(Color(0.55, 0.16, 0.25), 0.35, 0.05)
+	var skin := _mat(Color(0.06, 0.10, 0.28) if is_king else Color(0.30, 0.06, 0.16), 0.3, 0.12)
+	var skin2 := _mat(Color(0.14, 0.22, 0.55) if is_king else Color(0.55, 0.16, 0.25), 0.35, 0.05)
 	var eye_w := _glow(Color(1.0, 0.8, 0.25), 2.2)
 	var pupil := _mat(Color(0.02, 0.0, 0.02), 0.2, 0.0, false)
 	var spots := _glow(Color(0.2, 0.95, 0.9), 3.5)
@@ -254,8 +257,26 @@ func _build_kraken() -> void:
 			parent = seg
 		tentacles.append(chain)
 
+func _build_jelly() -> void:
+	var skin := _mat(Color(0.45, 0.85, 1.0, 0.55), 0.15, 0.0)
+	skin.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	var core := _glow(Color(0.5, 1.0, 0.9), 3.0)
+	_part(body, _sphere(0.75), skin, Vector3(0, 1.9, 0), Vector3.ZERO, Vector3(1.0, 0.7, 1.0))
+	_part(body, _sphere(0.28), core, Vector3(0, 1.85, 0))
+	for i in 8:
+		var ang: float = TAU * float(i) / 8.0
+		var root := _pivot(body, Vector3(sin(ang) * 0.5, 1.6, cos(ang) * 0.5))
+		var chain: Array[Node3D] = []
+		var parent: Node3D = root
+		for sgm in 4:
+			var seg := _pivot(parent, Vector3(0, 0, 0) if sgm == 0 else Vector3(0, -0.4, 0))
+			_part(seg, _cyl(0.05 - float(sgm) * 0.009, 0.05 - float(sgm) * 0.008, 0.4, 5), skin, Vector3(0, -0.2, 0))
+			chain.append(seg)
+			parent = seg
+		tentacles.append(chain)
+
 func _build_bar() -> void:
-	bar_w = {"crab": 0.9, "merman": 1.1, "kraken": 2.4}.get(kind, 1.0)
+	bar_w = {"crab": 0.9, "merman": 1.1, "jelly": 1.0, "kraken": 3.2 if is_king else 2.4}.get(kind, 1.0)
 	bar_root = Node3D.new()
 	bar_root.position = Vector3(0, height + 0.5, 0)
 	bar_root.visible = false
@@ -301,7 +322,15 @@ func ground_y(x: float, z: float) -> float:
 func in_water() -> bool:
 	return Terrain.h(global_position.x, global_position.z) < -0.3
 
-func take_damage(amount: float, dir: Vector3, knock: float) -> void:
+func stun(secs: float) -> void:
+	if state == S.DEAD:
+		return
+	state = S.STAGGER
+	st_t = 0.0
+	stun_time = secs
+	flash = 0.6
+
+func take_damage(amount: float, dir: Vector3, knock: float, stun_t: float = 0.0) -> void:
 	if state == S.DEAD:
 		return
 	hp -= amount
@@ -311,13 +340,23 @@ func take_damage(amount: float, dir: Vector3, knock: float) -> void:
 	knock_vel += dir * knock * k
 	var top: Vector3 = global_position + Vector3(0, height * 0.9, 0)
 	Fx.damage_text(world, top, str(int(round(amount))), Color(1.0, 0.92, 0.5))
-	Fx.burst(world, global_position + Vector3(0, height * 0.5, 0), Color(0.45, 1.0, 0.8), 10, 4.5, 0.4, 0.12)
+	Fx.burst(world, global_position + Vector3(0, height * 0.5, 0), Color(0.45, 1.0, 0.8), 8, 4.5, 0.4, 0.12)
 	if hp <= 0.0:
 		_die()
 		return
-	if kind != "kraken" and (state == S.WINDUP or knock > 3.0 or randf() < 0.5):
+	if is_king and not enraged and hp <= max_hp * 0.5:
+		enraged = true
+		summon.emit("crab", 4)
+		summon.emit("jelly", 2)
+		Fx.damage_text(world, top + Vector3(0, 1.0, 0), "HẢI VƯƠNG GIẬN DỮ!", Color(1.0, 0.4, 0.4), true)
+		Fx.shockwave(world, global_position, 9.0, Color(1.0, 0.3, 0.3, 0.8))
+	if stun_t > 0.0 and state != S.EMERGE:
+		stun(stun_t * (0.4 if kind == "kraken" else 1.0))
+		return
+	if kind != "kraken" and state != S.EMERGE and (state == S.WINDUP or knock > 3.0 or randf() < 0.5):
 		state = S.STAGGER
 		st_t = 0.0
+		stun_time = 0.3
 
 func _die() -> void:
 	state = S.DEAD
@@ -364,6 +403,8 @@ func _face(d: Vector3, delta: float, rate: float = 8.0) -> void:
 		rotation.y = yaw
 
 func _place_y(extra: float = 0.0) -> void:
+	if kind == "jelly":
+		extra += 1.5 + sin(anim_t * 1.8) * 0.2
 	var y: float = ground_y(global_position.x, global_position.z)
 	if in_water() or y < 0.0:
 		y += sin(anim_t * 2.0) * 0.06
@@ -392,7 +433,10 @@ func _do_move(delta: float) -> void:
 	var step: Vector3 = d.normalized() * spd * delta
 	global_position += step
 	walk_amt = lerpf(walk_amt, 1.0, clampf(6.0 * delta, 0.0, 1.0))
-	_separate(delta)
+	sep_t -= delta
+	if sep_t <= 0.0:
+		sep_t = 0.12
+		_separate(0.12)
 	_place_y()
 
 func _separate(delta: float) -> void:
@@ -418,16 +462,49 @@ func _do_strike(delta: float) -> void:
 	_place_y()
 	if not struck and st_t >= 0.08:
 		struck = true
-		var d: Vector3 = _flat_to_player()
-		var rr: float = reach + 0.6
-		if d.length() <= rr + float(player.get("radius_hit")):
-			player.take_damage(dmg, d.normalized(), kind == "kraken")
-		if kind == "kraken":
-			Fx.shockwave(world, global_position, 6.0, Color(1.0, 0.45, 0.4, 0.7))
-		global_position += _flat_to_player().normalized() * 0.4
+		if kind == "jelly":
+			_fire_orb()
+		else:
+			var d: Vector3 = _flat_to_player()
+			var rr: float = reach + 0.6
+			if d.length() <= rr + float(player.get("radius_hit")):
+				player.take_damage(dmg, d.normalized(), kind == "kraken", self)
+			if kind == "kraken":
+				Fx.shockwave(world, global_position, 6.0, Color(1.0, 0.45, 0.4, 0.7))
+			global_position += _flat_to_player().normalized() * 0.4
 	if st_t >= 0.18:
 		state = S.RECOVER
 		st_t = 0.0
+
+func _fire_orb() -> void:
+	var dir: Vector3 = _flat_to_player().normalized()
+	var p := Projectile.new()
+	p.world = world
+	p.player = player
+	p.from_player = false
+	p.dmg = dmg
+	p.hit_radius = 0.7
+	p.life = 3.6
+	p.lift = 1.3
+	p.vel = dir * 8.5
+	p.trail_color = Color(0.4, 1.0, 0.9, 0.8)
+	var mi := MeshInstance3D.new()
+	var sm := SphereMesh.new()
+	sm.radius = 0.28
+	sm.height = 0.56
+	sm.radial_segments = 10
+	sm.rings = 5
+	mi.mesh = sm
+	var m := StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.albedo_color = Color(0.5, 1.0, 0.95)
+	mi.material_override = m
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	p.add_child(mi)
+	world.add_child(p)
+	p.global_position = global_position + dir * 0.8 + Vector3(0, height * 0.6, 0)
+	# Mỗi lần bắn xong, sứa tiến gần thêm để không kẹt ngoài tầm với.
+	reach = maxf(4.2, reach - 1.4)
 
 func _do_recover(delta: float) -> void:
 	_place_y()
@@ -437,7 +514,7 @@ func _do_recover(delta: float) -> void:
 
 func _do_stagger(delta: float) -> void:
 	_place_y()
-	if st_t >= 0.3:
+	if st_t >= stun_time:
 		state = S.MOVE
 		st_t = 0.0
 
@@ -484,6 +561,14 @@ func _animate(delta: float) -> void:
 				arms[i].rotation_degrees.x = -sin(ph) * 22.0 * walk_amt * sgn2 + raise - 18.0
 			body.position.y = absf(sin(ph)) * 0.05 * walk_amt
 			body.rotation_degrees.x = wind_u * -12.0 if state == S.WINDUP else (18.0 if state == S.STRIKE else 0.0)
+		"jelly":
+			for i in tentacles.size():
+				var chain_j: Array = tentacles[i]
+				for sg in chain_j.size():
+					var seg_j: Node3D = chain_j[sg]
+					seg_j.rotation_degrees.x = sin(anim_t * 3.0 + float(i) * 0.8 + float(sg) * 0.9) * 14.0
+					seg_j.rotation_degrees.z = cos(anim_t * 2.4 + float(i) + float(sg) * 0.7) * 14.0
+			body.scale = Vector3.ONE * (1.0 + wind_u * 0.25 + sin(anim_t * 3.0) * 0.03)
 		"kraken":
 			for i in tentacles.size():
 				var chain: Array = tentacles[i]
