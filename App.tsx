@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { BookOpen, Mic, PenTool, Home, Languages, Menu, X } from 'lucide-react';
+import { BookOpen, Mic, PenTool, Home, Languages, Library, Menu, X } from 'lucide-react';
 import { Module } from './types';
 import { Vocabulary } from './components/Vocabulary';
 import { Grammar } from './components/Grammar';
 import { WritingAssistant } from './components/WritingAssistant';
 import { LiveTutor } from './components/LiveTutor';
+import { KnowledgeBase } from './components/KnowledgeBase';
 
 const App: React.FC = () => {
   const [currentModule, setCurrentModule] = useState<Module>(Module.HOME);
@@ -16,6 +17,7 @@ const App: React.FC = () => {
     { id: Module.GRAMMAR, label: 'Ngữ pháp', icon: Languages },
     { id: Module.WRITING, label: 'Luyện viết', icon: PenTool },
     { id: Module.LIVE_TUTOR, label: 'Gia sư AI', icon: Mic },
+    { id: Module.KNOWLEDGE, label: 'Kho tài liệu', icon: Library },
   ];
 
   const renderContent = () => {
@@ -24,6 +26,7 @@ const App: React.FC = () => {
       case Module.GRAMMAR: return <Grammar />;
       case Module.WRITING: return <WritingAssistant />;
       case Module.LIVE_TUTOR: return <LiveTutor />;
+      case Module.KNOWLEDGE: return <KnowledgeBase />;
       default:
         return (
           <div className="flex flex-col items-center justify-center text-center space-y-8 py-12">

@@ -3,7 +3,8 @@ export enum Module {
   VOCABULARY = 'VOCABULARY',
   GRAMMAR = 'GRAMMAR',
   WRITING = 'WRITING',
-  LIVE_TUTOR = 'LIVE_TUTOR' // Speaking/Listening via Gemini Live
+  LIVE_TUTOR = 'LIVE_TUTOR', // Speaking/Listening via Gemini Live
+  KNOWLEDGE = 'KNOWLEDGE' // Kho tài liệu từ video YouTube
 }
 
 export interface VocabItem {
