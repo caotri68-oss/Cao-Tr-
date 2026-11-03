@@ -75,7 +75,7 @@ dialog form{padding:16px;display:grid;gap:10px}
 'use strict';
 /* ---------- Lưu trữ: IndexedDB ---------- */
 const DB='tpcn-v2',KEY='state';
-const empty=()=>({v:2,members:[],products:[],plans:[],intakes:[],notes:[],diary:[],dismissed:[],settings:{ul:'efsa'}});
+const empty=()=>({v:2,members:[],products:[],plans:[],intakes:[],notes:[],diary:[],docs:[],dismissed:[],settings:{ul:'efsa'}});
 let S=empty();
 const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open(DB,2);
   r.onupgradeneeded=()=>{const d=r.result;if(!d.objectStoreNames.contains('kv'))d.createObjectStore('kv');if(!d.objectStoreNames.contains('img'))d.createObjectStore('img')};
@@ -899,9 +899,53 @@ function vProfile(mid){
 }
 function editNote(id,pre){const n=byId(S.notes,id)||{id:uid(),added:today(),...(pre||{})};
   dialog(id?'Sửa ghi chú':'Thêm ghi chú',[{k:'title',l:'Tiêu đề'},{k:'substance',l:'Hoạt chất liên quan (vd: Kẽm, giống tên trong danh sách)'},{k:'source',l:'Nguồn (link hoặc tên tài liệu)'},{k:'content',l:'Nội dung',t:'area'}],n,o=>{if(!o.title)return;upsert(S.notes,o)})}
+/* ---------- Tài liệu (bài chia sẻ đã được sắp xếp: tóm tắt, mức tin cậy, cảnh báo). Nhập từ file riêng, không nằm trong mã nguồn công khai ---------- */
+const DOC_LV={khop:['Khớp bài trong app','#0f766e'],ykien:['Ý kiến tác giả','#1d4ed8'],chuakc:['Chưa kiểm chứng','#6b7280'],trai:['Trái khuyến cáo chính thức','#9a3412']};
+let docQ='';
+async function importDocs(f){
+  if(!f)return;
+  try{const d=JSON.parse(await f.text());
+    if(!d||d.kind!=='tpcn-docs'||d.v!==1||!Array.isArray(d.docs))throw new Error('Không đúng định dạng file tài liệu');
+    const ok=d.docs.filter(x=>x&&typeof x.id==='string'&&/^doc-[a-z0-9-]{1,60}$/.test(x.id)&&typeof x.title==='string');
+    if(!ok.length)throw new Error('Không có tài liệu hợp lệ trong file');
+    S.docs=S.docs||[];
+    const upd=ok.filter(x=>byId(S.docs,x.id)).length;
+    if(!confirm(`Nhập ${ok.length} tài liệu (${upd} bài đã có sẽ được cập nhật). Tiếp tục?`))return;
+    for(const x of ok){const o=cleanDeep(x);o.source=cleanStr(d.source,120);const i=S.docs.findIndex(y=>y.id===o.id);i<0?S.docs.push(o):S.docs[i]=o}
+    save();go('know','d:');alert(`Đã nhập ${ok.length} tài liệu.`);
+  }catch(e){alert('Lỗi: '+e.message)}
+}
+const docText=x=>[x.title,x.group,...pArr(x.tldr),...pArr(x.points).flatMap(p=>[p.h,...pArr(p.items)]),...pArr(x.claims).map(c=>c.text)].join(' ').toLowerCase();
+function vDocList(){
+  const docs=(S.docs||[]).filter(x=>!docQ||docText(x).includes(docQ));
+  const groups=[...new Set(docs.map(x=>x.group||'Khác'))];
+  view('Tài liệu',(S.docs||[]).length+' bài',`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('know')">‹ Kiến thức</button><label class="btn" style="display:inline-block">Nhập file tài liệu<input type="file" accept=".json" hidden onchange="importDocs(this.files[0]);this.value=''"></label></div>
+   <div class="note" style="margin-bottom:10px">Đây là bài chia sẻ của chị Thảo Nguyên trong nhóm, đã được tóm tắt lại và gắn mức tin cậy từng ý. Không phải tài liệu y khoa chính thức và không thay lời bác sĩ.</div>
+   <input id="docQ" placeholder="Tìm trong tài liệu (vd: ngủ, B12, mệt)…" value="${esc(docQ)}" oninput="docQ=this.value.toLowerCase();vDocList();const i=document.getElementById('docQ');i.focus();i.setSelectionRange(99,99)" style="margin-bottom:10px">`+
+   (groups.map(g=>`<div style="margin:12px 0 6px"><b>${esc(g)}</b></div>`+docs.filter(x=>(x.group||'Khác')===g).map(x=>`<div class="card" style="cursor:pointer" data-i="${esc(x.id)}" onclick="go('know','d:'+this.dataset.i)"><b>${esc(x.title)}</b>${pArr(x.claims).some(c=>c.lv==='trai')?' <span class="tag" style="background:none;color:#9a3412;border:1px solid #9a3412">có ý trái khuyến cáo</span>':''}<div class="mute" style="margin-top:4px">${esc(pArr(x.tldr)[0]||'')}</div></div>`).join('')).join('')||`<div class="empty">${(S.docs||[]).length?'Không tìm thấy.':'Chưa có tài liệu. Bấm "Nhập file tài liệu" và chọn file tai-lieu-thao-nguyen.json.'}</div>`));
+}
+function vDoc(id){
+  if(!id)return vDocList();
+  const x=byId(S.docs||[],id);if(!x){sub='d:';return vDocList()}
+  const sec=(t,body,open)=>body?`<details class="card" ${open?'open':''}><summary style="cursor:pointer"><b>${t}</b></summary><div style="margin-top:8px">${body}</div></details>`:'';
+  const ul=a=>pArr(a).length?`<ul style="margin:0;padding-left:18px">${pArr(a).map(i=>`<li style="margin-bottom:6px">${esc(i)}</li>`).join('')}</ul>`:'';
+  const kbName=l=>{const k=Object.values(window.KB||{}).find(k=>norm(k.name)===norm(l));return k?k.name:''};
+  const links=pArr(x.links).map(kbName).filter(Boolean);
+  view(x.title,x.group||'',`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('know','d:')">‹ Tài liệu</button></div>
+   <div class="mute" style="margin:0 0 8px">${esc(x.source||'Bài chia sẻ')} · cập nhật ${esc(x.updated||'')}. Không phải tài liệu y khoa chính thức.</div>`+
+   sec('Tóm tắt trong 30 giây',ul(x.tldr),true)+
+   sec('Mức tin cậy từng ý',pArr(x.claims).map(c=>{const L=DOC_LV[c.lv]||DOC_LV.chuakc;return`<div style="margin-bottom:10px"><span class="tag" style="background:none;border:1px solid ${L[1]};color:${L[1]}">${L[0]}</span> ${esc(c.text)}${c.note?` <span class="mute">(${esc(c.note)})</span>`:''}</div>`}).join(''),true)+
+   (pArr(x.watch).length?`<div class="note" style="margin-bottom:10px"><b>Cần cẩn thận</b>${ul(x.watch)}</div>`:'')+
+   (pArr(x.family).length?`<div class="card"><b>Với gia đình mình</b>${ul(x.family)}</div>`:'')+
+   pArr(x.points).map(p=>sec(esc(p.h),ul(p.items))).join('')+
+   sec('Xét nghiệm có thể hỏi bác sĩ',ul(x.tests))+
+   (links.length?`<div class="card"><b>Bài kiến thức liên quan</b><div class="chips" style="flex-wrap:wrap;overflow:visible;margin-top:6px">${links.map(n=>`<button data-n="${esc(n)}" onclick="go('know',this.dataset.n)">${esc(n)}</button>`).join('')}</div></div>`:'')+
+   `<div class="mute" style="margin-top:8px">Nội dung được tóm tắt lại bằng lời của app. Hãy hỏi bác sĩ hoặc dược sĩ trước khi thay đổi thuốc hay thực phẩm bổ sung.</div>`);
+}
 function vKnow(){
+  if(sub&&String(sub).startsWith('d:'))return vDoc(String(sub).slice(2));
   if(sub)return vSubstance(sub);
-  view('Kiến thức',S.notes.length+' ghi chú · '+substList().length+' hoạt chất',substGrid()+`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="editNote()">+ Thêm ghi chú</button><label class="btn" style="display:inline-block">Nhập file Obsidian<input type="file" accept=".json" hidden onchange="importKnowledge(this.files[0]);this.value=''"></label></div>
+  view('Kiến thức',S.notes.length+' ghi chú · '+substList().length+' hoạt chất',`<div class="card" style="cursor:pointer" onclick="go('know','d:')"><b>Tài liệu của chị Thảo Nguyên</b> <span class="mute">(${(S.docs||[]).length} bài)</span><div class="mute">Bài chia sẻ đã tóm tắt, gắn mức tin cậy và cảnh báo. Bấm để mở.</div></div>`+substGrid()+`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="editNote()">+ Thêm ghi chú</button><label class="btn" style="display:inline-block">Nhập file Obsidian<input type="file" accept=".json" hidden onchange="importKnowledge(this.files[0]);this.value=''"></label></div>
    <input id="knowQ" placeholder="Tìm trong ghi chú…" value="${esc(knowQ)}" oninput="knowQ=this.value.toLowerCase();vKnow();const i=document.getElementById('knowQ');i.focus();i.setSelectionRange(99,99)" style="margin-bottom:10px">`+
    (noteList().map(n=>`<div class="card"><h3>${esc(n.title)}</h3>${noteTags(n)}${noteBody(n)}
     <div class="mute">${esc(n.added||'')} · ${safeUrl(n.source)?`<a href="${esc(n.source)}" target="_blank" rel="noopener noreferrer">nguồn</a>`:esc(n.source||'')}</div>
