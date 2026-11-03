@@ -52,6 +52,8 @@ table.ing2 td,table.ing2 th{text-align:left;padding:4px 6px 4px 0;border-bottom:
 dialog{border:0;border-radius:14px;padding:0;width:min(520px,94vw);background:var(--card);color:var(--ink);max-height:92vh}
 dialog::backdrop{background:#0008}
 dialog form{padding:16px;display:grid;gap:10px}
+.imgs{display:flex;gap:6px;flex-wrap:wrap}.imgs img{height:70px;border-radius:6px;border:1px solid var(--line);cursor:zoom-in}
+.ing input.chk{border:2px solid var(--warn);background:var(--warnbg)}
 .note{background:var(--warnbg);border:1px solid var(--warn);color:var(--warn);border-radius:10px;padding:8px 10px;font-size:13px}
 </style>
 </head>
@@ -67,12 +69,20 @@ dialog form{padding:16px;display:grid;gap:10px}
 const DB='tpcn-v2',KEY='state';
 const empty=()=>({v:2,members:[],products:[],plans:[],intakes:[],notes:[]});
 let S=empty();
-const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open(DB,2);
+  r.onupgradeneeded=()=>{const d=r.result;if(!d.objectStoreNames.contains('kv'))d.createObjectStore('kv');if(!d.objectStoreNames.contains('img'))d.createObjectStore('img')};
+  r.onsuccess=()=>{r.result.onversionchange=()=>r.result.close();res(r.result)};r.onerror=()=>rej(r.error)});
 async function load(){try{const db=await idb();const d=await new Promise(res=>{const q=db.transaction('kv').objectStore('kv').get(KEY);q.onsuccess=()=>res(q.result);q.onerror=()=>res(null)});S={...empty(),...(d||{})}}catch(e){alert('Không mở được bộ nhớ trình duyệt: '+e.message)}}
 let saveT;async function flush(){try{const db=await idb();await new Promise((res,rej)=>{const t=db.transaction('kv','readwrite');t.objectStore('kv').put(S,KEY);t.oncomplete=res;t.onerror=()=>rej(t.error)})}catch(e){alert('Lưu thất bại: '+e.message)}}
 function save(){clearTimeout(saveT);saveT=setTimeout(flush,50)}
 addEventListener('pagehide',()=>{clearTimeout(saveT);flush()});
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();
+/* Ảnh lưu riêng khỏi dữ liệu chính để mỗi lần lưu không phải ghi lại cả ảnh */
+async function imgTx(mode,fn){const db=await idb();try{return await new Promise((res,rej)=>{const t=db.transaction('img',mode);const r=fn(t.objectStore('img'));t.oncomplete=()=>res(r&&r.result);t.onerror=()=>rej(t.error)})}finally{db.close()}}
+const putImg=(id,u)=>imgTx('readwrite',s=>s.put(u,id));
+const getImg=id=>imgTx('readonly',s=>s.get(id));
+const delImg=id=>imgTx('readwrite',s=>s.delete(id)).catch(()=>{});
+async function loadImgs(ids,sel){const box=$(sel);if(!box)return;box.textContent='';for(const id of ids||[]){const u=await getImg(id).catch(()=>null);if(u&&/^data:image\//.test(u)){const im=document.createElement('img');im.src=u;im.alt='Ảnh nhãn';im.onclick=()=>window.open(u);box.appendChild(im)}}}
 
 /* ---------- Tiện ích ---------- */
 const $=s=>document.querySelector(s);
@@ -150,7 +160,7 @@ function vToday(){
 function vShelf(){
   if(sub)return vProduct(sub);
   const l=S.products;
-  view('Tủ TPCN',l.length+' sản phẩm',`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="newProduct()">+ Thêm sản phẩm</button></div>`+
+  view('Tủ TPCN',l.length+' sản phẩm',`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="go('add')">+ Thêm sản phẩm</button></div>`+
     (l.map(p=>{const who=[...new Set(S.plans.filter(x=>x.productId===p.id&&(!x.end||x.end>=today())).map(x=>mname(x.memberId)))];
       return`<div class="card" onclick="go('shelf','${p.id}')" style="cursor:pointer"><h3>${esc(p.name)}</h3>
       <div class="mute">${esc([p.brand,p.form].filter(Boolean).join(' · '))}</div>
@@ -167,13 +177,16 @@ function vProduct(id){
    <div class="card"><b>Mua</b><div class="mute">${p.price!==''&&p.price!=null?esc(p.price)+' CZK · ':''}${esc(p.store||'')} ${safeUrl(p.url)?`<a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">liên kết</a>`:''}</div></div>
    ${p.warnings?`<div class="note"><b>⚠ Cảnh báo trên nhãn</b><br>${esc(p.warnings)}</div>`:''}
    ${p.notes?`<div class="card"><b>Ghi chú</b><div class="mute">${esc(p.notes)}</div></div>`:''}
+   ${(p.imageIds||[]).length?`<div class="card"><b>Ảnh nhãn</b><div id="pimgs" class="imgs" style="margin-top:6px"></div></div>`:''}
+   ${p.text?`<details class="card"><summary><b>Văn bản gốc</b></summary><pre style="white-space:pre-wrap;font:13px/1.45 inherit;margin:8px 0 0">${esc(p.text)}</pre></details>`:''}
    <div class="card"><b>Ai đang uống</b>${plans.map(x=>`<div class="mute" style="display:flex;gap:8px;align-items:center"><span class="grow">${esc(mname(x.memberId))} · ${esc(x.qty||'')} · ${esc(x.time||'')} ${esc(x.label||'')} · từ ${esc(x.start)}${x.end?' đến '+esc(x.end):''}</span>
      ${x.end?'':`<button class="btn sm" onclick="endPlan('${x.id}')">Dừng</button>`}<button class="btn sm del" onclick="remove(S.plans,'${x.id}')">Xoá</button></div>`).join('')||'<div class="mute">Chưa ai.</div>'}
     <div class="row"><button class="btn pri sm" onclick="editPlan('${id}')">+ Thêm người uống</button></div></div>
    <div class="row"><button class="btn" onclick="editProduct('${id}')">Sửa</button><button class="btn del" onclick="delProduct('${id}')">Xoá sản phẩm</button></div>`);
+  loadImgs(p.imageIds,'#pimgs');
 }
 function endPlan(id){byId(S.plans,id).end=today();save();render()}
-function delProduct(id){if(!confirm('Xoá sản phẩm và mọi lịch uống của nó?'))return;S.plans.filter(x=>x.productId===id).forEach(x=>{S.intakes=S.intakes.filter(i=>i.planId!==x.id)});S.plans=S.plans.filter(x=>x.productId!==id);S.products=S.products.filter(x=>x.id!==id);save();go('shelf')}
+function delProduct(id){if(!confirm('Xoá sản phẩm và mọi lịch uống của nó?'))return;(byId(S.products,id)?.imageIds||[]).forEach(delImg);S.plans.filter(x=>x.productId===id).forEach(x=>{S.intakes=S.intakes.filter(i=>i.planId!==x.id)});S.plans=S.plans.filter(x=>x.productId!==id);S.products=S.products.filter(x=>x.id!==id);save();go('shelf')}
 function editPlan(productId){
   if(!S.members.length){alert('Cần thêm thành viên ở tab Cả nhà trước.');return}
   dialog('Thêm người uống',[{k:'memberId',l:'Ai uống',t:'sel',o:S.members.map(m=>[m.id,m.name])},{k:'qty',l:'Liều mỗi lần (vd: 1 viên)'},{k:'time',l:'Giờ uống',t:'time'},{k:'label',l:'Buổi (vd: Sáng, sau ăn)'},{k:'start',l:'Bắt đầu',t:'date'}],
@@ -181,20 +194,22 @@ function editPlan(productId){
 }
 
 /* ---------- Thêm / sửa sản phẩm ---------- */
-function newProduct(){draft={id:uid(),name:'',brand:'',form:'',dosageLabel:'',price:'',store:'',url:'',warnings:'',notes:'',ingredients:[{name:'',amount:'',unit:'mg',form:''}]};go('add')}
-function editProduct(id){draft=JSON.parse(JSON.stringify(byId(S.products,id)));if(!draft.ingredients.length)draft.ingredients=[{name:'',amount:'',unit:'mg',form:''}];go('add')}
+function newProduct(){addMsg='';draft=blank();go('add')}
+function editProduct(id){addMsg='';draft=JSON.parse(JSON.stringify(byId(S.products,id)));draft.imageIds=draft.imageIds||[];if(!draft.ingredients.length)draft.ingredients=[{name:'',amount:'',unit:'mg',form:''}];go('add')}
 const UNITS=['mg','mcg','g','IU','ml','CFU','%'];
 function vAdd(){
-  if(!draft)draft={id:uid(),name:'',brand:'',form:'',dosageLabel:'',price:'',store:'',url:'',warnings:'',notes:'',ingredients:[{name:'',amount:'',unit:'mg',form:''}]};
+  if(!draft)return vImport();
   const d=draft,isNew=!byId(S.products,d.id);
-  view(isNew?'Thêm sản phẩm':'Sửa sản phẩm','Nhập tay. Chụp nhãn và dán link sẽ có ở bước sau.',
+  view(isNew?'Thêm sản phẩm':'Sửa sản phẩm',addMsg||'Kiểm tra từng dòng trước khi lưu.',
    `<div class="card" style="display:grid;gap:10px">
+    <div id="imgs" class="imgs"></div>
     <label>Tên sản phẩm<input id="a_name" value="${esc(d.name)}"></label>
     <label>Hãng<input id="a_brand" value="${esc(d.brand)}"></label>
     <label>Dạng (viên, bột, nước…)<input id="a_form" value="${esc(d.form)}"></label>
     <div><div class="mute" style="margin-bottom:4px">Thành phần mỗi liều: mỗi hoạt chất một dòng</div>
+     ${d.ingredients.some(g=>g.check)?'<div class="note" style="margin-bottom:6px">Ô viền cam: app đọc không chắc. Hãy đối chiếu với ảnh nhãn rồi sửa.</div>':''}
      ${d.ingredients.map((g,i)=>`<div class="ing"><input placeholder="Hoạt chất" aria-label="Hoạt chất" value="${esc(g.name)}" data-i="${i}" data-f="name">
-       <input placeholder="Lượng" inputmode="decimal" aria-label="Lượng" value="${esc(g.amount)}" data-i="${i}" data-f="amount">
+       <input class="${g.check?'chk':''}" placeholder="Lượng" inputmode="decimal" aria-label="Lượng" value="${esc(g.amount)}" data-i="${i}" data-f="amount">
        <select aria-label="Đơn vị" data-i="${i}" data-f="unit">${UNITS.map(u=>`<option ${u===g.unit?'selected':''}>${u}</option>`).join('')}</select>
        <button class="btn sm del" aria-label="Xoá dòng" onclick="ingDel(${i})">×</button></div>`).join('')}
      <button class="btn sm" onclick="ingAdd()">+ Thêm dòng</button></div>
@@ -204,17 +219,98 @@ function vAdd(){
     <label>Cảnh báo trên nhãn<textarea id="a_warnings">${esc(d.warnings)}</textarea></label>
     <label>Ghi chú<textarea id="a_notes">${esc(d.notes)}</textarea></label>
     <div class="row"><button class="btn pri" onclick="saveProduct()">Lưu sản phẩm</button><button class="btn" onclick="draft=null;go('shelf')">Huỷ</button></div></div>`);
-  $('#view').oninput=e=>{const t=e.target;if(t.dataset.f!==undefined)d.ingredients[t.dataset.i][t.dataset.f]=t.value;else if(t.id?.startsWith('a_'))d[t.id.slice(2)]=t.value};
+  loadImgs(d.imageIds,'#imgs');
+  $('#view').oninput=e=>{const t=e.target;
+    if(t.dataset.f!==undefined){const g=d.ingredients[t.dataset.i];g[t.dataset.f]=t.value;if(t.dataset.f==='amount'){g.check=false;t.classList.remove('chk')}}
+    else if(t.id?.startsWith('a_'))d[t.id.slice(2)]=t.value};
 }
 function ingAdd(){draft.ingredients.push({name:'',amount:'',unit:'mg',form:''});vAdd()}
 function ingDel(i){draft.ingredients.splice(i,1);if(!draft.ingredients.length)ingAdd();else vAdd()}
 function saveProduct(){
   const d=draft;if(!d.name.trim()){alert('Cần nhập tên sản phẩm.');return}
   d.name=d.name.trim();d.price=d.price===''?'':Number(d.price);
-  d.ingredients=d.ingredients.filter(g=>g.name.trim()).map(g=>({...g,name:g.name.trim(),amount:g.amount===''?'':Number(String(g.amount).replace(',','.'))}));
+  d.ingredients=d.ingredients.filter(g=>g.name.trim()).map(g=>({...g,name:g.name.trim(),amount:g.amount===''?'':Number(String(g.amount).replace(',','.'))})).map(({check,...g})=>g);
   if(d.ingredients.some(g=>g.amount!==''&&Number.isNaN(g.amount))){alert('Có lượng hoạt chất không phải số. Hãy sửa lại.');return}
-  const id=d.id;draft=null;
+  const id=d.id;draft=null;addMsg='';
   const i=S.products.findIndex(x=>x.id===id);i<0?S.products.push(d):S.products[i]=d;save();go('shelf',id);
+}
+
+/* ---------- Nhập từ ảnh / link / chữ ---------- */
+let stage={title:'',source:'',text:'',images:[]},addMsg='';
+const blank=()=>({id:uid(),name:'',brand:'',form:'',dosageLabel:'',price:'',store:'',url:'',warnings:'',notes:'',text:'',imageIds:[],ingredients:[{name:'',amount:'',unit:'mg',form:''}]});
+function shrink(file){return new Promise((res,rej)=>{const r=new FileReader();r.onerror=rej;r.onload=()=>{const im=new Image();im.onerror=()=>rej(new Error('Không đọc được ảnh'));im.onload=()=>{const k=Math.min(1,1400/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.85))};im.src=r.result};r.readAsDataURL(file)})}
+function loadScript(src){return new Promise((res,rej)=>{if(window.Tesseract)return res();const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=()=>rej(new Error('Không tải được thư viện đọc chữ (cần internet lần đầu)'));document.head.appendChild(s)})}
+async function ocr(urls,log){
+  await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js');
+  const w=await Tesseract.createWorker('eng+ces+vie',1,{logger:m=>{if(m.status==='recognizing text')log('Đang đọc chữ… '+Math.round(m.progress*100)+'%')}});
+  let out='';try{for(const [i,u] of urls.entries()){log(`Ảnh ${i+1}/${urls.length}…`);const r=await w.recognize(u);out+=(out?'\n\n':'')+r.data.text.trim()}}finally{await w.terminate()}return out}
+async function fetchText(url){
+  if(!safeUrl(url))throw new Error('Link phải bắt đầu bằng http:// hoặc https://');
+  try{const r=await fetch(url);if(!r.ok)throw 0;const h=await r.text();const d=new DOMParser().parseFromString(h,'text/html');d.querySelectorAll('script,style,nav,footer,noscript,svg').forEach(e=>e.remove());return{title:d.title,text:(d.body.innerText||d.body.textContent).replace(/\n{3,}/g,'\n\n').trim()}}
+  catch{if(!confirm('Trình duyệt không đọc trực tiếp được trang này.\nDùng dịch vụ r.jina.ai để lấy bản văn bản? Link sẽ được gửi tới dịch vụ đó.'))throw new Error('Đã huỷ. Bạn có thể tự dán nội dung vào ô văn bản.');
+    const r=await fetch('https://r.jina.ai/'+url);if(!r.ok)throw new Error('Dịch vụ trả lỗi '+r.status);const t=await r.text();return{title:(t.match(/^Title:\s*(.+)$/m)||[])[1]||'',text:t}}}
+
+/* Tách thành phần từ chữ trên nhãn. Chỉ gợi ý: người dùng luôn phải soát lại. */
+const UNIT_MAP={mg:'mg',mcg:'mcg','µg':'mcg','μg':'mcg',ug:'mcg',g:'g',iu:'IU',ml:'ml',cfu:'CFU'};
+const ING_RE=/^(.*?)[\s:.\-–]*((?=[0-9OolI.,]*\d)[0-9OolI]+(?:[.,][0-9OolI]+)?)\s*(mg|mcg|µg|μg|ug|g|iu|ml|cfu)\b(.*)$/i;
+const HEAD={other:/^(other ingredients?|ostatní složky|další složky|thành phần khác)\s*[:.\-]?\s*/i,warn:/^(warnings?|caution|upozornění|cảnh báo)\s*[:.\-]?\s*/i,dir:/^(suggested use|directions?|dosage|doporučené dávkování|dávkování|použití|cách dùng|liều dùng)\s*[:.\-]?\s*/i,serv:/^(serving size|velikost porce|khẩu phần)\s*[:.\-]?\s*/i};
+function parseFacts(raw){
+  const out={ingredients:[],other:'',warnings:'',directions:'',serving:''};
+  const sec={other:'other',warn:'warnings',dir:'directions'};
+  let cur=null;
+  for(const l of raw.replace(/ /g,' ').split(/\r?\n/).map(s=>s.trim())){
+    if(!l){cur=null;continue}
+    let hit=false;
+    for(const k of ['serv','other','warn','dir']){const m=l.match(HEAD[k]);if(m){hit=true;const rest=l.slice(m[0].length);
+      if(k==='serv'){out.serving=rest;cur=null}else{cur=sec[k];out[cur]+=(out[cur]?' ':'')+rest}break}}
+    if(hit)continue;
+    if(cur){out[cur]+=(out[cur]?' ':'')+l;continue}
+    const m=ING_RE.exec(l);if(!m)continue;
+    let name=m[1].replace(/[\s:.\-–,*]+$/,'').trim(),form='';
+    const pm=name.match(/\(([^)]*)\)/);if(pm){form=pm[1].replace(/^(as|from|z|ve formě)\s+/i,'').trim();name=name.replace(pm[0],'').replace(/\s+/g,' ').trim()}
+    if(!name||/serving|daily value|calor|%\s*dv/i.test(name))continue;
+    const rawNum=m[2];let check=/[OolI]/.test(rawNum);
+    let amount=Number(rawNum.replace(/[Oo]/g,'0').replace(/[lI]/g,'1').replace(',','.'));
+    if(Number.isNaN(amount)){amount='';check=true}
+    out.ingredients.push({name,amount,unit:UNIT_MAP[m[3].toLowerCase()]||'mg',form,check});
+  }
+  return out;
+}
+async function createFromStage(){
+  const raw=stage.text.trim();
+  if(!raw&&!stage.images.length){alert('Chưa có chữ hay ảnh. Hãy chọn ảnh, lấy văn bản từ link hoặc dán chữ trước.');return}
+  const f=parseFacts(raw),d=blank();
+  d.name=stage.title.trim();d.text=raw;d.url=safeUrl(stage.source)?stage.source:'';
+  d.dosageLabel=(f.directions||f.serving).trim();d.warnings=f.warnings.trim();
+  d.notes=f.other?'Thành phần khác: '+f.other.trim():'';
+  if(f.ingredients.length)d.ingredients=f.ingredients;
+  for(const u of stage.images){const id=uid();await putImg(id,u);d.imageIds.push(id)}
+  const n=f.ingredients.length,c=f.ingredients.filter(g=>g.check).length;
+  addMsg=n?`Tìm thấy ${n} hoạt chất${c?`, ${c} dòng cần soát kỹ`:''}. Đối chiếu với ảnh nhãn.`:'Không tìm thấy dòng hoạt chất nào. Văn bản gốc vẫn được lưu kèm, hãy nhập tay.';
+  stage={title:'',source:'',text:'',images:[]};draft=d;go('add');
+}
+function vImport(){
+  view('Thêm sản phẩm','Từ ảnh nhãn, link hoặc chữ. Luôn soát lại trước khi lưu.',
+  `<div class="card" style="display:grid;gap:10px">
+   <label>Tên sản phẩm (không bắt buộc)<input id="t" value="${esc(stage.title)}"></label>
+   <label>Ảnh nhãn / bao bì (chụp hoặc chọn, được nhiều ảnh)<input id="im" type="file" accept="image/*" multiple></label>
+   <div class="imgs">${stage.images.map(s=>`<img src="${s}" alt="Ảnh nhãn">`).join('')}</div>
+   <label>Link trang sản phẩm<div class="row" style="margin:0"><input id="u" placeholder="https://…" value="${esc(stage.source)}" style="flex:1"><button class="btn" id="bu">Lấy văn bản</button></div></label>
+   <label>Văn bản (dán Supplement Facts, Other ingredients, Warnings… vào đây)<textarea id="x" style="min-height:160px">${esc(stage.text)}</textarea></label>
+   <div class="mute" id="st">Chữ trong ảnh được đọc ngay trên máy (tiếng Anh, Séc, Việt). Lần đầu cần internet để tải dữ liệu ngôn ngữ.</div>
+   <button class="btn pri" id="go">Phân tích và tạo sản phẩm</button>
+   <button class="btn" id="hand">Hoặc nhập tay</button></div>`);
+  const sync=()=>{stage.title=$('#t').value;stage.source=$('#u').value;stage.text=$('#x').value};
+  ['t','u','x'].forEach(i=>$('#'+i).oninput=sync);
+  const st=m=>{$('#st').textContent=m};
+  $('#hand').onclick=()=>newProduct();
+  $('#go').onclick=async()=>{sync();$('#go').disabled=true;try{await createFromStage()}catch(e){st('Lỗi: '+e.message);$('#go').disabled=false}};
+  $('#bu').onclick=async()=>{sync();try{st('Đang lấy…');const r=await fetchText(stage.source.trim());stage.title=stage.title||r.title;stage.text=(stage.text?stage.text+'\n\n':'')+r.text;vImport();$('#st').textContent='Xong. Kiểm tra lại văn bản rồi bấm Phân tích.'}catch(e){st('Lỗi: '+e.message)}};
+  $('#im').onchange=async e=>{const fs=[...e.target.files];if(!fs.length)return;sync();
+    try{st('Đang xử lý ảnh…');const urls=[];for(const f of fs)urls.push(await shrink(f));stage.images.push(...urls);
+      try{const t=await ocr(urls,st);stage.text=(stage.text?stage.text+'\n\n':'')+t;vImport();$('#st').textContent='Đã đọc xong. Soát lại chữ rồi bấm Phân tích.'}
+      catch(err){vImport();$('#st').textContent='Không đọc được chữ: '+err.message+'. Ảnh vẫn được giữ, bạn có thể dán chữ vào ô văn bản.'}
+    }catch(err){st('Lỗi: '+err.message)}};
 }
 
 /* ---------- Kiến thức ---------- */
@@ -238,11 +334,12 @@ function vFam(){
     <div class="mute">Bệnh nền: ${esc(m.conditions||'—')}</div><div class="mute">Thuốc kê đơn: ${esc(m.meds||'—')}</div><div class="mute">Dị ứng: ${esc(m.allergies||'—')}</div>
     <div class="row"><button class="btn sm" onclick="editMember('${m.id}')">Sửa</button><button class="btn sm del" onclick="delMember('${m.id}')">Xoá</button></div></div>`).join('')||`<div class="empty">Chưa có thành viên.</div>`)+
    `<div class="card"><b>Sao lưu</b><div class="mute">Dữ liệu chỉ nằm trong trình duyệt của máy này. Hãy tải bản sao lưu định kỳ.</div>
-    <div class="row"><button class="btn pri" onclick="dl('tpcn-backup-'+today()+'.json',JSON.stringify(S),'application/json')">Tải JSON</button>
+    <div class="row"><button class="btn pri" onclick="exportAll()">Tải JSON</button>
     <label class="btn" style="display:inline-block">Khôi phục từ JSON<input type="file" accept=".json" hidden onchange="restore(this.files[0])"></label></div></div>
     <div class="note">App chỉ lưu và nhắc theo dữ liệu bạn nhập, không thay lời khuyên của bác sĩ hay dược sĩ.</div>`);
 }
-async function restore(f){if(!f)return;try{const d=JSON.parse(await f.text());if(!d||!Array.isArray(d.products)||!Array.isArray(d.members)||d.v!==2)throw new Error('Không đúng định dạng sao lưu của bản này');if(!confirm('Khôi phục sẽ GHI ĐÈ toàn bộ dữ liệu hiện tại. Tiếp tục?'))return;S={...empty(),...d};save();render()}catch(e){alert('Lỗi: '+e.message)}}
+async function exportAll(){const images={};for(const id of S.products.flatMap(p=>p.imageIds||[])){const u=await getImg(id).catch(()=>null);if(u)images[id]=u}dl('tpcn-backup-'+today()+'.json',JSON.stringify({...S,images}),'application/json')}
+async function restore(f){if(!f)return;try{const d=JSON.parse(await f.text());if(!d||!Array.isArray(d.products)||!Array.isArray(d.members)||d.v!==2)throw new Error('Không đúng định dạng sao lưu của bản này');if(!confirm('Khôi phục sẽ GHI ĐÈ toàn bộ dữ liệu hiện tại. Tiếp tục?'))return;const {images,...rest}=d;S={...empty(),...rest};for(const [id,u] of Object.entries(images||{}))if(/^data:image\//.test(u))await putImg(id,u);save();render()}catch(e){alert('Lỗi: '+e.message)}}
 
 /* ---------- Khởi động ---------- */
 load().then(render);
