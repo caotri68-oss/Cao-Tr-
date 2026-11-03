@@ -74,7 +74,7 @@ dialog form{padding:16px;display:grid;gap:10px}
 'use strict';
 /* ---------- Lưu trữ: IndexedDB ---------- */
 const DB='tpcn-v2',KEY='state';
-const empty=()=>({v:2,members:[],products:[],plans:[],intakes:[],notes:[],dismissed:[]});
+const empty=()=>({v:2,members:[],products:[],plans:[],intakes:[],notes:[],dismissed:[],settings:{ul:'efsa'}});
 let S=empty();
 const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open(DB,2);
   r.onupgradeneeded=()=>{const d=r.result;if(!d.objectStoreNames.contains('kv'))d.createObjectStore('kv');if(!d.objectStoreNames.contains('img'))d.createObjectStore('img')};
@@ -148,8 +148,35 @@ const NUTR={
   io:{n:'I-ốt',re:/iodine|iod|i-?ốt|jód/i,ul:1100,u:'mcg',src:'Iodine'},
   cu:{n:'Đồng',re:/copper|cupr|měď/i,ul:10000,u:'mcg',src:'Copper'},
   mn:{n:'Mangan',re:/mangan/i,ul:11,u:'mg',src:'Manganese'},
-  vitK:{n:'Vitamin K',re:/vitamin k\d?\b|phylloquinone|menaquinone/i,u:'mcg',src:'VitaminK'}
+  vitK:{n:'Vitamin K',re:/vitamin k\d?\b|phylloquinone|menaquinone/i,u:'mcg',src:'VitaminK'},
+  curc:{n:'Curcumin',re:/curcum|turmeric|nghệ/i,u:'mg',srcUrl:'https://www.nccih.nih.gov/health/turmeric'},
+  om3:{n:'Omega-3',re:/omega-?3\b|\bepa\b|\bdha\b|fish oil|dầu cá|rybí olej/i,u:'mg',src:'Omega3FattyAcids'}
 };
+const nUrl=N=>N.srcUrl||odsUrl(N.src);
+/* Mức tối đa của EFSA (châu Âu), mặc định cho người ở Séc. Đã đối chiếu với ghi chú trong kho Obsidian.
+   safe: EFSA không đặt được UL, chỉ đặt "mức an toàn". */
+const EFSA_SUM='https://www.efsa.europa.eu/sites/default/files/2024-05/ul-summary-report.pdf';
+const EF={
+  vitA:{ul:3000,note:'Chỉ tính vitamin A dạng retinol.'},
+  vitD:{ul:100},
+  vitE:{ul:300},
+  b6:{ul:12,note:'EFSA hạ xuống 12 mg năm 2023.'},
+  niacin:{ul:10,amideUl:900,note:'10 mg cho nicotinic acid; nicotinamide (niacinamide) có mức riêng 900 mg.'},
+  folic:{ul:1000,note:'Tính cho folic acid; nhãn ghi theo DFE sẽ cho số cao hơn lượng thật.'},
+  ca:{ul:2500,note:'Mức này tính cả canxi từ thức ăn; app chỉ cộng phần thực phẩm chức năng.'},
+  fe:{ul:40,safe:true,url:'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11167337/',note:'EFSA 2024 không đặt được UL cho sắt; 40 mg là mức an toàn.'},
+  zn:{ul:25},
+  mg:{ul:250,note:'Chỉ tính magie bổ sung; nên chia ít nhất 2 lần/ngày.'},
+  se:{ul:255,url:'https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.7704',note:'EFSA hạ từ 300 xuống 255 µg năm 2023.'},
+  io:{ul:600},
+  cu:{ul:5000},
+  mn:{ul:8,safe:true,url:'https://efsa.onlinelibrary.wiley.com/doi/full/10.2903/j.efsa.2023.8413',note:'EFSA 2023 không đặt được UL; 8 mg là mức an toàn, tính cả thức ăn.'}
+};
+const ulStd=()=>(S.settings||{}).ul==='nih'?'nih':'efsa';
+function limitOf(k,age){const N=NUTR[k];
+  if(ulStd()==='efsa'){const e=EF[k];if(!e)return null;return{ul:e.ul,u:N.u,note:e.note||'',url:e.url||EFSA_SUM,by:'EFSA',safe:!!e.safe,amideUl:e.amideUl}}
+  if(!N.ul)return null;return{ul:(age!=null&&age>=51&&N.ul51)||N.ul,u:N.u,note:N.note||'',url:odsUrl(N.src),by:'NIH'}}
+const isAmide=g=>{const s=g.name+' '+(g.form||'');return /amide/i.test(s)&&!/nicotinic acid|inositol/i.test(s)};
 // Cặp chất nên uống cách nhau (phút)
 const SPACING=[
   {a:'ca',b:'fe',min:120,why:'Canxi làm giảm hấp thu sắt.',src:'Iron'},
@@ -159,7 +186,12 @@ const SPACING=[
 const DRUG=[
   {id:'warfarin',re:/warfarin|coumadin|lawarin/i,n:['vitK'],title:'Vitamin K và thuốc chống đông warfarin',text:'Vitamin K làm thay đổi tác dụng của warfarin; lượng vitamin K cần giữ ổn định.',src:'VitaminK'},
   {id:'levo',re:/levothyrox|euthyrox|letrox|thyrax|synthroid/i,n:['ca','fe'],title:'Canxi, sắt và thuốc tuyến giáp',text:'Canxi và sắt có thể làm giảm hấp thu levothyroxine; thường phải uống cách xa thuốc vài giờ.',src:'Calcium'},
-  {id:'abx',re:/cipro|levoflox|moxiflox|oflox|doxycyc|tetracyc|minocyc/i,n:['ca','fe','zn','mg'],title:'Khoáng chất và kháng sinh quinolon / tetracyclin',text:'Canxi, sắt, kẽm, magie gắn với các kháng sinh này và làm giảm tác dụng của thuốc; cần uống cách xa.',src:'Zinc'}
+  {id:'abx',re:/cipro|levoflox|moxiflox|oflox|doxycyc|tetracyc|minocyc/i,n:['ca','fe','zn','mg'],title:'Khoáng chất và kháng sinh quinolon / tetracyclin',text:'Canxi, sắt, kẽm, magie gắn với các kháng sinh này và làm giảm tác dụng của thuốc; cần uống cách xa.',src:'Zinc'},
+  // Lấy từ các trang thuốc trong kho Obsidian của bạn
+  {id:'thyrozol',re:/thyrozol|thiamazol|methimazol|tapazol|metizol/i,n:['io'],title:'I-ốt và thuốc kháng giáp Thyrozol',text:'I-ốt làm giảm hiệu quả thuốc kháng giáp. Người có nhân giáp tự chủ có thể bị bùng phát cường giáp do i-ốt (hiện tượng Jod-Basedow).',src:'Iodine',vault:'Thyrozol (Thiamazole)'},
+  {id:'concor-ca',lv:2,re:/concor|bisoprolol/i,n:['ca'],title:'Canxi và Concor (bisoprolol)',text:'Canxi có thể làm giảm nhẹ hấp thu bisoprolol; nên uống cách nhau ít nhất 2 giờ (thận trọng, không phải chống chỉ định).',vault:'Concor (Bisoprolol)'},
+  {id:'concor-mg',lv:1,re:/concor|bisoprolol/i,n:['mg'],title:'Magie và Concor (bisoprolol)',text:'Magie liều cao có thể cộng thêm tác dụng hạ huyết áp; theo dõi choáng khi đứng dậy.',vault:'Concor (Bisoprolol)'},
+  {id:'bleed',lv:2,re:/warfarin|lawarin|coumadin|apixaban|eliquis|rivaroxaban|xarelto|dabigatran|pradaxa|clopidogrel|plavix|aspirin|anopyrin|godasal|acylpyrin/i,n:['curc','om3'],title:'Nghệ, omega-3 và thuốc chống đông / chống tiểu cầu',text:'Curcumin và omega-3 liều cao có thể cộng thêm nguy cơ chảy máu. Trước phẫu thuật hoặc nhổ răng cần hỏi về việc ngừng.',vault:'Curcumin'}
 ];
 const LV=['','Nhẹ','Vừa','Nặng'];
 const fmt=n=>String(Math.round(n*10)/10);
@@ -179,16 +211,18 @@ function totals(mid,day){const t={};
   for(const p of activePlans(mid,day)){const pr=byId(S.products,p.productId),x=Number(p.servings)||1;
     for(const g of pr.ingredients||[]){const k=nutrKey(g);if(!k||!counts(g,k))continue;
       const e=t[k]=t[k]||{key:k,total:0,unknown:false,products:new Set()};
-      const v=toUnit(g.amount,g.unit,NUTR[k].u,k);if(v==null)e.unknown=true;else e.total+=v*x;e.products.add(pr.id)}}
+      const v=toUnit(g.amount,g.unit,NUTR[k].u,k);if(v==null)e.unknown=true;else{e.total+=v*x;if(k==='niacin'&&isAmide(g))e.amide=(e.amide||0)+v*x}e.products.add(pr.id)}}
   return t}
 function warningsFor(m,day=today()){
   const W=[],age=ageOf(m),t=totals(m.id,day),plans=activePlans(m.id,day);
-  const add=(lv,key,title,text,src,fix)=>{if(lv<3&&(S.dismissed||[]).includes(m.id+'|'+key))return;W.push({lv,key,title,text,src,fix,mid:m.id})};
+  const add=(lv,key,title,text,src,fix,vault)=>{if(lv<3&&(S.dismissed||[]).includes(m.id+'|'+key))return;W.push({lv,key,title,text,src,fix,vault,mid:m.id})};
   const adult=age==null||age>=19;
   for(const e of Object.values(t)){const N=NUTR[e.key];
-    if(N.ul&&adult){const ul=(age!=null&&age>=51&&N.ul51)||N.ul;
-      if(e.total>ul)add(3,'ul-'+e.key,'Vượt mức tối đa: '+N.n,`Tổng một ngày ${fmt(e.total)} ${N.u}, mức tối đa cho người lớn là ${fmt(ul)} ${N.u}.${N.note?' '+N.note:''}`,odsUrl(N.src));
-      else if(e.total>=ul*.8)add(2,'ul80-'+e.key,'Gần mức tối đa: '+N.n,`Tổng một ngày ${fmt(e.total)} ${N.u}, bằng ${Math.round(e.total/ul*100)}% mức tối đa (${fmt(ul)} ${N.u}).`,odsUrl(N.src))}
+    const L=adult?limitOf(e.key,age):null;
+    const chk=(kk,label,tot,ul)=>{if(!tot)return;const w=L.safe?'mức an toàn':'mức tối đa',vn=S.notes.some(x=>norm(x.substance)===norm(N.n))?N.n:null;
+      if(tot>ul)add(3,'ul-'+kk,`Vượt ${w}: ${label}`,`Tổng một ngày ${fmt(tot)} ${L.u}, ${w} cho người lớn theo ${L.by} là ${fmt(ul)} ${L.u}.${L.note?' '+L.note:''}`,L.url,null,vn);
+      else if(tot>=ul*.8)add(2,'ul80-'+kk,`Gần ${w}: ${label}`,`Tổng một ngày ${fmt(tot)} ${L.u}, bằng ${Math.round(tot/ul*100)}% ${w} theo ${L.by} (${fmt(ul)} ${L.u}).${L.note?' '+L.note:''}`,L.url,null,vn)};
+    if(L){if(L.amideUl!=null){chk(e.key,N.n+' dạng nicotinic acid',e.total-(e.amide||0),L.ul);chk(e.key+'-amide','Nicotinamide',e.amide||0,L.amideUl)}else chk(e.key,N.n,e.total,L.ul)}
     if(e.products.size>1)add(1,'dup-'+e.key,'Trùng hoạt chất: '+N.n,`Có trong ${e.products.size} sản phẩm: ${[...e.products].map(pname).join(', ')}.`);
     if(e.unknown)add(1,'unk-'+e.key,'Chưa tính đủ: '+N.n,'Có sản phẩm ghi chất này nhưng thiếu lượng hoặc đơn vị không đổi được, nên tổng có thể thiếu.')}
   for(const r of SPACING)for(const a of plans.filter(p=>hasN(p,r.a)))for(const b of plans.filter(p=>hasN(p,r.b))){
@@ -197,7 +231,7 @@ function warningsFor(m,day=today()){
     let nt=ta+r.min;if(nt>1439)nt=ta-r.min;
     add(2,`sp-${a.id}-${b.id}`,`Nên uống cách nhau: ${NUTR[r.a].n} và ${NUTR[r.b].n}`,`${pname(a.productId)} (${a.time}) và ${pname(b.productId)} (${b.time}) chỉ cách ${Math.abs(ta-tb)} phút. ${r.why} Nên cách ít nhất ${r.min/60} giờ.`,odsUrl(r.src),nt>=0?{plan:b.id,time:hhmm(nt)}:null)}
   for(const r of DRUG){if(!r.re.test(m.meds||''))continue;const hit=plans.filter(p=>r.n.some(k=>hasN(p,k)));
-    if(hit.length)add(3,'drug-'+r.id,r.title,`${r.text} Liên quan: ${[...new Set(hit.map(p=>pname(p.productId)))].join(', ')}. Hỏi bác sĩ hoặc dược sĩ.`,odsUrl(r.src))}
+    if(hit.length)add(r.lv||3,'drug-'+r.id,r.title,`${r.text} Liên quan: ${[...new Set(hit.map(p=>pname(p.productId)))].join(', ')}. Hỏi bác sĩ hoặc dược sĩ.`,r.src?odsUrl(r.src):null,null,r.vault&&S.notes.some(x=>norm(x.substance)===norm(r.vault))?r.vault:null)}
   if(plans.length){
     if(!adult)add(2,'child','Chưa có mức cho trẻ em','Mức tối đa trong app là của người lớn. Trẻ em có mức thấp hơn nhiều, hãy hỏi bác sĩ nhi.');
     if(age==null)add(1,'noage','Chưa có năm sinh','App đang dùng mức tối đa của người lớn. Nhập năm sinh để tính đúng hơn.');
@@ -205,7 +239,8 @@ function warningsFor(m,day=today()){
     else if(age!=null&&age>=65)add(1,'65','Trên 65 tuổi','Nên ghi thuốc kê đơn vào hồ sơ và hỏi bác sĩ trước khi thêm TPCN mới.')}
   return W.sort((a,b)=>b.lv-a.lv)}
 function warnCard(w,showName){return`<div class="w w${w.lv}"><b>${LV[w.lv]} · ${esc(w.title)}</b>${showName?` <span class="mute">(${esc(mname(w.mid))})</span>`:''}<div>${esc(w.text)}</div>
-  <div class="row" style="margin-top:6px;align-items:center">${w.src?`<a href="${esc(w.src)}" target="_blank" rel="noopener noreferrer" style="font-size:13px">Nguồn: NIH ODS</a>`:''}
+  <div class="row" style="margin-top:6px;align-items:center">${w.src?`<a href="${esc(w.src)}" target="_blank" rel="noopener noreferrer" style="font-size:13px">Nguồn: ${/efsa|ncbi/.test(w.src)?'EFSA':'NIH'}</a>`:''}
+  ${w.vault?`<button class="btn sm" data-n="${esc(w.vault)}" onclick="go('know',this.dataset.n)">Ghi chú của bạn</button>`:''}
   ${w.fix?`<button class="btn sm" onclick="applyFix('${w.fix.plan}','${w.fix.time}')">Dời giờ sang ${esc(w.fix.time)}</button>`:''}
   ${w.lv<3?`<button class="btn sm" onclick="dismissW('${w.mid}','${esc(w.key)}')">Bỏ qua</button>`:''}</div></div>`}
 function applyFix(id,time){const p=byId(S.plans,id);if(p){p.time=time;save();render()}}
@@ -214,9 +249,12 @@ function todayWarnings(){const W=S.members.filter(m=>!fMember||m.id===fMember).f
   const big=W.filter(w=>w.lv>=2),small=W.length-big.length;
   return big.map(w=>warnCard(w,!fMember)).join('')+(small?`<div class="mute" style="margin-bottom:8px">Còn ${small} lưu ý nhẹ, xem ở tab <a href="#" onclick="go('fam');return false">Cả nhà</a>.</div>`:'')}
 function memberHealth(m){const age=ageOf(m),t=Object.values(totals(m.id,today())),W=warningsFor(m);
-  const bars=t.filter(e=>NUTR[e.key].ul).map(e=>{const N=NUTR[e.key],ul=(age!=null&&age>=51&&N.ul51)||N.ul,pc=e.total/ul*100;
-    return`<div style="margin-top:6px"><div style="display:flex;justify-content:space-between;gap:8px;font-size:13px"><span>${esc(N.n)}</span><span>${e.unknown?(e.total?'≥ '+fmt(e.total):'chưa rõ'):fmt(e.total)} / ${fmt(ul)} ${N.u}</span></div><div class="bar"><i style="width:${Math.min(100,pc)}%;background:${pc>100?'var(--bad)':pc>=80?'var(--warn)':'var(--pri)'}"></i></div></div>`}).join('');
-  return (bars?`<div style="margin-top:10px"><b style="font-size:14px">Tổng một ngày so với mức tối đa</b>${bars}</div>`:'')+(W.length?`<div style="margin-top:10px">${W.map(w=>warnCard(w,false)).join('')}</div>`:'')}
+  const rows=[];for(const e of t){const L=limitOf(e.key,age);if(!L)continue;
+    if(L.amideUl!=null){rows.push([NUTR[e.key].n+' (nicotinic acid)',e.total-(e.amide||0),L.ul,L,e.unknown]);if(e.amide)rows.push(['Nicotinamide',e.amide,L.amideUl,L,false])}
+    else rows.push([NUTR[e.key].n,e.total,L.ul,L,e.unknown])}
+  const bars=rows.map(([n,tot,ul,L,unk])=>{const pc=tot/ul*100;
+    return`<div style="margin-top:6px"><div style="display:flex;justify-content:space-between;gap:8px;font-size:13px"><span>${esc(n)}${L.safe?' (mức an toàn)':''}</span><span>${unk?(tot?'≥ '+fmt(tot):'chưa rõ'):fmt(tot)} / ${fmt(ul)} ${L.u}</span></div><div class="bar"><i style="width:${Math.min(100,pc)}%;background:${pc>100?'var(--bad)':pc>=80?'var(--warn)':'var(--pri)'}"></i></div></div>`}).join('');
+  return (bars?`<div style="margin-top:10px"><b style="font-size:14px">Tổng một ngày so với mức tối đa (${ulStd()==='efsa'?'EFSA':'NIH'})</b>${bars}</div>`:'')+(W.length?`<div style="margin-top:10px">${W.map(w=>warnCard(w,false)).join('')}</div>`:'')}
 
 /* ---------- Hôm nay ---------- */
 function slotsFor(day){
@@ -492,8 +530,11 @@ function vSubstance(name){
   const N=s.key?NUTR[s.key]:null,prods=substProducts(s),notes=S.notes.filter(n=>norm(n.substance)===norm(name));
   view(s.name,N?'Có trong bảng cảnh báo của app':'Chưa có mức tối đa trong app',
    `<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('know')">‹ Kiến thức</button></div>
-   ${N?`<div class="card"><b>Mức tối đa cho người lớn</b><div>${N.ul?fmt(N.ul)+' '+N.u+' mỗi ngày (từ thực phẩm chức năng)':'NIH chưa đặt mức tối đa cho chất này.'}${N.ul51?`, từ 51 tuổi: ${fmt(N.ul51)} ${N.u}`:''}</div>
-     ${N.note?`<div class="mute">${esc(N.note)}</div>`:''}<div class="mute"><a href="${esc(odsUrl(N.src))}" target="_blank" rel="noopener noreferrer">Nguồn: NIH Office of Dietary Supplements</a></div></div>`
+   ${N?(()=>{const E=EF[s.key];return`<div class="card"><b>Mức tối đa cho người lớn mỗi ngày</b>
+     <div>EFSA (châu Âu): ${E?fmt(E.ul)+' '+N.u+(E.safe?' (mức an toàn, không phải UL chính thức)':'')+(E.amideUl?`; nicotinamide ${fmt(E.amideUl)} mg`:'')+` · <a href="${esc(E.url||EFSA_SUM)}" target="_blank" rel="noopener noreferrer">nguồn</a>`:'chưa đặt'}</div>
+     <div>NIH (Mỹ): ${N.ul?fmt(N.ul)+' '+N.u+(N.ul51?`, từ 51 tuổi ${fmt(N.ul51)} ${N.u}`:''):'chưa đặt'} · <a href="${esc(nUrl(N))}" target="_blank" rel="noopener noreferrer">nguồn</a></div>
+     ${E?.note?`<div class="mute">EFSA: ${esc(E.note)}</div>`:''}${N.note?`<div class="mute">NIH: ${esc(N.note)}</div>`:''}
+     <div class="mute">App đang dùng chuẩn ${ulStd()==='efsa'?'EFSA':'NIH'} (đổi ở tab Cả nhà).</div></div>`})()
      :`<div class="note">App chưa có mức tối đa cho chất này. Bạn có thể thêm ghi chú kèm nguồn bên dưới.</div>`}
    <div class="card"><b>Sản phẩm trong tủ có chất này (${prods.length})</b>${prods.map(p=>{const g=(p.ingredients||[]).find(x=>s.key?nutrKey(x)===s.key:norm(x.name)===norm(s.name));
      const who=[...new Set(S.plans.filter(x=>x.productId===p.id&&(!x.end||x.end>=today())).map(x=>mname(x.memberId)))];
@@ -547,6 +588,8 @@ function vFam(){
    `<div class="card"><b>Sao lưu</b><div class="mute">Dữ liệu chỉ nằm trong trình duyệt của máy này. Hãy tải bản sao lưu định kỳ.</div>
     <div class="row"><button class="btn pri" onclick="exportAll()">Tải JSON</button>
     <label class="btn" style="display:inline-block">Khôi phục từ JSON<input type="file" accept=".json" hidden onchange="restore(this.files[0])"></label></div></div>
+    <div class="card"><b>Chuẩn mức tối đa dùng để cảnh báo</b><div class="mute">EFSA là chuẩn châu Âu (áp dụng ở Séc), thường chặt hơn. NIH là chuẩn Mỹ.</div>
+     <select style="margin-top:8px" onchange="S.settings={...(S.settings||{}),ul:this.value};save();render()"><option value="efsa" ${ulStd()==='efsa'?'selected':''}>EFSA (châu Âu)</option><option value="nih" ${ulStd()==='nih'?'selected':''}>NIH (Mỹ)</option></select></div>
     <div class="card"><b>Xuất bảng tính (CSV, mở bằng Excel hoặc Google Sheets)</b>
      <div class="row"><button class="btn" onclick="exportCsv('p')">Sản phẩm</button><button class="btn" onclick="exportCsv('l')">Lịch uống</button><button class="btn" onclick="exportCsv('i')">Lượt đã uống</button></div></div>
     <div class="card"><b>Báo cáo in hoặc lưu PDF (mang đi khám, đưa bác sĩ, dược sĩ)</b>
