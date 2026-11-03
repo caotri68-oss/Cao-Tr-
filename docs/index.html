@@ -164,7 +164,9 @@ const ageOf=m=>m.born?new Date().getFullYear()-Number(m.born):null;
 const mins=t=>{const m=/^(\d{1,2}):(\d{2})/.exec(t||'');return m?+m[1]*60+ +m[2]:null};
 const hhmm=x=>pad(Math.floor(x/60))+':'+pad(x%60);
 const nutrKey=g=>{for(const k in NUTR)if(NUTR[k].re.test(g.name||''))return k;return null};
-const counts=(g,k)=>!(NUTR[k].skipForm&&NUTR[k].skipForm.test((g.form||'')+' '+g.name));
+const counts=(g,k)=>{const sk=NUTR[k].skipForm;if(!sk)return true;
+  const fs=(g.form||'').replace(/\([^)]*\)/g,'').split(',').map(s=>s.trim()).filter(Boolean);
+  return !(fs.length?fs.every(f=>sk.test(f)):sk.test(g.name))}; // chỉ loại khi mọi dạng đều là beta-caroten
 function toUnit(a,u,t,k){if(a===''||a==null||Number.isNaN(Number(a)))return null;a=Number(a);if(u===t)return a;
   const f={g:1e6,mg:1e3,mcg:1};if(f[u]&&f[t])return a*f[u]/f[t];
   if(k==='vitD'&&u==='IU'&&t==='mcg')return a/40;return null}
@@ -416,11 +418,20 @@ function vImport(){
    <label>Văn bản (dán Supplement Facts, Other ingredients, Warnings… vào đây)<textarea id="x" style="min-height:160px">${esc(stage.text)}</textarea></label>
    <div class="mute" id="st">Chữ trong ảnh được đọc ngay trên máy (tiếng Anh, Séc, Việt). Lần đầu cần internet để tải dữ liệu ngôn ngữ.</div>
    <button class="btn pri" id="go">Phân tích và tạo sản phẩm</button>
-   <button class="btn" id="hand">Hoặc nhập tay</button></div>`);
+   <button class="btn" id="hand">Hoặc nhập tay</button></div>
+  <div class="card" style="display:grid;gap:8px"><b>Tìm trong kho nhãn NIH (sản phẩm Mỹ)</b>
+   <div class="mute">Gõ tên sản phẩm bằng tiếng Anh, ví dụ: Two-Per-Day Multivitamin. Dữ liệu là nhãn Mỹ, có thể khác bản bán ở Séc.</div>
+   <div class="row" style="margin:0"><input id="dq" placeholder="Tên sản phẩm" style="flex:1"><button class="btn" id="dgo">Tìm</button></div>
+   <div id="dres"></div></div>`);
   const sync=()=>{stage.title=$('#t').value;stage.source=$('#u').value;stage.text=$('#x').value};
   ['t','u','x'].forEach(i=>$('#'+i).oninput=sync);
   const st=m=>{$('#st').textContent=m};
   $('#hand').onclick=()=>newProduct();
+  const dsearch=async()=>{const q=$('#dq').value.trim();if(q.length<2)return;const box=$('#dres');box.textContent='Đang tìm…';
+    try{const l=await dsldSearch(q);box.innerHTML=l.length?l.map(x=>`<div class="card" style="margin:0 0 6px"><b>${esc(x.name)}</b><div class="mute">${esc([x.brand,x.form,x.date?'nhập '+x.date:'',x.off?'đã ngừng bán':''].filter(Boolean).join(' · '))}</div><div class="row"><button class="btn sm pri" data-id="${esc(x.id)}">Dùng nhãn này</button></div></div>`).join(''):'<div class="mute">Không tìm thấy. Thử tên ngắn hơn hoặc tên hãng.</div>';
+      box.querySelectorAll('button[data-id]').forEach(b=>b.onclick=async()=>{b.disabled=true;try{await createFromDsld(b.dataset.id)}catch(e){box.textContent='Lỗi: '+e.message}})}
+    catch(e){box.textContent='Không kết nối được kho NIH: '+e.message+'. Cần internet.'}};
+  $('#dgo').onclick=dsearch;$('#dq').onkeydown=e=>{if(e.key==='Enter')dsearch()};
   $('#go').onclick=async()=>{sync();$('#go').disabled=true;try{await createFromStage()}catch(e){st('Lỗi: '+e.message);$('#go').disabled=false}};
   $('#bu').onclick=async()=>{sync();try{st('Đang lấy…');const r=await fetchText(stage.source.trim());stage.title=stage.title||r.title;stage.text=(stage.text?stage.text+'\n\n':'')+r.text;vImport();$('#st').textContent='Xong. Kiểm tra lại văn bản rồi bấm Phân tích.'}catch(e){st('Lỗi: '+e.message)}};
   $('#im').onchange=async e=>{const fs=[...e.target.files];if(!fs.length)return;sync();
@@ -430,14 +441,73 @@ function vImport(){
     }catch(err){st('Lỗi: '+err.message)}};
 }
 
+/* ---------- Kho NIH DSLD: nhãn thực phẩm chức năng Mỹ ---------- */
+const DSLD='https://api.ods.od.nih.gov/dsld/v9/';
+async function dsldSearch(q){
+  const r=await fetch(DSLD+'search-filter?size=8&q='+encodeURIComponent(q));if(!r.ok)throw new Error('NIH trả lỗi '+r.status);
+  const d=await r.json();return (d.hits||[]).map(h=>({id:h._id,brand:h._source.brandName||'',name:h._source.fullName||'',off:h._source.offMarket,form:h._source.physicalState?.langualCodeDescription||'',date:h._source.entryDate||''}))}
+const DUNIT={mg:'mg',mcg:'mcg','mcg rae':'mcg','mcg dfe':'mcg','mg ne':'mg','mg ate':'mg','mg at':'mg','mcg re':'mcg',g:'g',gram:'g',iu:'IU',ml:'ml',cfu:'CFU','billion cfu':'CFU'};
+async function createFromDsld(id){
+  const r=await fetch(DSLD+'label/'+id);if(!r.ok)throw new Error('NIH trả lỗi '+r.status);
+  const L=await r.json(),d=blank();
+  d.name=L.fullName||'';d.brand=L.brandName||'';d.form=L.physicalState?.langualCodeDescription||'';d.url='https://dsld.od.nih.gov/label/'+L.id;
+  const rows=[];
+  for(const row of L.ingredientRows||[]){rows.push(row);for(const n of row.nestedRows||[])rows.push(n)}
+  d.ingredients=rows.map(row=>{
+    const q=(row.quantity||[])[0],uraw=(q?.unit||'').trim(),ul=uraw.toLowerCase(),u=DUNIT[ul];
+    let amount=q&&typeof q.quantity==='number'&&q.quantity>0?q.quantity:'';
+    if(amount!==''&&/billion/.test(ul))amount*=1e9;
+    const forms=(row.forms||[]).map(f=>f.name).filter(Boolean).join(', ');
+    const qual=uraw&&u&&uraw.toLowerCase()!==u.toLowerCase()?' ('+uraw+')':'';
+    return{name:row.name||row.ingredientGroup||'',amount:u?amount:'',unit:u||'mg',form:(forms+qual).trim(),check:amount===''||!u};
+  }).filter(g=>g.name);
+  if(!d.ingredients.length)d.ingredients=[{name:'',amount:'',unit:'mg',form:''}];
+  const ss=(L.servingSizes||[])[0],dir=(L.statements||[]).find(s=>/Directions/i.test(s.type));
+  const rng=(a,b)=>a&&b&&a!==b?a+'–'+b:(a||b||'');
+  d.dosageLabel=[ss?`1 liều nhãn = ${rng(ss.minQuantity,ss.maxQuantity)} ${ss.unit}${ss.minDailyServings||ss.maxDailyServings?`, ${rng(ss.minDailyServings,ss.maxDailyServings)} lần/ngày`:''}`:'',dir?.notes||''].filter(Boolean).join('. ');
+  d.warnings=(L.statements||[]).filter(s=>/^Precaution/i.test(s.type)).map(s=>s.notes).filter(Boolean).join('\n');
+  const oi=L.otheringredients,oit=typeof oi==='string'?oi:(oi?.text||'');
+  d.notes=`Nguồn: NIH DSLD #${L.id}, nhãn Mỹ nhập ${L.entryDate||'?'}.`+(oit?'\nThành phần khác: '+oit:'');
+  addMsg='Dữ liệu từ nhãn Mỹ của NIH, có thể khác bản bán ở Séc hoặc Việt Nam. Đối chiếu với nhãn trên hộp.';
+  draft=d;go('add');
+}
+
+/* ---------- Kho hoạt chất ---------- */
+const norm=s=>String(s||'').toLowerCase().trim();
+const substProducts=s=>S.products.filter(p=>(p.ingredients||[]).some(g=>s.key?nutrKey(g)===s.key:norm(g.name)===norm(s.name)));
+function substList(){
+  const m=new Map();
+  for(const k in NUTR)m.set(norm(NUTR[k].n),{name:NUTR[k].n,key:k});
+  for(const p of S.products)for(const g of p.ingredients||[]){if(nutrKey(g))continue;const n=norm(g.name);if(n&&!m.has(n))m.set(n,{name:g.name,key:null})}
+  return [...m.values()].map(s=>({...s,count:substProducts(s).length})).sort((a,b)=>b.count-a.count||a.name.localeCompare(b.name,'vi'));
+}
+const substGrid=()=>`<div class="card"><b>Hoạt chất</b><div class="mute">Bấm một chất để xem mức tối đa, sản phẩm đang có và ghi chú.</div>
+  <div class="chips" style="flex-wrap:wrap;overflow:visible;margin-top:8px">${substList().map(s=>`<button class="${s.count?'on':''}" data-n="${esc(s.name)}" onclick="go('know',this.dataset.n)">${esc(s.name)}${s.count?' · '+s.count:''}</button>`).join('')}</div></div>`;
+function vSubstance(name){
+  const s=substList().find(x=>x.name===name);if(!s){sub=null;return vKnow()}
+  const N=s.key?NUTR[s.key]:null,prods=substProducts(s),notes=S.notes.filter(n=>norm(n.substance)===norm(name));
+  view(s.name,N?'Có trong bảng cảnh báo của app':'Chưa có mức tối đa trong app',
+   `<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('know')">‹ Kiến thức</button></div>
+   ${N?`<div class="card"><b>Mức tối đa cho người lớn</b><div>${N.ul?fmt(N.ul)+' '+N.u+' mỗi ngày (từ thực phẩm chức năng)':'NIH chưa đặt mức tối đa cho chất này.'}${N.ul51?`, từ 51 tuổi: ${fmt(N.ul51)} ${N.u}`:''}</div>
+     ${N.note?`<div class="mute">${esc(N.note)}</div>`:''}<div class="mute"><a href="${esc(odsUrl(N.src))}" target="_blank" rel="noopener noreferrer">Nguồn: NIH Office of Dietary Supplements</a></div></div>`
+     :`<div class="note">App chưa có mức tối đa cho chất này. Bạn có thể thêm ghi chú kèm nguồn bên dưới.</div>`}
+   <div class="card"><b>Sản phẩm trong tủ có chất này (${prods.length})</b>${prods.map(p=>{const g=(p.ingredients||[]).find(x=>s.key?nutrKey(x)===s.key:norm(x.name)===norm(s.name));
+     const who=[...new Set(S.plans.filter(x=>x.productId===p.id&&(!x.end||x.end>=today())).map(x=>mname(x.memberId)))];
+     return`<div style="margin-top:6px;cursor:pointer" onclick="go('shelf','${p.id}')"><b>${esc(p.name)}</b> <span class="mute">${esc(g?.amount??'')} ${esc(g?.unit||'')}${g?.form?' · '+esc(g.form):''}${who.length?' · đang uống: '+esc(who.join(', ')):''}</span></div>`}).join('')||'<div class="mute">Chưa có.</div>'}</div>
+   <div class="card"><b>Ghi chú của bạn (${notes.length})</b>${notes.map(n=>`<div style="margin-top:8px"><b>${esc(n.title)}</b><div class="mute" style="white-space:pre-wrap">${esc(n.content)}</div><div class="mute">${safeUrl(n.source)?`<a href="${esc(n.source)}" target="_blank" rel="noopener noreferrer">nguồn</a>`:esc(n.source||'')}</div>
+     <div class="row"><button class="btn sm" onclick="editNote('${n.id}')">Sửa</button><button class="btn sm del" onclick="remove(S.notes,'${n.id}')">Xoá</button></div></div>`).join('')||'<div class="mute">Chưa có.</div>'}
+    <div class="row"><button class="btn pri sm" data-n="${esc(s.name)}" onclick="editNote(null,{substance:this.dataset.n})">+ Thêm ghi chú về chất này</button></div></div>`);
+}
+
 /* ---------- Kiến thức ---------- */
-function editNote(id){const n=byId(S.notes,id)||{id:uid(),added:today()};
-  dialog(id?'Sửa ghi chú':'Thêm ghi chú',[{k:'title',l:'Tiêu đề'},{k:'source',l:'Nguồn (link hoặc tên tài liệu)'},{k:'content',l:'Nội dung',t:'area'}],n,o=>{if(!o.title)return;upsert(S.notes,o)})}
+function editNote(id,pre){const n=byId(S.notes,id)||{id:uid(),added:today(),...(pre||{})};
+  dialog(id?'Sửa ghi chú':'Thêm ghi chú',[{k:'title',l:'Tiêu đề'},{k:'substance',l:'Hoạt chất liên quan (vd: Kẽm, giống tên trong danh sách)'},{k:'source',l:'Nguồn (link hoặc tên tài liệu)'},{k:'content',l:'Nội dung',t:'area'}],n,o=>{if(!o.title)return;upsert(S.notes,o)})}
 function vKnow(){
-  view('Kiến thức',S.notes.length+' ghi chú',`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="editNote()">+ Thêm ghi chú</button></div>`+
+  if(sub)return vSubstance(sub);
+  view('Kiến thức',S.notes.length+' ghi chú · '+substList().length+' hoạt chất',substGrid()+`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="editNote()">+ Thêm ghi chú</button></div>`+
    (S.notes.map(n=>`<div class="card"><h3>${esc(n.title)}</h3><div class="mute" style="white-space:pre-wrap">${esc(n.content)}</div>
     <div class="mute">${esc(n.added||'')} · ${safeUrl(n.source)?`<a href="${esc(n.source)}" target="_blank" rel="noopener noreferrer">nguồn</a>`:esc(n.source||'')}</div>
-    <div class="row"><button class="btn sm" onclick="editNote('${n.id}')">Sửa</button><button class="btn sm del" onclick="remove(S.notes,'${n.id}')">Xoá</button></div></div>`).join('')||`<div class="empty">Chưa có ghi chú. Kho hoạt chất có nguồn sẽ làm ở bước sau.</div>`));
+    <div class="row"><button class="btn sm" onclick="editNote('${n.id}')">Sửa</button><button class="btn sm del" onclick="remove(S.notes,'${n.id}')">Xoá</button></div></div>`).join('')||`<div class="empty">Chưa có ghi chú riêng. Bấm một hoạt chất ở trên để thêm ghi chú kèm nguồn.</div>`));
 }
 
 /* ---------- Cả nhà + sao lưu ---------- */
