@@ -149,6 +149,7 @@ const NUTR={
   io:{n:'I-ốt',re:/iodine|iod|i-?ốt|jód/i,ul:1100,u:'mcg',src:'Iodine'},
   cu:{n:'Đồng',re:/copper|cupr|měď/i,ul:10000,u:'mcg',src:'Copper'},
   mn:{n:'Mangan',re:/mangan/i,ul:11,u:'mg',src:'Manganese'},
+  boron:{n:'Boron',re:/boron|borat|boric/i,ul:20,u:'mg',src:'Boron',srcUrl:'https://ods.od.nih.gov/factsheets/Boron-Consumer/'},
   vitK:{n:'Vitamin K',re:/vitamin k\d?\b|phylloquinone|menaquinone/i,u:'mcg',src:'VitaminK'},
   curc:{n:'Curcumin',re:/curcum|turmeric|nghệ/i,u:'mg',srcUrl:'https://www.nccih.nih.gov/health/turmeric'},
   om3:{n:'Omega-3',re:/omega-?3\b|\bepa\b|\bdha\b|fish oil|dầu cá|rybí olej/i,u:'mg',src:'Omega3FattyAcids'}
@@ -170,13 +171,14 @@ const EF={
   mg:{ul:250,note:'Chỉ tính magie bổ sung; nên chia ít nhất 2 lần/ngày.'},
   se:{ul:255,url:'https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.7704',note:'EFSA hạ từ 300 xuống 255 µg năm 2023.'},
   io:{ul:600},
+  boron:{ul:10,note:'EFSA áp dụng cho axit boric và borat, dựa trên dữ liệu động vật.'},
   cu:{ul:5000},
   mn:{ul:8,safe:true,url:'https://efsa.onlinelibrary.wiley.com/doi/full/10.2903/j.efsa.2023.8413',note:'EFSA 2023 không đặt được UL; 8 mg là mức an toàn, tính cả thức ăn.'}
 };
 const ulStd=()=>(S.settings||{}).ul==='nih'?'nih':'efsa';
 function limitOf(k,age){const N=NUTR[k];
   if(ulStd()==='efsa'){const e=EF[k];if(!e)return null;return{ul:e.ul,u:N.u,note:e.note||'',url:e.url||EFSA_SUM,by:'EFSA',safe:!!e.safe,amideUl:e.amideUl}}
-  if(!N.ul)return null;return{ul:(age!=null&&age>=51&&N.ul51)||N.ul,u:N.u,note:N.note||'',url:odsUrl(N.src),by:'NIH'}}
+  if(!N.ul)return null;return{ul:(age!=null&&age>=51&&N.ul51)||N.ul,u:N.u,note:N.note||'',url:nUrl(N),by:'NIH'}}
 const isAmide=g=>{const s=g.name+' '+(g.form||'');return /amide/i.test(s)&&!/nicotinic acid|inositol/i.test(s)};
 // Cặp chất nên uống cách nhau (phút)
 const SPACING=[
@@ -391,19 +393,34 @@ function vToday(){
 function vShelf(){
   if(sub)return vProduct(sub);
   const l=S.products;
-  view('Tủ TPCN',l.length+' sản phẩm',`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="go('add')">+ Thêm sản phẩm</button></div>`+
+  view('Tủ TPCN',l.length+' sản phẩm',`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="go('add')">+ Thêm sản phẩm</button><label class="btn" style="display:inline-block">Nhập từ file<input type="file" accept=".json" hidden onchange="importProducts(this.files[0]);this.value=''"></label></div>`+overlapHtml()+
     (l.map(p=>{const who=[...new Set(S.plans.filter(x=>x.productId===p.id&&(!x.end||x.end>=today())).map(x=>mname(x.memberId)))];
       return`<div class="card" onclick="go('shelf','${p.id}')" style="cursor:pointer"><h3>${esc(p.name)}</h3>
       <div class="mute">${esc([p.brand,p.form].filter(Boolean).join(' · '))}</div>
       <div>${who.length?`<span class="tag">Đang uống: ${esc(who.join(', '))}</span>`:''}${p.warnings?`<span class="tag" style="background:none;color:var(--warn);border:1px solid var(--warn)">⚠ cảnh báo</span>`:''}</div></div>`}).join('')
      ||`<div class="empty">Tủ trống. Bấm “+ Thêm sản phẩm”.</div>`));
 }
+// Một dòng thành phần: tên bấm được (mở bài kiến thức), thanh % mức tối đa của người lớn
+function ingRow(i){
+  const key=nutrKey(i),s={name:i.name,key},has=kbKeyOf(s);
+  const nm=has?`<a href="#" data-n="${esc(i.name)}" onclick="go('know',this.dataset.n);return false">${esc(i.name)}</a>`:`${esc(i.name)} <span class="mute" style="font-size:11px">(chưa có bài)</span>`;
+  let bar='';const L=key?limitOf(key,null):null,v=key?toUnit(i.amount,i.unit,NUTR[key].u,key):null;
+  if(L&&v!=null&&counts(i,key)){const ul=L.amideUl!=null&&isAmide(i)?L.amideUl:L.ul,pc=v/ul*100;
+    bar=`<div class="mute" style="font-size:11px">${Math.round(pc)}% ${L.safe?'mức an toàn':'mức tối đa'} ${L.by} (${fmt(ul)} ${L.u})</div><div class="bar"><i style="width:${Math.min(100,pc)}%;background:${pc>100?'var(--bad)':pc>=80?'var(--warn)':'var(--pri)'}"></i></div>`}
+  return`<tr><td>${nm}${bar}</td><td>${esc(i.amount)} ${esc(i.unit)}</td><td>${esc(i.form)}</td></tr>`}
+function overlaps(m){const by={};
+  for(const p of activePlans(m.id,today())){const pr=byId(S.products,p.productId);
+    for(const g of pr.ingredients||[]){const k=ingKey(g);if(!k)continue;(by[k]=by[k]||{name:nutrKey(g)?NUTR[nutrKey(g)].n:g.name,ps:new Set()}).ps.add(pr.id)}}
+  return Object.values(by).filter(e=>e.ps.size>1).map(e=>({name:e.name,ps:[...e.ps]}))}
+function overlapHtml(){
+  const rows=S.members.map(m=>{const o=overlaps(m);return o.length?`<div style="margin-top:6px"><b style="font-size:13px">${esc(m.name)}</b>${o.map(e=>`<div class="mute" style="font-size:13px">${esc(e.name)}: ${e.ps.map(pname).map(esc).join(', ')}</div>`).join('')}</div>`:''}).join('');
+  return rows?`<div class="card"><b>Trùng nhau</b><div class="mute">Cùng một chất có trong nhiều sản phẩm mà người đó đang uống. Hãy cộng dồn khi so với mức tối đa.</div>${rows}</div>`:''}
 function vProduct(id){
   const p=byId(S.products,id);if(!p){sub=null;return vShelf()}
   const plans=S.plans.filter(x=>x.productId===id);
   view(p.name,[p.brand,p.form].filter(Boolean).join(' · '),
    `<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('shelf')">‹ Tủ TPCN</button></div>
-   <div class="card"><b>Thành phần mỗi liều</b>${(p.ingredients||[]).length?`<table class="ing2"><tr><th>Hoạt chất</th><th>Lượng</th><th>Dạng</th></tr>${p.ingredients.map(i=>`<tr><td>${esc(i.name)}</td><td>${esc(i.amount)} ${esc(i.unit)}</td><td>${esc(i.form)}</td></tr>`).join('')}</table>`:'<div class="mute">Chưa nhập.</div>'}
+   <div class="card"><b>Thành phần mỗi liều</b>${(p.ingredients||[]).length?`<table class="ing2"><tr><th>Hoạt chất</th><th>Lượng</th><th>Dạng</th></tr>${p.ingredients.map(ingRow).join('')}</table>`:'<div class="mute">Chưa nhập.</div>'}
     <div class="mute" style="margin-top:6px">Liều trên nhãn: ${esc(p.dosageLabel||'—')}</div></div>
    <div class="card"><b>Mua</b><div class="mute">${p.price!==''&&p.price!=null?esc(p.price)+' CZK · ':''}${esc(p.store||'')} ${safeUrl(p.url)?`<a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">liên kết</a>`:''}</div></div>
    ${p.warnings?`<div class="note"><b>⚠ Cảnh báo trên nhãn</b><br>${esc(p.warnings)}</div>`:''}
@@ -775,6 +792,22 @@ async function importKnowledge(f){
     for(const n of ok){const o={id:n.id,title:s(n.title),kind:s(n.kind),substance:s(n.substance),source:s(n.source),content:n.content,added:s(n.added),raw:!!n.raw};
       const i=S.notes.findIndex(x=>x.id===o.id);i<0?S.notes.push(o):S.notes[i]=o}
     save();render();alert(`Đã nhập ${ok.length} ghi chú.`);
+  }catch(e){alert('Lỗi: '+e.message)}
+}
+async function importProducts(f){
+  if(!f)return;
+  try{const d=JSON.parse(await f.text());
+    if(!d||d.kind!=='tpcn-products'||d.v!==1||!Array.isArray(d.products))throw new Error('Không đúng định dạng file sản phẩm');
+    const ok=d.products.filter(p=>p&&typeof p.id==='string'&&/^prd-[a-z0-9-]{1,60}$/.test(p.id)&&typeof p.name==='string'&&Array.isArray(p.ingredients));
+    if(!ok.length)throw new Error('Không có sản phẩm hợp lệ trong file');
+    const upd=ok.filter(p=>byId(S.products,p.id)).length;
+    if(!confirm(`Nhập ${ok.length} sản phẩm (${upd} sản phẩm đã có sẽ được cập nhật thành phần, lịch uống giữ nguyên). Tiếp tục?`))return;
+    const s=x=>String(x??'').slice(0,300),U=['mg','mcg','g','IU','ml','CFU'];
+    for(const p of ok){const old=byId(S.products,p.id)||{};
+      const o={...blank(),...old,id:p.id,name:s(p.name),brand:s(p.brand),form:s(p.form),dosageLabel:s(p.dosageLabel),url:safeUrl(p.url).slice(0,500),notes:s(p.notes).slice(0,1000),
+        ingredients:p.ingredients.slice(0,80).filter(g=>g&&typeof g.name==='string').map(g=>({name:s(g.name),amount:typeof g.amount==='number'&&g.amount>=0?g.amount:'',unit:U.includes(g.unit)?g.unit:'mg',form:s(g.form)}))};
+      const i=S.products.findIndex(x=>x.id===o.id);i<0?S.products.push(o):S.products[i]=o}
+    save();render();alert(`Đã nhập ${ok.length} sản phẩm.`);
   }catch(e){alert('Lỗi: '+e.message)}
 }
 function editNote(id,pre){const n=byId(S.notes,id)||{id:uid(),added:today(),...(pre||{})};

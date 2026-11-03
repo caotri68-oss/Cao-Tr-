@@ -1044,13 +1044,185 @@ window.KB={
       'Ngộ độc ảnh hưởng chủ yếu thần kinh trung ương: run, co thắt cơ, ù tai, giảm thính lực, đi loạng choạng; cùng các triệu chứng khác như mất ngủ, trầm cảm, dễ cáu gắt, giảm trí nhớ ngắn hạn (NIH).'],
     interactions:['Mangan không được biết là có tương tác thuốc quan trọng về lâm sàng (NIH).'],
     foods:'Ngũ cốc nguyên hạt, nghêu, hàu, trai, hạt, đậu nành và các loại đậu, gạo, rau lá xanh, cà phê, trà, và nhiều gia vị như tiêu đen (NIH).',
-    sources:[['NIH ODS – Manganese','https://ods.od.nih.gov/factsheets/Manganese-HealthProfessional/'],['EFSA – mangan 2023','https://efsa.onlinelibrary.wiley.com/doi/full/10.2903/j.efsa.2023.8413']]}
+    sources:[['NIH ODS – Manganese','https://ods.od.nih.gov/factsheets/Manganese-HealthProfessional/'],['EFSA – mangan 2023','https://efsa.onlinelibrary.wiley.com/doi/full/10.2903/j.efsa.2023.8413']]},
+
+  boron:{
+    name:'Boron',aka:'Bo, boron citrate, boron glycinate, calcium fructoborate',updated:'2026-11-03',
+    what:'Khoáng chất có trong nhiều thực phẩm thực vật. Các nhà khoa học chưa chắc boron có vai trò gì trong cơ thể nên NIH không coi boron là chất dinh dưỡng thiết yếu. Chưa có mức khuyến nghị cần bao nhiêu (NIH).',
+    benefits:[
+      ['chuaro','Viêm xương khớp và sức khoẻ xương: một số nghiên cứu xem boron có giảm triệu chứng thoái hoá khớp (có thể qua giảm viêm) và giữ xương khoẻ hay không. NIH ghi cần thêm nghiên cứu.','NIH'],
+      ['chuaro','Tỉnh táo và tập trung: một số nghiên cứu gợi ý người ăn rất ít boron khó tỉnh táo hơn; ăn ít boron cũng có thể làm xương yếu hơn. Chưa kết luận được.','NIH'],
+      ['chuaro','Ung thư: đang được nghiên cứu, chưa có kết luận.','NIH']],
+    need:'Không có mức khuyến nghị. Người lớn ở Mỹ ăn khoảng 1 mg boron mỗi ngày từ thức ăn (NIH). Mức tối đa tính cả thức ăn, đồ uống và viên: EFSA 10 mg mỗi ngày cho người lớn (áp dụng cho dạng axit boric và borat, dựa trên dữ liệu động vật; có ý kiến đề nghị EFSA xem lại), NIH 20 mg mỗi ngày cho người lớn.',
+    how:[
+      'Viên boron thường chứa vài mg; hãy cộng boron từ mọi viên. Ví dụ Life Extension Two-Per-Day đã có sẵn 3 mg boron mỗi 2 viên, nên nếu uống thêm viên boron riêng thì bị trùng.',
+      'Chưa biết dạng nào tốt hơn: boron aspartate, citrate, gluconate, glycinate, calcium fructoborate (NIH).'],
+    forms:'Boron aspartate, citrate, gluconate, glycinate, calcium fructoborate. Không có bằng chứng dạng nào hơn dạng nào (NIH).',
+    cautions:[
+      'Boron trong thức ăn và đồ uống không gây hại. Nuốt nhầm sản phẩm tẩy rửa hoặc thuốc trừ sâu chứa borax hoặc axit boric thì gây hại: buồn nôn, nôn, tiêu chảy, phát ban, đau đầu, co giật; liều rất cao có thể tử vong (NIH).',
+      'Mức tối đa cho trẻ em thấp hơn nhiều (ví dụ 3 mg cho trẻ 1–3 tuổi theo NIH); không tự cho trẻ dùng viên boron.'],
+    interactions:['Trang NIH tôi đọc có mục tương tác nhưng không trích được nội dung; nếu đang dùng thuốc thường xuyên, hãy hỏi dược sĩ.'],
+    foods:'Trái cây và nước ép (nho khô, đào, nước ép mận, nho), bơ, khoai tây, đậu phộng, đậu, đậu Hà Lan, cà phê, sữa, rượu táo, rượu vang, bia (NIH).',
+    sources:[['NIH ODS – Boron (cho người dùng)','https://ods.od.nih.gov/factsheets/Boron-Consumer/'],['EFSA – mức tối đa','https://www.efsa.europa.eu/sites/default/files/2024-05/ul-summary-report.pdf']]},
+
+  gsh:{
+    name:'Glutathione',aka:'GSH, glutathione khử, glutathione liposome',updated:'2026-11-03',
+    what:'Chất chống oxy hoá cơ thể tự tạo từ ba acid amin (cysteine, glycine, glutamate). Bán nhiều dạng viên, bột, ngậm dưới lưỡi và liposome với lời quảng cáo chống oxy hoá, thải độc, làm sáng da.',
+    benefits:[
+      ['chuaro','Uống có làm tăng glutathione trong cơ thể không: một phân tích gộp các thử nghiệm ngẫu nhiên (2025) tìm câu trả lời cho câu hỏi này vì sinh khả dụng đường uống thấp. Tôi không đọc được phần kết quả gộp của nó.','Phân tích gộp 2025 (chưa đọc kết quả)'],
+      ['chuaro','Một tổng quan lâm sàng (2022) ghi hấp thu glutathione qua đường tiêu hoá kém, và một số thử nghiệm dùng liều uống cao để đạt tác dụng.','Tổng quan 2022'],
+      ['chuaro','Các lời quảng cáo như thải độc, làm sáng da, chống lão hoá: bài này không tìm được nguồn độc lập đáng tin nên không nêu mức bằng chứng.','Chưa có nguồn đã đọc']],
+    need:'Không có nhu cầu khuyến nghị. Một thử nghiệm ngẫu nhiên (Richie 2015) được dẫn dùng 250 hoặc 1000 mg mỗi ngày trong 6 tháng; tôi chưa kiểm chứng chi tiết này từ bài gốc.',
+    how:['Nếu muốn thử, chọn sản phẩm ghi rõ lượng glutathione khử và có kiểm nghiệm. Các tuyên bố "liposome hấp thu mạnh hơn" chỉ thấy ở các trang bán hàng.','Có thể thay vì uống glutathione, ăn đủ protein và thực phẩm giàu cysteine để cơ thể tự tạo (suy luận chung từ cách cơ thể tạo glutathione, không phải khuyến nghị của nguồn).'],
+    forms:'Glutathione khử, S-acetyl glutathione, dạng liposome, dạng ngậm dưới lưỡi, bột. Không có so sánh độc lập về hấp thu giữa các dạng trong nguồn tôi đọc.',
+    cautions:['Tôi không tìm được tổng quan hệ thống đáng tin về an toàn của glutathione dạng uống. Nhiều trang bán hàng nêu các khẳng định cụ thể mà tôi không kiểm chứng được.'],
+    interactions:['Không có nguồn đã đọc về tương tác thuốc. Hãy hỏi dược sĩ nếu đang dùng thuốc hoá trị, thuốc hen hoặc thuốc khác.'],
+    foods:'Rau họ cải, tỏi, hành, thịt và cá có chứa glutathione hoặc tiền chất của nó; lượng thay đổi.',
+    sources:[['Tổng quan hệ thống và phân tích gộp 2025 – glutathione dạng uống','https://ph04.tci-thaijo.org/index.php/JCST/article/view/6734'],['Clin Cosmet Investig Dermatol 2022 – tổng quan glutathione (DOAJ)','https://doaj.org/article/4df985fad1494f098a0c86e7ce1b9199']]},
+
+  ala:{
+    name:'Axit alpha-lipoic',aka:'ALA, lipoic acid',updated:'2026-11-03',
+    what:'Chất chống oxy hoá cơ thể tự tạo, tan được cả trong nước và dầu. Bán nhiều để hỗ trợ thần kinh và đường huyết. Lưu ý không nhầm với ALA là alpha-linolenic acid của omega-3.',
+    benefits:[
+      ['cothe','Bệnh thần kinh do tiểu đường có triệu chứng: một phân tích gộp ghi ALA đường uống 600–1800 mg có thể giúp giảm triệu chứng.','Phân tích gộp'],
+      ['chuaro','Các công dụng khác (chống lão hoá, đường huyết ở người khoẻ): trong nguồn tôi đọc không có dữ liệu đủ để kết luận.','Chưa có nguồn đã đọc']],
+    need:'Thử nghiệm có đối chứng ở 181 người tiểu đường type 2 thử 600, 1200 và 1800 mg mỗi ngày; liều 600 mg một lần mỗi ngày cho cân bằng lợi ích và rủi ro tốt nhất. Viên đa vitamin thường chỉ chứa vài chục mg (Two-Per-Day có 25 mg).',
+    how:['Nếu bị tiểu đường, hãy hỏi bác sĩ trước khi dùng ALA vì có thể ảnh hưởng đường huyết.','Liều nhỏ trong viên đa vitamin khác xa liều đã thử nghiệm: đừng coi đó là liều điều trị.'],
+    forms:'ALA dạng racemic (R/S) và dạng R-ALA. Nguồn tôi đọc không so sánh hai dạng.',
+    cautions:['Tác dụng phụ tăng theo liều: buồn nôn, nôn, chóng mặt (thử nghiệm 181 người).'],
+    interactions:['Người dùng thuốc tiểu đường nên hỏi bác sĩ; các nguồn tôi đọc không nêu danh sách tương tác cụ thể.'],
+    foods:'Có lượng nhỏ trong thịt đỏ, nội tạng và một số rau.',
+    sources:[['PubMed – ALA trong bệnh thần kinh do tiểu đường (thử nghiệm 181 người)','https://pubmed.ncbi.nlm.nih.gov/17272797/']]},
+
+  quercetin:{
+    name:'Quercetin',aka:'Flavonoid quercetin, Bio-Quercetin Phytosome',updated:'2026-11-03',
+    what:'Flavonoid có trong nhiều rau quả (hành, táo, quả mọng), được bán dạng viên để chống oxy hoá, hỗ trợ phục hồi sau tập và miễn dịch.',
+    benefits:[
+      ['chuaro','Phục hồi sau vận động cường độ cao: một tổng quan hệ thống năm 2023 ở nam trẻ ghi 1000 mg mỗi ngày, hơn 7 ngày và tới 12 tuần, có vẻ an toàn và hiệu quả; các tác giả lưu ý còn lo ngại về sai lệch nghiên cứu.','Tổng quan 2023'],
+      ['chuaro','Các công dụng khác: trong nguồn tôi đọc không có tổng quan đủ để nêu mức bằng chứng.','Chưa có nguồn đã đọc']],
+    need:'Không có nhu cầu khuyến nghị. Ủy ban rủi ro Na Uy (VKM) dựa trên 23 thử nghiệm ngẫu nhiên kết luận 500 mg quercetin dihydrate mỗi ngày ở người lớn trong ít nhất ba tháng là chấp nhận được trong thực phẩm bổ sung. Viên đa vitamin thường chứa ít hơn nhiều.',
+    how:['Cộng quercetin từ mọi viên. Dùng quá ba tháng ở liều cao (từ 1000 mg) chưa có đủ dữ liệu an toàn.'],
+    forms:'Quercetin dihydrate, quercetin phytosome (kết hợp phospholipid), chiết xuất từ Sophora japonica. Rutin là dạng liên quan, có giới hạn riêng.',
+    cautions:[
+      'Tác dụng phụ hiếm và nhẹ ở các nghiên cứu đã có; chưa có đủ dữ liệu an toàn dài hạn (hơn 12 tuần) ở liều cao từ 1000 mg.',
+      'VKM nêu người bị bệnh thận mạn hoặc ung thư phụ thuộc estrogen có thể dễ chịu tác hại hơn.'],
+    interactions:['Quercetin có thể ảnh hưởng đến hấp thu một số thuốc và các enzyme chuyển hoá thuốc (VKM). Nếu đang dùng thuốc thường xuyên, hãy hỏi dược sĩ.'],
+    foods:'Hành tây, táo, quả mọng, rau lá xanh, trà.',
+    sources:[['VKM Na Uy – đánh giá rủi ro rutin và quercetin','https://vkm.no/english/riskassessments/allpublications/rutinandquercetinhealthrisksofintakeoffoodsupplements.4.7cc8817a18c33cc0df9bd9bb.html'],['PubMed – tổng quan hệ thống quercetin và phục hồi tập luyện','https://pubmed.ncbi.nlm.nih.gov/37398956/']]},
+
+  lycopene:{
+    name:'Lycopene',aka:'Carotenoid cà chua, LycoBeads',updated:'2026-11-03',
+    what:'Carotenoid màu đỏ có nhiều trong cà chua và trái cây đỏ, có hoạt tính chống oxy hoá. Không chuyển thành vitamin A.',
+    benefits:[
+      ['khong','Phòng ung thư tuyến tiền liệt: một phân tích gộp các thử nghiệm ngẫu nhiên kết luận không đủ bằng chứng để ủng hộ dùng lycopene dạng viên để phòng bệnh này.','Poison Control, dẫn phân tích gộp'],
+      ['chuaro','Tim mạch và các triệu chứng chuyển hoá (huyết áp, cholesterol): bằng chứng sơ bộ, cần thêm nghiên cứu lâm sàng.','EBSCO'],
+      ['chuaro','Các công dụng khác: chưa có nguồn đã đọc đủ để nêu mức bằng chứng.','Chưa có nguồn đã đọc']],
+    need:'Không có nhu cầu khuyến nghị. Natural Medicines ghi lycopene dạng viên đã dùng an toàn ở 15–45 mg mỗi ngày trong 4–6 tháng; một ít dữ liệu hạn chế cho thấy 120 mg mỗi ngày có thể an toàn tới một năm. Viên đa vitamin thường chỉ chứa 1–2 mg.',
+    how:['Ăn cà chua nấu chín với dầu là cách đơn giản để có lycopene; viên chỉ cần nếu có lý do cụ thể.'],
+    forms:'Chiết xuất cà chua, lycopene tinh thể; LycoBeads là tên thương hiệu một dạng bào chế.',
+    cautions:[
+      'Tác dụng phụ đã báo cáo: tiêu chảy, đầy hơi, buồn nôn, nôn, khó tiêu, chán ăn; một số ca dị ứng da trong thử nghiệm.',
+      'Phụ nữ mang thai và cho con bú: nên tránh lycopene ngoài lượng có trong thức ăn (Poison Control). Một nghiên cứu về một sản phẩm cụ thể ghi 2 mg mỗi ngày có thể liên quan đến tăng sinh non và nhẹ cân.',
+      'Trẻ em: chưa biết liều an toàn và hiệu quả.'],
+    interactions:['Trong nguồn tôi đọc không có thông tin về tương tác thuốc.'],
+    foods:'Cà chua, cà chua nấu chín và sốt cà chua, dưa hấu, ổi hồng, bưởi hồng.',
+    sources:[['Poison Control – Lycopene','https://poison.org/articles/lycopene-171'],['EBSCO – Lycopene dạng bổ sung','https://www.ebsco.com/research-starters/health-and-medicine/lycopene-dietary-supplement']]},
+
+  inositol:{
+    name:'Inositol',aka:'Myo-inositol, vitamin B8 (cách gọi cũ)',updated:'2026-11-03',
+    what:'Chất giống đường mà cơ thể tự tạo và có trong thực phẩm, tham gia tín hiệu insulin. Thường nằm trong B-complex và đa vitamin ở liều nhỏ, và được dùng liều gam trong một số nghiên cứu về hội chứng buồng trứng đa nang và đái tháo đường thai kỳ.',
+    benefits:[
+      ['chuaro','Phòng đái tháo đường thai kỳ ở phụ nữ mang thai thừa cân hoặc béo phì: myo-inositol 4 g mỗi ngày có thể giảm nguy cơ so với chỉ dùng vitamin (RR 0,54), nhưng độ chắc chắn của bằng chứng thấp đến rất thấp; với liều thấp thì chưa kết luận được.','Phân tích gộp 6 RCT (2023)'],
+      ['chuaro','Hội chứng buồng trứng đa nang và các tình trạng kháng insulin: đã dùng liều từ 200 mg đến 4 g mỗi ngày; cần xác định liều phù hợp.','Bình luận Diabetes Care 2013']],
+    need:'Không có nhu cầu khuyến nghị. Trong các thử nghiệm: từ 200 mg đến 4 g mỗi ngày. Viên đa vitamin hay B-complex thường chứa 50–100 mg, thấp hơn nhiều so với liều thử nghiệm.',
+    how:['Liều nhỏ trong B-complex hay đa vitamin không phải liều như các thử nghiệm.','Nếu đang mang thai hoặc có hội chứng buồng trứng đa nang, hãy để bác sĩ quyết định có dùng liều gam hay không.'],
+    forms:'Myo-inositol (phổ biến nhất), kết hợp với D-chiro-inositol.',
+    cautions:['Trong các thử nghiệm đã tổng hợp không ghi nhận tác dụng bất lợi; tác dụng phụ tiêu hoá nhẹ chỉ thấy ở liều khoảng 12 g mỗi ngày (tổng quan 12 thử nghiệm).'],
+    interactions:['Trong nguồn tôi đọc không có thông tin về tương tác thuốc.'],
+    foods:'Ngũ cốc nguyên hạt, đậu, trái cây họ cam quýt, hạt.',
+    sources:[['Phân tích gộp 2023 – inositol phòng đái tháo đường thai kỳ (PMC)','https://pmc.ncbi.nlm.nih.gov/articles/PMC9318937'],['Cochrane – myo-inositol phòng đái tháo đường thai kỳ (đề cương)','https://cochranelibrary.com/cdsr/doi/10.1002/14651858.CD011507']]},
+
+  b1:{
+    name:'Vitamin B1',aka:'Thiamin, thiamine, benfotiamine',updated:'2026-11-03',
+    what:'Vitamin tan trong nước, cần cho chuyển hoá năng lượng từ carbohydrate và cho thần kinh. Cơ thể thải phần thừa qua nước tiểu.',
+    benefits:[
+      ['chac','Phòng và chữa thiếu thiamin (bệnh beriberi). Rượu cản hấp thu thiamin; tới 80% người nghiện rượu mạn bị thiếu.','NIH'],
+      ['chuaro','Tiểu đường: nồng độ thiamin trong máu thấp hơn ở người tiểu đường (17–79% có tình trạng thiamin kém trong các nghiên cứu), nhưng việc bổ sung có cải thiện bệnh hay không chưa được xác định ở nguồn tôi đọc.','NIH']],
+    need:'Viên đa vitamin thường có khoảng 1,5 mg thiamin (NIH). Viên B-complex liều cao chứa 75–100 mg. Không có mức tối đa: NIH không đặt vì chưa có báo cáo tác hại khi dùng từ 50 mg mỗi ngày trở lên, có thể do hấp thu giảm nhanh khi vượt khoảng 5 mg, nhưng NIH nhắc dùng quá nhiều vẫn có thể có tác hại.',
+    how:['Cơ thể hấp thu giảm nhanh khi uống trên khoảng 5 mg, nên liều rất cao không mang thêm lợi ích.'],
+    forms:'Thiamin mononitrat và thiamin hydrochloride (ổn định, tan trong nước), benfotiamine (dẫn xuất tổng hợp, không tan trong nước, được chuyển thành thiamin trong cơ thể) (NIH).',
+    cautions:['Dễ thiếu: người nghiện rượu, người lớn tuổi (tới 20–30% có chỉ dấu thiếu ở mức nào đó), người tiểu đường (NIH).'],
+    interactions:['Thiamin không có tương tác thuốc đã biết. Thuốc lợi tiểu furosemide làm giảm thiamin do mất qua nước tiểu (NIH).'],
+    foods:'Ngũ cốc nguyên hạt, thịt, cá, thịt lợn; bánh mì và ngũ cốc thường được bổ sung; sữa và trái cây chứa ít (NIH).',
+    sources:[['NIH ODS – Thiamin','https://ods.od.nih.gov/factsheets/Thiamin-HealthProfessional/']]},
+
+  b2:{
+    name:'Vitamin B2',aka:'Riboflavin, riboflavin 5-phosphate',updated:'2026-11-03',
+    what:'Vitamin tan trong nước, cần cho chuyển hoá năng lượng và nhiều enzyme. Có nhiều trong sữa, trứng, nội tạng.',
+    benefits:[
+      ['chac','Phòng và chữa thiếu riboflavin.','NIH'],
+      ['chuaro','Đau nửa đầu: NIH có mục riêng về riboflavin và đau nửa đầu (giả thuyết rối loạn ty thể); trang tôi đọc bị cắt nên tôi không nêu kết quả.','NIH'],
+      ['chuaro','Ung thư: dữ liệu về mối liên quan giữa riboflavin và phòng hay điều trị ung thư còn hạn chế.','NIH']],
+    need:'Viên đa vitamin thường chứa 1,3 mg (100% giá trị tham chiếu). Viên B-complex liều cao chứa 50–75 mg. Không có mức tối đa: không có báo cáo tác hại ở 400 mg mỗi ngày trong ít nhất 3 tháng, nhưng NIH khuyên thận trọng với liều rất cao.',
+    how:['Phần lớn riboflavin trong viên ở dạng tự do; một số có riboflavin 5-phosphate (NIH).'],
+    forms:'Riboflavin tự do, riboflavin 5-phosphate.',
+    cautions:['Dễ thiếu: vận động viên ăn chay, vì tập luyện làm tăng nhu cầu và người ăn chay có thể loại bỏ sữa trứng (NIH).'],
+    interactions:['Riboflavin không có tương tác thuốc quan trọng về lâm sàng (NIH).'],
+    foods:'Trứng, nội tạng (thận, gan), thịt nạc, sữa; ngũ cốc tăng cường (NIH).',
+    sources:[['NIH ODS – Riboflavin','https://ods.od.nih.gov/factsheets/Riboflavin-HealthProfessional/']]},
+
+  b5:{
+    name:'Vitamin B5',aka:'Axit pantothenic, calcium pantothenate, pantethine',updated:'2026-11-03',
+    what:'Vitamin tan trong nước, cần để tạo coenzyme A. Có trong hầu hết thực phẩm; thiếu rất hiếm.',
+    benefits:[
+      ['chuaro','Mỡ máu cao: vì vai trò trong tổng hợp triglycerid và chuyển hoá lipoprotein, đã có giả thuyết bổ sung có thể giảm mỡ máu; một số thử nghiệm đã thử, trang tôi đọc bị cắt nên không nêu kết quả.','NIH']],
+    need:'Viên đa vitamin thường chứa khoảng 10 mg; B-complex hoặc viên riêng có thể tới 1000 mg (NIH). Không có mức tối đa: không có báo cáo độc tính; một số người dùng liều lớn (ví dụ 10 g mỗi ngày) bị tiêu chảy nhẹ và khó chịu tiêu hoá.',
+    how:['Cơ thể hấp thu trung bình khoảng một nửa (40–61%) từ thức ăn. Liều rất cao không có lý do.'],
+    forms:'Calcium pantothenate (phổ biến) và pantethine. Chưa có nghiên cứu so sánh sinh khả dụng giữa các dạng (NIH).',
+    cautions:['Nhóm duy nhất dễ thiếu là người có đột biến gen PANK2 (bệnh thoái hoá thần kinh liên quan pantothenate kinase), rất hiếm (NIH).'],
+    interactions:['Axit pantothenic không có tương tác thuốc quan trọng về lâm sàng (NIH).'],
+    foods:'Thịt bò, thịt gà, nội tạng, ngũ cốc nguyên hạt, một số rau; một số ngũ cốc ăn sáng và nước tăng lực được bổ sung. Chế biến có thể làm mất 20% đến gần 80% (NIH).',
+    sources:[['NIH ODS – Pantothenic acid','https://ods.od.nih.gov/factsheets/PantothenicAcid-HealthProfessional/']]},
+
+  biotin:{
+    name:'Biotin',aka:'Vitamin B7, vitamin H',updated:'2026-11-03',
+    what:'Vitamin tan trong nước, cần cho chuyển hoá chất béo, carbohydrate và protein. Thiếu rất hiếm. Điều quan trọng nhất cần biết về viên biotin liều cao không phải là tác dụng mà là nó làm sai kết quả xét nghiệm.',
+    benefits:[
+      ['chac','Cần cho những người có thiếu hụt biotinidase (rối loạn di truyền hiếm): điều trị biotin đường uống suốt đời ngăn được triệu chứng thần kinh và da. Trẻ sơ sinh ở Mỹ được sàng lọc.','NIH'],
+      ['chuaro','Tóc, da, móng (lý do bán nhiều nhất): bài này không đọc được tổng quan nào nên không nêu mức bằng chứng.','Chưa có nguồn đã đọc']],
+    need:'Không có mức tối đa: không có bằng chứng ở người cho thấy biotin độc ở liều cao; các nghiên cứu không thấy tác hại ở 10–50 mg mỗi ngày, và tới 200 mg mỗi ngày ở người thiếu biotinidase (NIH). Viên B-complex thường chứa 300–1000 mcg.',
+    how:['Báo cho bác sĩ và phòng xét nghiệm là bạn đang dùng biotin trước khi xét nghiệm máu. Kho Obsidian của bạn ghi với xét nghiệm tuyến giáp (TSH, FT4, FT3) thì phải ngừng 5–7 ngày trước.'],
+    forms:'Biotin (D-biotin). Dạng liều cao 5–10 mg bán cho tóc và móng.',
+    cautions:[
+      'Biotin liều vượt khuyến nghị, kể cả không quá nhiều, có thể làm kết quả xét nghiệm sai cao hoặc sai thấp tuỳ loại xét nghiệm, dẫn đến xử trí hoặc chẩn đoán sai (NIH).',
+      'Dễ thiếu: người có thiếu hụt biotinidase (NIH).'],
+    interactions:['Thuốc chống động kinh (carbamazepine, primidone, phenytoin, phenobarbital) dùng ít nhất một năm liên quan nồng độ biotin trong máu thấp hơn (NIH).'],
+    foods:'Trứng (lòng đỏ), nội tạng, cá, thịt, hạt, một số rau.',
+    sources:[['NIH ODS – Biotin','https://ods.od.nih.gov/factsheets/Biotin-HealthProfessional/']]},
+
+  choline:{
+    name:'Cholin',aka:'Choline, phosphatidylcholine, lecithin, choline bitartrate',updated:'2026-11-03',
+    what:'Chất dinh dưỡng cần cho màng tế bào, dẫn truyền thần kinh và chuyển hoá chất béo. Cơ thể tự tạo một phần, nhưng phần lớn người cần nhận từ thức ăn.',
+    benefits:[
+      ['chuaro','Tim mạch: có giả thuyết cholin bảo vệ tim (giảm huyết áp, đổi mỡ máu, giảm homocysteine) nhưng cũng có nghiên cứu cho rằng cholin cao trong khẩu phần có thể làm tăng nguy cơ tim mạch.','NIH'],
+      ['chuaro','Gan nhiễm mỡ không do rượu: NIH có mục riêng; trang tôi đọc bị cắt nên không nêu kết quả.','NIH']],
+    need:'NIH đặt mức đủ (AI) và mức tối đa (UL) theo tuổi và giới, tôi không trích được con số. Viên chứa cholin thường 10–250 mg (NIH). Mức tối đa dựa trên hạ huyết áp và mùi cơ thể giống cá.',
+    how:['Phần lớn cholin nên từ thức ăn: thịt, cá, trứng, sữa, rau họ cải, đậu.','Chưa có nghiên cứu so sánh sinh khả dụng giữa các dạng cholin trong viên (NIH).'],
+    forms:'Choline bitartrate, phosphatidylcholine, lecithin (NIH).',
+    cautions:[
+      'Lượng cao liên quan mùi cơ thể giống cá, nôn, ra nhiều mồ hôi và nước bọt, hạ huyết áp, độc gan (NIH).',
+      'Cholin làm tăng chất TMAO theo liều, chất này liên quan nguy cơ tim mạch cao hơn (NIH).',
+      'Phụ nữ mang thai: khoảng 90–95% ăn ít cholin hơn mức đủ; viên vitamin tiền sản thường chứa rất ít cholin (NIH).'],
+    interactions:['Cholin không có tương tác thuốc quan trọng về lâm sàng (NIH).'],
+    foods:'Thịt, gia cầm, cá, sữa, trứng, rau họ cải, đậu, hạt, ngũ cốc nguyên hạt. Khoảng một nửa cholin trong khẩu phần Mỹ là phosphatidylcholine (NIH).',
+    sources:[['NIH ODS – Choline','https://ods.od.nih.gov/factsheets/Choline-HealthProfessional/']]}
 };
 
 /* Nhóm danh mục: thứ tự hiển thị và các chất trong từng nhóm (khoá của KB) */
 window.KB_CATS=[
-  {n:'Vitamin',keys:['vitA','b6','b12','folic','niacin','bcomplex','vitC','vitD','vitE','vitK']},
-  {n:'Khoáng chất',keys:['ca','fe','zn','mg','cu','mn','se','io']},
+  {n:'Vitamin',keys:['vitA','b1','b2','niacin','b5','b6','biotin','folic','b12','bcomplex','choline','vitC','vitD','vitE','vitK']},
+  {n:'Khoáng chất',keys:['ca','fe','zn','mg','cu','mn','se','io','boron']},
+  {n:'Chống oxy hoá và hợp chất khác',keys:['gsh','ala','quercetin','lycopene','inositol']},
   {n:'Đạm, omega-3 và năng lượng',keys:['protein','om3','creatine','coq10','nmn','pqq']},
   {n:'Khớp, da và mắt',keys:['collagen','gluco','boswellia','curc','astaxanthin','lutein']},
   {n:'Tiêu hoá và men vi sinh',keys:['probiotic','probstrain','kefir']},
