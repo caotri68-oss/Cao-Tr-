@@ -272,5 +272,154 @@ window.KB={
       'Simvastatin và niacin: NIH ghi có tương tác, nên hỏi bác sĩ nếu đang dùng.',
       'Hoá trị và xạ trị: có thể ảnh hưởng điều trị, phải hỏi bác sĩ (NIH).'],
     foods:'Dầu mầm lúa mì, hạt hướng dương, hạnh nhân, dầu thực vật, rau lá xanh.',
-    sources:[['NIH ODS – Vitamin E','https://ods.od.nih.gov/factsheets/VitaminE-HealthProfessional/'],['Examine – Vitamin E','https://examine.com/supplements/vitamin-e/'],['EFSA – mức tối đa','https://www.efsa.europa.eu/sites/default/files/2024-05/ul-summary-report.pdf']]}
+    sources:[['NIH ODS – Vitamin E','https://ods.od.nih.gov/factsheets/VitaminE-HealthProfessional/'],['Examine – Vitamin E','https://examine.com/supplements/vitamin-e/'],['EFSA – mức tối đa','https://www.efsa.europa.eu/sites/default/files/2024-05/ul-summary-report.pdf']]},
+
+  fe:{
+    name:'Sắt',aka:'Iron, železo',updated:'2026-11-03',
+    what:'Khoáng chất cần để tạo hemoglobin (mang oxy trong máu), tạo năng lượng trong tế bào và cho hệ miễn dịch. Có hai loại trong thức ăn: sắt heme (từ thịt, hấp thu tốt) và sắt không heme (từ thực vật, hấp thu kém hơn).',
+    benefits:[
+      ['chac','Phòng và chữa thiếu máu thiếu sắt. Ở phụ nữ mang thai, bổ sung sắt giảm nguy cơ thiếu máu và một số bất lợi cho trẻ sơ sinh.','NIH'],
+      ['cothe','Một số hội chuyên môn khuyên sàng lọc thiếu máu và bổ sung sắt cho phụ nữ mang thai.','NIH'],
+      ['chuaro','Thiếu máu do bệnh mạn tính: chủ yếu điều trị bệnh nền, bổ sung sắt chỉ có ích trong một số trường hợp.','NIH']],
+    need:'Theo NIH: 8–27 mg mỗi ngày tuỳ giới, tuổi và thai kỳ; phụ nữ còn kinh nguyệt và phụ nữ mang thai cần nhiều hơn nam giới. Người ăn chay cần nhiều hơn vì sắt thực vật hấp thu kém hơn. Mức tối đa: NIH 45 mg; EFSA 40 mg (đây là "mức an toàn", EFSA không đặt được mức tối đa chính thức).',
+    how:[
+      'Chỉ bổ sung khi có lý do, ví dụ thiếu sắt đã được xét nghiệm hoặc nhu cầu cao (mang thai, mất máu).',
+      'Uống cùng vitamin C giúp hấp thu tốt hơn. Kho Obsidian ghi vitamin C tăng hấp thu sắt khoảng 67%.',
+      'Uống lúc bụng đói hấp thu tốt nhất, nhưng dễ khó chịu dạ dày. NIH ghi một số dạng dễ gây khó chịu tiêu hoá hơn ở liều cao.',
+      'Uống cách canxi: NIH khuyên uống canxi và sắt vào các thời điểm khác nhau; nghiên cứu cũ ghi 300 mg canxi uống cùng bữa làm giảm hấp thu sắt tới khoảng 60% (kho Obsidian).',
+      'Trà, cà phê (tannin) và thuốc giảm acid dạ dày cản hấp thu sắt (kho Obsidian, NIH).',
+      'Đang viêm nhiễm hoặc đang ốm thì cơ thể tự đóng cửa hấp thu sắt (qua hormone hepcidin), uống lúc đó gần như vô ích (kho Obsidian).'],
+    forms:'Phổ biến là các muối sắt II (ferrous) và sắt III (ferric). Mỗi dạng chứa lượng sắt nguyên tố khác nhau, nên đọc dòng sắt nguyên tố trên nhãn (NIH).',
+    cautions:[
+      'Ở người lớn có ruột bình thường, nguy cơ thừa sắt từ thức ăn thấp, nhưng viên sắt liều cao gây rối loạn tiêu hoá (NIH).',
+      'Liều cực cao có thể gây hoại tử ruột, suy đa cơ quan và tử vong; phải để xa tầm tay trẻ em (NIH).',
+      'Dễ thiếu: phụ nữ mang thai, trẻ nhỏ, phụ nữ kinh nguyệt nhiều, người hiến máu thường xuyên, người có bệnh tiêu hoá hoặc suy tim (NIH).'],
+    interactions:[
+      'Levodopa và levothyroxine: sắt làm giảm hấp thu thuốc, cần uống cách xa (NIH).',
+      'Thuốc giảm acid dạ dày (PPI) làm giảm hấp thu sắt (NIH).',
+      'Canxi cản hấp thu sắt; sắt từ 25 mg trở lên uống cùng làm giảm hấp thu kẽm (NIH).'],
+    foods:'Thịt đỏ, gan, hải sản, đậu, rau lá xanh đậm, ngũ cốc tăng cường sắt.',
+    sources:[['NIH ODS – Iron','https://ods.od.nih.gov/factsheets/Iron-HealthProfessional/'],['EFSA – sắt 2024','https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11167337/']]},
+
+  se:{
+    name:'Selen',aka:'Selenium, selen',updated:'2026-11-03',
+    what:'Khoáng chất vi lượng, thành phần của các protein chống oxy hoá (selenoprotein) và cần cho việc tạo và chuyển hoá hormone tuyến giáp. Lượng selen trong thức ăn phụ thuộc vào đất trồng, nên khác nhau nhiều giữa các vùng.',
+    benefits:[
+      ['chac','Cần cho chức năng tuyến giáp và chống oxy hoá. Thiếu selen không phổ biến ở Mỹ.','NIH'],
+      ['chuaro','Bệnh tuyến giáp: thiếu selen gắn với bệnh tuyến giáp ở phụ nữ (không thấy ở nam); thử nghiệm cho thấy bổ sung ảnh hưởng một số chỉ số tuyến giáp, ý nghĩa lâm sàng chưa rõ.','NIH'],
+      ['chuaro','Ung thư: kết quả thử nghiệm không thống nhất.','NIH'],
+      ['khong','Bổ sung selen không được ủng hộ để phòng bệnh tim mạch, nhất là ở người không thiếu.','NIH'],
+      ['chuaro','Khả năng sinh sản nam và trí nhớ: dữ liệu chưa đủ để kết luận.','NIH']],
+    need:'Theo NIH: 55 mcg mỗi ngày cho người lớn (55–70 mcg tuỳ thai kỳ và cho con bú). Mức tối đa: EFSA 255 mcg (hạ từ 300 mcg năm 2023), NIH 400 mcg mỗi ngày.',
+    how:[
+      'Cộng tổng selen từ mọi viên (có viên đa vitamin chứa tới 200 mcg) và thức ăn giàu selen như hạt Brazil. EFSA ghi người dùng viên selen liều cao hoặc ăn thường xuyên hạt Brazil có nguy cơ vượt mức tối đa.',
+      'Phần lớn người ăn đủ thịt, cá, trứng, ngũ cốc không cần bổ sung riêng.'],
+    forms:'Selenomethionin, men giàu selen, natri selenit, natri selenat; cơ thể hấp thu tới khoảng 90% các dạng này (NIH).',
+    cautions:[
+      'Ngộ độc selen mạn tính (selenosis): rụng tóc, móng giòn hoặc rụng, hơi thở mùi tỏi, vị kim loại trong miệng, phát ban, buồn nôn, tiêu chảy, mệt mỏi, cáu gắt và bất thường thần kinh (NIH).',
+      'Dễ thiếu: người sống ở vùng đất thiếu selen, người chạy thận nhân tạo, người nhiễm HIV (NIH).'],
+    interactions:[
+      'Cisplatin (thuốc hoá trị) ảnh hưởng nồng độ selen trong cơ thể; viên selen cũng có thể tương tác với thuốc, hãy hỏi bác sĩ nếu đang điều trị (NIH).'],
+    foods:'Hạt Brazil (rất nhiều), hải sản, thịt, trứng, ngũ cốc.',
+    sources:[['NIH ODS – Selenium','https://ods.od.nih.gov/factsheets/Selenium-HealthProfessional/'],['EFSA – selen 2023','https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.7704']]},
+
+  io:{
+    name:'I-ốt',aka:'Iodine, jód',updated:'2026-11-03',
+    what:'Khoáng chất vi lượng là thành phần của hormone tuyến giáp. Rất quan trọng cho sự phát triển não của thai nhi và trẻ nhỏ. Vừa thiếu vừa thừa i-ốt đều có thể làm rối loạn tuyến giáp.',
+    benefits:[
+      ['chac','Cần để tạo hormone tuyến giáp và cho sự phát triển của thai nhi. Thiếu i-ốt mạn tính ở trẻ em làm giảm chỉ số thông minh khoảng 12–13,5 điểm.','NIH'],
+      ['chac','Muối i-ốt là biện pháp chính để phòng thiếu i-ốt trên thế giới.','NIH']],
+    need:'Theo NIH: 150 mcg mỗi ngày cho người lớn, 220 mcg khi mang thai. Nhiều viên đa vitamin chứa 150 mcg. Mức tối đa: EFSA 600 mcg, NIH 1100 mcg mỗi ngày.',
+    how:[
+      'Nếu đã dùng muối i-ốt, ăn cá và sữa thì thường đã đủ; người không dùng muối i-ốt có nguy cơ thiếu (NIH).',
+      'Cẩn thận với viên chỉ chứa i-ốt hoặc rong biển (kelp): một số viên chứa liều rất cao, có khi vượt mức tối đa (NIH).',
+      'Cộng tổng i-ốt từ đa vitamin, viên rong biển và thực phẩm.'],
+    forms:'Kali iodua và natri iodua; kali iodua hấp thu gần như hoàn toàn (96,4%). Viên rong biển (kelp) có lượng i-ốt thay đổi (NIH).',
+    cautions:[
+      'Thừa i-ốt có thể gây bướu cổ, tăng TSH, suy giáp, cường giáp, viêm tuyến giáp và ung thư tuyến giáp thể nhú. Phản ứng khác nhau giữa từng người (NIH).',
+      'Người đã có bệnh tuyến giáp hoặc có nhân giáp tự chủ: i-ốt dư có thể làm bùng phát cường giáp (hiện tượng Jod-Basedow). Phải hỏi bác sĩ trước khi dùng i-ốt, kể cả trong đa vitamin (kho Obsidian).',
+      'Ngộ độc cấp hiếm, thường do dùng nhiều gam (NIH).'],
+    interactions:[
+      'Thuốc kháng giáp (như methimazole, tên Tapazole): i-ốt liều cao cộng thêm tác dụng và có thể gây suy giáp (NIH). Kho Obsidian ghi thêm là i-ốt làm giảm hiệu quả của thuốc.',
+      'Thuốc ức chế men chuyển (như lisinopril, benazepril): dùng cùng kali iodua tăng nguy cơ kali máu cao (NIH).'],
+    foods:'Muối i-ốt, cá và hải sản, sữa và chế phẩm sữa, rong biển (lượng thay đổi nhiều).',
+    sources:[['NIH ODS – Iodine','https://ods.od.nih.gov/factsheets/Iodine-HealthProfessional/'],['EFSA – mức tối đa','https://www.efsa.europa.eu/sites/default/files/2024-05/ul-summary-report.pdf']]},
+
+  vitA:{
+    name:'Vitamin A',aka:'Retinol, retinyl acetate/palmitate, beta-carotene',updated:'2026-11-03',
+    what:'Vitamin tan trong dầu, cần cho thị giác (nhìn trong bóng tối), da và niêm mạc, và hệ miễn dịch. Có hai nhóm: vitamin A tạo sẵn (retinol, từ thức ăn động vật và viên bổ sung) và tiền vitamin A như beta-carotene (từ rau củ màu cam, đỏ, xanh đậm).',
+    benefits:[
+      ['chac','Cần cho thị giác và sức khoẻ biểu mô. Thiếu vitamin A là yếu tố nguy cơ làm sởi nặng ở trẻ em tại các nước thu nhập thấp.','NIH'],
+      ['cothe','Khô mắt, rối loạn tuyến lệ: vitamin A đường uống dùng đợt ngắn theo chỉ định của bác sĩ. Không phải để tự dùng dài hạn.','Kho Obsidian'],
+      ['chuaro','Ung thư: mối liên quan giữa vitamin A và nguy cơ ung thư chưa rõ.','NIH']],
+    need:'Giá trị tham chiếu trên nhãn (DV) là 900 mcg RAE mỗi ngày. Đa vitamin thường có 750–1050 mcg RAE; viên vitamin A riêng thường có tới 3000 mcg RAE (NIH). Mức tối đa cho vitamin A tạo sẵn: 3000 mcg RAE mỗi ngày (EFSA và NIH).',
+    how:[
+      'Uống cùng bữa ăn có chất béo (kho Obsidian).',
+      'Cộng tổng: đa vitamin, viên vitamin A riêng, dầu gan cá, và nhất là gan động vật. Gan lợn có khoảng 6000 mcg trong 100 g, một bữa có thể vượt mức tối đa cả ngày (kho Obsidian).',
+      'Người ăn nhiều rau củ nhiều beta-carotene thường không thiếu vitamin A; bổ sung thêm liều cao không mang lại lợi ích tương xứng với rủi ro (kho Obsidian).'],
+    forms:'Retinyl acetat và retinyl palmitat (hấp thu 70–90%), beta-carotene (hấp thu từ 8,7 đến 65%) hoặc phối hợp (NIH). Cần lưu ý beta-carotene không tính vào mức tối đa của vitamin A tạo sẵn.',
+    cautions:[
+      'Vitamin A tích luỹ trong gan, khác với vitamin tan trong nước. Ngộ độc cấp (thường từ hơn 100 lần nhu cầu): đau đầu nặng, mờ mắt, buồn nôn, chóng mặt, đau cơ, mất phối hợp. Ngộ độc mạn: khô da, đau cơ khớp, mệt mỏi, trầm cảm, men gan bất thường (NIH).',
+      'Phụ nữ có thai hoặc có thể mang thai: liều cao tăng nguy cơ dị tật thai nhi; phải hỏi bác sĩ (kho Obsidian).',
+      'Dùng dài hạn liều cao làm giảm mật độ xương, đáng lo ở người sau mãn kinh hoặc đã có nguy cơ loãng xương (kho Obsidian).',
+      'Bệnh gan: thận trọng; chỉ dùng đúng số ngày bác sĩ kê (kho Obsidian).',
+      'Dễ thiếu: trẻ sinh non, người kém hấp thu, trẻ em và phụ nữ ở nước thu nhập thấp (NIH).'],
+    interactions:[
+      'Orlistat làm giảm hấp thu vitamin A và các vitamin tan trong dầu khác (NIH).',
+      'Thuốc retinoid uống (như acitretin trị vảy nến, bexarotene): không tự uống thêm vitamin A, hãy hỏi bác sĩ (NIH).',
+      'Dùng nhiều thuốc chuyển hoá qua gan (statin, thuốc kháng giáp): vitamin A liều cao thêm gánh nặng cho gan, nên thận trọng (kho Obsidian).'],
+    foods:'Gan, cá béo, trứng, sữa (vitamin A tạo sẵn); cà rốt, khoai lang, bí đỏ, rau lá xanh đậm (beta-carotene).',
+    sources:[['NIH ODS – Vitamin A','https://ods.od.nih.gov/factsheets/VitaminA-HealthProfessional/'],['EFSA – mức tối đa','https://www.efsa.europa.eu/sites/default/files/2024-05/ul-summary-report.pdf']]},
+
+  curc:{
+    name:'Curcumin',aka:'Nghệ, turmeric, curcuminoid',updated:'2026-11-03',
+    what:'Hoạt chất chính trong củ nghệ (Curcuma longa), có tác dụng chống viêm và chống oxy hoá trong thí nghiệm. Curcumin thô hấp thu rất kém qua ruột, nên gần như mọi sản phẩm tốt đều dùng công nghệ để tăng hấp thu.',
+    benefits:[
+      ['cothe','Triệu chứng thoái hoá khớp (đau, cứng khớp): kho Obsidian ghi nhiều thử nghiệm nhỏ đến vừa cho thấy có lợi ở mức nhẹ đến vừa. NCCIH đánh giá chung là chưa đủ bằng chứng để khẳng định.','Kho Obsidian, NCCIH'],
+      ['chuaro','Gan nhiễm mỡ, mỡ máu cao: NCCIH ghi chưa đủ dữ liệu để kết luận.','NCCIH'],
+      ['chuaro','Phòng ung thư, thay thế thuốc kháng viêm mạnh: chưa có bằng chứng lâm sàng đủ mạnh ở người.','Kho Obsidian'],
+      ['chuaro','NCCIH kết luận chưa đủ bằng chứng để khẳng định nghệ hay curcumin hữu ích cho bất kỳ mục đích sức khoẻ nào.','NCCIH']],
+    need:'Không có mức khuyến nghị chính thức. Các nghiên cứu dùng 50–4000 mg mỗi ngày, liều thực tế phụ thuộc dạng bào chế (Examine): curcumin kèm piperin khoảng 500 mg với 5–6,7 mg piperin, 3 lần mỗi ngày; BCM-95 khoảng 500 mg, 2 lần mỗi ngày; nano curcumin 80–240 mg mỗi ngày.',
+    how:[
+      'Đọc dòng "curcuminoid" hoặc "curcumin" trên nhãn, không đọc "bột nghệ 1000 mg": lượng curcumin thật khác nhau nhiều giữa các sản phẩm (NCCIH).',
+      'Uống cùng bữa ăn có chất béo vì curcumin tan trong dầu (kho Obsidian).',
+      'Hấp thu rất kém nếu không có công nghệ hỗ trợ. Kho Obsidian ghi piperin tăng hấp thu khoảng 2–20 lần, Meriva (phytosome) khoảng 29 lần, BCM-95 khoảng 7 lần. Các tuyên bố "65 lần" hay "45 lần" của một số hãng chưa có bằng chứng độc lập.'],
+    forms:'Curcumin thô, curcumin kèm piperin (tiêu đen), BCM-95, Meriva (phytosome), Theracurmin, nano và liposome (Examine). NCCIH: dạng thô được cho là an toàn trong 2–3 tháng khi dùng đúng liều.',
+    cautions:[
+      'Tác dụng phụ thường gặp: buồn nôn, nôn, trào ngược, khó chịu dạ dày, tiêu chảy hoặc táo bón (NCCIH).',
+      'Đã có báo cáo tổn thương gan ở một số người dùng các dạng tăng hấp thu. Dừng ngay và gặp bác sĩ nếu mệt mỏi, buồn nôn, chán ăn, nước tiểu sẫm màu hoặc vàng da (NCCIH).',
+      'Mang thai: có thể không an toàn (NCCIH).',
+      'Sỏi mật hoặc tắc nghẽn đường mật: tránh, vì curcumin kích thích co bóp túi mật (kho Obsidian).',
+      'Trước phẫu thuật: hỏi bác sĩ, kho Obsidian ghi nên ngừng khoảng 2 tuần.'],
+    interactions:[
+      'Thuốc chống đông và chống tiểu cầu (warfarin, aspirin, clopidogrel): cộng thêm nguy cơ chảy máu (kho Obsidian).',
+      'Piperin ức chế mạnh men CYP3A4, curcumin cũng ức chế nhiều men CYP: có thể ảnh hưởng một số thuốc tim mạch như statin và một số thuốc chẹn kênh canxi (kho Obsidian).',
+      'Dùng cùng omega-3 liều cao cộng thêm nguy cơ chảy máu (kho Obsidian).'],
+    foods:'Củ nghệ, bột nghệ, cà ri. Lượng curcumin trong thức ăn thấp hơn nhiều so với viên bổ sung.',
+    sources:[['NCCIH – Nghệ','https://www.nccih.nih.gov/health/turmeric'],['Examine – Curcumin','https://examine.com/supplements/curcumin/']]},
+
+  creatine:{
+    name:'Creatine',aka:'Creatine monohydrate, Creapure',updated:'2026-11-03',
+    what:'Hợp chất cơ thể tự tạo ở gan và thận, cũng có trong thịt và cá. Phần lớn nằm trong cơ dưới dạng phosphocreatine, nguồn năng lượng nhanh cho các gắng sức ngắn. Creapure là tên thương hiệu của một nguyên liệu creatine monohydrate (Đức), không phải hoạt chất khác.',
+    benefits:[
+      ['chac','Tăng công suất ở các gắng sức ngắn, cường độ cao và tăng khối lượng cơ khi tập kháng lực. Sau giai đoạn nạp, hiệu suất tập thường tăng khoảng 10–20%.','ISSN'],
+      ['cothe','Người lớn tuổi: các phân tích gộp ghi có thêm cơ và sức mạnh khi kết hợp tập luyện.','ISSN'],
+      ['chuaro','Trí nhớ, giấc ngủ, sức bền dài: chưa chắc chắn.','Kho Obsidian']],
+    need:'Không có mức khuyến nghị cho người không tập. Theo ISSN: duy trì 3–5 g mỗi ngày; người to con có thể cần 5–10 g. Nạp nhanh (5 g, 4 lần mỗi ngày, trong 5–7 ngày) là tuỳ chọn, không bắt buộc. Uống 3 g mỗi ngày thì chậm hơn: khoảng 28 ngày.',
+    how:[
+      'Chọn creatine monohydrate. ISSN kết luận chưa có bằng chứng các dạng khác (HCl, ethyl ester, buffered) tốt hơn.',
+      'ISSN không đưa hướng dẫn về giờ uống. Uống cùng carbohydrate, hoặc carbohydrate với protein, có vẻ tăng lượng creatine vào cơ nhưng không cần thiết.',
+      'Kiểm tra chứng nhận của bên thứ ba, ví dụ NSF Certified for Sport (kho Obsidian).'],
+    forms:'Monohydrate là dạng được nghiên cứu nhiều nhất. Creapure là thương hiệu monohydrate. Các dạng khác chưa cho thấy ưu thế rõ ràng.',
+    cautions:[
+      'Tác dụng phụ duy nhất ghi nhận ổn định là tăng cân, thường 1–2 kg đầu do giữ nước, không phải tăng mỡ (ISSN, kho Obsidian).',
+      'Thận: ISSN không thấy bằng chứng thuyết phục là creatine gây hại cho chức năng thận ở người khoẻ hay người có bệnh. Tuy vậy người đã có bệnh thận được khuyên hỏi bác sĩ trước khi dùng.',
+      'Creatine có thể làm creatinine huyết thanh tăng nhẹ mà không phản ánh tổn thương thận, nên hãy báo cho bác sĩ khi xét nghiệm (kho Obsidian). ISSN ghi 5–10 g/ngày trong 21 tháng ở cầu thủ bóng bầu dục không làm đổi đáng kể creatinine.',
+      'Không gây mất nước hay chuột rút; một số nghiên cứu còn thấy giảm chuột rút (ISSN).',
+      'Trẻ em và thiếu niên: ISSN cho là chấp nhận được trong điều kiện có giám sát; mang thai: chưa có kết luận trên người.',
+      'Lưu ý minh bạch: các tác giả ISSN có liên hệ tài trợ từ ngành creatine, nên cần đọc cùng các nguồn độc lập.'],
+    interactions:[
+      'Thuốc ảnh hưởng thận (NSAID dùng lâu, một số thuốc lợi tiểu) và caffeine liều cao: kho Obsidian ghi cần đối chiếu đơn thuốc, nhưng ghi chú này trong kho chưa được xác minh bằng nguồn độc lập.'],
+    foods:'Thịt đỏ và cá (cá trích, cá hồi).',
+    sources:[['ISSN – đồng thuận về creatine','https://pmc.ncbi.nlm.nih.gov/articles/PMC5469049/']]}
 };
