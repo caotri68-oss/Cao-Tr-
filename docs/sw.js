@@ -1,6 +1,6 @@
 // Đổi số phiên bản mỗi khi sửa file của app để máy nhận bản mới.
-const VER='tpcn-v2-11';
-const SHELL=['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png'];
+const VER='tpcn-v2-12';
+const SHELL=['./','index.html','kb.js','manifest.webmanifest','icon-192.png','icon-512.png'];
 
 self.addEventListener('install',e=>{
   e.waitUntil(caches.open(VER).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()));

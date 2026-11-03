@@ -69,6 +69,7 @@ dialog form{padding:16px;display:grid;gap:10px}
 <nav id="nav"></nav>
 <div id="report"></div>
 <dialog id="dlg"></dialog>
+<script src="kb.js"></script>
 
 <script>
 'use strict';
@@ -632,13 +633,31 @@ function substList(){
   for(const n of S.notes){const s=(n.substance||'').trim();if(s&&!m.has(norm(s)))m.set(norm(s),{name:s,key:null})}
   return [...m.values()].map(s=>({...s,count:substProducts(s).length})).sort((a,b)=>b.count-a.count||a.name.localeCompare(b.name,'vi'));
 }
-const substGrid=()=>`<div class="card"><b>Hoạt chất</b><div class="mute">Bấm một chất để xem mức tối đa, sản phẩm đang có và ghi chú.</div>
+const substGrid=()=>`<div class="card"><b>Hoạt chất</b><div class="mute">Bấm một chất để xem mức tối đa, sản phẩm đang có và ghi chú.${Object.keys(window.KB||{}).length?' Có bài kiến thức đầy đủ: '+esc(Object.values(window.KB).map(k=>k.name).join(', '))+'.':''}</div>
   <div class="chips" style="flex-wrap:wrap;overflow:visible;margin-top:8px">${substList().map(s=>`<button class="${s.count?'on':''}" data-n="${esc(s.name)}" onclick="go('know',this.dataset.n)">${esc(s.name)}${s.count?' · '+s.count:''}</button>`).join('')}</div></div>`;
+/* Bài kiến thức chung của một chất (dữ liệu trong kb.js) */
+const KB_LV={chac:['Chắc chắn','#0f766e'],cothe:['Có thể','#1d4ed8'],chuaro:['Chưa rõ','#6b7280'],khong:['Không có tác dụng','#9a3412']};
+const kbOf=s=>{const K=window.KB||{};return (s.key&&K[s.key])||Object.values(K).find(x=>norm(x.name)===norm(s.name))||null};
+function kbHtml(s){
+  const k=kbOf(s);if(!k)return '';
+  const sec=(t,body,open)=>`<details class="card" ${open?'open':''}><summary style="cursor:pointer"><b>${t}</b></summary><div style="margin-top:8px">${body}</div></details>`;
+  const ul=a=>`<ul style="margin:0;padding-left:18px">${(a||[]).map(x=>`<li style="margin-bottom:6px">${esc(x)}</li>`).join('')}</ul>`;
+  return `<div class="mute" style="margin:0 0 8px">Bài kiến thức · cập nhật ${esc(k.updated)}${k.aka?' · còn gọi: '+esc(k.aka):''}</div>`+
+    sec('Là gì',`<div>${esc(k.what)}</div>`,true)+
+    sec('Tác dụng theo mức bằng chứng',k.benefits.map(([lv,t,src])=>{const L=KB_LV[lv]||KB_LV.chuaro;return`<div style="margin-bottom:10px"><span class="tag" style="background:none;border:1px solid ${L[1]};color:${L[1]}">${L[0]}</span> ${esc(t)} <span class="mute">(${esc(src)})</span></div>`}).join(''),true)+
+    sec('Cần bao nhiêu mỗi ngày',`<div>${esc(k.need)}</div>`)+
+    sec('Uống thế nào cho đúng',ul(k.how))+
+    sec('Dạng nào tốt',`<div>${esc(k.forms)}</div>`)+
+    sec('Ai cần thận trọng',ul(k.cautions))+
+    sec('Tương tác với thuốc',ul(k.interactions))+
+    sec('Có trong thực phẩm',`<div>${esc(k.foods)}</div>`)+
+    sec('Nguồn',k.sources.map(([n,u])=>`<div><a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(n)}</a></div>`).join('')+'<div class="mute" style="margin-top:6px">Nội dung được tóm tắt lại bằng lời của app, không thay lời khuyên của bác sĩ hay dược sĩ.</div>');
+}
 function vSubstance(name){
   const s=substList().find(x=>x.name===name);if(!s){sub=null;return vKnow()}
   const N=s.key?NUTR[s.key]:null,prods=substProducts(s),notes=S.notes.filter(n=>norm(n.substance)===norm(name));
   view(s.name,N?'Có trong bảng cảnh báo của app':'Chưa có mức tối đa trong app',
-   `<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('know')">‹ Kiến thức</button></div>
+   `<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('know')">‹ Kiến thức</button></div>${kbHtml(s)}
    ${N?(()=>{const E=EF[s.key];return`<div class="card"><b>Mức tối đa cho người lớn mỗi ngày</b>
      <div>EFSA (châu Âu): ${E?fmt(E.ul)+' '+N.u+(E.safe?' (mức an toàn, không phải UL chính thức)':'')+(E.amideUl?`; nicotinamide ${fmt(E.amideUl)} mg`:'')+` · <a href="${esc(E.url||EFSA_SUM)}" target="_blank" rel="noopener noreferrer">nguồn</a>`:'chưa đặt'}</div>
      <div>NIH (Mỹ): ${N.ul?fmt(N.ul)+' '+N.u+(N.ul51?`, từ 51 tuổi ${fmt(N.ul51)} ${N.u}`:''):'chưa đặt'} · <a href="${esc(nUrl(N))}" target="_blank" rel="noopener noreferrer">nguồn</a></div>
