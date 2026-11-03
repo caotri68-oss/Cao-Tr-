@@ -915,13 +915,15 @@ async function importDocs(f){
     save();go('know','d:');alert(`Đã nhập ${ok.length} tài liệu.`);
   }catch(e){alert('Lỗi: '+e.message)}
 }
-const docText=x=>[x.title,x.group,...pArr(x.tldr),...pArr(x.points).flatMap(p=>[p.h,...pArr(p.items)]),...pArr(x.claims).map(c=>c.text)].join(' ').toLowerCase();
+const docText=x=>[x.title,x.group,...pArr(x.tags),...pArr(x.tldr),...pArr(x.points).flatMap(p=>[p.h,...pArr(p.items)]),...pArr(x.claims).map(c=>c.text)].join(' ').toLowerCase();
 function vDocList(){
   const docs=(S.docs||[]).filter(x=>!docQ||docText(x).includes(docQ));
   const groups=[...new Set(docs.map(x=>x.group||'Khác'))];
   view('Tài liệu',(S.docs||[]).length+' bài',`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('know')">‹ Kiến thức</button><label class="btn" style="display:inline-block">Nhập file tài liệu<input type="file" accept=".json" hidden onchange="importDocs(this.files[0]);this.value=''"></label></div>
    <div class="note" style="margin-bottom:10px">Đây là bài chia sẻ của chị Thảo Nguyên trong nhóm, đã được tóm tắt lại và gắn mức tin cậy từng ý. Không phải tài liệu y khoa chính thức và không thay lời bác sĩ.</div>
    <input id="docQ" placeholder="Tìm trong tài liệu (vd: ngủ, B12, mệt)…" value="${esc(docQ)}" oninput="docQ=this.value.toLowerCase();vDocList();const i=document.getElementById('docQ');i.focus();i.setSelectionRange(99,99)" style="margin-bottom:10px">`+
+   (()=>{const c={};for(const x of S.docs||[])for(const t of pArr(x.tags))c[t]=(c[t]||0)+1;const ts=Object.keys(c).sort((a,b)=>c[b]-c[a]||a.localeCompare(b,'vi'));
+     return ts.length?`<div class="mute" style="margin-bottom:4px">Chủ đề (bấm để lọc):</div><div class="chips" style="flex-wrap:wrap;overflow:visible;margin-bottom:10px">${ts.map(t=>`<button class="${docQ===t.toLowerCase()?'on':''}" data-t="${esc(t)}" onclick="docQ=docQ===this.dataset.t.toLowerCase()?'':this.dataset.t.toLowerCase();vDocList()">${esc(t)} · ${c[t]}</button>`).join('')}</div>`:''})()+
    (groups.map(g=>`<div style="margin:12px 0 6px"><b>${esc(g)}</b></div>`+docs.filter(x=>(x.group||'Khác')===g).map(x=>`<div class="card" style="cursor:pointer" data-i="${esc(x.id)}" onclick="go('know','d:'+this.dataset.i)"><b>${esc(x.title)}</b>${pArr(x.claims).some(c=>c.lv==='trai')?' <span class="tag" style="background:none;color:#9a3412;border:1px solid #9a3412">có ý trái khuyến cáo</span>':''}<div class="mute" style="margin-top:4px">${esc(pArr(x.tldr)[0]||'')}</div></div>`).join('')).join('')||`<div class="empty">${(S.docs||[]).length?'Không tìm thấy.':'Chưa có tài liệu. Bấm "Nhập file tài liệu" và chọn file tai-lieu-thao-nguyen.json.'}</div>`));
 }
 function vDoc(id){
