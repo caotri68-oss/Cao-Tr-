@@ -631,6 +631,7 @@ function substList(){
   for(const k in NUTR)m.set(norm(NUTR[k].n),{name:NUTR[k].n,key:k});
   for(const p of S.products)for(const g of p.ingredients||[]){if(nutrKey(g))continue;const n=norm(g.name);if(n&&!m.has(n))m.set(n,{name:g.name,key:null})}
   for(const n of S.notes){const s=(n.substance||'').trim();if(s&&!m.has(norm(s)))m.set(norm(s),{name:s,key:null})}
+  for(const k of Object.values(window.KB||{}))if(!m.has(norm(k.name)))m.set(norm(k.name),{name:k.name,key:null})
   return [...m.values()].map(s=>({...s,count:substProducts(s).length})).sort((a,b)=>b.count-a.count||a.name.localeCompare(b.name,'vi'));
 }
 const substGrid=()=>`<div class="card"><b>Hoạt chất</b><div class="mute">Bấm một chất để xem mức tối đa, sản phẩm đang có và ghi chú.${Object.keys(window.KB||{}).length?' Có bài kiến thức đầy đủ: '+esc(Object.values(window.KB).map(k=>k.name).join(', '))+'.':''}</div>

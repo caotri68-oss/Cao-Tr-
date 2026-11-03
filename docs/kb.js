@@ -110,5 +110,167 @@ window.KB={
       'Thuốc hạ huyết áp: magie liều cao có thể cộng thêm tác dụng hạ áp (kho Obsidian).',
       'Kẽm và canxi liều cao cạnh tranh hấp thu, nên uống cách nhau khoảng 2 giờ (kho Obsidian).'],
     foods:'Rau lá xanh, các loại đậu, hạt, ngũ cốc nguyên hạt (NIH).',
-    sources:[['NIH ODS – Magnesium','https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/'],['Examine – Magnesium','https://examine.com/supplements/magnesium/'],['EFSA – mức tối đa','https://www.efsa.europa.eu/sites/default/files/2024-05/ul-summary-report.pdf']]}
+    sources:[['NIH ODS – Magnesium','https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/'],['Examine – Magnesium','https://examine.com/supplements/magnesium/'],['EFSA – mức tối đa','https://www.efsa.europa.eu/sites/default/files/2024-05/ul-summary-report.pdf']]},
+
+  zn:{
+    name:'Kẽm',aka:'Zinc',updated:'2026-11-03',
+    what:'Khoáng chất vi lượng cần cho hơn 300 enzyme: miễn dịch, lành vết thương, tổng hợp protein, da, vị giác, thị lực. Cơ thể không có kho dự trữ kẽm, nên phải nạp đều mỗi ngày.',
+    benefits:[
+      ['chac','Các chức năng EFSA công nhận (miễn dịch, da, tóc, móng, thị lực, nhận thức, sinh sản) đều là "duy trì mức bình thường", không phải tăng cường vượt mức.','Kho Obsidian'],
+      ['cothe','Cảm lạnh: viên ngậm hoặc siro kẽm dùng sớm có thể rút ngắn thời gian bị cảm. Kết quả các thử nghiệm không đồng đều.','NIH'],
+      ['cothe','Thoái hoá điểm vàng: công thức AREDS (có kẽm, đồng và chất chống oxy hoá) làm chậm tiến triển ở người đã mắc.','NIH'],
+      ['cothe','Tiêu chảy cấp ở trẻ em ở nước thu nhập thấp: WHO và UNICEF khuyên bổ sung kẽm 10–20 mg/ngày trong 10–14 ngày. Không áp dụng cho tự dùng ở người lớn.','NIH'],
+      ['chuaro','Tiểu đường type 2, HIV: kết quả hỗn hợp.','NIH'],
+      ['khong','Ở người không thiếu kẽm, bằng chứng bổ sung để tăng testosterone, miễn dịch hay trí nhớ gần như không có, dù quảng cáo rất nhiều.','Kho Obsidian']],
+    need:'Theo NIH: nam 11 mg, nữ 8 mg mỗi ngày (khoảng 8–12 mg tuỳ tuổi và giai đoạn). Viên bổ sung thường 5–45 mg kẽm nguyên tố (Examine). Mức tối đa: EFSA 25 mg, NIH 40 mg mỗi ngày.',
+    how:[
+      'Đọc dòng kẽm nguyên tố trên nhãn (ví dụ "kẽm 15 mg"), không đọc khối lượng muối.',
+      'Cơ thể tự điều chỉnh cửa hấp thu kẽm: uống 50 mg không hấp thu gấp 5 lần 10 mg. Liều vừa phải, đều mỗi ngày, hợp lý hơn liều lớn (kho Obsidian).',
+      'Nếu buồn nôn khi uống lúc đói thì uống cùng bữa ăn nhẹ (NIH ghi buồn nôn là tác dụng phụ thường gặp khi dùng nhiều).',
+      'Uống cách canxi, sắt khoảng 2 giờ: canxi chen cửa hấp thu, và sắt từ 25 mg trở lên uống cùng làm giảm hấp thu kẽm (NIH, kho Obsidian).',
+      'Bữa ăn nhiều gạo, đậu (phytate) làm giảm hấp thu kẽm.'],
+    forms:'Phổ biến: sulfat, gluconat, acetat (NIH), cũng có citrat, picolinat (Examine) và bisglycinat. Mỗi muối cho lượng kẽm nguyên tố khác nhau. Kho Obsidian ghi kẽm glycinat hấp thu cao hơn sulfat khoảng 16% (49% so với 42%); con số "80% so với 4%" trên nhãn một số hãng là so với kẽm oxit, nên chênh lệch thật nhỏ hơn nhiều.',
+    cautions:[
+      'Từ 50 mg trở lên trong vài tuần có thể cản hấp thu đồng, giảm miễn dịch và giảm cholesterol HDL (NIH).',
+      'Kẽm liều cao kéo dài có thể gây thiếu đồng (thiếu máu, giảm bạch cầu). Uống thêm đồng không bù được, phải giảm kẽm (kho Obsidian).',
+      'Dấu hiệu quá liều: buồn nôn, chóng mặt, nhức đầu, khó chịu dạ dày, nôn, mất cảm giác ngon miệng (NIH).',
+      'Dễ thiếu: người ăn chay, bệnh tiêu hoá, sau phẫu thuật giảm cân, mang thai và cho con bú, nghiện rượu (NIH).'],
+    interactions:[
+      'Kháng sinh quinolon và tetracyclin: kẽm gắn với thuốc và làm giảm tác dụng, cần uống cách xa (NIH).',
+      'Penicillamin (NIH).',
+      'Một số thuốc lợi tiểu làm tăng thải kẽm qua nước tiểu (NIH).',
+      'Canxi, sắt, magie liều cao cạnh tranh hấp thu: uống cách nhau (kho Obsidian).'],
+    foods:'Hàu và hải sản, thịt đỏ, gia cầm, các loại đậu, hạt.',
+    sources:[['NIH ODS – Zinc','https://ods.od.nih.gov/factsheets/Zinc-HealthProfessional/'],['Examine – Zinc','https://examine.com/supplements/zinc/'],['EFSA – mức tối đa','https://www.efsa.europa.eu/sites/default/files/2024-05/ul-summary-report.pdf']]},
+
+  ca:{
+    name:'Canxi',aka:'Calcium, vápník',updated:'2026-11-03',
+    what:'Khoáng chất nhiều nhất trong cơ thể, 99% nằm ở xương và răng. Cũng cần cho co cơ, dẫn truyền thần kinh và đông máu.',
+    benefits:[
+      ['chac','Cần cho xương và răng bình thường, chức năng cơ, dẫn truyền thần kinh, đông máu (công bố được EFSA chấp thuận).','Kho Obsidian'],
+      ['cothe','Canxi kèm vitamin D ở người lớn tuổi: FDA cho phép công bố giúp giảm nguy cơ loãng xương, nhưng không phải thử nghiệm nào cũng thấy giảm gãy xương.','NIH'],
+      ['cothe','Mang thai: có thể giảm nguy cơ tiền sản giật ở người ăn thiếu canxi.','NIH'],
+      ['chuaro','Ung thư đại trực tràng, cân nặng: bằng chứng chưa rõ.','NIH'],
+      ['chuaro','Ở nam giới không thiếu canxi, bằng chứng canxi viên giảm gãy xương là yếu (kho Obsidian). Thứ tự hợp lý: kiểm tra vitamin D, tính canxi ăn vào, chỉ bù phần thiếu.','Kho Obsidian']],
+    need:'Theo NIH: 1000–1200 mg mỗi ngày cho người lớn, tính cả thức ăn. Phần lớn nên đến từ thức ăn, viên chỉ bù phần thiếu, thường khoảng 500 mg/ngày (kho Obsidian). Mức tối đa: 2000–2500 mg/ngày tuỳ tuổi (NIH), EFSA 2500 mg, tính cả thức ăn.',
+    how:[
+      'Cân theo canxi nguyên tố, không cân theo khối lượng muối. Ví dụ canxi bisglycinat chỉ chứa khoảng 21% canxi (kho Obsidian).',
+      'Mỗi lần uống không quá khoảng 500 mg canxi nguyên tố; nếu cần nhiều hơn thì chia nhiều lần trong ngày (Examine, kho Obsidian).',
+      'Uống cùng bữa ăn giúp hấp thu (Examine). Canxi cacbonat cần acid dạ dày, nên phải uống cùng bữa; canxi citrat uống lúc nào cũng được.',
+      'Canxi hấp thu chủ động chỉ khi có vitamin D, nên cần đủ vitamin D (kho Obsidian).',
+      'Uống cách kẽm, sắt, magie ít nhất 2 giờ. Nghiên cứu cũ ghi 300 mg canxi uống cùng bữa làm giảm hấp thu sắt tới khoảng 60% (Hallberg 1991, kho Obsidian).'],
+    forms:'Phổ biến nhất là cacbonat và citrat (NIH). Citrat hấp thu hơn cacbonat khoảng 22–27% ở người (kho Obsidian). Bisglycinat được quảng cáo hấp thu tốt, nhưng chưa có thử nghiệm độc lập trên người chứng minh hơn citrat (kho Obsidian). Nhãn ghi "buffered" nghĩa là có trộn cacbonat hoặc oxit.',
+    cautions:[
+      'Canxi viên liều cao có thể tăng nguy cơ sỏi thận (NIH).',
+      'Một số nghiên cứu thấy canxi viên có thể tăng nguy cơ tim mạch, chưa ngã ngũ; không nên lạm dụng liều cao (NIH, kho Obsidian).',
+      'Có thể tăng nguy cơ ung thư tuyến tiền liệt khi lượng canxi cao (NIH).',
+      'Tránh tự bổ sung nếu có tiền sử sỏi thận canxi oxalat, tăng canxi máu, suy thận mạn, cường cận giáp, sarcoidosis (kho Obsidian).',
+      'Dễ thiếu: phụ nữ sau mãn kinh, người không dùng sữa và chế phẩm sữa (NIH).'],
+    interactions:[
+      'Levothyroxine (thuốc tuyến giáp): canxi làm giảm hấp thu, cần uống cách xa nhiều giờ theo chỉ dẫn của bác sĩ (NIH).',
+      'Kháng sinh quinolon: canxi làm giảm hấp thu thuốc (NIH).',
+      'Dolutegravir và lithium (NIH).',
+      'Sắt, kẽm, magie: cạnh tranh hấp thu, uống cách nhau (kho Obsidian).'],
+    foods:'Sữa và chế phẩm sữa, cá nhỏ ăn cả xương, rau lá xanh đậm, đậu phụ và thực phẩm được bổ sung canxi.',
+    sources:[['NIH ODS – Calcium','https://ods.od.nih.gov/factsheets/Calcium-HealthProfessional/'],['Examine – Calcium','https://examine.com/supplements/calcium/'],['EFSA – mức tối đa','https://www.efsa.europa.eu/sites/default/files/2024-05/ul-summary-report.pdf']]},
+
+  vitK:{
+    name:'Vitamin K',aka:'K1 (phylloquinone), K2 (MK-4, MK-7)',updated:'2026-11-03',
+    what:'Vitamin tan trong dầu, cần cho đông máu và cho các protein giữ canxi ở đúng chỗ (osteocalcin trong xương, MGP ở thành mạch). K1 có nhiều trong rau lá xanh. K2 có trong thực phẩm lên men như natto và trong sản phẩm bổ sung.',
+    benefits:[
+      ['chac','Cần cho đông máu bình thường và duy trì xương bình thường (công bố được EFSA chấp thuận).','Kho Obsidian'],
+      ['chuaro','Loãng xương: vitamin K tham gia hoạt hoá osteocalcin trong xương, nhưng chưa rõ bổ sung có giảm nguy cơ loãng xương hay không. Một số thử nghiệm ở phụ nữ sau mãn kinh có cải thiện chỉ số xương.','NIH'],
+      ['chuaro','Giảm vôi hoá động mạch ở người khoẻ: cơ chế qua MGP có thật, nhưng kết quả lâm sàng hỗn hợp và nhiều thử nghiệm trung tính. Đây là phần yếu nhất của lập luận "D3 cộng K2".','Kho Obsidian']],
+    need:'Theo NIH: nữ 90 mcg, nam 120 mcg mỗi ngày (mức đủ). Liều K2 MK-7 trong các thử nghiệm: 45–200 mcg/ngày; 100 mcg là mức phổ biến khi đi kèm vitamin D3 (kho Obsidian). Chưa có mức tối đa chính thức: NIH và EFSA đều không đặt vì độc tính thấp.',
+    how:[
+      'Uống cùng bữa có chất béo, vì vitamin K tan trong dầu (kho Obsidian).',
+      'MK-7 ở lại trong máu rất lâu: bán thải khoảng 72 giờ, trong khi MK-4 chỉ khoảng 1 giờ. Vì vậy MK-7 dùng liều microgram, uống cách ngày vẫn giữ được nồng độ (kho Obsidian).',
+      'Chọn sản phẩm ghi rõ all-trans MK-7: đồng phân cis không có hoạt tính, mà nhiều nhãn không ghi tỷ lệ (kho Obsidian).',
+      'Muốn uống cùng vitamin D thì viên kết hợp D3 cộng K2 tiện, nhưng K2 mới quyết định tần suất uống chứ không phải D3 (kho Obsidian).'],
+    forms:'K1 (phylloquinone), K2 dạng MK-4 và MK-7. Dữ liệu so sánh sinh khả dụng giữa các dạng còn hạn chế (NIH). MK-7 từ natto là dạng phổ biến trong viên.',
+    cautions:[
+      'Gần như không có độc tính ở liều bổ sung thông thường (NIH).',
+      'Dễ thiếu: trẻ sơ sinh không được tiêm vitamin K, người kém hấp thu, người sau phẫu thuật giảm cân (NIH).'],
+    interactions:[
+      'Warfarin và thuốc chống đông kháng vitamin K (acenocoumarol): vitamin K đối kháng trực tiếp tác dụng của thuốc và làm nhiễu INR. Lượng vitamin K phải được giữ ổn định, không tự thêm hay bớt (NIH, kho Obsidian).',
+      'Thuốc chống đông mới (apixaban, rivaroxaban, dabigatran) không hoạt động qua vitamin K nên không có tương tác kiểu này, nhưng vẫn cần hỏi bác sĩ (kho Obsidian).',
+      'Một số kháng sinh, thuốc gắn acid mật (cholestyramin), orlistat: làm giảm vitamin K trong cơ thể; nên uống vitamin K cách xa orlistat và cholestyramin ít nhất 2 giờ (NIH, kho Obsidian).'],
+    foods:'Rau lá xanh (cải xoăn, rau chân vịt, bông cải xanh) cho K1; natto và thực phẩm lên men cho K2.',
+    sources:[['NIH ODS – Vitamin K','https://ods.od.nih.gov/factsheets/VitaminK-HealthProfessional/']]},
+
+  b12:{
+    name:'Vitamin B12',aka:'Cobalamin, methylcobalamin, cyanocobalamin',updated:'2026-11-03',
+    what:'Vitamin tan trong nước duy nhất chứa kim loại (cobalt). Cần để tạo hồng cầu và giữ vỏ myelin của dây thần kinh. Chỉ vi khuẩn tổng hợp B12; con người lấy qua thịt, cá, trứng, sữa. Thực vật thuần không có B12 hoạt tính.',
+    benefits:[
+      ['chac','Chữa và phòng thiếu B12 (thiếu máu, tổn thương thần kinh). Người ăn chay trường bắt buộc phải bổ sung.','Kho Obsidian, NIH'],
+      ['khong','Không giúp tăng năng lượng hay sức bền ở người đã đủ B12.','NIH'],
+      ['khong','Không thấy liên quan giữa bổ sung B12 và nguy cơ bệnh tim mạch.','NIH'],
+      ['chuaro','Trí nhớ và sa sút trí tuệ, ung thư: dữ liệu không thống nhất.','NIH']],
+    need:'Theo NIH: 2,4 mcg mỗi ngày cho người lớn, 2,6–2,8 mcg khi mang thai hoặc cho con bú. Thức ăn thường đã đủ. Chưa có mức tối đa vì B12 an toàn kể cả liều cao (NIH).',
+    how:[
+      'Hấp thu B12 có "cửa hẹp": nhờ protein yếu tố nội tại, mỗi lần chỉ qua được khoảng 1,5–2 mcg. Ngoài ra khoảng 1% liều uống thấm qua theo cách thụ động. Vì vậy viên 1000 mcg không vào máu gấp 500 lần viên 2 mcg (kho Obsidian).',
+      'Ví dụ tính của kho Obsidian: uống 300 mcg thì hấp thu thật khoảng 4,5–5,5 mcg. Liều cao chỉ cần thiết khi cửa hẹp bị hỏng.',
+      'Gan dự trữ 2–5 mg B12, đủ 3–5 năm, nên thiếu B12 diễn ra rất chậm và âm thầm (kho Obsidian).',
+      'Uống lúc nào cũng được.'],
+    forms:'Cyanocobalamin phổ biến nhất trong viên; còn có methylcobalamin, adenosylcobalamin (NIH). Lời quảng cáo "methyl tốt hơn cyano" chưa được chứng minh trên người (kho Obsidian).',
+    cautions:[
+      'B12 dư thải qua nước tiểu và không nguy hiểm. Rủi ro thường nằm ở các chất đi cùng trong viên B-complex, nhất là vitamin B6 liều cao (kho Obsidian).',
+      'Dễ thiếu: người lớn tuổi, thiếu máu ác tính, bệnh tiêu hoá hoặc đã phẫu thuật tiêu hoá, người ăn chay, trẻ bú mẹ của người ăn chay trường (NIH).'],
+    interactions:[
+      'Thuốc giảm acid dạ dày (PPI, thuốc kháng H2) và metformin làm giảm hấp thu B12; người dùng lâu dài nên kiểm tra B12 (NIH).'],
+    foods:'Thịt, cá, trứng, sữa; một số thực phẩm được bổ sung B12.',
+    sources:[['NIH ODS – Vitamin B12','https://ods.od.nih.gov/factsheets/VitaminB12-HealthProfessional/']]},
+
+  b6:{
+    name:'Vitamin B6',aka:'Pyridoxine, pyridoxal 5-phosphate (P5P, PLP)',updated:'2026-11-03',
+    what:'Vitamin tan trong nước, tham gia chuyển hoá protein và chất dẫn truyền thần kinh, tạo hồng cầu. Phần lớn người ăn uống bình thường đã đủ B6, thiếu rõ rệt khá hiếm.',
+    benefits:[
+      ['cothe','Hội chứng tiền kinh nguyệt: có thể giảm một số triệu chứng, nhưng phần lớn nghiên cứu chất lượng thấp.','NIH'],
+      ['chuaro','Tim mạch, trí nhớ ở người lớn tuổi, ung thư: dữ liệu quan sát có liên quan, thử nghiệm chưa chứng minh rõ lợi ích của việc bổ sung.','NIH'],
+      ['chuaro','Buồn nôn khi mang thai: có dùng trong thực hành, cần bác sĩ hướng dẫn.','NIH']],
+    need:'Theo NIH: 1,3 mg mỗi ngày cho người 19–50 tuổi; từ 51 tuổi nam 1,7 mg, nữ 1,5 mg. Mang thai 1,9 mg, cho con bú 2,0 mg. Mức tối đa khác nhau nhiều: EFSA 12 mg, NIH 100 mg mỗi ngày. Nhiều viên đa vitamin và B-complex chứa 25–100 mg, cao gấp hàng chục lần nhu cầu.',
+    how:[
+      'Đọc dòng B6 trên nhãn và cộng tổng nếu dùng nhiều viên cùng lúc: đa vitamin, B-complex, viên ZMA đều có B6 (kho Obsidian).',
+      'Không cần liều "mega". Liều bình thường (100–500% giá trị khuyến nghị) đủ cho phần lớn người lớn tuổi cần bù nền (kho Obsidian).',
+      'Cơ thể thải nhanh phần B6 thừa qua nước tiểu, nhưng dùng lâu liều cao vẫn gây hại thần kinh (NIH).',
+      'Dùng dài hạn thì ưu tiên mức thấp hơn, theo chuẩn châu Âu 12 mg.'],
+    forms:'Pyridoxine hydrochloride là dạng phổ biến nhất; còn có P5P (pyridoxal 5-phosphate). NIH ghi hấp thu giữa các dạng không khác biệt đáng kể.',
+    cautions:[
+      'Dùng 1–6 g pyridoxine mỗi ngày trong 12–40 tháng gây bệnh thần kinh cảm giác nặng và tiến triển: loạng choạng, mất cảm giác. Thường hết khi ngừng sớm (NIH).',
+      'Tác dụng phụ khác: tổn thương da, nhạy cảm ánh sáng, buồn nôn, ợ nóng (NIH).',
+      'Có báo cáo tổn thương thần kinh ở liều dưới 500 mg/ngày. NIH đặt mức tối đa 100 mg/ngày (một nửa liều 200 mg trong các nghiên cứu theo dõi tới 5 năm không thấy tác hại), còn EFSA đặt thấp hơn nhiều là 12 mg. Examine không khuyên dùng trên 100 mg/ngày nếu không có bác sĩ theo dõi.',
+      'Dấu hiệu cần dừng và hỏi bác sĩ: tê bì, châm chích bàn tay, bàn chân, loạng choạng.',
+      'Dễ thiếu: người suy thận, bệnh tự miễn như viêm khớp dạng thấp, người nghiện rượu (NIH).'],
+    interactions:[
+      'Cycloserin (thuốc lao): làm tăng thải B6 qua nước tiểu (NIH).',
+      'Một số thuốc chống động kinh làm giảm B6 trong máu (NIH).',
+      'Danh sách trên chưa đầy đủ; nếu dùng thuốc thường xuyên, hãy hỏi bác sĩ hoặc dược sĩ về tình trạng B6.'],
+    foods:'Cá, gan bò và nội tạng, khoai tây và rau củ nhiều tinh bột, trái cây (trừ cam quýt), ngũ cốc tăng cường. Khoảng 75% B6 trong bữa ăn hỗn hợp được hấp thu (NIH).',
+    sources:[['NIH ODS – Vitamin B6','https://ods.od.nih.gov/factsheets/VitaminB6-HealthProfessional/'],['Examine – Vitamin B6','https://examine.com/supplements/vitamin-b6/'],['EFSA – mức tối đa','https://www.efsa.europa.eu/sites/default/files/2024-05/ul-summary-report.pdf']]},
+
+  vitE:{
+    name:'Vitamin E',aka:'Tocopherol, tocotrienol',updated:'2026-11-03',
+    what:'Nhóm vitamin tan trong dầu, là chất chống oxy hoá bảo vệ màng tế bào. Dạng hoạt động chính ở người là alpha-tocopherol.',
+    benefits:[
+      ['chac','Phòng và chữa thiếu vitamin E (hiếm; gặp ở trẻ sinh non nhẹ cân và người kém hấp thu chất béo).','NIH'],
+      ['cothe','Thoái hoá điểm vàng: công thức AREDS (có vitamin E, vitamin C, kẽm, đồng) làm chậm tiến triển ở người đã mắc.','NIH'],
+      ['khong','Phòng ung thư: bằng chứng không ủng hộ. Một thử nghiệm lớn gợi ý liều cao dùng đều đặn có thể còn có hại.','NIH'],
+      ['chuaro','Tim mạch: có cơ chế hợp lý (chống oxy hoá LDL, chống đông) nhưng kết quả thử nghiệm không thống nhất.','NIH'],
+      ['chuaro','Trí nhớ, sa sút trí tuệ: phần lớn nghiên cứu không thấy lợi ích rõ.','NIH']],
+    need:'Theo NIH: 15 mg alpha-tocopherol mỗi ngày cho người lớn, 19 mg khi cho con bú. Mức tối đa từ viên bổ sung: NIH 1000 mg, EFSA 300 mg mỗi ngày. Ăn đủ hạt, dầu thực vật thường đã đủ.',
+    how:[
+      'Uống cùng bữa có chất béo vì vitamin E tan trong dầu (Examine).',
+      'Chú ý đơn vị: nhãn có thể ghi IU hoặc mg. 1 mg vitamin E tự nhiên (RRR) bằng 1 mg alpha-tocopherol; dạng tổng hợp (all-rac, dl) cần 2 mg để bằng 1 mg tự nhiên (Examine).',
+      'Phần lớn người không cần bổ sung riêng.'],
+    forms:'Dạng tự nhiên ghi RRR hoặc d-alpha; dạng tổng hợp ghi all-rac hoặc dl, hoạt tính chỉ khoảng một nửa (NIH). Một số sản phẩm có thêm các dạng tocopherol khác hoặc tocotrienol.',
+    cautions:[
+      'Thử nghiệm ghi nhận tăng nguy cơ đột quỵ xuất huyết ở liều cao dùng dưới dạng viên (NIH).',
+      'Thức ăn không gây tác dụng phụ ở lượng lớn (NIH).',
+      'Dễ thiếu: trẻ sinh non nhẹ cân, người kém hấp thu chất béo (NIH).'],
+    interactions:[
+      'Thuốc chống đông và chống tiểu cầu: cộng thêm nguy cơ chảy máu (NIH).',
+      'Simvastatin và niacin: NIH ghi có tương tác, nên hỏi bác sĩ nếu đang dùng.',
+      'Hoá trị và xạ trị: có thể ảnh hưởng điều trị, phải hỏi bác sĩ (NIH).'],
+    foods:'Dầu mầm lúa mì, hạt hướng dương, hạnh nhân, dầu thực vật, rau lá xanh.',
+    sources:[['NIH ODS – Vitamin E','https://ods.od.nih.gov/factsheets/VitaminE-HealthProfessional/'],['Examine – Vitamin E','https://examine.com/supplements/vitamin-e/'],['EFSA – mức tối đa','https://www.efsa.europa.eu/sites/default/files/2024-05/ul-summary-report.pdf']]}
 };
