@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f766e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Sổ TPCN">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Sổ TPCN gia đình</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#1c2430;--mute:#5b6573;--line:#e3e7ec;--pri:#0f766e;--pri2:#ccfbf1;--warn:#9a3412;--warnbg:#fff7ed;--bad:#b91c1c}
+@media (prefers-color-scheme:dark){:root{--bg:#10151b;--card:#18202a;--ink:#e6ebf1;--mute:#9aa7b8;--line:#2a3441;--pri:#2dd4bf;--pri2:#123a38;--warn:#fbbf24;--warnbg:#2b2210;--bad:#f87171}}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;display:flex;flex-direction:column}
+header{background:var(--card);border-bottom:1px solid var(--line);padding:calc(14px + env(safe-area-inset-top)) 16px 10px}
+header h1{margin:0;font-size:20px}
+header .sub{font-size:13px;color:var(--mute)}
+main{flex:1;overflow:auto;padding:14px 16px 24px;max-width:720px;width:100%;margin:0 auto}
+nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+nav button{border:0;background:none;color:var(--mute);padding:14px 0;font:inherit;font-size:12px;min-height:48px;cursor:pointer}
+nav button.on{color:var(--pri);font-weight:700}
+input,select,textarea,button{font:inherit;color:inherit}
+input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+textarea{min-height:90px;resize:vertical}
+label{display:grid;gap:3px;font-size:13px;color:var(--mute)}
+.btn{border:1px solid var(--line);background:var(--card);padding:8px 14px;border-radius:10px;cursor:pointer;min-height:44px}
+.btn.pri{background:var(--pri);border-color:var(--pri);color:#fff}
+@media (prefers-color-scheme:dark){.btn.pri{color:#06201d}}
+.btn.sm{padding:4px 10px;font-size:13px}
+.btn.del{color:var(--bad)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px}
+.card h3{margin:0 0 2px;font-size:16px}
+.mute{color:var(--mute);font-size:13px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px}
+.chips button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;min-height:44px;white-space:nowrap;cursor:pointer}
+.chips button.on{background:var(--pri);border-color:var(--pri);color:#fff}
+@media (prefers-color-scheme:dark){.chips button.on{color:#06201d}}
+.slot{font-size:13px;font-weight:600;color:var(--mute);margin:14px 0 6px;text-transform:uppercase}
+.dose{display:flex;align-items:center;gap:12px}
+.dose input[type=checkbox]{width:26px;height:26px;accent-color:var(--pri);flex:none}
+.dose.done .t{text-decoration:line-through;color:var(--mute)}
+.grow{flex:1;min-width:0}
+.row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.tag{display:inline-block;background:var(--pri2);color:var(--pri);border-radius:999px;padding:1px 9px;font-size:12px;margin:2px 4px 2px 0}
+.empty{text-align:center;color:var(--mute);padding:36px 8px}
+.ing{display:grid;grid-template-columns:1fr 70px 70px 28px;gap:6px;margin-bottom:6px}
+table.ing2{width:100%;border-collapse:collapse;font-size:14px}
+table.ing2 td,table.ing2 th{text-align:left;padding:4px 6px 4px 0;border-bottom:1px solid var(--line)}
+dialog{border:0;border-radius:14px;padding:0;width:min(520px,94vw);background:var(--card);color:var(--ink);max-height:92vh}
+dialog::backdrop{background:#0008}
+dialog form{padding:16px;display:grid;gap:10px}
+.note{background:var(--warnbg);border:1px solid var(--warn);color:var(--warn);border-radius:10px;padding:8px 10px;font-size:13px}
+</style>
+</head>
+<body>
+<header><h1 id="ttl">Hôm nay</h1><div class="sub" id="sub"></div></header>
+<main id="view"></main>
+<nav id="nav"></nav>
+<dialog id="dlg"></dialog>
+
+<script>
+'use strict';
+/* ---------- Lưu trữ: IndexedDB ---------- */
+const DB='tpcn-v2',KEY='state';
+const empty=()=>({v:2,members:[],products:[],plans:[],intakes:[],notes:[]});
+let S=empty();
+const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+async function load(){try{const db=await idb();const d=await new Promise(res=>{const q=db.transaction('kv').objectStore('kv').get(KEY);q.onsuccess=()=>res(q.result);q.onerror=()=>res(null)});S={...empty(),...(d||{})}}catch(e){alert('Không mở được bộ nhớ trình duyệt: '+e.message)}}
+let saveT;async function flush(){try{const db=await idb();await new Promise((res,rej)=>{const t=db.transaction('kv','readwrite');t.objectStore('kv').put(S,KEY);t.oncomplete=res;t.onerror=()=>rej(t.error)})}catch(e){alert('Lưu thất bại: '+e.message)}}
+function save(){clearTimeout(saveT);saveT=setTimeout(flush,50)}
+addEventListener('pagehide',()=>{clearTimeout(saveT);flush()});
+if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();
+
+/* ---------- Tiện ích ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const pad=n=>String(n).padStart(2,'0');
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}; // giờ địa phương, không phải UTC
+const byId=(a,id)=>a.find(x=>x.id===id);
+const pname=id=>byId(S.products,id)?.name||'(đã xoá)';
+const mname=id=>byId(S.members,id)?.name||'(đã xoá)';
+const safeUrl=u=>/^https?:\/\//i.test(u||'')?u:'';
+const WD=['Chủ nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy'];
+const fmtDay=()=>{const d=new Date();return WD[d.getDay()]+', '+d.getDate()+'/'+(d.getMonth()+1)};
+
+/* ---------- Điều hướng ---------- */
+const TABS=[['today','Hôm nay'],['shelf','Tủ TPCN'],['add','+ Thêm'],['know','Kiến thức'],['fam','Cả nhà']];
+let tab='today',sub=null,fMember='',draft=null;
+function go(t,s=null){tab=t;sub=s;render();$('#view').scrollTop=0}
+function render(){
+  $('#nav').innerHTML=TABS.map(([k,l])=>`<button class="${k===tab?'on':''}" onclick="go('${k}')">${l}</button>`).join('');
+  ({today:vToday,shelf:vShelf,add:vAdd,know:vKnow,fam:vFam})[tab]();
+}
+function view(title,sub_,html){$('#ttl').textContent=title;$('#sub').textContent=sub_||'';$('#view').innerHTML=html}
+
+/* ---------- Hộp thoại ---------- */
+function dialog(title,fields,data,onSave){
+  const d=$('#dlg');
+  const f=fields.map(x=>{
+    const v=data[x.k]??'',id='f_'+x.k;
+    if(x.t==='area')return`<label>${x.l}<textarea id="${id}">${esc(v)}</textarea></label>`;
+    if(x.t==='sel')return`<label>${x.l}<select id="${id}">${x.o.map(([val,lab])=>`<option value="${esc(val)}" ${val===v?'selected':''}>${esc(lab)}</option>`).join('')}</select></label>`;
+    return`<label>${x.l}<input id="${id}" type="${x.t||'text'}" value="${esc(v)}"></label>`}).join('');
+  d.innerHTML=`<form method="dialog"><b>${esc(title)}</b>${f}<div class="row"><button class="btn pri" value="ok">Lưu</button><button class="btn" value="x" formnovalidate>Huỷ</button></div></form>`;
+  d.onclose=()=>{if(d.returnValue!=='ok')return;const o={...data};fields.forEach(x=>{const v=$('#f_'+x.k).value;o[x.k]=x.t==='number'?(v===''?'':Number(v)):v.trim()});onSave(o)};
+  d.returnValue='';d.showModal();
+}
+const upsert=(arr,o)=>{const i=arr.findIndex(x=>x.id===o.id);i<0?arr.push(o):arr[i]=o;save();render()};
+const remove=(arr,id,msg)=>{if(confirm(msg||'Xoá mục này?')){arr.splice(arr.findIndex(x=>x.id===id),1);save();render()}};
+
+/* ---------- Hôm nay ---------- */
+function slotsFor(day){
+  const out=[];
+  for(const p of S.plans){
+    if(fMember&&p.memberId!==fMember)continue;
+    if(p.start&&p.start>day)continue;if(p.end&&p.end<day)continue;
+    if(!byId(S.members,p.memberId)||!byId(S.products,p.productId))continue;
+    out.push({plan:p,intake:S.intakes.find(i=>i.planId===p.id&&i.date===day)});
+  }
+  return out.sort((a,b)=>(a.plan.time||'99').localeCompare(b.plan.time||'99'));
+}
+function setIntake(planId,status){
+  const day=today();let i=S.intakes.find(x=>x.planId===planId&&x.date===day);
+  if(i&&i.status===status){S.intakes.splice(S.intakes.indexOf(i),1)}
+  else if(i){i.status=status;i.at=Date.now()}
+  else S.intakes.push({id:uid(),planId,date:day,status,at:Date.now()});
+  save();render();
+}
+const chipRow=()=>S.members.length?`<div class="chips"><button class="${!fMember?'on':''}" onclick="fMember='';render()">Cả nhà</button>${S.members.map(m=>`<button class="${m.id===fMember?'on':''}" onclick="fMember='${m.id}';render()">${esc(m.name)}</button>`).join('')}</div>`:'';
+function vToday(){
+  const day=today(),sl=slotsFor(day),taken=sl.filter(s=>s.intake?.status==='taken').length;
+  let html=chipRow(),last=null;
+  for(const s of sl){
+    const p=s.plan,st=s.intake?.status,key=(p.time||'')+(p.label||'');
+    if(key!==last){html+=`<div class="slot">${esc(p.label||'Trong ngày')} ${p.time?'· '+esc(p.time):''}</div>`;last=key}
+    html+=`<div class="card dose ${st==='taken'?'done':''}"><input type="checkbox" aria-label="Đã uống" ${st==='taken'?'checked':''} onchange="setIntake('${p.id}','taken')">
+      <div class="grow"><div class="t"><b>${esc(pname(p.productId))}</b></div><div class="mute">${esc(mname(p.memberId))} · ${esc(p.qty||'')}${st==='skipped'?' · đã bỏ liều':''}</div></div>
+      <button class="btn sm" onclick="setIntake('${p.id}','skipped')">${st==='skipped'?'Huỷ bỏ':'Bỏ liều'}</button></div>`;
+  }
+  html+=sl.length?`<div class="mute" style="text-align:center">Đã uống ${taken}/${sl.length} lượt hôm nay</div>`
+    :`<div class="empty">Chưa có lịch uống hôm nay.<br>${S.members.length&&S.products.length?'Mở một sản phẩm trong Tủ TPCN và bấm “Thêm người uống”.':'Thêm thành viên (tab Cả nhà) và sản phẩm (tab + Thêm) trước.'}</div>`;
+  view('Hôm nay',fmtDay(),html);
+}
+
+/* ---------- Tủ TPCN ---------- */
+function vShelf(){
+  if(sub)return vProduct(sub);
+  const l=S.products;
+  view('Tủ TPCN',l.length+' sản phẩm',`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="newProduct()">+ Thêm sản phẩm</button></div>`+
+    (l.map(p=>{const who=[...new Set(S.plans.filter(x=>x.productId===p.id&&(!x.end||x.end>=today())).map(x=>mname(x.memberId)))];
+      return`<div class="card" onclick="go('shelf','${p.id}')" style="cursor:pointer"><h3>${esc(p.name)}</h3>
+      <div class="mute">${esc([p.brand,p.form].filter(Boolean).join(' · '))}</div>
+      <div>${who.length?`<span class="tag">Đang uống: ${esc(who.join(', '))}</span>`:''}${p.warnings?`<span class="tag" style="background:none;color:var(--warn);border:1px solid var(--warn)">⚠ cảnh báo</span>`:''}</div></div>`}).join('')
+     ||`<div class="empty">Tủ trống. Bấm “+ Thêm sản phẩm”.</div>`));
+}
+function vProduct(id){
+  const p=byId(S.products,id);if(!p){sub=null;return vShelf()}
+  const plans=S.plans.filter(x=>x.productId===id);
+  view(p.name,[p.brand,p.form].filter(Boolean).join(' · '),
+   `<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('shelf')">‹ Tủ TPCN</button></div>
+   <div class="card"><b>Thành phần mỗi liều</b>${(p.ingredients||[]).length?`<table class="ing2"><tr><th>Hoạt chất</th><th>Lượng</th><th>Dạng</th></tr>${p.ingredients.map(i=>`<tr><td>${esc(i.name)}</td><td>${esc(i.amount)} ${esc(i.unit)}</td><td>${esc(i.form)}</td></tr>`).join('')}</table>`:'<div class="mute">Chưa nhập.</div>'}
+    <div class="mute" style="margin-top:6px">Liều trên nhãn: ${esc(p.dosageLabel||'—')}</div></div>
+   <div class="card"><b>Mua</b><div class="mute">${p.price!==''&&p.price!=null?esc(p.price)+' CZK · ':''}${esc(p.store||'')} ${safeUrl(p.url)?`<a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">liên kết</a>`:''}</div></div>
+   ${p.warnings?`<div class="note"><b>⚠ Cảnh báo trên nhãn</b><br>${esc(p.warnings)}</div>`:''}
+   ${p.notes?`<div class="card"><b>Ghi chú</b><div class="mute">${esc(p.notes)}</div></div>`:''}
+   <div class="card"><b>Ai đang uống</b>${plans.map(x=>`<div class="mute" style="display:flex;gap:8px;align-items:center"><span class="grow">${esc(mname(x.memberId))} · ${esc(x.qty||'')} · ${esc(x.time||'')} ${esc(x.label||'')} · từ ${esc(x.start)}${x.end?' đến '+esc(x.end):''}</span>
+     ${x.end?'':`<button class="btn sm" onclick="endPlan('${x.id}')">Dừng</button>`}<button class="btn sm del" onclick="remove(S.plans,'${x.id}')">Xoá</button></div>`).join('')||'<div class="mute">Chưa ai.</div>'}
+    <div class="row"><button class="btn pri sm" onclick="editPlan('${id}')">+ Thêm người uống</button></div></div>
+   <div class="row"><button class="btn" onclick="editProduct('${id}')">Sửa</button><button class="btn del" onclick="delProduct('${id}')">Xoá sản phẩm</button></div>`);
+}
+function endPlan(id){byId(S.plans,id).end=today();save();render()}
+function delProduct(id){if(!confirm('Xoá sản phẩm và mọi lịch uống của nó?'))return;S.plans.filter(x=>x.productId===id).forEach(x=>{S.intakes=S.intakes.filter(i=>i.planId!==x.id)});S.plans=S.plans.filter(x=>x.productId!==id);S.products=S.products.filter(x=>x.id!==id);save();go('shelf')}
+function editPlan(productId){
+  if(!S.members.length){alert('Cần thêm thành viên ở tab Cả nhà trước.');return}
+  dialog('Thêm người uống',[{k:'memberId',l:'Ai uống',t:'sel',o:S.members.map(m=>[m.id,m.name])},{k:'qty',l:'Liều mỗi lần (vd: 1 viên)'},{k:'time',l:'Giờ uống',t:'time'},{k:'label',l:'Buổi (vd: Sáng, sau ăn)'},{k:'start',l:'Bắt đầu',t:'date'}],
+   {id:uid(),productId,memberId:S.members[0].id,time:'07:30',label:'Sáng, sau ăn',start:today(),qty:'1 viên'},o=>{if(!o.qty)return;upsert(S.plans,o)});
+}
+
+/* ---------- Thêm / sửa sản phẩm ---------- */
+function newProduct(){draft={id:uid(),name:'',brand:'',form:'',dosageLabel:'',price:'',store:'',url:'',warnings:'',notes:'',ingredients:[{name:'',amount:'',unit:'mg',form:''}]};go('add')}
+function editProduct(id){draft=JSON.parse(JSON.stringify(byId(S.products,id)));if(!draft.ingredients.length)draft.ingredients=[{name:'',amount:'',unit:'mg',form:''}];go('add')}
+const UNITS=['mg','mcg','g','IU','ml','CFU','%'];
+function vAdd(){
+  if(!draft)draft={id:uid(),name:'',brand:'',form:'',dosageLabel:'',price:'',store:'',url:'',warnings:'',notes:'',ingredients:[{name:'',amount:'',unit:'mg',form:''}]};
+  const d=draft,isNew=!byId(S.products,d.id);
+  view(isNew?'Thêm sản phẩm':'Sửa sản phẩm','Nhập tay. Chụp nhãn và dán link sẽ có ở bước sau.',
+   `<div class="card" style="display:grid;gap:10px">
+    <label>Tên sản phẩm<input id="a_name" value="${esc(d.name)}"></label>
+    <label>Hãng<input id="a_brand" value="${esc(d.brand)}"></label>
+    <label>Dạng (viên, bột, nước…)<input id="a_form" value="${esc(d.form)}"></label>
+    <div><div class="mute" style="margin-bottom:4px">Thành phần mỗi liều: mỗi hoạt chất một dòng</div>
+     ${d.ingredients.map((g,i)=>`<div class="ing"><input placeholder="Hoạt chất" aria-label="Hoạt chất" value="${esc(g.name)}" data-i="${i}" data-f="name">
+       <input placeholder="Lượng" inputmode="decimal" aria-label="Lượng" value="${esc(g.amount)}" data-i="${i}" data-f="amount">
+       <select aria-label="Đơn vị" data-i="${i}" data-f="unit">${UNITS.map(u=>`<option ${u===g.unit?'selected':''}>${u}</option>`).join('')}</select>
+       <button class="btn sm del" aria-label="Xoá dòng" onclick="ingDel(${i})">×</button></div>`).join('')}
+     <button class="btn sm" onclick="ingAdd()">+ Thêm dòng</button></div>
+    <label>Liều ghi trên nhãn<input id="a_dosageLabel" value="${esc(d.dosageLabel)}"></label>
+    <div class="ing" style="grid-template-columns:1fr 1fr"><label>Giá (CZK)<input id="a_price" type="number" step="any" value="${esc(d.price)}"></label><label>Nơi mua<input id="a_store" value="${esc(d.store)}"></label></div>
+    <label>Link<input id="a_url" value="${esc(d.url)}"></label>
+    <label>Cảnh báo trên nhãn<textarea id="a_warnings">${esc(d.warnings)}</textarea></label>
+    <label>Ghi chú<textarea id="a_notes">${esc(d.notes)}</textarea></label>
+    <div class="row"><button class="btn pri" onclick="saveProduct()">Lưu sản phẩm</button><button class="btn" onclick="draft=null;go('shelf')">Huỷ</button></div></div>`);
+  $('#view').oninput=e=>{const t=e.target;if(t.dataset.f!==undefined)d.ingredients[t.dataset.i][t.dataset.f]=t.value;else if(t.id?.startsWith('a_'))d[t.id.slice(2)]=t.value};
+}
+function ingAdd(){draft.ingredients.push({name:'',amount:'',unit:'mg',form:''});vAdd()}
+function ingDel(i){draft.ingredients.splice(i,1);if(!draft.ingredients.length)ingAdd();else vAdd()}
+function saveProduct(){
+  const d=draft;if(!d.name.trim()){alert('Cần nhập tên sản phẩm.');return}
+  d.name=d.name.trim();d.price=d.price===''?'':Number(d.price);
+  d.ingredients=d.ingredients.filter(g=>g.name.trim()).map(g=>({...g,name:g.name.trim(),amount:g.amount===''?'':Number(String(g.amount).replace(',','.'))}));
+  if(d.ingredients.some(g=>g.amount!==''&&Number.isNaN(g.amount))){alert('Có lượng hoạt chất không phải số. Hãy sửa lại.');return}
+  const id=d.id;draft=null;
+  const i=S.products.findIndex(x=>x.id===id);i<0?S.products.push(d):S.products[i]=d;save();go('shelf',id);
+}
+
+/* ---------- Kiến thức ---------- */
+function editNote(id){const n=byId(S.notes,id)||{id:uid(),added:today()};
+  dialog(id?'Sửa ghi chú':'Thêm ghi chú',[{k:'title',l:'Tiêu đề'},{k:'source',l:'Nguồn (link hoặc tên tài liệu)'},{k:'content',l:'Nội dung',t:'area'}],n,o=>{if(!o.title)return;upsert(S.notes,o)})}
+function vKnow(){
+  view('Kiến thức',S.notes.length+' ghi chú',`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="editNote()">+ Thêm ghi chú</button></div>`+
+   (S.notes.map(n=>`<div class="card"><h3>${esc(n.title)}</h3><div class="mute" style="white-space:pre-wrap">${esc(n.content)}</div>
+    <div class="mute">${esc(n.added||'')} · ${safeUrl(n.source)?`<a href="${esc(n.source)}" target="_blank" rel="noopener noreferrer">nguồn</a>`:esc(n.source||'')}</div>
+    <div class="row"><button class="btn sm" onclick="editNote('${n.id}')">Sửa</button><button class="btn sm del" onclick="remove(S.notes,'${n.id}')">Xoá</button></div></div>`).join('')||`<div class="empty">Chưa có ghi chú. Kho hoạt chất có nguồn sẽ làm ở bước sau.</div>`));
+}
+
+/* ---------- Cả nhà + sao lưu ---------- */
+function editMember(id){const m=byId(S.members,id)||{id:uid()};
+  dialog(id?'Sửa thành viên':'Thêm thành viên',[{k:'name',l:'Tên / vai trò'},{k:'born',l:'Năm sinh',t:'number'},{k:'weight',l:'Cân nặng (kg)',t:'number'},{k:'conditions',l:'Bệnh nền',t:'area'},{k:'meds',l:'Thuốc kê đơn đang dùng (tên, liều, giờ)',t:'area'},{k:'allergies',l:'Dị ứng',t:'area'}],m,o=>{if(!o.name)return;upsert(S.members,o)})}
+function delMember(id){if(!confirm('Xoá thành viên này và mọi lịch uống của họ?'))return;const ids=S.plans.filter(x=>x.memberId===id).map(x=>x.id);S.intakes=S.intakes.filter(i=>!ids.includes(i.planId));S.plans=S.plans.filter(x=>x.memberId!==id);S.members=S.members.filter(x=>x.id!==id);if(fMember===id)fMember='';save();render()}
+function dl(name,data,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function vFam(){
+  view('Cả nhà','Hồ sơ và sao lưu',`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="editMember()">+ Thêm thành viên</button></div>`+
+   (S.members.map(m=>`<div class="card"><h3>${esc(m.name)} <span class="mute">${m.born?'· sinh '+esc(m.born)+' ('+(new Date().getFullYear()-m.born)+' tuổi)':''}${m.weight?' · '+esc(m.weight)+' kg':''}</span></h3>
+    <div class="mute">Bệnh nền: ${esc(m.conditions||'—')}</div><div class="mute">Thuốc kê đơn: ${esc(m.meds||'—')}</div><div class="mute">Dị ứng: ${esc(m.allergies||'—')}</div>
+    <div class="row"><button class="btn sm" onclick="editMember('${m.id}')">Sửa</button><button class="btn sm del" onclick="delMember('${m.id}')">Xoá</button></div></div>`).join('')||`<div class="empty">Chưa có thành viên.</div>`)+
+   `<div class="card"><b>Sao lưu</b><div class="mute">Dữ liệu chỉ nằm trong trình duyệt của máy này. Hãy tải bản sao lưu định kỳ.</div>
+    <div class="row"><button class="btn pri" onclick="dl('tpcn-backup-'+today()+'.json',JSON.stringify(S),'application/json')">Tải JSON</button>
+    <label class="btn" style="display:inline-block">Khôi phục từ JSON<input type="file" accept=".json" hidden onchange="restore(this.files[0])"></label></div></div>
+    <div class="note">App chỉ lưu và nhắc theo dữ liệu bạn nhập, không thay lời khuyên của bác sĩ hay dược sĩ.</div>`);
+}
+async function restore(f){if(!f)return;try{const d=JSON.parse(await f.text());if(!d||!Array.isArray(d.products)||!Array.isArray(d.members)||d.v!==2)throw new Error('Không đúng định dạng sao lưu của bản này');if(!confirm('Khôi phục sẽ GHI ĐÈ toàn bộ dữ liệu hiện tại. Tiếp tục?'))return;S={...empty(),...d};save();render()}catch(e){alert('Lỗi: '+e.message)}}
+
+/* ---------- Khởi động ---------- */
+load().then(render);
+if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+</script>
+</body>
+</html>
