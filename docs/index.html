@@ -80,7 +80,14 @@ let S=empty();
 const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open(DB,2);
   r.onupgradeneeded=()=>{const d=r.result;if(!d.objectStoreNames.contains('kv'))d.createObjectStore('kv');if(!d.objectStoreNames.contains('img'))d.createObjectStore('img')};
   r.onsuccess=()=>{r.result.onversionchange=()=>r.result.close();res(r.result)};r.onerror=()=>rej(r.error)});
-async function load(){try{const db=await idb();const d=await new Promise(res=>{const q=db.transaction('kv').objectStore('kv').get(KEY);q.onsuccess=()=>res(q.result);q.onerror=()=>res(null)});S={...empty(),...(d||{})}}catch(e){alert('Không mở được bộ nhớ trình duyệt: '+e.message)}}
+async function load(){try{const db=await idb();const d=await new Promise(res=>{const q=db.transaction('kv').objectStore('kv').get(KEY);q.onsuccess=()=>res(q.result);q.onerror=()=>res(null)});S={...empty(),...(d||{})}}catch(e){alert('Không mở được bộ nhớ trình duyệt: '+e.message)}
+  if(!S.products.length)loadSharedProducts()}
+// Danh sách sản phẩm chung (không có thông tin cá nhân) lấy từ GitHub khi tủ còn trống
+async function loadSharedProducts(){
+  try{const r=await fetch('data/san-pham.json',{cache:'no-cache'});if(!r.ok)return;
+    const d=await r.json();if(!d||!Array.isArray(d.products))return;
+    mergeProducts(d.products.filter(p=>p&&typeof p.id==='string'&&/^prd-[a-z0-9-]{1,60}$/.test(p.id)&&typeof p.name==='string'&&Array.isArray(p.ingredients)));
+    save();render()}catch(e){}}
 let saveT;async function flush(){try{const db=await idb();await new Promise((res,rej)=>{const t=db.transaction('kv','readwrite');t.objectStore('kv').put(S,KEY);t.oncomplete=res;t.onerror=()=>rej(t.error)})}catch(e){alert('Lưu thất bại: '+e.message)}}
 function save(){clearTimeout(saveT);saveT=setTimeout(flush,50)}
 addEventListener('pagehide',()=>{clearTimeout(saveT);flush()});
