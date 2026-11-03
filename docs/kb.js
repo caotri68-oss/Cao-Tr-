@@ -759,5 +759,300 @@ window.KB={
       'Kho Obsidian ghi chưa có bằng chứng độc lập cho thấy đạm cao gây hại thận ở người có thận khoẻ ở mức 1,4–1,6 g/kg, nhưng đây là điểm cần hỏi bác sĩ nếu có bệnh thận hay đang dùng thuốc ảnh hưởng thận.'],
     interactions:['Không có tương tác thuốc đáng kể với đạm trong thức ăn. Với bệnh thận hoặc chế độ ăn theo chỉ định, hãy hỏi bác sĩ.'],
     foods:'Trứng, thịt, cá, sữa và chế phẩm (kefir, tvaroh, skyr), đậu phụ, sữa đậu nành, đậu lăng.',
-    sources:[['EFSA – mức tham chiếu protein 2012','https://www.efsa.europa.eu/en/press/news/120209'],['Kho Obsidian: Đạm (Protein), dẫn PROT-AGE','']]}
+    sources:[['EFSA – mức tham chiếu protein 2012','https://www.efsa.europa.eu/en/press/news/120209'],['Kho Obsidian: Đạm (Protein), dẫn PROT-AGE','']]},
+
+  bcomplex:{
+    name:'Vitamin B-Complex',aka:'Vitamin nhóm B, B1, B2, B3, B5, B6, B7 (biotin), B9, B12',updated:'2026-11-03',
+    what:'Nhóm 8 vitamin tan trong nước (B1, B2, B3, B5, B6, B7 là biotin, B9 là folate, B12). Chúng là đồng yếu tố trong chuyển hoá năng lượng, nhưng bản thân KHÔNG cung cấp calo. Viên B-complex gộp cả tám chất, thường kèm vài chất như cholin hay inositol.',
+    benefits:[
+      ['chac','Có ý nghĩa khi thật sự thiếu hụt: ăn chay trường lâu năm thiếu B12, ăn kém kéo dài thiếu B1.','Kho Obsidian'],
+      ['khong','"Uống liều cao cho khoẻ nhanh": liều vượt khoảng 200–500% giá trị tham chiếu không mang thêm lợi ích, chỉ tăng nguy cơ tác dụng phụ.','Kho Obsidian'],
+      ['khong','B12 không giúp tăng năng lượng hay sức bền ở người đã đủ B12.','NIH']],
+    need:'Liều thông thường, khoảng 100–500% giá trị tham chiếu mỗi chất, là đủ cho phần lớn người lớn cần bù nền; không cần liều "mega" (kho Obsidian). Mỗi vitamin có mức tối đa riêng, xem bài từng chất: B6 (EFSA 12 mg, NIH 100 mg), niacin, axit folic (1000 mcg). B12 và biotin không đặt được mức tối đa vì không thấy độc tính ở liều cao (NIH).',
+    how:[
+      'Cộng tổng B6, niacin và axit folic từ mọi viên (đa vitamin, B-complex, viên ZMA) rồi so với mức tối đa riêng của từng chất.',
+      'Chọn viên thuần B-complex, không kèm khoáng chất, nếu có bệnh tuyến giáp: một số viên tổng hợp có i-ốt (kho Obsidian).',
+      'Dạng "hoạt tính" như P5P cho B6, methylcobalamin cho B12, L-5-MTHF cho folate được quảng cáo hấp thu tốt hơn. NIH ghi hấp thu B6 từ viên không khác đáng kể giữa các dạng, và ưu thế của methylcobalamin so với dạng thường chưa được chứng minh (kho Obsidian). 5-MTHF thì có sinh khả dụng bằng hoặc cao hơn axit folic (NIH).',
+      'Vitamin B tan trong nước nên không cần uống cùng chất béo (kho Obsidian).'],
+    forms:'B-complex thuần, B-complex kèm cholin hoặc inositol, đa vitamin tổng hợp. Dạng liều "megadose" (ví dụ B6 100 mg, B5 500 mg) khác hẳn dạng liều gần nhu cầu.',
+    cautions:[
+      'B6 liều cao dùng dài hạn có thể gây tổn thương thần kinh ngoại biên (tê bì, châm chích tay chân), đặc biệt đáng lo ở người lớn tuổi. Xem bài Vitamin B6.',
+      'Niacin dạng nicotinic acid từ 30–50 mg trở lên gây đỏ bừng da, nóng rát; nicotinamide thì không (NIH). Xem bài Niacin.',
+      'Axit folic liều lớn có thể che giấu thiếu B12 (NIH). Xem bài Axit folic.',
+      'Biotin liều cao gây kết quả xét nghiệm sai, có thể sai cao hoặc sai thấp tuỳ loại xét nghiệm (NIH). Kho Obsidian ghi với xét nghiệm tuyến giáp (TSH, FT4) thì phải ngừng 5–7 ngày trước khi xét nghiệm. Hãy báo bác sĩ và phòng xét nghiệm là bạn đang dùng biotin.'],
+    interactions:[
+      'Biotin và xét nghiệm miễn dịch: xem trên.',
+      'Thuốc chống động kinh (carbamazepine, phenytoin, primidone, phenobarbital) làm giảm nồng độ biotin trong máu; cũng có tương tác với folate và B6 (NIH).',
+      'Thuốc lao isoniazid, pyrazinamide làm giảm niacin; methotrexate là chất đối kháng folate (NIH).'],
+    foods:'Chế độ ăn đa dạng gồm thịt, cá, trứng, sữa, đậu, rau lá xanh và ngũ cốc.',
+    sources:[['NIH ODS – Biotin','https://ods.od.nih.gov/factsheets/Biotin-HealthProfessional/'],['NIH ODS – Vitamin B6','https://ods.od.nih.gov/factsheets/VitaminB6-HealthProfessional/'],['NIH ODS – Vitamin B12','https://ods.od.nih.gov/factsheets/VitaminB12-HealthProfessional/'],['Kho Obsidian: Vitamin B-Complex (ghi chú thô, chưa rà)','']]},
+
+  probstrain:{
+    name:'Men vi sinh theo chủng',aka:'Lactobacillus rhamnosus GG, Saccharomyces boulardii, Bifidobacterium',updated:'2026-11-03',
+    what:'Tác dụng của men vi sinh gắn với CHỦNG cụ thể, không phải với cả nhóm. Tổ chức Tiêu hoá Thế giới (WGO, bản cập nhật 2023) yêu cầu khuyến nghị theo chủng và liều đã được thử trên người. ESPGHAN (nhi khoa tiêu hoá châu Âu) chỉ khuyến cáo một chủng khi có ít nhất hai thử nghiệm ngẫu nhiên cho đúng chủng đó.',
+    benefits:[
+      ['cothe','Lactobacillus rhamnosus GG (LGG): ESPGHAN 2016 khuyến cáo MẠNH (bằng chứng trung bình) để phòng tiêu chảy do kháng sinh ở trẻ em khi có yếu tố nguy cơ (loại kháng sinh, thời gian điều trị, tuổi, nằm viện, bệnh kèm).','ESPGHAN 2016'],
+      ['cothe','Saccharomyces boulardii (nấm men): cũng được ESPGHAN 2016 khuyến cáo mạnh với mức bằng chứng trung bình để phòng tiêu chảy do kháng sinh ở trẻ em. Để phòng tiêu chảy do Clostridioides difficile, ESPGHAN chỉ "gợi ý" có điều kiện, bằng chứng thấp.','ESPGHAN 2016'],
+      ['cothe','Mức chung của NCCIH: tiêu chảy cấp, tiêu chảy do kháng sinh và chàm thể tạng có một số bằng chứng; hầu hết các công dụng khác thiếu bằng chứng mạnh.','NCCIH'],
+      ['chuaro','Các chủng và hỗn hợp chủng khác đã được thử nghiệm nhưng ESPGHAN ghi chưa đủ bằng chứng để khuyến cáo.','ESPGHAN 2016'],
+      ['chuaro','Bifidobacterium (như B. lactis, B. longum), Lactobacillus reuteri, L. acidophilus và các chủng khác: tôi không đọc được bảng chủng–chỉ định của WGO nên không nêu mức bằng chứng riêng cho từng chủng. Hãy tra bảng WGO trước khi mua cho một mục đích cụ thể.','Chưa đọc được bảng WGO']],
+    need:'Không có nhu cầu khuyến nghị. Liều và thời gian phụ thuộc chủng và mục đích, lấy từ các thử nghiệm cho đúng chủng đó.',
+    how:[
+      'Đọc tên đầy đủ trên nhãn: loài và mã chủng (ví dụ "Lactobacillus rhamnosus GG", "Saccharomyces boulardii CNCM I-745") và lượng CFU đến hết hạn dùng. Nhãn chỉ ghi "Lactobacillus" thì không đủ để biết có bằng chứng hay không.',
+      'Chọn chủng theo mục đích. Ví dụ phòng tiêu chảy khi dùng kháng sinh: chủng có khuyến cáo của ESPGHAN (cho trẻ em) là LGG hoặc S. boulardii.',
+      'Đánh giá sau một thời gian; không có lợi thì ngừng.'],
+    forms:'Viên nang, gói bột, giọt. Hỗn hợp nhiều chủng phổ biến, nhưng ESPGHAN ghi các tổ hợp chưa đủ bằng chứng.',
+    cautions:[
+      'Khuyến cáo ESPGHAN ở trên là cho trẻ em; không tự động áp dụng cho người lớn.',
+      'Đã có báo cáo nhiễm trùng nặng hoặc tử vong ở trẻ sinh non dùng men vi sinh; FDA đã cảnh báo (NCCIH). Biến cố nặng có khả năng hơn ở người có bệnh nền.',
+      'Hỏi bác sĩ nếu suy giảm miễn dịch, đang có bệnh nặng hoặc có ống thông tĩnh mạch.'],
+    interactions:['Các nguồn tôi đọc không nêu tương tác thuốc cụ thể.'],
+    foods:'Sữa chua, kefir, thực phẩm lên men (không phải chủng nào cũng nằm trong số đã được thử nghiệm).',
+    sources:[['ESPGHAN 2016 – men vi sinh phòng tiêu chảy do kháng sinh ở trẻ em','https://espghan.org/dam/jcr:bb0de387-55d2-49bd-bb02-40d31b5e7c1e/2016_Probiotics_for_the_Prevention_of_Antibiotic-Associated_Diarrhea_in_Children.pdf'],['WGO – hướng dẫn men vi sinh và prebiotic','https://www.worldgastroenterology.org/guidelines/probiotics-and-prebiotics/probiotics-and-prebiotics-english'],['NCCIH – Men vi sinh','https://www.nccih.nih.gov/health/probiotics-usefulness-and-safety']]},
+
+  kefir:{
+    name:'Kefir',aka:'Sữa chua uống lên men, kefir sữa',updated:'2026-11-03',
+    what:'Sữa lên men bằng "hạt kefir", là hỗn hợp vi khuẩn và nấm men. Thường được xếp chung với thực phẩm có men vi sinh. Kefir sữa 3,5% béo có khoảng 3,6 g đạm trong 100 ml, nên 250 ml cung cấp khoảng 9 g đạm (kho Obsidian).',
+    benefits:[
+      ['khong','Huyết áp: phân tích gộp các thử nghiệm ngẫu nhiên (2025) không thấy giảm có ý nghĩa; huyết áp tâm thu giảm khoảng 1,8 mmHg và tâm trương khoảng 1,2 mmHg, khoảng tin cậy bao gồm cả không đổi.','Phân tích gộp 2025'],
+      ['chuaro','Chỉ dấu viêm CRP: cùng phân tích gộp gợi ý uống kefir lâu dài có thể cải thiện CRP.','Phân tích gộp 2025'],
+      ['chuaro','Sức khoẻ chuyển hoá và các lợi ích khác: một tổng quan hệ thống các thử nghiệm ngẫu nhiên (Nutrition Reviews 2023) kết luận bằng chứng còn hạn chế, cần thử nghiệm người chất lượng cao trước khi đưa khuyến nghị.','Nutrition Reviews 2023'],
+      ['chuaro','Dung nạp lactose: trong các nguồn tôi tìm được không có thử nghiệm trực tiếp trên người không dung nạp lactose, nên không kết luận.','Kết quả tìm kiếm 03/11/2026']],
+    need:'Không có nhu cầu khuyến nghị. Một cốc 250 ml mỗi ngày là mức thường dùng; hãy tính nó vào tổng lượng đạm, sữa và đường trong ngày.',
+    how:[
+      'Chọn kefir nguyên chất, không thêm đường; xem nhãn để biết chủng vi sinh vật và hạn dùng.',
+      'Kefir là thực phẩm, không phải thuốc: dùng như một phần của bữa ăn, đừng kỳ vọng hạ huyết áp.',
+      'Đạm trong kefir là đạm hoàn chỉnh, có thể góp vào mục tiêu đạm hằng ngày (xem bài Đạm).'],
+    forms:'Kefir sữa (phổ biến nhất), kefir nước (lên men từ nước đường). Hai loại có thành phần khác nhau.',
+    cautions:[
+      'Người dị ứng đạm sữa tránh kefir sữa.',
+      'Người suy giảm miễn dịch hoặc có bệnh nặng nên hỏi bác sĩ trước khi dùng sản phẩm có vi sinh vật sống nhiều (cùng lưu ý như với men vi sinh, NCCIH).'],
+    interactions:['Các nguồn tôi đọc không nêu tương tác thuốc cụ thể. Chứa canxi và đạm sữa như các sản phẩm sữa khác; nếu đang uống thuốc cần tách giờ với canxi (ví dụ levothyroxine, kháng sinh quinolon), hãy xem bài Canxi.'],
+    foods:'Sữa kefir, kefir nước, sữa chua.',
+    sources:[['Phân tích gộp 2025 – kefir với huyết áp và CRP','https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12554242/'],['Tổng quan hệ thống 2023 (Nutrition Reviews) về kefir','https://researchportal.scu.edu.au/esploro/outputs/journalArticle/The-effects-of-kefir-consumption-on/991013038984202368'],['Kho Obsidian: bảng đạm (kefir 3,5% béo)','']]},
+
+  algae:{
+    name:'Tảo (spirulina, chlorella)',aka:'Tảo xoắn, tảo lục, spirulina, chlorella',updated:'2026-11-03',
+    what:'Spirulina thực chất là vi khuẩn lam (cyanobacteria); chlorella là tảo lục. Cả hai bán dạng bột và viên. Cần phân biệt với các sản phẩm từ Aphanizomenon flos-aquae (AFA), một loại vi khuẩn lam khác.',
+    benefits:[
+      ['chuaro','Các công dụng được quảng cáo (miễn dịch, chuyển hoá, giải độc): trong lượt tìm này, NIH, EFSA và MedlinePlus không trả về trang tổng quan nào, nên bài này không nêu mức bằng chứng cho từng công dụng.','Chưa có nguồn đã đọc']],
+    need:'Không có nhu cầu khuyến nghị. Liều trên nhãn khác nhau nhiều giữa các sản phẩm.',
+    how:[
+      'Ưu tiên sản phẩm có kết quả kiểm nghiệm bên thứ ba cho từng lô, đặc biệt về độc tố tảo (microcystin). Đây là điểm các nguồn trên cùng nhấn mạnh.',
+      'Tránh các sản phẩm AFA (Aphanizomenon flos-aquae).'],
+    forms:'Bột, viên nén, viên nang. Một số sản phẩm phối hợp spirulina với chlorella.',
+    cautions:[
+      'Nguy cơ ô nhiễm độc tố: một nghiên cứu ở Đức trên 13 sản phẩm tảo cho thấy chỉ các sản phẩm từ Aphanizomenon flos-aquae có microcystin, và chiết xuất của mọi sản phẩm đều độc với tế bào trong ống nghiệm; các tác giả nhận định bán sản phẩm AFA cho người là rất đáng ngờ.',
+      'Một nghiên cứu khác thấy khoảng 30% mẫu dương tính với microcystin hoặc nodularin, trong đó có một sản phẩm chlorella. Mức microcystin an toàn hằng ngày theo WHO được dẫn là 0,04 mcg/kg cân nặng.',
+      'USP đánh giá chưa thấy nguy cơ sức khoẻ nghiêm trọng khi spirulina được xác định đúng, bào chế đúng và dùng đúng (theo trang NutritionFacts dẫn lại); một số chuyên gia khuyên tránh vì không có kiểm nghiệm từng lô. Hai quan điểm này mâu thuẫn, tôi ghi cả hai.'],
+    interactions:['Các nguồn tôi đọc không nêu tương tác thuốc. Nếu có bệnh tự miễn, đang dùng thuốc ức chế miễn dịch hay mang thai, hãy hỏi bác sĩ trước khi dùng.'],
+    foods:'Không phải thực phẩm thông thường ở châu Âu và Việt Nam; thường dùng như viên hoặc bột pha.',
+    sources:[['NutraIngredients 2013 – nghiên cứu về độc tố trong tảo (Univ. Konstanz)','https://www.nutraingredients.com/Article/2013/01/07/Study-warns-against-sale-of-toxic-algae-supplements/'],['NutritionFacts – spirulina (quan điểm thận trọng, có dẫn USP)','https://nutritionfacts.org/topics/spirulina/']]},
+
+  honey:{
+    name:'Mật ong',aka:'Honey, med',updated:'2026-11-03',
+    what:'Chất ngọt tự nhiên do ong làm, chủ yếu là đường, có lượng nhỏ các chất khác. Ở đây xét mật ong như một biện pháp hỗ trợ khi ho cấp ở trẻ lớn và người lớn, không phải thực phẩm chức năng thay thuốc.',
+    benefits:[
+      ['cothe','Ho cấp ở trẻ từ 12 tháng tuổi: tổng quan Cochrane (Oduwole, cập nhật 2018) kết luận mật ong có lẽ làm giảm ho nhiều hơn không điều trị, giả dược và diphenhydramine, và có lẽ không khác nhiều so với dextromethorphan. Dựa trên 6 thử nghiệm nhỏ với 899 trẻ từ 12 tháng đến 18 tuổi.','Cochrane'],
+      ['chuaro','Mức độ chắc chắn của bằng chứng thấp đến trung bình: phần lớn trẻ chỉ dùng mật ong trong một đêm.','Cochrane']],
+    need:'Không có liều chính thức trong nguồn tôi đọc. Theo các thử nghiệm, mật ong dùng trong thời gian ngắn cho ho cấp.',
+    how:[
+      'Dùng ngắn ngày cho ho cấp ở trẻ từ 12 tháng trở lên và người lớn; nếu ho kéo dài hoặc kèm sốt, khó thở thì đi khám.',
+      'Mật ong chủ yếu là đường: tính vào lượng đường trong ngày (lời khuyên chung).'],
+    forms:'Mật ong nguyên chất. Bài này chỉ dựa trên các thử nghiệm với mật ong thông thường, không đánh giá các loại mật ong đặc biệt.',
+    cautions:[
+      'KHÔNG cho trẻ dưới 12 tháng tuổi ăn mật ong: hệ miễn dịch chưa đủ chống lại vi khuẩn có thể có trong mật ong và có thể gây liệt (ngộ độc botulinum ở trẻ nhỏ) (tài liệu Cochrane cho người dùng).',
+      'Trong các thử nghiệm Cochrane, tác dụng phụ giữa nhóm mật ong và nhóm đối chứng không khác nhau.'],
+    interactions:['Các nguồn tôi đọc không nêu tương tác thuốc.'],
+    foods:'Mật ong tự nhiên; có thể thay thế đường trong một số món (vẫn là đường).',
+    sources:[['Cochrane – Mật ong cho ho cấp ở trẻ em','https://www.cochrane.org/evidence/CD007094/honey-acute-cough-children'],['AAFP – tóm tắt Cochrane về mật ong và ho ở trẻ em','https://www.aafp.org/pubs/afp/issues/2016/0701/p20.html']]},
+
+  ginger:{
+    name:'Gừng',aka:'Ginger, zázvor, Zingiber officinale',updated:'2026-11-03',
+    what:'Thân rễ cây gừng, dùng trong nấu ăn và làm thuốc truyền thống cho buồn nôn, khó tiêu, đau khớp. Có nhiều nghiên cứu trên người, nhưng một số chất lượng không cao (NCCIH).',
+    benefits:[
+      ['cothe','Buồn nôn và nôn khi mang thai: nghiên cứu cho thấy gừng có thể giúp. Phần lớn các nghiên cứu thử viên bổ sung, không phải gừng trong thức ăn.','NCCIH'],
+      ['cothe','Đau bụng kinh: viên gừng có thể giúp giảm mức độ.','NCCIH'],
+      ['chuaro','Thoái hoá khớp gối: viên gừng có thể giúp triệu chứng, nhưng nhiều nghiên cứu chất lượng kém. Gừng bôi ngoài da không thấy có ích.','NCCIH'],
+      ['khong','Say tàu xe: phần lớn nghiên cứu không thấy gừng giúp.','NCCIH'],
+      ['chuaro','Buồn nôn do hoá trị và sau phẫu thuật: chưa rõ gừng có giúp thêm cho điều trị chuẩn hay không.','NCCIH']],
+    need:'Không có liều chính thức trong nguồn tôi đọc; liều trên nhãn khác nhau.',
+    how:['Nếu dùng cho buồn nôn thai kỳ, hãy hỏi bác sĩ sản khoa trước.','Dạng viên cho kết quả thử nghiệm; gừng trong thức ăn thì chưa có đủ nghiên cứu tương đương.'],
+    forms:'Gừng tươi, bột, trà, viên chiết xuất, kẹo gừng.',
+    cautions:[
+      'Tác dụng phụ khi uống: khó chịu bụng, ợ nóng, tiêu chảy, kích ứng miệng họng (NCCIH).',
+      'Viên gừng trong thai kỳ có thể an toàn, nhưng cần hỏi bác sĩ; thông tin an toàn khi cho con bú còn ít (NCCIH).'],
+    interactions:['NCCIH khuyên hỏi nhân viên y tế trước khi dùng nếu đang dùng bất kỳ thuốc nào, vì một số thảo dược có thể tương tác theo cách có hại.'],
+    foods:'Gừng tươi, bột gừng, trà gừng.',
+    sources:[['NCCIH – Gừng','https://www.nccih.nih.gov/health/ginger']]},
+
+  greentea:{
+    name:'Trà xanh (chiết xuất)',aka:'Green tea, Camellia sinensis, EGCG, catechin',updated:'2026-11-03',
+    what:'Lá trà xanh hấp, rang và sấy, không lên men. Có caffeine và catechin. Uống trà xanh khác hẳn viên chiết xuất cô đặc: viên có rủi ro riêng, nhất là với gan.',
+    benefits:[
+      ['cothe','Cân nặng: catechin và caffeine có thể tác động khiêm tốn; hiệu quả thay đổi theo thành phần sản phẩm và mức vận động.','NCCIH'],
+      ['cothe','Cholesterol: viên chiết xuất làm giảm một ít cholesterol toàn phần và LDL, không ảnh hưởng HDL và triglycerid.','NCCIH'],
+      ['chuaro','Ung thư: kết quả các nghiên cứu không nhất quán.','NCCIH'],
+      ['chuaro','Bệnh mạch vành: uống trà xanh liên quan giảm nguy cơ ở người châu Á, không thấy ở người phương Tây.','NCCIH']],
+    need:'NCCIH kết luận chưa thể đưa ra kết luận chắc về hiệu quả của trà xanh cho phần lớn mục đích dùng. Không có liều khuyến nghị.',
+    how:['Ưu tiên uống trà thay vì viên chiết xuất cô đặc.','Cộng caffeine từ trà xanh vào tổng caffeine trong ngày.'],
+    forms:'Trà lá, bột matcha, viên chiết xuất (thường chứa EGCG), thuốc mỡ kê đơn trị mụn cóc sinh dục (FDA đã duyệt, không phải TPCN).',
+    cautions:[
+      'Trà xanh dạng đồ uống không ghi nhận vấn đề an toàn ở người lớn, nhưng có caffeine (NCCIH).',
+      'Viên chiết xuất có thể gây buồn nôn, táo bón, khó chịu bụng, tăng huyết áp (NCCIH).',
+      'Tổn thương gan hiếm gặp nhưng đã được báo cáo, chủ yếu với viên chiết xuất. Người có một biến thể gen liên quan miễn dịch (5–15% người Mỹ) dường như dễ bị hơn (NCCIH).',
+      'Khi mang thai, tổng caffeine không nên vượt mức vừa phải (NCCIH).'],
+    interactions:[
+      'Trà xanh liều cao làm giảm nồng độ nadolol (thuốc chẹn beta) trong máu (NCCIH).',
+      'Viên chiết xuất làm giảm nồng độ atorvastatin (thuốc hạ mỡ máu) trong máu (NCCIH).',
+      'Tương tác với raloxifene (thuốc loãng xương) và có thể với thuốc khác (NCCIH).'],
+    foods:'Trà xanh, matcha.',
+    sources:[['NCCIH – Trà xanh','https://www.nccih.nih.gov/health/green-tea']]},
+
+  ginseng:{
+    name:'Nhân sâm',aka:'Asian ginseng, Panax ginseng, sâm Hàn Quốc',updated:'2026-11-03',
+    what:'Rễ của cây Panax ginseng, dùng trong y học cổ truyền như chất "thích nghi" giúp cơ thể chống stress. Hoạt chất quan trọng là ginsenoside. Sâm đỏ và sâm trắng là cùng một loại nhưng chế biến khác nhau. Phần lớn thử nghiệm nhỏ (dưới 200 người) và ngắn (dưới 3 tháng).',
+    benefits:[
+      ['cothe','Mệt mỏi chung: một tổng quan năm 2023 gồm 19 nghiên cứu (2413 người) gợi ý nhân sâm đơn thuần có tác dụng nhỏ với mệt mỏi chung; các công thức thảo dược phối hợp có thể giúp mệt mỏi mạn, nhưng không phải nhân sâm đơn thuần. Không phải nghiên cứu nào cũng đồng ý.','NCCIH'],
+      ['chuaro','Nhận thức: nghiên cứu nhỏ gợi ý cải thiện suy nghĩ trừu tượng, chú ý, tính toán ở người trung niên, không phải người trẻ. Lợi ích với trí nhớ có vẻ phụ thuộc vào việc phối hợp với ginkgo.','NCCIH'],
+      ['chuaro','Cúm: nghiên cứu sơ bộ rất ít gợi ý chiết xuất nhân sâm có thể giảm nguy cơ mắc, không giảm mức độ hay thời gian bệnh.','NCCIH'],
+      ['chuaro','Tiền tiểu đường và tiểu đường: tổng quan năm 2022 gồm 20 nghiên cứu (1295 người) thấy cải thiện đường huyết đói, cholesterol toàn phần và một số chỉ dấu viêm, nhưng tác dụng lên kiểm soát đường huyết nhìn chung chưa kết luận được.','NCCIH']],
+    need:'Không có liều khuyến nghị trong nguồn tôi đọc. NCCIH nói cần nghiên cứu lớn hơn, dài hơn 3 tháng.',
+    how:['Dùng ngắn ngày, theo nhãn; theo dõi giấc ngủ vì mất ngủ là tác dụng phụ hay gặp nhất.','Nếu bị tiểu đường, hỏi bác sĩ trước khi dùng vì có thể làm giảm đường huyết.'],
+    forms:'Rễ sâm đỏ, sâm trắng, chiết xuất chuẩn hoá theo ginsenoside, các công thức phối hợp.',
+    cautions:[
+      'Dùng đường uống tới 6 tháng với lượng khuyến nghị có vẻ an toàn cho phần lớn người; còn câu hỏi về an toàn dài hạn. Một số chuyên gia khuyên tránh cho trẻ em, phụ nữ có thai và cho con bú (NCCIH).',
+      'Tác dụng phụ hay gặp nhất là mất ngủ. Hiếm gặp: phát ban nặng, tổn thương gan, dị ứng nặng (NCCIH).',
+      'Có thể làm nặng thêm bệnh tự miễn và ảnh hưởng đến đông máu (NCCIH).',
+      'Một số bằng chứng cho thấy nhân sâm có thể làm giảm đường huyết (NCCIH). Một chất trong nhân sâm đã gây dị tật ở động vật, nên có thể không an toàn khi mang thai (NCCIH).'],
+    interactions:['Có thể tương tác với một số thuốc; hãy hỏi nhân viên y tế nếu đang dùng thuốc thường xuyên, nhất là thuốc chống đông và thuốc hạ đường huyết (NCCIH).'],
+    foods:'Nhân sâm là rễ thảo dược, không phải thực phẩm thông thường.',
+    sources:[['NCCIH – Nhân sâm châu Á','https://www.nccih.nih.gov/health/asian-ginseng']]},
+
+  ginkgo:{
+    name:'Ginkgo',aka:'Ginkgo biloba, bạch quả',updated:'2026-11-03',
+    what:'Chiết xuất từ lá cây bạch quả, thường quảng cáo cho trí nhớ, tập trung, lo âu, ù tai. Đã có rất nhiều nghiên cứu, nhưng NCCIH kết luận ginkgo chưa được chứng minh hiệu quả cho bất kỳ bệnh lý nào đã nghiên cứu.',
+    benefits:[
+      ['khong','Phòng hoặc làm chậm sa sút trí tuệ: ba nghiên cứu lớn ở người lớn tuổi không giảm nguy cơ sa sút trí tuệ. Nghiên cứu GEM (hơn 3000 người từ 75 tuổi, theo dõi trung vị 6 năm, do NIH tài trợ) không khác nhóm giả dược về tỷ lệ mắc sa sút trí tuệ hay Alzheimer.','NCCIH'],
+      ['chuaro','Triệu chứng của sa sút trí tuệ: chiết xuất có thể có lợi ích vừa phải, nhất là ở liều tương đối cao, nhưng bằng chứng không nhất quán.','NCCIH'],
+      ['chuaro','Nhận thức ở người khoẻ: chưa rõ có tác dụng hay không; phần lớn nghiên cứu chất lượng thấp.','NCCIH'],
+      ['chuaro','Lo âu, hội chứng tiền kinh nguyệt, tâm thần phân liệt, chóng mặt: một ít bằng chứng gợi ý có lợi, nhưng chưa kết luận được.','NCCIH']],
+    need:'Không có liều khuyến nghị trong nguồn tôi đọc.',
+    how:['Chỉ dùng chiết xuất lá chuẩn hoá. Không dùng hạt ginkgo.','Nếu định dùng cho trí nhớ, hãy biết rằng bằng chứng lớn nhất cho thấy không có tác dụng phòng sa sút trí tuệ.'],
+    forms:'Chiết xuất lá ginkgo (dạng viên, giọt). Hạt ginkgo tươi và hạt rang thì độc.',
+    cautions:[
+      'Chiết xuất lá thường an toàn với phần lớn người lớn ở lượng vừa phải, đã dùng an toàn trong nghiên cứu kéo dài tới 6 năm. Tác dụng phụ hay gặp: chóng mặt, rối loạn tiêu hoá, đau đầu (NCCIH).',
+      'Hạt ginkgo tươi độc khi ăn; đã có tác dụng phụ nặng khi ăn hạt rang hoặc cây thô (NCCIH).',
+      'Có thể không an toàn khi mang thai: có thể gây chuyển dạ sớm hoặc chảy máu nhiều khi sinh (NCCIH).'],
+    interactions:['Ginkgo có thể tăng nguy cơ chảy máu ở người dùng thuốc chống đông như warfarin, và có thể tương tác với các thuốc khác (NCCIH).'],
+    foods:'Không dùng như thực phẩm.',
+    sources:[['NCCIH – Ginkgo','https://www.nccih.nih.gov/health/ginkgo']]},
+
+  stjohn:{
+    name:'Cỏ St. John (St. John’s wort)',aka:'Hypericum perforatum, ban',updated:'2026-11-03',
+    what:'Thảo dược hoa vàng, thường dùng cho triệu chứng trầm cảm. Điểm quan trọng nhất của nó không phải tác dụng mà là tương tác thuốc: có thể làm yếu tác dụng của rất nhiều loại thuốc, kể cả thuốc sống còn.',
+    benefits:[
+      ['cothe','Trầm cảm nhẹ đến vừa: có vẻ hiệu quả hơn giả dược và ngang các thuốc chống trầm cảm chuẩn. Chưa rõ với trầm cảm nặng hoặc dùng trên 12 tuần.','NCCIH'],
+      ['chuaro','Bốc hoả mãn kinh và rối loạn triệu chứng cơ thể: một ít nghiên cứu gợi ý có lợi.','NCCIH'],
+      ['chuaro','ADHD, hội chứng ruột kích thích, ám ảnh cưỡng chế, tiền kinh nguyệt, bỏ thuốc lá, vết thương: nghiên cứu ít, chưa rõ có ích.','NCCIH']],
+    need:'Không có liều khuyến nghị trong nguồn tôi đọc.',
+    how:['Không tự dùng nếu đang dùng bất kỳ thuốc kê đơn nào: xem phần tương tác.','Trầm cảm cần được bác sĩ đánh giá; đừng thay thuốc đang dùng bằng thảo dược.'],
+    forms:'Viên chiết xuất chuẩn hoá, trà, giọt, dạng bôi ngoài da.',
+    cautions:[
+      'Với người lớn không dùng thuốc nào, có vẻ an toàn tới 12 tuần, và một số nghiên cứu cho thấy dùng an toàn một năm hoặc hơn (NCCIH).',
+      'Liều lớn hoặc bôi ngoài da có thể gây phản ứng da nặng khi ra nắng. Tác dụng phụ khác: tiêu chảy, chóng mặt, khó ngủ, bồn chồn, tê châm chích da (NCCIH).',
+      'Có thể không an toàn khi mang thai (NCCIH).'],
+    interactions:[
+      'Làm yếu tác dụng của nhiều thuốc quan trọng, trong đó NCCIH liệt kê: một số thuốc chống trầm cảm (amitriptyline, bupropion), thuốc tránh thai, cyclosporine (chống thải ghép), thuốc chống động kinh (phenytoin, carbamazepine), thuốc tim (digoxin, ivabradine), một số thuốc HIV (indinavir, nevirapine), một số thuốc ung thư (irinotecan, imatinib, docetaxel), warfarin, và một số statin như simvastatin.',
+      'Dùng cùng thuốc chống trầm cảm hoặc thuốc khác tác động serotonin có thể tăng tác dụng phụ liên quan serotonin, có thể nghiêm trọng (NCCIH).'],
+    foods:'Không dùng như thực phẩm.',
+    sources:[['NCCIH – St. John’s wort','https://www.nccih.nih.gov/health/st-johns-wort']]},
+
+  ashwagandha:{
+    name:'Ashwagandha',aka:'Withania somnifera, sâm Ấn Độ',updated:'2026-11-03',
+    what:'Cây bụi dùng lâu đời trong y học Ayurveda, chứa các hợp chất withanolide. Bán để giảm stress, lo âu, cải thiện giấc ngủ, vô sinh nam và thể thao. Nhiều thử nghiệm có cỡ mẫu nhỏ và dùng các chế phẩm khác nhau (NCCIH).',
+    benefits:[
+      ['cothe','Mất ngủ và stress: một số chế phẩm có thể có hiệu quả.','NCCIH'],
+      ['chuaro','Lo âu: bằng chứng chưa rõ.','NCCIH'],
+      ['chuaro','Testosterone và chất lượng tinh trùng: có bằng chứng hạn chế rằng dùng 2–4 tháng có thể làm tăng.','NCCIH'],
+      ['chuaro','Hen, thể thao, nhận thức, tiểu đường, mãn kinh, vô sinh nữ, COVID-19: chưa đủ bằng chứng chất lượng cao.','NCCIH']],
+    need:'Không có liều khuyến nghị trong nguồn tôi đọc.',
+    how:['Nếu dùng, chỉ dùng ngắn hạn (tới 3 tháng) và theo dõi buồn ngủ, đau bụng.','Dừng và hỏi bác sĩ nếu mệt, vàng da, nước tiểu sẫm màu (dấu hiệu gan).'],
+    forms:'Viên chứa rễ, lá hoặc chiết xuất rễ và lá; liều và thành phần thay đổi nhiều.',
+    cautions:[
+      'Có thể an toàn trong ngắn hạn (tới 3 tháng); chưa đủ dữ liệu về an toàn dài hạn (NCCIH).',
+      'Tác dụng phụ: buồn ngủ, khó chịu dạ dày, tiêu chảy, nôn. Hiếm nhưng đã có nhiều ca tổn thương gan liên quan đến viên ashwagandha (NCCIH).',
+      'Tránh khi mang thai; không dùng khi cho con bú (NCCIH).',
+      'Không khuyến nghị cho người sắp phẫu thuật, bị bệnh tự miễn hoặc rối loạn tuyến giáp (NCCIH).'],
+    interactions:['Có bằng chứng ashwagandha có thể tương tác với thuốc tiểu đường, thuốc huyết áp, thuốc ức chế miễn dịch, thuốc an thần, thuốc chống co giật và một số thuốc khác (NCCIH).'],
+    foods:'Không dùng như thực phẩm.',
+    sources:[['NCCIH – Ashwagandha','https://www.nccih.nih.gov/health/ashwagandha']]},
+
+  echinacea:{
+    name:'Echinacea',aka:'Cúc nhím, Echinacea purpurea',updated:'2026-11-03',
+    what:'Thảo dược có nguồn gốc Bắc Mỹ, bán chủ yếu để phòng và trị cảm lạnh và nhiễm trùng hô hấp, dựa trên ý tưởng là kích thích miễn dịch. Hoạt tính của chiết xuất chịu ảnh hưởng bởi điều kiện đất trồng (NCCIH).',
+    benefits:[
+      ['cothe','Phòng cảm lạnh: dùng echinacea có thể làm giảm nhẹ khả năng bị cảm.','NCCIH'],
+      ['chuaro','Rút ngắn thời gian cảm: chưa rõ, cần thêm nghiên cứu.','NCCIH'],
+      ['chuaro','Trẻ em: một nghiên cứu gần đây gợi ý giảm nguy cơ nhiễm trùng hô hấp, nhưng nhìn chung chưa đủ bằng chứng; hãy hỏi bác sĩ trước khi cho trẻ dùng.','NCCIH'],
+      ['chuaro','Chàm và các công dụng khác: chưa rõ.','NCCIH']],
+    need:'Không có liều khuyến nghị trong nguồn tôi đọc.',
+    how:['Nếu dùng, dùng ngắn ngày.','Chọn sản phẩm ghi rõ loài (Echinacea purpurea) và phần cây dùng.'],
+    forms:'Chiết xuất E. purpurea, E. angustifolia, hoặc hỗn hợp; dạng viên, giọt, trà.',
+    cautions:[
+      'Chiết xuất E. purpurea, và một số hỗn hợp với E. angustifolia, có thể an toàn cho phần lớn người lớn trong thời gian ngắn (NCCIH).',
+      'Một số người dị ứng với echinacea, có thể nặng. Tác dụng phụ hay gặp là triệu chứng tiêu hoá: đau bụng, buồn nôn (NCCIH).',
+      'Với trẻ em, có thể an toàn trong thời gian ngắn, nhưng có trẻ bị phát ban trong một thử nghiệm, có thể do dị ứng (NCCIH).'],
+    interactions:['NCCIH khuyên hỏi nhân viên y tế nếu đang dùng thuốc, vì một số thảo dược tương tác theo cách có hại.'],
+    foods:'Không dùng như thực phẩm.',
+    sources:[['NCCIH – Echinacea','https://www.nccih.nih.gov/health/echinacea']]},
+
+  valerian:{
+    name:'Valerian (nữ lang)',aka:'Valeriana officinalis',updated:'2026-11-03',
+    what:'Rễ và thân rễ của cây valerian, dùng từ thời cổ Hy Lạp, La Mã cho mất ngủ, lo âu và stress. Hiểu biết còn hạn chế vì ít nghiên cứu.',
+    benefits:[
+      ['khong','Mất ngủ mạn ở người lớn: Học viện Y học Giấc ngủ Hoa Kỳ (hướng dẫn 2017) khuyến cáo KHÔNG dùng valerian.','NCCIH'],
+      ['chuaro','Giấc ngủ nói chung: bằng chứng không nhất quán.','NCCIH'],
+      ['chuaro','Triệu chứng mãn kinh: ba nghiên cứu nhỏ gợi ý có thể có ích, chưa đủ để kết luận.','NCCIH'],
+      ['chuaro','Lo âu, trầm cảm, tiền kinh nguyệt, đau bụng kinh, stress: chưa đủ bằng chứng.','NCCIH']],
+    need:'Đã dùng với vẻ an toàn ở liều 300–600 mg mỗi ngày trong tối đa 6 tuần (NCCIH). An toàn dài hạn chưa rõ.',
+    how:['Nếu dùng, dùng ngắn ngày (tối đa vài tuần).','Không uống cùng rượu hoặc thuốc an thần.','Nếu đã dùng lâu, đừng ngừng đột ngột: có thể có triệu chứng cai.'],
+    forms:'Chiết xuất rễ dạng viên, giọt, trà. Thường phối hợp với các thảo dược khác.',
+    cautions:[
+      'Tác dụng phụ: đau đầu, khó chịu dạ dày, mơ màng, kích động, bồn chồn, mơ rõ (NCCIH).',
+      'Ngừng đột ngột sau khi dùng lâu có thể gây lo âu, cáu gắt, rối loạn tim, mất ngủ, hiếm khi ảo giác (NCCIH).',
+      'Hiếm: tổn thương gan, thường khi dùng cùng các thảo dược khác (NCCIH).',
+      'An toàn khi mang thai và cho con bú chưa rõ (NCCIH).'],
+    interactions:['Không uống cùng rượu hoặc thuốc an thần, vì valerian có thể có tác dụng gây buồn ngủ (NCCIH).'],
+    foods:'Không dùng như thực phẩm.',
+    sources:[['NCCIH – Valerian','https://www.nccih.nih.gov/health/valerian']]},
+
+  mn:{
+    name:'Mangan',aka:'Manganese',updated:'2026-11-03',
+    what:'Khoáng chất vi lượng, đồng yếu tố của nhiều enzyme tham gia tạo xương, chuyển hoá đường, chất béo và carbohydrate. Không nhóm người nào được biết là dễ thiếu mangan, nên hầu như không cần bổ sung riêng (NIH).',
+    benefits:[
+      ['chuaro','Xương: mangan là đồng yếu tố của enzyme tạo xương; ở động vật, thiếu mangan làm giảm tạo xương và mật độ xương. Bổ sung mangan ở người cho loãng xương: chưa có kết luận.','NIH'],
+      ['chuaro','Tiểu đường: mangan tham gia chuyển hoá đường nên thiếu có thể ảnh hưởng dung nạp glucose; liên quan với nguy cơ tiểu đường chưa kết luận được.','NIH']],
+    need:'Không có nhóm nào được biết thiếu mangan (NIH). Mức tối đa: EFSA 2023 không đặt được mức tối đa chính thức, chỉ đặt "mức an toàn" 8 mg mỗi ngày tính cả thức ăn; NIH 11 mg mỗi ngày.',
+    how:[
+      'Đọc dòng mangan nguyên tố trên nhãn, không đọc khối lượng muối (NIH).',
+      'Nhiều viên đa vitamin khoáng chứa 1,0–4,5 mg mangan; viên riêng từ 5 mg trở lên. Cộng tổng từ các viên bạn dùng (NIH).',
+      'Không có dữ liệu so sánh sinh khả dụng giữa các dạng mangan trong viên (NIH).'],
+    forms:'Mangan chelate amino acid (bisglycinate, glycinate, aspartate), gluconat, picolinat, sulfat, citrat, clorua (NIH).',
+    cautions:[
+      'Không có bằng chứng ngộ độc mangan từ lượng ăn trong thức ăn. Ngộ độc xảy ra ở người làm nghề hàn, khai thác mỏ hít bụi mangan, và người uống nước chứa mangan rất cao (NIH).',
+      'Ngộ độc ảnh hưởng chủ yếu thần kinh trung ương: run, co thắt cơ, ù tai, giảm thính lực, đi loạng choạng; cùng các triệu chứng khác như mất ngủ, trầm cảm, dễ cáu gắt, giảm trí nhớ ngắn hạn (NIH).'],
+    interactions:['Mangan không được biết là có tương tác thuốc quan trọng về lâm sàng (NIH).'],
+    foods:'Ngũ cốc nguyên hạt, nghêu, hàu, trai, hạt, đậu nành và các loại đậu, gạo, rau lá xanh, cà phê, trà, và nhiều gia vị như tiêu đen (NIH).',
+    sources:[['NIH ODS – Manganese','https://ods.od.nih.gov/factsheets/Manganese-HealthProfessional/'],['EFSA – mangan 2023','https://efsa.onlinelibrary.wiley.com/doi/full/10.2903/j.efsa.2023.8413']]}
 };
+
+/* Nhóm danh mục: thứ tự hiển thị và các chất trong từng nhóm (khoá của KB) */
+window.KB_CATS=[
+  {n:'Vitamin',keys:['vitA','b6','b12','folic','niacin','bcomplex','vitC','vitD','vitE','vitK']},
+  {n:'Khoáng chất',keys:['ca','fe','zn','mg','cu','mn','se','io']},
+  {n:'Đạm, omega-3 và năng lượng',keys:['protein','om3','creatine','coq10','nmn','pqq']},
+  {n:'Khớp, da và mắt',keys:['collagen','gluco','boswellia','curc','astaxanthin','lutein']},
+  {n:'Tiêu hoá và men vi sinh',keys:['probiotic','probstrain','kefir']},
+  {n:'Thảo dược và thực phẩm tự nhiên',keys:['blackgarlic','honey','algae','ginger','greentea','ginseng','ginkgo','stjohn','ashwagandha','echinacea','valerian']}
+];

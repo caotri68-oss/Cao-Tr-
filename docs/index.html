@@ -634,8 +634,22 @@ function substList(){
   for(const k of Object.values(window.KB||{}))if(!m.has(norm(k.name)))m.set(norm(k.name),{name:k.name,key:null})
   return [...m.values()].map(s=>({...s,count:substProducts(s).length})).sort((a,b)=>b.count-a.count||a.name.localeCompare(b.name,'vi'));
 }
-const substGrid=()=>`<div class="card"><b>Hoạt chất</b><div class="mute">Bấm một chất để xem mức tối đa, sản phẩm đang có và ghi chú.${Object.keys(window.KB||{}).length?' Có bài kiến thức đầy đủ: '+esc(Object.values(window.KB).map(k=>k.name).join(', '))+'.':''}</div>
-  <div class="chips" style="flex-wrap:wrap;overflow:visible;margin-top:8px">${substList().map(s=>`<button class="${s.count?'on':''}" data-n="${esc(s.name)}" onclick="go('know',this.dataset.n)">${esc(s.name)}${s.count?' · '+s.count:''}</button>`).join('')}</div></div>`;
+/* Danh mục hoạt chất: nhóm theo loại (KB_CATS trong kb.js), có ô tìm kiếm, mục "Có trong tủ" lên đầu */
+let substQ='';
+const kbKeyOf=s=>{const K=window.KB||{};return (s.key&&K[s.key])?s.key:Object.keys(K).find(k=>norm(K[k].name)===norm(s.name))};
+const catNameOf=s=>{const k=kbKeyOf(s);const c=(window.KB_CATS||[]).find(c=>k&&c.keys.includes(k));return c?c.n:'Khác (chưa có bài)'};
+const chipOf=s=>`<button class="${s.count?'on':''}" data-n="${esc(s.name)}" onclick="go('know',this.dataset.n)">${esc(s.name)}${s.count?' · '+s.count:''}</button>`;
+function substGrid(){
+  const q=norm(substQ),all=substList();
+  const match=s=>!q||norm(s.name+' '+((kbOf(s)||{}).aka||'')).includes(q);
+  const list=all.filter(match),mine=list.filter(s=>s.count>0);
+  const order=[...(window.KB_CATS||[]).map(c=>c.n),'Khác (chưa có bài)'];
+  const groups=order.map(n=>[n,list.filter(s=>catNameOf(s)===n)]).filter(([,l])=>l.length);
+  return `<div class="card"><b>Hoạt chất</b><div class="mute">${Object.keys(window.KB||{}).length} chất có bài đầy đủ, xếp theo nhóm. Bấm một nhóm để mở, hoặc gõ tên để tìm.</div>
+   <input id="substQ" placeholder="Tìm hoạt chất…" value="${esc(substQ)}" oninput="substQ=this.value;vKnow();const i=document.getElementById('substQ');i.focus();i.setSelectionRange(99,99)" style="margin:8px 0">
+   ${mine.length?`<div style="margin-bottom:8px"><b style="font-size:14px">Có trong tủ của bạn</b><div class="chips" style="flex-wrap:wrap;overflow:visible;margin-top:6px">${mine.map(chipOf).join('')}</div></div>`:''}
+   ${groups.map(([n,l])=>`<details ${q?'open':''} style="margin-top:6px"><summary style="cursor:pointer"><b style="font-size:14px">${esc(n)}</b> <span class="mute">(${l.length})</span></summary><div class="chips" style="flex-wrap:wrap;overflow:visible;margin-top:6px">${l.map(chipOf).join('')}</div></details>`).join('')||'<div class="mute" style="margin-top:6px">Không tìm thấy.</div>'}</div>`;
+}
 /* Bài kiến thức chung của một chất (dữ liệu trong kb.js) */
 const KB_LV={chac:['Chắc chắn','#0f766e'],cothe:['Có thể','#1d4ed8'],chuaro:['Chưa rõ','#6b7280'],khong:['Không có tác dụng','#9a3412']};
 const kbOf=s=>{const K=window.KB||{};return (s.key&&K[s.key])||Object.values(K).find(x=>norm(x.name)===norm(s.name))||null};
