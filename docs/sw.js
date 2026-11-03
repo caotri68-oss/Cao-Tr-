@@ -1,5 +1,5 @@
 // Đổi số phiên bản mỗi khi sửa file của app để máy nhận bản mới.
-const VER='tpcn-v2-25';
+const VER='tpcn-v2-26';
 const SHELL=['./','index.html','kb.js','manifest.webmanifest','icon-192.png','icon-512.png'];
 
 self.addEventListener('install',e=>{
