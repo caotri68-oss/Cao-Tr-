@@ -455,9 +455,9 @@ function vImport(){
    <label>Tên sản phẩm (không bắt buộc)<input id="t" value="${esc(stage.title)}"></label>
    <label>Ảnh nhãn / bao bì (chụp hoặc chọn, được nhiều ảnh)<input id="im" type="file" accept="image/*" multiple></label>
    <div class="imgs">${stage.images.map(s=>`<img src="${s}" alt="Ảnh nhãn">`).join('')}</div>
-   <label>Link trang sản phẩm<div class="row" style="margin:0"><input id="u" placeholder="https://…" value="${esc(stage.source)}" style="flex:1"><button class="btn" id="bu">Lấy văn bản</button></div></label>
+   <label>Link trang sản phẩm<div class="row" style="margin:0"><input id="u" placeholder="https://…" value="${esc(stage.source)}" style="flex:1"><button class="btn" id="bu">Lấy và phân tích</button></div></label>
    <label>Văn bản (dán Supplement Facts, Other ingredients, Warnings… vào đây)<textarea id="x" style="min-height:160px">${esc(stage.text)}</textarea></label>
-   <div class="mute" id="st">Chữ trong ảnh được đọc ngay trên máy (tiếng Anh, Séc, Việt). Lần đầu cần internet để tải dữ liệu ngôn ngữ.</div>
+   <div class="mute" id="st">Chọn ảnh hoặc dán link là app tự đọc, tách hoạt chất rồi mở form điền sẵn, bạn chỉ soát và bấm Lưu. Chữ trong ảnh được đọc ngay trên máy (tiếng Anh, Séc, Việt), lần đầu cần internet.</div>
    <button class="btn pri" id="go">Phân tích và tạo sản phẩm</button>
    <button class="btn" id="hand">Hoặc nhập tay</button></div>
   <div class="card" style="display:grid;gap:8px"><b>Tìm trong kho nhãn NIH (sản phẩm Mỹ)</b>
@@ -474,11 +474,14 @@ function vImport(){
     catch(e){box.textContent='Không kết nối được kho NIH: '+e.message+'. Cần internet.'}};
   $('#dgo').onclick=dsearch;$('#dq').onkeydown=e=>{if(e.key==='Enter')dsearch()};
   $('#go').onclick=async()=>{sync();$('#go').disabled=true;try{await createFromStage()}catch(e){st('Lỗi: '+e.message);$('#go').disabled=false}};
-  $('#bu').onclick=async()=>{sync();try{st('Đang lấy…');const r=await fetchText(stage.source.trim());stage.title=stage.title||r.title;stage.text=(stage.text?stage.text+'\n\n':'')+r.text;vImport();$('#st').textContent='Xong. Kiểm tra lại văn bản rồi bấm Phân tích.'}catch(e){st('Lỗi: '+e.message)}};
+  $('#bu').onclick=async()=>{sync();try{st('Đang lấy…');const r=await fetchText(stage.source.trim());stage.title=stage.title||r.title;stage.text=(stage.text?stage.text+'\n\n':'')+r.text;st('Đang phân tích…');await createFromStage()}catch(e){st('Lỗi: '+e.message)}};
+  $('#u').onkeydown=e=>{if(e.key==='Enter')$('#bu').click()};
   $('#im').onchange=async e=>{const fs=[...e.target.files];if(!fs.length)return;sync();
     try{st('Đang xử lý ảnh…');const urls=[];for(const f of fs)urls.push(await shrink(f));stage.images.push(...urls);
-      try{const t=await ocr(urls,st);stage.text=(stage.text?stage.text+'\n\n':'')+t;vImport();$('#st').textContent='Đã đọc xong. Soát lại chữ rồi bấm Phân tích.'}
-      catch(err){vImport();$('#st').textContent='Không đọc được chữ: '+err.message+'. Ảnh vẫn được giữ, bạn có thể dán chữ vào ô văn bản.'}
+      let ok=true;
+      try{const t=await ocr(urls,st);stage.text=(stage.text?stage.text+'\n\n':'')+t}
+      catch(err){ok=false;vImport();$('#st').textContent='Không đọc được chữ: '+err.message+'. Ảnh vẫn được giữ, bạn có thể dán chữ vào ô văn bản rồi bấm Phân tích.'}
+      if(ok){st('Đang phân tích…');await createFromStage()}
     }catch(err){st('Lỗi: '+err.message)}};
 }
 
