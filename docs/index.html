@@ -192,8 +192,77 @@ const DRUG=[
   {id:'thyrozol',re:/thyrozol|thiamazol|methimazol|tapazol|metizol/i,n:['io'],title:'I-ốt và thuốc kháng giáp Thyrozol',text:'I-ốt làm giảm hiệu quả thuốc kháng giáp. Người có nhân giáp tự chủ có thể bị bùng phát cường giáp do i-ốt (hiện tượng Jod-Basedow).',src:'Iodine',vault:'Thyrozol (Thiamazole)'},
   {id:'concor-ca',lv:2,re:/concor|bisoprolol/i,n:['ca'],title:'Canxi và Concor (bisoprolol)',text:'Canxi có thể làm giảm nhẹ hấp thu bisoprolol; nên uống cách nhau ít nhất 2 giờ (thận trọng, không phải chống chỉ định).',vault:'Concor (Bisoprolol)'},
   {id:'concor-mg',lv:1,re:/concor|bisoprolol/i,n:['mg'],title:'Magie và Concor (bisoprolol)',text:'Magie liều cao có thể cộng thêm tác dụng hạ huyết áp; theo dõi choáng khi đứng dậy.',vault:'Concor (Bisoprolol)'},
-  {id:'bleed',lv:2,re:/warfarin|lawarin|coumadin|apixaban|eliquis|rivaroxaban|xarelto|dabigatran|pradaxa|clopidogrel|plavix|aspirin|anopyrin|godasal|acylpyrin/i,n:['curc','om3'],title:'Nghệ, omega-3 và thuốc chống đông / chống tiểu cầu',text:'Curcumin và omega-3 liều cao có thể cộng thêm nguy cơ chảy máu. Trước phẫu thuật hoặc nhổ răng cần hỏi về việc ngừng.',vault:'Curcumin'}
+  {id:'bleed',lv:2,re:/warfarin|lawarin|coumadin|apixaban|eliquis|rivaroxaban|xarelto|dabigatran|pradaxa|clopidogrel|plavix|aspirin|anopyrin|godasal|acylpyrin/i,n:['curc','om3'],title:'Nghệ, omega-3 và thuốc chống đông / chống tiểu cầu',text:'Curcumin và omega-3 liều cao có thể cộng thêm nguy cơ chảy máu. Trước phẫu thuật hoặc nhổ răng cần hỏi về việc ngừng.',vault:'Curcumin'},
+  // Quy tắc chất dinh dưỡng và thuốc, lấy từ các bài NIH trong phần Kiến thức
+  {id:'mtx-folic',lv:3,re:/methotrexat|metex|trexall/i,n:['folic'],title:'Axit folic và methotrexate',text:'Methotrexate là chất đối kháng folate. Nếu dùng trị ung thư, folate có thể làm giảm tác dụng thuốc; với liều thấp trị viêm khớp dạng thấp hoặc vảy nến, bác sĩ đôi khi cho folate để giảm tác dụng phụ. Phải hỏi bác sĩ kê đơn.',src:'Folate',vault:'Axit folic'},
+  {id:'epi-folic',lv:2,re:/phenytoin|epanutin|carbamazepin|tegretol|valpro|depakin|depakine/i,n:['folic'],title:'Axit folic và thuốc chống động kinh',text:'Folate có tương tác với phenytoin, carbamazepine và valproate.',src:'Folate',vault:'Axit folic'},
+  {id:'levodopa-fe',lv:2,re:/levodopa|madopar|sinemet|nakom|stalevo/i,n:['fe'],title:'Sắt và levodopa',text:'Sắt có thể làm giảm hấp thu levodopa; cần uống cách xa theo hướng dẫn của bác sĩ.',src:'Iron',vault:'Sắt'},
+  {id:'ppi-fe',lv:1,re:/omeprazol|pantoprazol|esomeprazol|lansoprazol|rabeprazol|nolpaza|controloc|helicid|losec/i,n:['fe'],title:'Sắt và thuốc giảm acid dạ dày',text:'Thuốc ức chế bơm proton có thể làm giảm hấp thu sắt.',src:'Iron',vault:'Sắt'},
+  {id:'vite-bleed',lv:2,re:/warfarin|lawarin|coumadin|apixaban|eliquis|rivaroxaban|xarelto|dabigatran|pradaxa|clopidogrel|plavix|aspirin|anopyrin|godasal|acylpyrin/i,n:['vitE'],title:'Vitamin E và thuốc chống đông / chống tiểu cầu',text:'Vitamin E liều cao dạng viên có tương tác với thuốc chống đông và chống tiểu cầu; liều rất cao liên quan tăng nguy cơ đột quỵ xuất huyết trong các thử nghiệm.',src:'VitaminE',vault:'Vitamin E'},
+  {id:'retinoid-a',lv:2,re:/acitretin|soriatane|isotretinoin|roaccutane|bexaroten|targretin/i,n:['vitA'],title:'Vitamin A và thuốc retinoid',text:'Không tự uống thêm vitamin A khi đang dùng thuốc retinoid đường uống; hỏi bác sĩ kê đơn.',src:'VitaminA',vault:'Vitamin A'},
+  {id:'inh-niacin',lv:2,re:/isoniazid|pyrazinamid|rifater/i,n:['niacin'],title:'Niacin và thuốc lao',text:'Isoniazid và pyrazinamide cản trở tạo niacin, có thể gây thiếu niacin (pellagra); bác sĩ có thể cần tăng niacin. Hỏi bác sĩ.',src:'Niacin',vault:'Niacin (B3)'},
+  {id:'ace-iodine',lv:1,re:/pril\b|lisinopril|enalapril|perindopril|ramipril|benazepril|fosinopril|prestarium|tritace|zestril/i,n:['io'],title:'I-ốt và thuốc ức chế men chuyển',text:'Kali iodua dùng cùng thuốc ức chế men chuyển có thể làm tăng kali máu.',src:'Iodine',vault:'I-ốt'}
 ];
+/* Thảo dược và thuốc: lấy từ các trang NCCIH (NIH). lv 3 = nặng, 2 = vừa, 1 = nhẹ. wide=true: xét cả bệnh nền. */
+const R_WARF=/warfarin|lawarin|coumadin|acenocoumarol|sintrom|apixaban|eliquis|rivaroxaban|xarelto|dabigatran|pradaxa|edoxaban/i;
+const R_DIAB=/metformin|glucophage|siofor|insulin|gliclazid|diaprel|glimepirid|amaryl|glibenclamid|sitagliptin|januvia|empagliflozin|jardiance|dapagliflozin|forxiga|pioglitazon/i;
+const R_BP=/amlodipin|lisinopril|enalapril|perindopril|ramipril|losartan|valsartan|telmisartan|bisoprolol|concor|metoprolol|betaloc|nebivolol|hydrochlorothiazid|indapamid|furosemid/i;
+const R_SEDA=/diazepam|lorazepam|alprazolam|clonazepam|zolpidem|phenobarbital|midazolam|zopiclon|hydroxyzin/i;
+const R_IMMS=/cyclosporin|ciclosporin|sandimmun|neoral|tacrolimus|mycophenol|azathioprin|methotrexat|prednison|prednisolon|dexamethason/i;
+const R_EPI=/phenytoin|epanutin|carbamazepin|tegretol|valpro|depakin|levetiracetam|lamotrigin|topiramat/i;
+const R_THY=/thyrozol|thiamazol|methimazol|euthyrox|letrox|levothyrox|thyrox|propylthiouracil|cường giáp|suy giáp|tuyến giáp|basedow|hashimoto|thyroid/i;
+const R_AUTO=/tự miễn|autoimmun|lupus|viêm khớp dạng thấp|rheumatoid|multiple sclerosis|hashimoto|basedow/i;
+const R_PROT=/saquinavir|ritonavir|lopinavir|indinavir|darunavir|atazanavir|nelfinavir/i;
+const HERB=[
+ {id:'sjw',kb:'stjohn',n:'Cỏ St. John',re:/st\.?\s*john|hypericum/i,url:'https://www.nccih.nih.gov/health/st-johns-wort',rules:[
+  [R_WARF,3,'Cỏ St. John làm yếu tác dụng của warfarin và thuốc chống đông.'],
+  [/ethinyl|estradiol|antikoncep|tránh thai|contracept|cilest|yasmin|jeanine|diane|belara|regulon|zoely|qlaira/i,3,'Cỏ St. John làm yếu tác dụng của thuốc tránh thai.'],
+  [/cyclosporin|ciclosporin|sandimmun|neoral/i,3,'Cỏ St. John làm yếu cyclosporine (thuốc chống thải ghép).'],
+  [R_EPI,3,'Cỏ St. John làm yếu thuốc chống động kinh như phenytoin, carbamazepine.'],
+  [/digoxin|lanoxin|ivabradin|procoralan/i,3,'Cỏ St. John làm yếu digoxin và ivabradine.'],
+  [/indinavir|nevirapin/i,3,'Cỏ St. John làm yếu một số thuốc HIV (indinavir, nevirapine).'],
+  [/irinotecan|imatinib|docetaxel/i,3,'Cỏ St. John làm yếu một số thuốc ung thư (irinotecan, imatinib, docetaxel).'],
+  [/simvastatin|zocor|simvacor/i,3,'Cỏ St. John làm yếu simvastatin.'],
+  [/amitriptylin|bupropion|sertralin|fluoxetin|paroxetin|citalopram|escitalopram|venlafaxin|duloxetin|fluvoxamin|trazodon|tramadol|sumatriptan/i,3,'Cỏ St. John làm yếu một số thuốc chống trầm cảm, và dùng cùng thuốc tác động serotonin có thể gây tác dụng phụ serotonin nghiêm trọng.']]},
+ {id:'ginkgo',kb:'ginkgo',n:'Ginkgo',re:/ginkgo|bạch quả/i,url:'https://www.nccih.nih.gov/health/ginkgo',rules:[
+  [R_WARF,2,'Ginkgo có thể tăng nguy cơ chảy máu ở người dùng thuốc chống đông như warfarin.']]},
+ {id:'greentea',kb:'greentea',n:'Trà xanh (chiết xuất)',re:/green tea|trà xanh|camellia sinensis|egcg/i,url:'https://www.nccih.nih.gov/health/green-tea',rules:[
+  [/nadolol|corgard/i,2,'Trà xanh liều cao làm giảm nồng độ nadolol trong máu.'],
+  [/atorvastatin|lipitor|torvacard|sortis|atoris/i,2,'Chiết xuất trà xanh làm giảm nồng độ atorvastatin trong máu.'],
+  [/raloxifen|evista/i,2,'Trà xanh có tương tác với raloxifene.']]},
+ {id:'ginseng',kb:'ginseng',n:'Nhân sâm',re:/ginseng|panax|nhân sâm/i,url:'https://www.nccih.nih.gov/health/asian-ginseng',rules:[
+  [R_WARF,2,'Nhân sâm có thể ảnh hưởng đến đông máu, cần thận trọng với thuốc chống đông.'],
+  [R_DIAB,2,'Nhân sâm có thể làm giảm đường huyết thêm, theo dõi nếu đang dùng thuốc tiểu đường.']]},
+ {id:'ashwa',kb:'ashwagandha',n:'Ashwagandha',re:/ashwagandha|withania/i,url:'https://www.nccih.nih.gov/health/ashwagandha',rules:[
+  [R_DIAB,2,'Ashwagandha có thể tương tác với thuốc tiểu đường.'],
+  [R_BP,2,'Ashwagandha có thể tương tác với thuốc huyết áp.'],
+  [R_IMMS,2,'Ashwagandha có thể tương tác với thuốc ức chế miễn dịch.'],
+  [R_SEDA,2,'Ashwagandha có thể tương tác với thuốc an thần.'],
+  [R_EPI,2,'Ashwagandha có thể tương tác với thuốc chống co giật.'],
+  [R_THY,2,'NCCIH không khuyến nghị ashwagandha cho người có rối loạn tuyến giáp.',true],
+  [R_AUTO,2,'NCCIH không khuyến nghị ashwagandha cho người có bệnh tự miễn.',true]]},
+ {id:'valerian',kb:'valerian',n:'Valerian',re:/valerian|valeriana|nữ lang/i,url:'https://www.nccih.nih.gov/health/valerian',rules:[
+  [R_SEDA,2,'Valerian có thể có tác dụng gây buồn ngủ, không dùng cùng thuốc an thần.']]},
+ {id:'garlic',kb:'blackgarlic',n:'Tỏi đen / chiết xuất tỏi',re:/garlic|tỏi|česnek|allicin|s-allyl/i,url:'https://nccih.nih.gov/health/garlic',rules:[
+  [R_WARF,2,'Tỏi dạng viên có thể tăng nguy cơ chảy máu ở người dùng thuốc chống đông.'],
+  [R_PROT,2,'Tỏi dạng viên có thể làm giảm nồng độ thuốc ức chế protease (HIV).'],
+  [R_DIAB,1,'Tỏi có thể tăng tác dụng thuốc hạ đường huyết, theo dõi đường huyết.']]},
+ {id:'coq10',kb:'coq10',n:'CoQ10',re:/coq10|coenzyme q10|ubiquinol|ubiquinone/i,url:'https://www.nccih.nih.gov/health/coenzyme-q10',rules:[
+  [R_WARF,1,'CoQ10 có thể tương tác với warfarin; bằng chứng không nhất quán. Nên kiểm tra INR thường hơn khi bắt đầu hoặc ngừng CoQ10.'],
+  [/insulin/i,1,'CoQ10 có thể tương tác với insulin.']]},
+ {id:'gluco',kb:'gluco',n:'Glucosamin và chondroitin',re:/glucosamin|chondroitin/i,url:'https://www.nccih.nih.gov/health/chondroitin',rules:[
+  [R_WARF,2,'Glucosamin và chondroitin liên quan tăng nguy cơ chảy máu ở người dùng warfarin.'],
+  [R_DIAB,1,'Glucosamin có thể làm tăng đường huyết ở một số người.']]}
+];
+const kbHasName=n=>Object.values(window.KB||{}).some(k=>norm(k.name)===norm(n));
+function herbWarnings(m,plans,add){
+  const meds=m.meds||'',all=meds+' '+(m.conditions||'');
+  for(const h of HERB){
+    const hit=plans.filter(p=>{const pr=byId(S.products,p.productId);return h.re.test(pr.name||'')||(pr.ingredients||[]).some(g=>h.re.test((g.name||'')+' '+(g.form||'')))});
+    if(!hit.length)continue;
+    const prods=[...new Set(hit.map(p=>pname(p.productId)))].join(', '),kn=(window.KB&&window.KB[h.kb])?window.KB[h.kb].name:null;
+    h.rules.forEach(([re,lv,text,wide],i)=>{if(!re.test(wide?all:meds))return;
+      add(lv,'herb-'+h.id+'-'+i,h.n+' và thuốc hoặc bệnh nền',`${text} Liên quan: ${prods}. Hỏi bác sĩ hoặc dược sĩ.`,h.url,null,kn)})}}
 const LV=['','Nhẹ','Vừa','Nặng'];
 const fmt=n=>String(Math.round(n*10)/10);
 const ageOf=m=>m.born?new Date().getFullYear()-Number(m.born):null;
@@ -232,7 +301,8 @@ function warningsFor(m,day=today()){
     let nt=ta+r.min;if(nt>1439)nt=ta-r.min;
     add(2,`sp-${a.id}-${b.id}`,`Nên uống cách nhau: ${NUTR[r.a].n} và ${NUTR[r.b].n}`,`${pname(a.productId)} (${a.time}) và ${pname(b.productId)} (${b.time}) chỉ cách ${Math.abs(ta-tb)} phút. ${r.why} Nên cách ít nhất ${r.min/60} giờ.`,odsUrl(r.src),nt>=0?{plan:b.id,time:hhmm(nt)}:null)}
   for(const r of DRUG){if(!r.re.test(m.meds||''))continue;const hit=plans.filter(p=>r.n.some(k=>hasN(p,k)));
-    if(hit.length)add(r.lv||3,'drug-'+r.id,r.title,`${r.text} Liên quan: ${[...new Set(hit.map(p=>pname(p.productId)))].join(', ')}. Hỏi bác sĩ hoặc dược sĩ.`,r.src?odsUrl(r.src):null,null,r.vault&&S.notes.some(x=>norm(x.substance)===norm(r.vault))?r.vault:null)}
+    if(hit.length)add(r.lv||3,'drug-'+r.id,r.title,`${r.text} Liên quan: ${[...new Set(hit.map(p=>pname(p.productId)))].join(', ')}. Hỏi bác sĩ hoặc dược sĩ.`,r.src?odsUrl(r.src):null,null,r.vault&&(kbHasName(r.vault)||S.notes.some(x=>norm(x.substance)===norm(r.vault)))?r.vault:null)}
+  herbWarnings(m,plans,add);
   if(plans.length){
     if(!adult)add(2,'child','Chưa có mức cho trẻ em','Mức tối đa trong app là của người lớn. Trẻ em có mức thấp hơn nhiều, hãy hỏi bác sĩ nhi.');
     if(age==null)add(1,'noage','Chưa có năm sinh','App đang dùng mức tối đa của người lớn. Nhập năm sinh để tính đúng hơn.');
@@ -240,8 +310,8 @@ function warningsFor(m,day=today()){
     else if(age!=null&&age>=65)add(1,'65','Trên 65 tuổi','Nên ghi thuốc kê đơn vào hồ sơ và hỏi bác sĩ trước khi thêm TPCN mới.')}
   return W.sort((a,b)=>b.lv-a.lv)}
 function warnCard(w,showName){return`<div class="w w${w.lv}"><b>${LV[w.lv]} · ${esc(w.title)}</b>${showName?` <span class="mute">(${esc(mname(w.mid))})</span>`:''}<div>${esc(w.text)}</div>
-  <div class="row" style="margin-top:6px;align-items:center">${w.src?`<a href="${esc(w.src)}" target="_blank" rel="noopener noreferrer" style="font-size:13px">Nguồn: ${/efsa|ncbi/.test(w.src)?'EFSA':'NIH'}</a>`:''}
-  ${w.vault?`<button class="btn sm" data-n="${esc(w.vault)}" onclick="go('know',this.dataset.n)">Ghi chú của bạn</button>`:''}
+  <div class="row" style="margin-top:6px;align-items:center">${w.src?`<a href="${esc(w.src)}" target="_blank" rel="noopener noreferrer" style="font-size:13px">Nguồn: ${/efsa|ncbi/.test(w.src)?'EFSA':/nccih/.test(w.src)?'NCCIH':'NIH'}</a>`:''}
+  ${w.vault?`<button class="btn sm" data-n="${esc(w.vault)}" onclick="go('know',this.dataset.n)">${kbHasName(w.vault)?'Xem bài kiến thức':'Ghi chú của bạn'}</button>`:''}
   ${w.fix?`<button class="btn sm" onclick="applyFix('${w.fix.plan}','${w.fix.time}')">Dời giờ sang ${esc(w.fix.time)}</button>`:''}
   ${w.lv<3?`<button class="btn sm" onclick="dismissW('${w.mid}','${esc(w.key)}')">Bỏ qua</button>`:''}</div></div>`}
 function applyFix(id,time){const p=byId(S.plans,id);if(p){p.time=time;save();render()}}
