@@ -405,7 +405,7 @@ window.KB={
       ['chac','Tăng công suất ở các gắng sức ngắn, cường độ cao và tăng khối lượng cơ khi tập kháng lực. Sau giai đoạn nạp, hiệu suất tập thường tăng khoảng 10–20%.','ISSN'],
       ['cothe','Người lớn tuổi: các phân tích gộp ghi có thêm cơ và sức mạnh khi kết hợp tập luyện.','ISSN'],
       ['chuaro','Trí nhớ, giấc ngủ, sức bền dài: chưa chắc chắn.','Kho Obsidian']],
-    need:'Không có mức khuyến nghị cho người không tập. Theo ISSN: duy trì 3–5 g mỗi ngày; người to con có thể cần 5–10 g. Nạp nhanh (5 g, 4 lần mỗi ngày, trong 5–7 ngày) là tuỳ chọn, không bắt buộc. Uống 3 g mỗi ngày thì chậm hơn: khoảng 28 ngày.',
+    need:'Không có mức khuyến nghị cho người không tập. Theo ISSN: duy trì 3–5 g mỗi ngày; người to con có thể cần 5–10 g. Nạp nhanh (5 g, 4 lần mỗi ngày, trong 5–7 ngày) là tuỳ chọn, không bắt buộc. Uống 3 g mỗi ngày thì chậm hơn: khoảng 28 ngày. MedlinePlus ghi trong các nghiên cứu ở người lớn: nạp tối đa 20 g mỗi ngày trong tối đa 7 ngày, sau đó duy trì 2,25–10 g mỗi ngày trong tối đa 16 tuần.',
     how:[
       'Chọn creatine monohydrate. ISSN kết luận chưa có bằng chứng các dạng khác (HCl, ethyl ester, buffered) tốt hơn.',
       'ISSN không đưa hướng dẫn về giờ uống. Uống cùng carbohydrate, hoặc carbohydrate với protein, có vẻ tăng lượng creatine vào cơ nhưng không cần thiết.',
@@ -416,12 +416,13 @@ window.KB={
       'Thận: ISSN không thấy bằng chứng thuyết phục là creatine gây hại cho chức năng thận ở người khoẻ hay người có bệnh. Tuy vậy người đã có bệnh thận được khuyên hỏi bác sĩ trước khi dùng.',
       'Creatine có thể làm creatinine huyết thanh tăng nhẹ mà không phản ánh tổn thương thận, nên hãy báo cho bác sĩ khi xét nghiệm (kho Obsidian). ISSN ghi 5–10 g/ngày trong 21 tháng ở cầu thủ bóng bầu dục không làm đổi đáng kể creatinine.',
       'Không gây mất nước hay chuột rút; một số nghiên cứu còn thấy giảm chuột rút (ISSN).',
-      'Trẻ em và thiếu niên: ISSN cho là chấp nhận được trong điều kiện có giám sát; mang thai: chưa có kết luận trên người.',
+      'Trẻ em và thiếu niên: ISSN cho là chấp nhận được trong điều kiện có giám sát, nhưng một tổng quan năm 2018 ghi nghiên cứu ở nhóm này rất hạn chế. Mang thai: chưa có kết luận trên người.',
+      'Nếu đang dùng thuốc, MedlinePlus khuyên hỏi nhân viên y tế trước khi dùng.',
       'Lưu ý minh bạch: các tác giả ISSN có liên hệ tài trợ từ ngành creatine, nên cần đọc cùng các nguồn độc lập.'],
     interactions:[
       'Thuốc ảnh hưởng thận (NSAID dùng lâu, một số thuốc lợi tiểu) và caffeine liều cao: kho Obsidian ghi cần đối chiếu đơn thuốc, nhưng ghi chú này trong kho chưa được xác minh bằng nguồn độc lập.'],
     foods:'Thịt đỏ và cá (cá trích, cá hồi).',
-    sources:[['ISSN – đồng thuận về creatine','https://pmc.ncbi.nlm.nih.gov/articles/PMC5469049/']]},
+    sources:[['ISSN – đồng thuận về creatine','https://pmc.ncbi.nlm.nih.gov/articles/PMC5469049/'],['MedlinePlus – Creatine','https://medlineplus.gov/druginfo/natural/873.html']]},
 
   cu:{
     name:'Đồng',aka:'Copper, měď',updated:'2026-11-03',
@@ -458,7 +459,7 @@ window.KB={
       ['chuaro','Chống oxy hoá toàn thân: chỉ đạt ý nghĩa ở liều từ 20 mg/ngày trở lên, mà viên bán ở EU tối đa 8 mg. Chính các tác giả kết luận tác dụng chống oxy hoá ở người còn chưa rõ.','Kho Obsidian'],
       ['chuaro','Trí nhớ: phân tích gộp 11 nghiên cứu cho hiệu ứng rất nhỏ (SMD 0,12).','Kho Obsidian'],
       ['khong','"Lão hoá ngược", telomere: không có thử nghiệm người nào. Tuổi thọ chuột đực tăng 12% trong một thử nghiệm năm 2023 nhưng thử lại năm 2026 không tái lập được.','Kho Obsidian']],
-    need:'Không có mức khuyến nghị. Các nghiên cứu dùng 2–12 mg cho da và 4–28 mg cho cơ. EU chỉ cho phép viên bổ sung tối đa 8 mg astaxanthin mỗi ngày. EFSA đặt mức ăn vào chấp nhận được hằng ngày (ADI) là 0,2 mg/kg cân nặng, khoảng 12 mg cho người 60 kg, tính cả lượng từ tôm, cua, cá hồi.',
+    need:'Không có mức khuyến nghị. Các nghiên cứu dùng 2–12 mg cho da và 4–28 mg cho cơ. EU chỉ cho phép viên bổ sung tối đa 8 mg astaxanthin mỗi ngày. EFSA đặt mức ăn vào chấp nhận được hằng ngày (ADI) là 0,2 mg/kg cân nặng, khoảng 12 mg cho người 60 kg, tính cả lượng từ tôm, cua, cá hồi. Mức này EFSA nâng từ 0,034 mg/kg lên 0,2 mg/kg. Theo đánh giá của EFSA năm 2020, người lớn dùng 8 mg astaxanthin mỗi ngày từ viên bổ sung là an toàn; thiếu niên 14–dưới 18 tuổi chạm mức ADI, trẻ 10–dưới 14 tuổi vượt ADI khoảng 28%, và trẻ nhỏ vượt nhiều hơn nữa.',
     how:[
       'Uống cùng bữa có chất béo vì astaxanthin tan trong dầu (kho Obsidian).',
       'Chọn sản phẩm ghi rõ nguồn Haematococcus pluvialis (tảo). Astaxanthin tổng hợp chưa được phê duyệt cho người ở nhiều nước.',
@@ -474,13 +475,13 @@ window.KB={
       'Thuốc hạ huyết áp (astaxanthin có xu hướng hạ nhẹ), thuốc chống đông và chống tiểu cầu (warfarin, clopidogrel), thuốc hạ đường huyết, thuốc chuyển hoá qua CYP3A4: cần đối chiếu đơn thuốc trước khi dùng (kho Obsidian).',
       'Dùng cùng nhiều chất chống oxy hoá liều cao khác chưa có nghiên cứu về an toàn dài hạn (kho Obsidian).'],
     foods:'Cá hồi, tôm, cua (sắc tố đỏ của astaxanthin).',
-    sources:[['Kho Obsidian: Astaxanthin (phụ lục B, 04/09/2026), dẫn phân tích gộp Nutrients 2021 và 2026, GeroScience 2023 và 2026, EFSA ADI 2019','']]},
+    sources:[['EFSA Journal 2020;18(2):e05993 – astaxanthin trong thực phẩm bổ sung','https://pmc.ncbi.nlm.nih.gov/articles/PMC7448075'],['Kho Obsidian: Astaxanthin (phụ lục B, 04/09/2026), dẫn phân tích gộp Nutrients 2021 và 2026, GeroScience 2023 và 2026','']]},
 
   lutein:{
     name:'Lutein và Zeaxanthin',aka:'Carotenoid của mắt, AREDS2',updated:'2026-11-03',
     what:'Hai carotenoid tích luỹ đặc hiệu ở điểm vàng của võng mạc. Chúng lọc ánh sáng xanh và chống oxy hoá cho mắt. Công thức tham chiếu trong y học là AREDS2 của Viện Mắt Quốc gia Mỹ: 10 mg lutein và 2 mg zeaxanthin mỗi ngày (tỷ lệ 5:1).',
     benefits:[
-      ['cothe','Thoái hoá điểm vàng: công thức AREDS2 (thử nghiệm lớn do NIH tài trợ) làm chậm tiến triển ở người đã có bệnh.','Kho Obsidian, NIH'],
+      ['cothe','Thoái hoá điểm vàng: thử nghiệm AREDS2 (Viện Mắt Quốc gia Mỹ, JAMA Ophthalmology 2013) thêm lutein và zeaxanthin vào công thức AREDS gốc. Kết quả chính không khác có ý nghĩa (tiến triển sau 5 năm khoảng 31% so với 29%). Lợi ích nằm ở phân tích phụ: thay beta-caroten bằng lutein và zeaxanthin giảm nguy cơ 18–26%, rõ nhất ở người ăn rất ít lutein (giảm 26%). Công thức AREDS2 cũng hạ kẽm từ 80 mg xuống 25 mg.','Kho Obsidian, NEI qua EuroTimes'],
       ['chuaro','Nguồn thương hiệu (như FloraGLO) so với nguồn thường: AREDS2 không so sánh, nên mua hàng thương hiệu chỉ là mua khả năng truy xuất nguồn gốc, chưa chứng minh hiệu quả vượt trội.','Kho Obsidian']],
     need:'Công thức tham chiếu: 10 mg lutein cộng 2 mg zeaxanthin mỗi ngày (kho Obsidian). Không có mức tối đa chính thức; an toàn ở liều trong nghiên cứu.',
     how:[
@@ -493,7 +494,7 @@ window.KB={
       'Công thức nhiều thành phần có kẽm liều cao: dùng dài hạn có thể gây thiếu đồng, nên hỏi dược sĩ (kho Obsidian).'],
     interactions:['Không đáng kể (kho Obsidian).'],
     foods:'Rau lá xanh đậm (cải xoăn, rau chân vịt), lòng đỏ trứng, ngô.',
-    sources:[['NIH ODS – Zinc (nhắc đến công thức AREDS)','https://ods.od.nih.gov/factsheets/Zinc-HealthProfessional/'],['Kho Obsidian: Lutein và Zeaxanthin','']]},
+    sources:[['AREDS2 – bản tóm tắt kết quả (EuroTimes)','https://escrs.org/channels/eurotimes-articles/areds2-results'],['NIH ODS – Zinc (nhắc đến công thức AREDS)','https://ods.od.nih.gov/factsheets/Zinc-HealthProfessional/'],['Kho Obsidian: Lutein và Zeaxanthin','']]},
 
   nmn:{
     name:'NMN',aka:'Nicotinamide mononucleotide, tiền chất NAD+',updated:'2026-11-03',
@@ -505,7 +506,7 @@ window.KB={
       ['chuaro','Độ nhạy insulin: một thử nghiệm nhỏ (n=25) có kết quả tốt, nhưng phân tích gộp 8 RCT với 342 người không đạt ý nghĩa (p = 0,06).','Kho Obsidian'],
       ['chuaro','Tốc độ đi bộ, giấc ngủ, sức bền: các nghiên cứu mâu thuẫn nhau; nhiều RCT do nhà sản xuất tài trợ.','Kho Obsidian'],
       ['khong','Kéo dài tuổi thọ ở người, "đảo ngược Alzheimer": chưa có nghiên cứu người nào. Các tác dụng này chỉ có trên chuột và sinh vật mô hình.','Kho Obsidian']],
-    need:'Không có nhu cầu khuyến nghị. Liều có bằng chứng làm tăng NAD+ là 250–600 mg mỗi ngày, trên 600 mg không hơn. EFSA ra ý kiến an toàn cho 300 mg mỗi ngày (13/05/2026), loại trừ phụ nữ mang thai và cho con bú. Đây là ý kiến an toàn, không phải mức tối đa chính thức. Úc (TGA) cấp phép tối đa 500 mg mỗi ngày, chỉ người lớn.',
+    need:'Không có nhu cầu khuyến nghị. Liều có bằng chứng làm tăng NAD+ là 250–600 mg mỗi ngày, trên 600 mg không hơn. EFSA ra ý kiến an toàn tích cực (tháng 5/2026) cho NMN tổng hợp của một hãng, tới 300 mg mỗi ngày ở người lớn, loại trừ phụ nữ mang thai và cho con bú. 300 mg NMN tương đương khoảng 109,7 mg nicotinamide, thấp hơn mức tối đa 900 mg mỗi ngày của nicotinamide. Đây là ý kiến an toàn cho một hồ sơ, không phải giấy phép bán và không phải mức tối đa chính thức. Úc (TGA) cấp phép tối đa 500 mg mỗi ngày, chỉ người lớn.',
     how:[
       'NMN tan trong nước, không cần uống cùng chất béo; lời đồn "phải uống cùng dầu" là vô căn cứ (kho Obsidian).',
       'Uống một lần mỗi ngày. Sáng hay chiều: chưa ai biết chắc. Một RCT cho thấy nhóm uống buổi chiều ít buồn ngủ ban ngày hơn; chọn chiều nếu khó ngủ.',
@@ -516,6 +517,7 @@ window.KB={
     cautions:[
       'Người có tiền sử ung thư hoặc đang điều trị ung thư: không dùng. Mức bằng chứng chỉ ở tiền lâm sàng, nhưng hậu quả không thể đảo ngược nên áp dụng nguyên tắc phòng ngừa (kho Obsidian).',
       'Phụ nữ mang thai, cho con bú: loại trừ khỏi đánh giá của EFSA. Người dưới 18 tuổi: không khuyến nghị, chưa có RCT nào ở người dưới 20 tuổi (kho Obsidian).',
+      'Trong thử nghiệm 90 ngày ở chuột, EFSA ghi nhận ảnh hưởng lên cơ quan sinh sản ở liều cao; EFSA vẫn kết luận an toàn ở liều 300 mg với biên an toàn 93, và loại trừ phụ nữ mang thai, cho con bú.',
       'Tim mạch: chất chuyển hoá cuối của niacin (2PY, 4PY) cao trong máu liên quan biến cố tim mạch trong một nghiên cứu Nature Medicine 2024; mới là quan sát và chuột, chưa chứng minh nhân quả. Vì vậy không nên dùng nhiều năm mà không theo dõi (kho Obsidian).',
       'Giả thuyết dùng lâu dài liều cao có thể làm cạn nhóm methyl của tế bào (cơ chế, chưa có dữ liệu người) (kho Obsidian).',
       'Người trên 65 tuổi hoặc có bệnh nền: hỏi bác sĩ, vì chưa có nghiên cứu tương tác thuốc ở người.'],
@@ -527,7 +529,7 @@ window.KB={
       'Thuốc chống lao (isoniazid, pyrazinamide): theo dõi nguy cơ thiếu niacin.',
       'Chống đông, chống tiểu cầu: nicotinamide 3000 mg/ngày có thể gây giảm tiểu cầu; ở 250–600 mg thì chưa có dữ liệu.'],
     foods:'Không cần nạp từ thức ăn: cơ thể tự tạo NAD+ từ nhiều nguyên liệu (kho Obsidian).',
-    sources:[['Kho Obsidian: NMN (gộp hai bản tra cứu, 05/09/2026), dẫn EFSA 13/05/2026, Prokopidis 2025, Yi 2023, Kim 2022, Ferrell 2024','']]},
+    sources:[['NutraIngredients – EFSA ý kiến an toàn NMN (tin chuyên ngành, một số bài trên trang này là nội dung tài trợ của hãng)','https://www.nutraingredients.com/Article/2026/05/13/efsa-gives-positive-safety-opinion-on-nmn/'],['Kho Obsidian: NMN (gộp hai bản tra cứu, 05/09/2026), dẫn Prokopidis 2025, Yi 2023, Kim 2022, Ferrell 2024','']]},
 
   pqq:{
     name:'PQQ',aka:'Pyrroloquinoline quinone',updated:'2026-11-03',
@@ -536,7 +538,7 @@ window.KB={
       ['chuaro','Trí nhớ: một RCT (n=70, 20 mg/ngày, 12 tuần) cải thiện trí nhớ tổng hợp và trí nhớ ngôn từ. Nhưng RCT này do chính hãng sản xuất nguyên liệu BioPQQ tài trợ 100%.','Kho Obsidian'],
       ['chuaro','Người có suy giảm nhận thức nhẹ (n=34, 6 tuần): một số chỉ số cải thiện nhưng thang MMSE (chỉ số chuẩn) không khác biệt có ý nghĩa; tác giả có liên hệ tài chính với nhà cung cấp.','Kho Obsidian'],
       ['chuaro','Chưa tìm được RCT độc lập hoàn toàn không do ngành tài trợ. Độ tin cậy tổng thể: trung bình đến thấp.','Kho Obsidian']],
-    need:'Không có nhu cầu khuyến nghị. Liều trong thử nghiệm: 20 mg mỗi ngày, cũng là mức tối đa EU cho phép với thực phẩm mới.',
+    need:'Không có nhu cầu khuyến nghị. Liều trong thử nghiệm: 20 mg mỗi ngày, cũng là mức tối đa EU cho phép với thực phẩm mới. Ý kiến của EFSA năm 2017 dựa trên mức không gây hại quan sát được (NOAEL) 100 mg/kg ở chuột trong thử nghiệm 90 ngày, với biên an toàn 344 so với liều 20 mg mỗi ngày. EFSA cũng ghi dữ liệu về hấp thu và chuyển hoá của PQQ ở người còn hạn chế.',
     how:[
       'Dạng muối disodium tan trong nước. Các thương hiệu (BioPQQ, MGCPQQ, PureQQ) cùng một dạng hoá học, không có dữ liệu cho thấy công nghệ hấp thu khác nhau có ưu thế.',
       'Không có dữ liệu về chất đi kèm bắt buộc.'],
@@ -546,7 +548,7 @@ window.KB={
       'Thử nghiệm trên động vật ở liều rất cao ghi nhận độc tính thận và kết tinh trong nước tiểu (kho Obsidian).'],
     interactions:['Chưa tìm thấy dữ liệu tương tác thuốc cụ thể.'],
     foods:'Có lượng rất nhỏ trong một số thực phẩm; cơ thể không cần nạp từ ngoài.',
-    sources:[['Kho Obsidian: PQQ (24/08/2026), dẫn RCT Food & Function 2023 và EFSA novel food','']]},
+    sources:[['EFSA 2017 – an toàn của PQQ disodium salt','https://efsa.europa.eu/en/efsajournal/pub/5058'],['Kho Obsidian: PQQ (24/08/2026), dẫn RCT Food & Function 2023','']]},
 
   blackgarlic:{
     name:'Tỏi đen',aka:'Black garlic, aged garlic extract, S-allyl cysteine (SAC)',updated:'2026-11-03',
@@ -554,6 +556,7 @@ window.KB={
     benefits:[
       ['cothe','Hạ huyết áp ở người đã tăng huyết áp. Thử nghiệm Ried 2013 (79 người) thấy huyết áp tâm thu giảm 11,8 mmHg ở liều 1,2 mg SAC. Phân tích gộp 10 RCT năm 2025 cho kết quả nhỏ hơn: giảm 4,2 mmHg (tâm thu) và 3,1 mmHg (tâm trương). Các tác giả tự nhận tác động có thể hạn chế.','Kho Obsidian'],
       ['cothe','Tăng nhẹ HDL (cholesterol tốt).','Kho Obsidian'],
+      ['chuaro','NCCIH (về tỏi nói chung): bằng chứng hạn chế cho thấy viên tỏi có thể giảm huyết áp chút ít ở người đã tăng huyết áp. Một tổng quan năm 2022 chỉ tìm được hai nghiên cứu, cả hai nhỏ và có hạn chế.','NCCIH'],
       ['chuaro','Miễn dịch, chức năng gan, "tinh thần thoải mái": chưa có bằng chứng độc lập.','Kho Obsidian'],
       ['khong','Chống ung thư, thải độc: chưa có bằng chứng lâm sàng đủ mạnh ở người.','Kho Obsidian']],
     need:'Liều SAC có hiệu quả chi phí theo kho Obsidian: khoảng 1,2–1,25 mg SAC mỗi ngày, tương đương 480–500 mg chiết xuất chuẩn hoá. Liều cao hơn (2,4 mg) cho kết quả mâu thuẫn và tăng tác dụng phụ tiêu hoá. Không có mức tối đa chính thức.',
@@ -567,6 +570,7 @@ window.KB={
       'EFSA chưa phê duyệt bất kỳ công bố sức khoẻ nào cho tỏi. Các câu in trên hộp bán ở Séc nằm trong danh sách chờ xử lý. "Được phép in" khác với "đã chứng minh".',
       'Tác dụng phụ tiêu hoá phụ thuộc liều (táo bón, đầy hơi, trào ngược): khoảng 15% ở liều thấp, 32% ở liều 4 viên.',
       'Dị ứng tỏi. Không dùng cho trẻ dưới 3 tuổi theo nhãn các sản phẩm bán ở Séc.',
+      'Mang thai, cho con bú: tỏi dạng viên với lượng nhiều hơn trong thức ăn có thể không an toàn (NCCIH).',
       'Ngừng 7–10 ngày trước mọi phẫu thuật, kể cả nhổ răng: có báo cáo chảy máu sau mổ.',
       'An toàn dài hạn của chiết xuất cô đặc trên 24 tuần: chưa có dữ liệu.'],
     interactions:[
@@ -575,33 +579,34 @@ window.KB={
       'Thuốc ức chế protease (điều trị HIV): có thể giảm nồng độ thuốc.',
       'Thuốc tiêu sợi huyết: tăng nguy cơ xuất huyết (kho Obsidian).'],
     foods:'Tỏi đen (tỏi ủ nhiệt), tỏi trắng. Tỏi đen gần như không có mùi hăng của tỏi thường.',
-    sources:[['Kho Obsidian: Tỏi đen (02/09/2026), dẫn Ried 2013, phân tích gộp Front Nutr 2025, NutraIngredients 12/2024','']]},
+    sources:[['NCCIH – Tỏi','https://nccih.nih.gov/health/garlic'],['Kho Obsidian: Tỏi đen (02/09/2026), dẫn Ried 2013, phân tích gộp Front Nutr 2025, NutraIngredients 12/2024','']]},
 
   boswellia:{
     name:'AKBA Boswellia',aka:'Boswellia serrata, nhũ hương Ấn Độ',updated:'2026-11-03',
     what:'Chiết xuất nhựa cây trầm hương Ấn Độ, chuẩn hoá theo hàm lượng boswellic acid, trong đó AKBA là hoạt chất mạnh nhất. Cơ chế: ức chế enzyme 5-LOX (tham gia tạo chất gây viêm), khác với thuốc NSAID vốn ức chế COX nên ít ảnh hưởng dạ dày hơn.',
     benefits:[
-      ['cothe','Thoái hoá khớp gối: các thử nghiệm trên người ghi nhận giảm đau và cải thiện vận động sau 4–8 tuần, hiệu quả khiêm tốn nhưng thật.','Kho Obsidian (ghi chú chưa rà)'],
+      ['chuaro','Thoái hoá khớp: kho Obsidian ghi các thử nghiệm trên người cho thấy giảm đau và cải thiện vận động sau 4–8 tuần, hiệu quả khiêm tốn. NCCIH đánh giá thận trọng hơn: nghiên cứu phần lớn nhỏ và chất lượng thấp, chưa đủ bằng chứng để kết luận nhựa trầm hương hiệu quả. Một tổng quan hệ thống năm 2008 gọi bằng chứng là "khuyến khích nhưng chưa thuyết phục".','Kho Obsidian, NCCIH'],
       ['chuaro','Các công dụng khác như tiêu hoá, hen suyễn: chưa có bằng chứng độc lập ở liều thực phẩm chức năng thông thường.','Kho Obsidian (ghi chú chưa rà)']],
     need:'Theo nhãn: chiết xuất chuẩn hoá khoảng 85% boswellic acid, 20% AKBA (ví dụ 400 mg chiết xuất chứa khoảng 80 mg AKBA). Dùng cùng bữa ăn có chất béo.',
     how:[
       'Uống cùng bữa ăn có chất béo để hấp thu.',
       'Đánh giá sau 8 tuần: nếu không đỡ đau khớp thì nên ngừng, đừng dùng kéo dài không cần thiết.',
-      'Lưu ý quan trọng: bài này dựa trên ghi chú thô chưa rà của kho Obsidian, chưa đối chiếu với nguồn độc lập như các bài khác. Hãy coi là thông tin sơ bộ.'],
+      'Lưu ý: phần liều và cơ chế lấy từ ghi chú thô chưa rà của kho Obsidian. Phần hiệu quả và an toàn đã đối chiếu với NCCIH.'],
     forms:'Chiết xuất chuẩn hoá theo boswellic acid và AKBA; một số sản phẩm dùng nguyên liệu thương hiệu (ví dụ AprèsFlex).',
     cautions:[
-      'Chưa ghi nhận chống chỉ định nghiêm trọng ở liều thông thường (kho Obsidian, ghi chú chưa rà).'],
+      'NCCIH: dùng đường uống có vẻ an toàn ở các liều đã nghiên cứu, tới 1000 mg mỗi ngày trong các thử nghiệm kéo dài tới 6 tháng. Chưa ghi nhận chống chỉ định nghiêm trọng ở liều thông thường (kho Obsidian).'],
     interactions:[
       'Kho Obsidian không ghi tương tác đáng kể với thuốc tim mạch, tuyến giáp hay statin.',
       'Curcumin, omega-3 và boswellia đều có tác dụng chống kết tập tiểu cầu nhẹ; dùng cả ba cùng lúc, hoặc cùng thuốc chống đông, là tổ hợp cần rà soát (kho Obsidian).'],
     foods:'Không có trong thức ăn thông thường.',
-    sources:[['Kho Obsidian: AKBA Boswellia (22/08/2026, ghi chú chưa rà)','']]},
+    sources:[['NCCIH – Boswellia','https://www.nccih.nih.gov/health/boswellia'],['Kho Obsidian: AKBA Boswellia (22/08/2026, ghi chú chưa rà)','']]},
 
   collagen:{
     name:'Collagen',aka:'Collagen thuỷ phân (peptide), collagen typ II không biến tính (UC-II)',updated:'2026-11-03',
     what:'Protein cấu trúc của da, gân, sụn, xương. "Collagen" trên nhãn là hai nhóm rất khác nhau: collagen thuỷ phân (peptide) làm nguyên liệu cho sụn và gân, cần liều tính bằng gam; collagen typ II không biến tính tác động qua dung nạp miễn dịch đường ruột, theo lý thuyết chỉ cần microgram đến chục miligam.',
     benefits:[
-      ['cothe','Collagen peptide cho khớp và gân: có thử nghiệm với liều 5–10 gam mỗi ngày (Clark 2008, Zdzieblik 2017).','Kho Obsidian'],
+      ['cothe','Collagen peptide cho khớp và gân: có thử nghiệm với liều 5–10 gam mỗi ngày (Clark 2008, Zdzieblik 2017). Một phân tích gộp các RCT năm 2023 ghi giảm đau có ý nghĩa so với giả dược nhưng dị biệt giữa các nghiên cứu cao (I² 68%); một phân tích gộp 11 RCT với 870 người năm 2024 cũng được công bố. Tôi không tìm thấy tổng quan Cochrane về collagen.','Kho Obsidian, kết quả tìm kiếm tài liệu 03/11/2026'],
+      ['cothe','Da: các tổng quan ghi collagen uống cải thiện nhẹ độ ẩm và độ đàn hồi, không ngăn được nếp nhăn. Nhiều nghiên cứu trước đây do ngành tài trợ.','Kết quả tìm kiếm tài liệu 03/11/2026, chưa kiểm chứng tạp chí gốc'],
       ['chuaro','Collagen typ II không biến tính cho thoái hoá khớp gối: thử nghiệm Lugo 2016 dùng 40 mg sản phẩm, trong đó collagen typ II thật chỉ khoảng 1,2 mg (đã đính chính từ con số ~10 mg).','Kho Obsidian'],
       ['chuaro','Collagen typ II ở liều microgram (20–2500 µg) được thử trong viêm khớp dạng thấp (Barnett 1998, liều 20 µg đáp ứng tốt nhất). Áp dụng sang thoái hoá khớp là suy đoán.','Kho Obsidian'],
       ['chuaro','Hướng dẫn của ACR và Arthritis Foundation về thoái hoá khớp không nhắc đến collagen ở mức khuyến cáo nào: không bị bác bỏ mà chưa đủ dữ liệu để được xét.','Kho Obsidian']],
@@ -618,5 +623,141 @@ window.KB={
       'Hướng dẫn ACR và Arthritis Foundation khuyến cáo MẠNH không dùng glucosamin cho thoái hoá khớp; hãy tách bạch collagen với glucosamin (kho Obsidian).'],
     interactions:['Ở liều thấp không ghi nhận tương tác thuốc đáng kể. Một số viên có kẽm vài mg: nhớ cộng vào tổng kẽm mỗi ngày (kho Obsidian).'],
     foods:'Collagen có trong da, sụn, xương động vật; cơ thể tự tổng hợp từ protein và vitamin C.',
-    sources:[['Kho Obsidian: Collagen nativní liều thấp (31/08 và 02/09/2026), dẫn Lugo 2016, Barnett 1998, Clark 2008, Zdzieblik 2017','']]}
+    sources:[['Kho Obsidian: Collagen nativní liều thấp (31/08 và 02/09/2026), dẫn Lugo 2016, Barnett 1998, Clark 2008, Zdzieblik 2017','']]},
+
+  folic:{
+    name:'Axit folic',aka:'Folate (vitamin B9), folic acid, 5-MTHF',updated:'2026-11-03',
+    what:'Vitamin nhóm B, cần để tạo DNA và hồng cầu và tham gia chuyển hoá homocysteine. "Folate" là dạng tự nhiên trong thức ăn; "axit folic" là dạng tổng hợp trong viên và thực phẩm tăng cường. Nhãn thường ghi theo DFE (đương lượng folate trong thức ăn).',
+    benefits:[
+      ['chac','Phòng dị tật ống thần kinh ở thai nhi khi bổ sung trước và trong thai kỳ (các dị tật cột sống, hộp sọ và não hình thành ở ngày 21–28 sau thụ thai). Nhu cầu tăng từ 400 lên 600 mcg DFE khi mang thai.','NIH'],
+      ['chuaro','Tim mạch và đột quỵ: homocysteine cao liên quan tăng nguy cơ tim mạch, và các vitamin B trong đó có folate tham gia chuyển hoá homocysteine, nên được giả thuyết là giảm nguy cơ. Kết quả các nghiên cứu về tác dụng của việc bổ sung chưa kết luận được.','NIH'],
+      ['chuaro','Sa sút trí tuệ và trí nhớ: các nghiên cứu quan sát thấy homocysteine cao liên quan, hiệu quả của việc bổ sung chưa rõ.','NIH'],
+      ['chuaro','Trầm cảm: folate thấp liên quan đến trầm cảm và đáp ứng kém với thuốc chống trầm cảm ở một số nghiên cứu, không phải tất cả.','NIH'],
+      ['chuaro','Ung thư: nhiều nghiên cứu quan sát thấy ăn nhiều folate đi cùng nguy cơ thấp hơn, nhưng bản chất tác dụng chưa được xác lập.','NIH']],
+    need:'Theo NIH: 400 mcg DFE mỗi ngày cho người lớn, 600 mcg DFE khi mang thai. Viên bổ sung thường 400–800 mcg axit folic (tương đương 680–1360 mcg DFE). Mức tối đa cho axit folic từ viên: 1000 mcg mỗi ngày (EFSA và NIH).',
+    how:[
+      'Axit folic uống cùng bữa ăn hấp thu khoảng 85%; uống lúc đói gần như 100% (NIH).',
+      'Dạng 5-MTHF (đã hoạt hoá) có sinh khả dụng bằng hoặc cao hơn axit folic. NIH ghi một số người có biến thể gen MTHFR có thể hợp với 5-MTHF hơn, nhưng chưa có hệ số quy đổi DFE chính thức cho 5-MTHF.',
+      'Nếu cần liều cao hơn mức thường dùng, hỏi bác sĩ, nhất là khi định mang thai.',
+      'Đọc nhãn: "mcg DFE" khác "mcg axit folic". 400 mcg axit folic ghi là 680 mcg DFE.'],
+    forms:'Axit folic (tổng hợp), 5-methyltetrahydrofolate (5-MTHF), folinic acid. Folate tự nhiên có trong thức ăn nhưng dễ mất khi nấu.',
+    cautions:[
+      'Lượng lớn axit folic có thể che giấu thiếu vitamin B12: chữa được thiếu máu nhưng không chữa được tổn thương thần kinh. NIH ghi mối lo đã chuyển sang khả năng lượng lớn làm nặng thêm thiếu máu và triệu chứng nhận thức khi thiếu B12 (NIH).',
+      'Có lo ngại liều axit folic cao có thể làm tiến triển nhanh hơn các tổn thương tiền ung thư ở một số người (NIH). Vì vậy giữ dưới mức tối đa 1000 mcg.',
+      'Rượu cản hấp thu folate và làm tăng thải folate; người nghiện rượu thường thiếu (NIH).'],
+    interactions:[
+      'Methotrexate (thuốc ung thư và tự miễn) là chất đối kháng folate. Bệnh nhân dùng methotrexate trị ung thư phải hỏi bác sĩ ung thư trước khi dùng folate. Với liều thấp trị viêm khớp dạng thấp hoặc vảy nến, folate có thể giảm tác dụng phụ tiêu hoá, nhưng vẫn cần bác sĩ hướng dẫn (NIH).',
+      'Thuốc chống động kinh (phenytoin, carbamazepine, valproate): có tương tác với folate, hãy hỏi bác sĩ (NIH).'],
+    foods:'Rau lá xanh đậm (rau chân vịt), gan, măng tây, cải Brussels, đậu, trái cây, ngũ cốc tăng cường axit folic (NIH).',
+    sources:[['NIH ODS – Folate','https://ods.od.nih.gov/factsheets/Folate-HealthProfessional/'],['EFSA – mức tối đa','https://www.efsa.europa.eu/sites/default/files/2024-05/ul-summary-report.pdf']]},
+
+  niacin:{
+    name:'Niacin (B3)',aka:'Nicotinic acid, nicotinamide (niacinamide), inositol hexanicotinate',updated:'2026-11-03',
+    what:'Vitamin B3, cần để tạo NAD và NADP, hai coenzyme trong chuyển hoá năng lượng. Có hai dạng chính trong viên là nicotinic acid và nicotinamide; hai dạng này có độc tính khác nhau.',
+    benefits:[
+      ['chac','Phòng và chữa thiếu niacin (bệnh pellagra). Thiếu hay gặp ở người suy dinh dưỡng, nghiện rượu, bệnh viêm ruột.','NIH'],
+      ['cothe','Liều rất cao nicotinic acid (hơn 100 lần nhu cầu, dùng nhiều tháng đến nhiều năm) là một điều trị rối loạn mỡ máu. Nicotinamide không có tác dụng này. Đây là việc của bác sĩ kê đơn, không tự dùng.','NIH']],
+    need:'Thức ăn thường đủ. Một số viên chỉ có niacin chứa từ 500 mg trở lên, cao hơn nhu cầu rất nhiều (NIH). Mức tối đa từ viên: NIH 35 mg (nicotinic acid); EFSA 10 mg nicotinic acid và 900 mg nicotinamide mỗi ngày.',
+    how:[
+      'Đọc nhãn xem là nicotinic acid hay nicotinamide. Nicotinamide không gây đỏ bừng da; nicotinic acid thì có.',
+      'Dạng phóng thích kéo dài giảm đỏ bừng. Viên "flush free" (inositol hexanicotinate) cũng không gây đỏ bừng (NIH).',
+      'Niacin ghi theo đơn vị NE (đương lượng niacin). Cộng tổng từ đa vitamin, B-complex và viên niacin riêng.'],
+    forms:'Nicotinic acid, nicotinamide, inositol hexanicotinate. Một số sản phẩm niacin liều cao dạng phóng thích kéo dài.',
+    cautions:[
+      'Nicotinic acid từ 30–50 mg trở lên thường gây đỏ bừng mặt, tay, ngực kèm bỏng rát, ngứa, châm chích. Thường thoáng qua và là khó chịu hơn là độc, nhưng có thể kèm đau đầu, phát ban, chóng mặt, tụt huyết áp (NIH).',
+      'Nicotinic acid liều từ khoảng 1,5 g mỗi ngày trở lên có thể làm tăng đường huyết ở cả người có và không có tiểu đường (NIH).',
+      'Niacin trong thức ăn không gây tác dụng phụ (NIH).',
+      'Dễ thiếu: người suy dinh dưỡng, nghiện rượu, bệnh viêm ruột, xơ gan, thiếu riboflavin, B6 hoặc sắt (vì chuyển tryptophan thành niacin kém) (NIH).'],
+    interactions:[
+      'Thuốc lao isoniazid và pyrazinamide: cản trở tạo niacin, có thể gây pellagra, phòng được bằng tăng niacin (NIH).',
+      'Thuốc hạ đường huyết: nicotinic acid liều lớn làm tăng đường huyết, đối kháng với thuốc (NIH).',
+      'Statin và nicotinic acid liều cao: nguy cơ bệnh cơ gắn với nicotinic acid liều cao, không phải nicotinamide (kho Obsidian dẫn NIH).'],
+    foods:'Gia cầm, thịt bò, cá (khoảng 5–10 mg mỗi khẩu phần); hạt, đậu, ngũ cốc (2–5 mg, một số dạng chỉ hấp thu khoảng 30%); thực phẩm tăng cường niacin (NIH).',
+    sources:[['NIH ODS – Niacin','https://ods.od.nih.gov/factsheets/Niacin-HealthProfessional/'],['EFSA – mức tối đa','https://www.efsa.europa.eu/sites/default/files/2024-05/ul-summary-report.pdf']]},
+
+  probiotic:{
+    name:'Men vi sinh',aka:'Probiotics, Lactobacillus, Bifidobacterium, Saccharomyces boulardii',updated:'2026-11-03',
+    what:'Vi sinh vật sống có chủ đích mang lại lợi ích sức khoẻ khi dùng. Phổ biến nhất là các nhóm vi khuẩn Lactobacillus và Bifidobacterium; còn có nấm men Saccharomyces boulardii. Có trong sữa chua, thực phẩm lên men và viên bổ sung. Các chủng khác nhau có thể có tác dụng khác nhau.',
+    benefits:[
+      ['cothe','Tiêu chảy cấp, tiêu chảy do kháng sinh và chàm thể tạng (atopic eczema): có một số bằng chứng cho thấy men vi sinh có thể giúp.','NCCIH'],
+      ['chuaro','Táo bón: một tổng quan thấy có lợi ở người lớn, một tổng quan khác không thấy chủng nào giúp được trẻ em.','NCCIH'],
+      ['chuaro','Hầu hết các tình trạng còn lại: thiếu bằng chứng khoa học mạnh.','NCCIH']],
+    need:'Không có nhu cầu khuyến nghị. Hiệu quả phụ thuộc chủng cụ thể và liều đã được thử nghiệm cho đúng mục đích, nên không thể suy từ chủng này sang chủng khác.',
+    how:[
+      'Chọn sản phẩm ghi rõ tên chủng đầy đủ (loài và mã chủng) và lượng vi sinh vật sống (CFU) đến hạn dùng. Đây là lời khuyên chung chứ không phải khuyến nghị riêng của NCCIH.',
+      'Dùng cho một mục đích rõ ràng (ví dụ phòng tiêu chảy khi dùng kháng sinh) và đánh giá sau một thời gian; không đạt thì ngừng.',
+      'Thực phẩm lên men như sữa chua cũng cung cấp vi sinh vật sống.'],
+    forms:'Viên nang, bột, dạng nước và thực phẩm lên men. Nhiều sản phẩm bán như thực phẩm chức năng, không phải duyệt trước như thuốc.',
+    cautions:[
+      'Đã có báo cáo nhiễm trùng nặng hoặc tử vong ở trẻ sinh non được cho dùng men vi sinh; FDA đã cảnh báo nhân viên y tế về nguy cơ này (NCCIH).',
+      'Tác dụng phụ thường ít, nhưng dữ liệu an toàn, nhất là lâu dài, còn hạn chế. Biến cố nặng có khả năng xảy ra hơn ở người có bệnh nền (NCCIH).',
+      'Người suy giảm miễn dịch, có bệnh nặng hoặc đặt ống thông: hỏi bác sĩ trước khi dùng.',
+      'FDA chưa duyệt công bố sức khoẻ nào cho men vi sinh (NCCIH).'],
+    interactions:['Trang NCCIH tôi đọc không nêu tương tác thuốc cụ thể. Người dùng thuốc ức chế miễn dịch cần hỏi bác sĩ.'],
+    foods:'Sữa chua, kefir, thực phẩm lên men.',
+    sources:[['NCCIH – Men vi sinh','https://www.nccih.nih.gov/health/probiotics-usefulness-and-safety']]},
+
+  gluco:{
+    name:'Glucosamin và chondroitin',aka:'Glucosamine, chondroitin sulfate',updated:'2026-11-03',
+    what:'Hai chất liên quan đến sụn khớp, thường bán cùng nhau để dùng cho thoái hoá khớp. Bán rất phổ biến, nhưng bằng chứng khá yếu.',
+    benefits:[
+      ['chuaro','Đau thoái hoá khớp gối: các nghiên cứu cho kết quả mâu thuẫn. Một số thử nghiệm ủng hộ chondroitin hoặc phối hợp, nhưng mức cải thiện ở phần lớn nghiên cứu có thể quá nhỏ để người bệnh cảm nhận được.','NCCIH'],
+      ['chuaro','Cấu trúc khớp: chưa rõ có làm chậm tổn thương khớp hay không.','NCCIH'],
+      ['khong','Hướng dẫn của Hội Thấp khớp Mỹ (ACR) và Arthritis Foundation năm 2019 khuyến cáo MẠNH không dùng glucosamin cho thoái hoá khớp háng, gối, bàn tay. Chondroitin chỉ được khuyến cáo có điều kiện cho thoái hoá khớp bàn tay.','NCCIH, kho Obsidian']],
+    need:'Không có liều khuyến nghị chính thức. NCCIH không nêu một liều cụ thể; liều trên nhãn khác nhau giữa các sản phẩm.',
+    how:[
+      'Nếu muốn thử, hãy đặt mục tiêu rõ (giảm đau khớp) và đánh giá sau 2–3 tháng. Không thấy lợi thì ngừng.',
+      'Các sản phẩm phối hợp hay kèm thêm thành phần; hãy đọc từng dòng trên nhãn.',
+      'Hỏi bác sĩ về các lựa chọn điều trị thoái hoá khớp có bằng chứng tốt hơn.'],
+    forms:'Glucosamin (sulfat hoặc hydrochloride), chondroitin sulfat, thường bán phối hợp, đôi khi kèm collagen, MSM hoặc nghệ.',
+    cautions:[
+      'Các nghiên cứu lớn không thấy vấn đề an toàn lớn với glucosamin và chondroitin (NCCIH).',
+      'Glucosamin có thể làm tăng đường huyết ở một số người; người bị tiểu đường theo dõi đường huyết (NCCIH).',
+      'Thông tin về an toàn khi mang thai và cho con bú còn ít (NCCIH).'],
+    interactions:[
+      'Warfarin: glucosamin và chondroitin liên quan tăng nguy cơ chảy máu ở người dùng thuốc chống đông này (NCCIH).',
+      'Thuốc hạ đường huyết: glucosamin có thể làm tăng đường huyết (NCCIH).'],
+    foods:'Không có hướng dẫn về nguồn thực phẩm.',
+    sources:[['NCCIH – Glucosamin và chondroitin','https://www.nccih.nih.gov/health/chondroitin']]},
+
+  coq10:{
+    name:'CoQ10',aka:'Coenzyme Q10, ubiquinone, ubiquinol',updated:'2026-11-03',
+    what:'Chất tan trong dầu cơ thể tự tạo, tham gia tạo năng lượng trong ty thể và có tác dụng chống oxy hoá. Có hai dạng trong viên: ubiquinone và ubiquinol (dạng khử, đã sẵn hoạt hoá).',
+    benefits:[
+      ['khong','Đau cơ do statin: bằng chứng tổng thể không ủng hộ việc CoQ10 làm giảm đau cơ do thuốc hạ mỡ máu nhóm statin, dù các nghiên cứu riêng lẻ có kết quả khác nhau.','NCCIH'],
+      ['chuaro','Các công dụng khác: bài này chưa đối chiếu được nguồn độc lập nên không nêu mức bằng chứng. Hãy hỏi bác sĩ nếu định dùng cho bệnh tim hoặc đau nửa đầu.','Chưa có nguồn đã đọc']],
+    need:'Không có nhu cầu khuyến nghị. Trong các thử nghiệm với statin, liều dùng 100–200 mg mỗi ngày, mẫu nhỏ, khoảng 12 tuần. Đây là liều nghiên cứu, không phải khuyến nghị.',
+    how:[
+      'CoQ10 tan trong dầu: uống cùng bữa ăn có chất béo hấp thu tốt hơn (lời khuyên chung).',
+      'Ubiquinol là dạng không cần cơ thể khử thêm so với ubiquinone (kho Obsidian).'],
+    forms:'Ubiquinone và ubiquinol, dạng viên nang mềm trong dầu. Một số viên dùng nguyên liệu thương hiệu (ví dụ Kaneka).',
+    cautions:[
+      'Chưa có tác dụng phụ nghiêm trọng được báo cáo. Có thể gặp nhẹ: mất ngủ, khó chịu tiêu hoá (NCCIH).',
+      'Có thể không tương thích với một số điều trị ung thư; hỏi bác sĩ ung thư (NCCIH).'],
+    interactions:[
+      'Warfarin: NCCIH ghi CoQ10 có thể tương tác. Bằng chứng không nhất quán: ca bệnh và nghiên cứu trên chuột gợi ý làm giảm tác dụng thuốc, nhưng một thử nghiệm mù đôi 100 mg/ngày trong 4 tuần ở 21 người dùng warfarin dài hạn không thấy đổi INR. Nếu bắt đầu hoặc ngừng CoQ10, nên kiểm tra INR thường hơn.',
+      'Insulin: có thể tương tác (NCCIH).'],
+    foods:'Thịt, cá béo, hạt (lượng nhỏ).',
+    sources:[['NCCIH – Coenzyme Q10','https://www.nccih.nih.gov/health/coenzyme-q10']]},
+
+  protein:{
+    name:'Đạm (Protein)',aka:'Protein, bílkoviny',updated:'2026-11-03',
+    what:'Chất dinh dưỡng đa lượng, cung cấp acid amin để xây cơ, gân, da, xương và enzyme. Đạm hoàn chỉnh (thịt, cá, trứng, sữa, đậu nành) chứa đủ 9 acid amin thiết yếu. Collagen không hoàn chỉnh vì thiếu tryptophan, nên không thay được đạm thường.',
+    benefits:[
+      ['chac','Cần cho duy trì cơ và các mô. Ăn đạm cao hơn mức tối thiểu giúp giữ khối cơ ở người trên 40 tuổi (kho Obsidian xếp ở mức bằng chứng cao).','Kho Obsidian'],
+      ['chuaro','Mức cụ thể 1,4–1,6 g/kg cho người lao động nặng là đồng thuận chuyên môn ngoại suy, chưa có thử nghiệm riêng cho nhóm này.','Kho Obsidian']],
+    need:'Mức tham chiếu EFSA (2012): 0,83 g đạm cho mỗi kg cân nặng mỗi ngày với người lớn, kể cả người lớn tuổi; tính cả đạm động vật và thực vật, dựa trên cân bằng nitơ. Kho Obsidian dẫn nhóm PROT-AGE: người lớn tuổi nên 1,0–1,2 g/kg, và 1,2–1,5 g/kg nếu vận động nhiều hoặc có bệnh. Ví dụ người 70 kg theo mức EFSA cần khoảng 58 g mỗi ngày.',
+    how:[
+      'Phân bố đều giữa các bữa: tổng hợp protein cơ hoạt động theo đợt, cần khoảng 25–30 g đạm chất lượng mỗi bữa; dưới khoảng 20 g thì phần lớn bị đốt làm năng lượng (kho Obsidian).',
+      'Whey tiêu hoá nhanh (hợp sau tập), casein (sữa, tvaroh) giải phóng chậm 3–5 giờ (hợp ca dài hoặc trước ngủ) (kho Obsidian).',
+      'Cần đủ năng lượng tổng và kích thích cơ học: nếu ăn thiếu calo, đạm bị đốt làm nhiên liệu; đạm chỉ vào cơ nếu cơ được dùng (kho Obsidian).',
+      'Cân thịt sống hay chín làm lệch kết quả tới khoảng 30%: 100 g thịt sống khoảng 20 g đạm, 100 g sau khi nấu khoảng 27 g (kho Obsidian).',
+      'So giá theo gam đạm, không so giá theo gói.'],
+    forms:'Thức ăn (trứng, thịt, cá, sữa, đậu), bột whey, casein, đạm thực vật. Thức ăn thật thường rẻ hơn và đủ chất hơn bột đạm.',
+    cautions:[
+      'Bệnh thận mạn: phải theo chỉ định của bác sĩ, không tự tăng đạm (kho Obsidian).',
+      'Kho Obsidian ghi chưa có bằng chứng độc lập cho thấy đạm cao gây hại thận ở người có thận khoẻ ở mức 1,4–1,6 g/kg, nhưng đây là điểm cần hỏi bác sĩ nếu có bệnh thận hay đang dùng thuốc ảnh hưởng thận.'],
+    interactions:['Không có tương tác thuốc đáng kể với đạm trong thức ăn. Với bệnh thận hoặc chế độ ăn theo chỉ định, hãy hỏi bác sĩ.'],
+    foods:'Trứng, thịt, cá, sữa và chế phẩm (kefir, tvaroh, skyr), đậu phụ, sữa đậu nành, đậu lăng.',
+    sources:[['EFSA – mức tham chiếu protein 2012','https://www.efsa.europa.eu/en/press/news/120209'],['Kho Obsidian: Đạm (Protein), dẫn PROT-AGE','']]}
 };
