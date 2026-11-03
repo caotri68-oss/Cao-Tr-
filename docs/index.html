@@ -54,6 +54,8 @@ dialog::backdrop{background:#0008}
 dialog form{padding:16px;display:grid;gap:10px}
 .imgs{display:flex;gap:6px;flex-wrap:wrap}.imgs img{height:70px;border-radius:6px;border:1px solid var(--line);cursor:zoom-in}
 .ing input.chk{border:2px solid var(--warn);background:var(--warnbg)}
+#report{display:none}
+@media print{header,main,nav,dialog{display:none!important}#report{display:block;font:12pt/1.4 system-ui,sans-serif;color:#000}body{display:block;background:#fff}#report table{width:100%;border-collapse:collapse}#report th,#report td{border:1px solid #444;padding:4px;text-align:left;vertical-align:top;font-size:10.5pt}}
 .w{border:1px solid var(--line);border-radius:10px;padding:10px;font-size:14px;margin-bottom:8px}
 .w3{background:#fef2f2;border-color:#f5b5b5;color:#7f1d1d}.w2{background:var(--warnbg);border-color:var(--warn)}.w1{background:var(--bg)}
 @media (prefers-color-scheme:dark){.w3{background:#3b1414;border-color:#7f1d1d;color:#fecaca}}
@@ -65,6 +67,7 @@ dialog form{padding:16px;display:grid;gap:10px}
 <header><h1 id="ttl">Hôm nay</h1><div class="sub" id="sub"></div></header>
 <main id="view"></main>
 <nav id="nav"></nav>
+<div id="report"></div>
 <dialog id="dlg"></dialog>
 
 <script>
@@ -523,8 +526,29 @@ function vFam(){
    `<div class="card"><b>Sao lưu</b><div class="mute">Dữ liệu chỉ nằm trong trình duyệt của máy này. Hãy tải bản sao lưu định kỳ.</div>
     <div class="row"><button class="btn pri" onclick="exportAll()">Tải JSON</button>
     <label class="btn" style="display:inline-block">Khôi phục từ JSON<input type="file" accept=".json" hidden onchange="restore(this.files[0])"></label></div></div>
+    <div class="card"><b>Xuất bảng tính (CSV, mở bằng Excel hoặc Google Sheets)</b>
+     <div class="row"><button class="btn" onclick="exportCsv('p')">Sản phẩm</button><button class="btn" onclick="exportCsv('l')">Lịch uống</button><button class="btn" onclick="exportCsv('i')">Lượt đã uống</button></div></div>
+    <div class="card"><b>Báo cáo in hoặc lưu PDF (mang đi khám, đưa bác sĩ, dược sĩ)</b>
+     <div class="row"><select id="rm" style="width:auto;flex:1">${S.members.map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join('')}</select><button class="btn pri" onclick="printReport($('#rm').value)">In báo cáo</button></div></div>
     <div class="note">App chỉ lưu và nhắc theo dữ liệu bạn nhập, không thay lời khuyên của bác sĩ hay dược sĩ.</div>`);
 }
+const csvCell=v=>{v=String(v??'');if(/^[=+\-@\t\r]/.test(v))v="'"+v;return /[",\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}; // chặn công thức độc khi mở bằng Excel
+const toCsv=(rows,cols)=>'﻿'+[cols.map(c=>csvCell(c[0])).join(','),...rows.map(r=>cols.map(c=>csvCell(c[1](r))).join(','))].join('\r\n');
+const ingText=p=>(p?.ingredients||[]).map(g=>`${g.name} ${g.amount} ${g.unit}`.trim()).join('; ');
+function exportCsv(k){
+  const d=today();
+  if(k==='p')dl('san-pham-'+d+'.csv',toCsv(S.products,[['Tên',p=>p.name],['Hãng',p=>p.brand],['Dạng',p=>p.form],['Thành phần mỗi liều',ingText],['Liều trên nhãn',p=>p.dosageLabel],['Giá CZK',p=>p.price],['Nơi mua',p=>p.store],['Link',p=>p.url],['Cảnh báo',p=>p.warnings],['Ghi chú',p=>p.notes]]),'text/csv');
+  if(k==='l')dl('lich-uong-'+d+'.csv',toCsv(S.plans,[['Người',x=>mname(x.memberId)],['Sản phẩm',x=>pname(x.productId)],['Giờ',x=>x.time],['Buổi',x=>x.label],['Liều',x=>x.qty],['Bằng mấy liều nhãn',x=>x.servings],['Bắt đầu',x=>x.start],['Kết thúc',x=>x.end]]),'text/csv');
+  if(k==='i')dl('luot-uong-'+d+'.csv',toCsv([...S.intakes].sort((a,b)=>a.date.localeCompare(b.date)),[['Ngày',i=>i.date],['Người',i=>mname(byId(S.plans,i.planId)?.memberId)],['Sản phẩm',i=>pname(byId(S.plans,i.planId)?.productId)],['Kết quả',i=>i.status==='taken'?'Đã uống':'Bỏ liều']]),'text/csv');
+}
+function reportHtml(m){
+  const day=today(),plans=activePlans(m.id,day).sort((a,b)=>(a.time||'99').localeCompare(b.time||'99')),W=warningsFor(m);
+  return`<h2>${esc(m.name)}${m.born?` (sinh ${esc(m.born)})`:''}${m.weight?', '+esc(m.weight)+' kg':''}</h2><p>In ngày ${esc(day)} từ ứng dụng Sổ TPCN gia đình. Dữ liệu do người dùng nhập, chưa được bác sĩ kiểm tra.</p>
+  <p><b>Bệnh nền:</b> ${esc(m.conditions||'không ghi')}<br><b>Thuốc kê đơn:</b> ${esc(m.meds||'không ghi')}<br><b>Dị ứng:</b> ${esc(m.allergies||'không ghi')}</p>
+  <h3>Thực phẩm chức năng đang dùng</h3>
+  ${plans.length?`<table><tr><th>Sản phẩm</th><th>Hãng</th><th>Thành phần mỗi liều nhãn</th><th>Liều</th><th>Giờ</th><th>Từ ngày</th></tr>${plans.map(p=>{const pr=byId(S.products,p.productId);return`<tr><td>${esc(pr.name)}</td><td>${esc(pr.brand)}</td><td>${esc(ingText(pr))}</td><td>${esc(p.qty)}${p.servings&&p.servings!=1?' ('+esc(p.servings)+' liều nhãn)':''}</td><td>${esc(p.time)} ${esc(p.label)}</td><td>${esc(p.start)}</td></tr>`}).join('')}</table>`:'<p>Không có sản phẩm nào đang dùng.</p>'}
+  <h3>Lưu ý do ứng dụng tính</h3>${W.length?`<ul>${W.map(w=>`<li><b>${LV[w.lv]}:</b> ${esc(w.title)}. ${esc(w.text)}</li>`).join('')}</ul>`:'<p>Không có.</p>'}`}
+function printReport(mid){const m=byId(S.members,mid);if(!m){alert('Chưa có thành viên.');return}$('#report').innerHTML=reportHtml(m);print()}
 async function exportAll(){const images={};for(const id of S.products.flatMap(p=>p.imageIds||[])){const u=await getImg(id).catch(()=>null);if(u)images[id]=u}dl('tpcn-backup-'+today()+'.json',JSON.stringify({...S,images}),'application/json')}
 async function restore(f){if(!f)return;try{const d=JSON.parse(await f.text());if(!d||!Array.isArray(d.products)||!Array.isArray(d.members)||d.v!==2)throw new Error('Không đúng định dạng sao lưu của bản này');if(!confirm('Khôi phục sẽ GHI ĐÈ toàn bộ dữ liệu hiện tại. Tiếp tục?'))return;const {images,...rest}=d;S={...empty(),...rest};for(const [id,u] of Object.entries(images||{}))if(/^data:image\//.test(u))await putImg(id,u);save();render()}catch(e){alert('Lỗi: '+e.message)}}
 
