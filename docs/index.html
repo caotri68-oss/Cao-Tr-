@@ -362,7 +362,9 @@ function vAdd(){
   const d=draft,isNew=!byId(S.products,d.id);
   view(isNew?'Thêm sản phẩm':'Sửa sản phẩm',addMsg||'Kiểm tra từng dòng trước khi lưu.',
    `<div class="card" style="display:grid;gap:10px">
+    ${d.nih?nihCard(d.nih):''}
     <div id="imgs" class="imgs"></div>
+    <div><label class="btn sm" style="display:inline-block">+ Thêm ảnh khác của sản phẩm này<input type="file" accept="image/*" multiple hidden onchange="addPhotosToDraft(this.files)"></label> <span class="mute" id="addst"></span></div>
     <label>Tên sản phẩm<input id="a_name" value="${esc(d.name)}"></label>
     <label>Hãng<input id="a_brand" value="${esc(d.brand)}"></label>
     <label>Dạng (viên, bột, nước…)<input id="a_form" value="${esc(d.form)}"></label>
@@ -388,7 +390,7 @@ function ingAdd(){draft.ingredients.push({name:'',amount:'',unit:'mg',form:''});
 function ingDel(i){draft.ingredients.splice(i,1);if(!draft.ingredients.length)ingAdd();else vAdd()}
 function saveProduct(){
   const d=draft;if(!d.name.trim()){alert('Cần nhập tên sản phẩm.');return}
-  d.name=d.name.trim();d.price=d.price===''?'':Number(d.price);
+  d.name=d.name.trim();delete d.nih;d.price=d.price===''?'':Number(d.price);
   d.ingredients=d.ingredients.filter(g=>g.name.trim()).map(g=>({...g,name:g.name.trim(),amount:g.amount===''?'':Number(String(g.amount).replace(',','.'))})).map(({check,...g})=>g);
   if(d.ingredients.some(g=>g.amount!==''&&Number.isNaN(g.amount))){alert('Có lượng hoạt chất không phải số. Hãy sửa lại.');return}
   const id=d.id;draft=null;addMsg='';
@@ -440,15 +442,88 @@ async function createFromStage(){
   const raw=stage.text.trim();
   if(!raw&&!stage.images.length){alert('Chưa có chữ hay ảnh. Hãy chọn ảnh, lấy văn bản từ link hoặc dán chữ trước.');return}
   const f=parseFacts(raw),d=blank();
-  d.name=stage.title.trim();d.text=raw;d.url=safeUrl(stage.source)?stage.source:'';
+  d.name=stage.autoTitle?cleanTitle(stage.title):stage.title.trim();d.text=raw;d.url=safeUrl(stage.source)?stage.source:'';
   d.dosageLabel=(f.directions||f.serving).trim();d.warnings=f.warnings.trim();
   d.notes=f.other?'Thành phần khác: '+f.other.trim():'';
+  if(d.url){try{d.store=new URL(d.url).hostname.replace(/^www\./,'')}catch{}
+    const pr=findPrice(raw);if(pr){if(pr.czk!=null)d.price=pr.czk;d.notes=(d.notes?d.notes+'\n':'')+'Giá lấy tự động từ trang: '+pr.text+' (hãy kiểm tra lại).'}}
   if(f.ingredients.length)d.ingredients=f.ingredients;
   for(const u of stage.images){const id=uid();await putImg(id,u);d.imageIds.push(id)}
   const n=f.ingredients.length,c=f.ingredients.filter(g=>g.check).length;
   addMsg=n?`Tìm thấy ${n} hoạt chất${c?`, ${c} dòng cần soát kỹ`:''}. Đối chiếu với ảnh nhãn.`:'Không tìm thấy dòng hoạt chất nào. Văn bản gốc vẫn được lưu kèm, hãy nhập tay.';
-  stage={title:'',source:'',text:'',images:[]};draft=d;go('add');
+  const nih=await nihMatch(d,stage);if(nih){d.nih=nih;addMsg+=' Có nhãn NIH khớp, xem khung xanh bên dưới.'}
+  stage={title:'',source:'',text:'',images:[],autoTitle:false};draft=d;go('add');
 }
+/* ---------- Tự đối chiếu với kho NIH, tên, giá ---------- */
+function cleanTitle(t){
+  let s=String(t||'').split(/\s[|–—]\s|\s-\s/)[0];
+  s=s.replace(/,?\s*\b\d+\s*(?:capsules?|caps|tablets?|softgels?|veggie\s*caps?|vcaps?|count|ct|pcs|viên|tobolek|kapslí|tablet)\b.*$/i,'');
+  return s.replace(/\s+/g,' ').replace(/[,\s]+$/,'').trim().slice(0,100)}
+function findPrice(t){
+  let m=String(t||'').match(/(\d{1,3}(?:[ . ]\d{3})*|\d+)(?:[.,]\d{1,2})?\s*(?:Kč|CZK)/i);
+  if(m){const num=Number(m[0].replace(/\s*(Kč|CZK)/i,'').replace(/[ . ](?=\d{3}\b)/g,'').replace(',','.'));if(num>0&&num<100000)return{czk:num,text:m[0].trim()}}
+  m=String(t||'').match(/(?:\$|€|£)\s?\d+(?:[.,]\d{2})?|\d+(?:[.,]\d{2})?\s?(?:€|EUR|USD)/i);
+  return m?{czk:null,text:m[0].trim()}:null}
+const ingKey=g=>nutrKey(g)||norm(g.name).replace(/[^a-z0-9à-ỹ]+/g,' ').trim();
+function compareIngs(photo,nih){
+  const idx=new Map();for(const g of nih){const k=ingKey(g);if(k&&!idx.has(k))idx.set(k,g)}
+  let ok=0,matched=0;const diffs=[],marks=[],seen=new Set();
+  for(const g of photo){const k=ingKey(g),o=idx.get(k);
+    if(!o){diffs.push(`${g.name}: có trong ảnh nhưng không có trong NIH`);continue}
+    seen.add(k);matched++;
+    const nk=nutrKey(g),a=nk?toUnit(g.amount,g.unit,o.unit,nk):(g.unit===o.unit?Number(g.amount):null),b=Number(o.amount);
+    if(a==null||!b){ok+=.5;continue}
+    if(Math.abs(a-b)/b<=0.03)ok++;else{diffs.push(`${g.name}: ảnh ${g.amount} ${g.unit}, NIH ${o.amount} ${o.unit}`);marks.push(g)}}
+  return{score:photo.length?ok/photo.length:0,matched,diffs,marks,onlyNih:[...idx.keys()].filter(k=>!seen.has(k)).length}}
+function nihQueries(stg){
+  const qs=[],t=cleanTitle(stg.title);if(t)qs.push(t.replace(/,/g,' '));
+  const lines=String(stg.text||'').split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+  const stop=lines.findIndex(l=>/supplement facts|amount per serving|serving size|nutrition facts|údaje o výživě/i.test(l));
+  const head=(stop<0?lines.slice(0,4):lines.slice(0,stop)).filter(l=>l.length>=4&&l.length<=60&&(l.match(/[A-Za-zÀ-ỹ]/g)||[]).length/l.length>.7).slice(0,3);
+  if(head.length)qs.push(head.join(' '));
+  return [...new Set(qs)]}
+async function nihMatch(d,stg){
+  const photo=d.ingredients.filter(g=>g.name&&g.amount!=='');
+  if(photo.length<2)return null;
+  const st=m=>{const e=$('#st');if(e)e.textContent=m};
+  const run=async()=>{
+    st('Đối chiếu với kho NIH…');let best=null;
+    for(const q of nihQueries(stg)){
+      const hits=(await dsldSearch(q)).sort((a,b)=>(a.off?1:0)-(b.off?1:0)).slice(0,4);
+      for(const h of hits){const cand=await dsldDraft(h.id),cmp=compareIngs(photo,cand.ingredients);
+        if(!best||cmp.score>best.cmp.score)best={h,cand,cmp}}
+      if(best&&best.cmp.score>=.8)break}
+    if(!best||best.cmp.score<.5||best.cmp.matched<2)return null;
+    best.cmp.marks.forEach(g=>g.check=true);
+    const c=best.cand;
+    return{id:best.h.id,name:c.name,brand:c.brand,score:best.cmp.score,diffs:best.cmp.diffs.slice(0,8),onlyNih:best.cmp.onlyNih,
+      draft:{ingredients:c.ingredients,dosageLabel:c.dosageLabel,warnings:c.warnings,notes:c.notes,form:c.form,url:c.url}}};
+  try{return await Promise.race([run(),new Promise(r=>setTimeout(()=>r(null),15000))])}catch{return null}}
+function nihCard(n){
+  return`<div class="note" style="border-color:var(--pri);background:var(--pri2);color:var(--ink)"><b>Khớp ${Math.round(n.score*100)}% với nhãn NIH: ${esc(n.name)} (${esc(n.brand)})</b>
+   ${n.diffs.length?`<div style="margin-top:4px">Chỗ lệch (đã viền cam ở dưới):<ul style="margin:4px 0 0;padding-left:18px">${n.diffs.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`:'<div style="margin-top:4px">Không có chỗ nào lệch.</div>'}
+   ${n.onlyNih?`<div class="mute">NIH còn ${n.onlyNih} chất không thấy trong ảnh.</div>`:''}
+   <div class="mute">Nhãn Mỹ, có thể khác bản bán ở Séc. Chọn dùng thì các dòng thành phần sẽ lấy theo NIH.</div>
+   <div class="row"><button class="btn sm pri" onclick="useNih()">Dùng dữ liệu NIH</button><button class="btn sm" onclick="draft.nih=null;vAdd()">Giữ theo ảnh</button></div></div>`}
+function useNih(){
+  const d=draft,n=d.nih;if(!n)return;
+  d.ingredients=n.draft.ingredients.map(g=>({...g}));
+  if(!d.name.trim())d.name=n.name;if(!d.brand)d.brand=n.brand;if(!d.form)d.form=n.draft.form||'';
+  d.dosageLabel=n.draft.dosageLabel||d.dosageLabel;if(!d.warnings)d.warnings=n.draft.warnings||'';
+  d.notes=(d.notes?d.notes+'\n':'')+`Thành phần lấy từ NIH DSLD #${n.id} (nhãn Mỹ).`;
+  d.nih=null;addMsg='Đã dùng thành phần của NIH. Đối chiếu với nhãn trên hộp.';vAdd()}
+async function addPhotosToDraft(files){
+  const fs=[...files];if(!fs.length)return;const d=draft,st=m=>{const e=$('#addst');if(e)e.textContent=m};
+  try{st('Đang xử lý ảnh…');const urls=[];for(const f of fs)urls.push(await shrink(f));
+    for(const u of urls){const id=uid();await putImg(id,u);d.imageIds.push(id)}
+    const t=await ocr(urls,st),f=parseFacts(t);let added=0;
+    for(const g of f.ingredients){if(!d.ingredients.some(x=>x.name.trim()&&ingKey(x)===ingKey(g))){if(d.ingredients.length===1&&!d.ingredients[0].name.trim())d.ingredients=[];d.ingredients.push(g);added++}}
+    if(!d.dosageLabel)d.dosageLabel=(f.directions||f.serving).trim();
+    if(!d.warnings)d.warnings=f.warnings.trim();
+    if(f.other&&!/Thành phần khác/.test(d.notes||''))d.notes=(d.notes?d.notes+'\n':'')+'Thành phần khác: '+f.other.trim();
+    d.text=((d.text||'')+'\n\n'+t).trim();
+    addMsg=`Đã thêm ${urls.length} ảnh, bổ sung ${added} hoạt chất mới.`;vAdd();
+  }catch(e){st('Lỗi: '+e.message)}}
 function vImport(){
   view('Thêm sản phẩm','Từ ảnh nhãn, link hoặc chữ. Luôn soát lại trước khi lưu.',
   `<div class="card" style="display:grid;gap:10px">
@@ -474,7 +549,7 @@ function vImport(){
     catch(e){box.textContent='Không kết nối được kho NIH: '+e.message+'. Cần internet.'}};
   $('#dgo').onclick=dsearch;$('#dq').onkeydown=e=>{if(e.key==='Enter')dsearch()};
   $('#go').onclick=async()=>{sync();$('#go').disabled=true;try{await createFromStage()}catch(e){st('Lỗi: '+e.message);$('#go').disabled=false}};
-  $('#bu').onclick=async()=>{sync();try{st('Đang lấy…');const r=await fetchText(stage.source.trim());stage.title=stage.title||r.title;stage.text=(stage.text?stage.text+'\n\n':'')+r.text;st('Đang phân tích…');await createFromStage()}catch(e){st('Lỗi: '+e.message)}};
+  $('#bu').onclick=async()=>{sync();try{st('Đang lấy…');const r=await fetchText(stage.source.trim());if(!stage.title.trim()){stage.title=r.title;stage.autoTitle=true}stage.text=(stage.text?stage.text+'\n\n':'')+r.text;st('Đang phân tích…');await createFromStage()}catch(e){st('Lỗi: '+e.message)}};
   $('#u').onkeydown=e=>{if(e.key==='Enter')$('#bu').click()};
   $('#im').onchange=async e=>{const fs=[...e.target.files];if(!fs.length)return;sync();
     try{st('Đang xử lý ảnh…');const urls=[];for(const f of fs)urls.push(await shrink(f));stage.images.push(...urls);
@@ -491,7 +566,7 @@ async function dsldSearch(q){
   const r=await fetch(DSLD+'search-filter?size=8&q='+encodeURIComponent(q));if(!r.ok)throw new Error('NIH trả lỗi '+r.status);
   const d=await r.json();return (d.hits||[]).map(h=>({id:h._id,brand:h._source.brandName||'',name:h._source.fullName||'',off:h._source.offMarket,form:h._source.physicalState?.langualCodeDescription||'',date:h._source.entryDate||''}))}
 const DUNIT={mg:'mg',mcg:'mcg','mcg rae':'mcg','mcg dfe':'mcg','mg ne':'mg','mg ate':'mg','mg at':'mg','mcg re':'mcg',g:'g',gram:'g',iu:'IU',ml:'ml',cfu:'CFU','billion cfu':'CFU'};
-async function createFromDsld(id){
+async function dsldDraft(id){
   const r=await fetch(DSLD+'label/'+id);if(!r.ok)throw new Error('NIH trả lỗi '+r.status);
   const L=await r.json(),d=blank();
   d.name=L.fullName||'';d.brand=L.brandName||'';d.form=L.physicalState?.langualCodeDescription||'';d.url='https://dsld.od.nih.gov/label/'+L.id;
@@ -512,6 +587,11 @@ async function createFromDsld(id){
   d.warnings=(L.statements||[]).filter(s=>/^Precaution/i.test(s.type)).map(s=>s.notes).filter(Boolean).join('\n');
   const oi=L.otheringredients,oit=typeof oi==='string'?oi:(oi?.text||'');
   d.notes=`Nguồn: NIH DSLD #${L.id}, nhãn Mỹ nhập ${L.entryDate||'?'}.`+(oit?'\nThành phần khác: '+oit:'');
+  d.nihId=L.id;
+  return d;
+}
+async function createFromDsld(id){
+  const d=await dsldDraft(id);
   addMsg='Dữ liệu từ nhãn Mỹ của NIH, có thể khác bản bán ở Séc hoặc Việt Nam. Đối chiếu với nhãn trên hộp.';
   draft=d;go('add');
 }
