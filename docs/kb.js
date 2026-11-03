@@ -1215,13 +1215,65 @@ window.KB={
       'Phụ nữ mang thai: khoảng 90–95% ăn ít cholin hơn mức đủ; viên vitamin tiền sản thường chứa rất ít cholin (NIH).'],
     interactions:['Cholin không có tương tác thuốc quan trọng về lâm sàng (NIH).'],
     foods:'Thịt, gia cầm, cá, sữa, trứng, rau họ cải, đậu, hạt, ngũ cốc nguyên hạt. Khoảng một nửa cholin trong khẩu phần Mỹ là phosphatidylcholine (NIH).',
-    sources:[['NIH ODS – Choline','https://ods.od.nih.gov/factsheets/Choline-HealthProfessional/']]}
+    sources:[['NIH ODS – Choline','https://ods.od.nih.gov/factsheets/Choline-HealthProfessional/']]},
+
+  mgforms:{
+    name:'Các dạng magie',aka:'magie citrat, lactat, taurat, glycinat, bisglycinat, malat, threonat, aspartat, clorua, oxit, sunfat',updated:'2026-11-03',
+    what:'Magie bán dưới nhiều muối khác nhau. Mỗi muối chứa lượng magie nguyên chất khác nhau và được cơ thể hấp thu khác nhau. Điều cần nhìn trên nhãn là lượng magie nguyên chất (elemental), không phải khối lượng cả viên.',
+    benefits:[
+      ['chac','Dạng tan tốt trong nước (aspartat, citrat, lactat, clorua) có sinh khả dụng cao hơn oxit và sunfat.','NIH ODS – Magnesium'],
+      ['cothe','Magie citrat được một thử nghiệm ngẫu nhiên mù đôi ghi là hấp thu tốt hơn các chế phẩm magie khác, và hấp thu tốt hơn oxit trong các nghiên cứu so sánh.','NIH ODS – Magnesium (tài liệu dẫn)'],
+      ['chuaro','Glycinat (bisglycinat) thường được quảng cáo là dịu với dạ dày; taurat, malat, threonat được quảng cáo cho tim, năng lượng, trí nhớ. Các nguồn tôi đọc là bài tổng quan cho người dùng, chưa có thử nghiệm so sánh trực tiếp giữa các dạng này ở người.','Bài tổng quan tiêu dùng (chưa phải nghiên cứu gốc)']],
+    need:'Nhu cầu và mức tối đa theo từng người: xem bài Magie. NIH ghi mức tối đa cho magie bổ sung (không tính thức ăn) là 350 mg mỗi ngày với người lớn; EFSA đặt thấp hơn (250 mg). Khi đọc nhãn, cộng lượng magie nguyên chất từ mọi sản phẩm.',
+    how:[
+      'Citrat: tan tốt, hấp thu tốt hơn oxit; liều cao dễ gây phân lỏng. Hay dùng khi táo bón.',
+      'Lactat và clorua: cùng nhóm tan tốt như citrat theo NIH.',
+      'Aspartat: cũng thuộc nhóm tan tốt (NIH).',
+      'Oxit: hàm lượng magie cao nhưng hấp thu kém; phần không hấp thu giữ nước trong ruột nên hay gây tiêu chảy, thường dùng làm thuốc nhuận tràng.',
+      'Sunfat (muối Epsom): hấp thu kém như oxit; dùng uống chủ yếu là nhuận tràng.',
+      'Glycinat / bisglycinat: magie gắn với glycin; thường được mô tả là dịu với đường tiêu hoá. Chưa có thử nghiệm trực tiếp ở người trong nguồn tôi đọc.',
+      'Malat: magie gắn với axit malic; bán cho mệt mỏi và đau cơ, bằng chứng chưa rõ.',
+      'Taurat: magie gắn với taurin; bán cho tim mạch và huyết áp, bằng chứng chưa rõ.',
+      'L-threonat: bán cho trí nhớ và nhận thức; có dữ liệu động vật và sơ bộ ở người, chưa đủ để kết luận.',
+      'Orotat, carbonat, hydroxit: ít có dữ liệu trong nguồn đã đọc; hydroxit và carbonat còn có trong thuốc kháng acid.'],
+    forms:'Citrat, lactat, clorua, aspartat, oxit, sunfat, glycinat (bisglycinat), malat, taurat, L-threonat, orotat, carbonat, hydroxit. Chọn theo mục đích và độ dung nạp; so lượng magie nguyên chất trên nhãn.',
+    cautions:[
+      'Liều cao từ thực phẩm bổ sung hoặc thuốc có thể gây tiêu chảy, buồn nôn, đau quặn bụng. Liều rất cao có thể gây ngộ độc magie (hạ huyết áp, nôn, khó thở, loạn nhịp tim); đã có vài ca tử vong được báo cáo (NIH).',
+      'Thận là cơ quan thải magie chính. Người bệnh thận cần hỏi bác sĩ trước khi dùng magie bổ sung (suy luận từ vai trò của thận, không phải câu NIH trích).'],
+    interactions:['Magie có thể tương tác với bisphosphonate đường uống, kháng sinh tetracyclin và nhóm quinolon. Thuốc lợi tiểu và thuốc ức chế bơm proton có thể làm thay đổi tình trạng magie (NIH).','Thuốc kháng acid chứa magie (ví dụ magie hydroxit) cũng cộng vào tổng lượng magie trong ngày.'],
+    foods:'Rau lá xanh, hạt, đậu, ngũ cốc nguyên hạt; nước khoáng cũng có magie.',
+    sources:[['NIH ODS – Magnesium (Health Professional)','https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/'],['EFSA – mức tối đa (bảng tổng hợp)','https://www.efsa.europa.eu/sites/default/files/2024-05/ul-summary-report.pdf']]},
+
+  caforms:{
+    name:'Các dạng canxi',aka:'canxi carbonat, citrat, lactat, gluconat, phosphat, bisglycinat, malat, hydroxyapatit, MCHC',updated:'2026-11-03',
+    what:'Canxi bán dưới nhiều muối. Nhãn ghi lượng canxi nguyên chất (elemental calcium); đó mới là con số cần cộng, không phải khối lượng cả viên.',
+    benefits:[
+      ['chac','Hai dạng chính trong thực phẩm bổ sung là carbonat và citrat (NIH). Carbonat hấp thu tốt nhất khi uống cùng bữa ăn; citrat hấp thu tốt cả lúc đói lẫn lúc no.','NIH ODS – Calcium (cho người dùng)'],
+      ['chac','Người có ít acid dạ dày (thường gặp ở người lớn tuổi) hấp thu citrat dễ hơn carbonat.','NIH ODS – Calcium (cho người dùng)'],
+      ['cothe','Lượng canxi nguyên chất trong từng muối (theo Mayo Clinic): carbonat 40%, citrat 21%, lactat 13%, gluconat 9%. Viên lactat và gluconat ít canxi mỗi viên nên phải uống nhiều viên hơn.','Mayo Clinic'],
+      ['chuaro','Bisglycinat, malat, hydroxyapatit (MCHC) và các dạng chelat được quảng cáo là hấp thu tốt hoặc dịu hơn; các nguồn tôi đọc không có thử nghiệm so sánh trực tiếp ở người cho các dạng này.','Chưa có nguồn đã đọc']],
+    need:'Nhu cầu và mức tối đa theo tuổi: xem bài Canxi. Hấp thu cao nhất khi mỗi lần uống từ 500 mg canxi nguyên chất trở xuống, nên chia liều nếu uống nhiều hơn (NIH, Mayo Clinic).',
+    how:[
+      'Carbonat: nhiều canxi nhất mỗi viên (40%), rẻ. Uống cùng bữa ăn. Có thể gây đầy hơi và táo bón.',
+      'Citrat: ít canxi hơn mỗi viên (21%), nhưng uống lúc nào cũng được và dễ hấp thu hơn khi ít acid dạ dày.',
+      'Lactat: khoảng 13% canxi nguyên chất; viên nhỏ nên thường phải uống nhiều viên.',
+      'Gluconat: khoảng 9% canxi nguyên chất, rất ít mỗi viên.',
+      'Phosphat (tricalcium phosphat), sunfat, ascorbat, hydroxyapatit vi tinh thể (MCHC): có trong thực phẩm bổ sung nhưng ít dữ liệu so sánh trong nguồn đã đọc.',
+      'Bisglycinat (chelat): được quảng cáo dịu với dạ dày; chưa có so sánh trực tiếp ở người trong nguồn đã đọc.',
+      'Citrat-malat: có trong một số thực phẩm tăng cường như nước ép; bằng chứng riêng chưa đọc.'],
+    forms:'Carbonat, citrat, lactat, gluconat, phosphat, sunfat, ascorbat, hydroxyapatit (MCHC), bisglycinat, citrat-malat. Đọc dòng canxi nguyên chất, không đọc khối lượng muối.',
+    cautions:[
+      'Canxi bổ sung quá nhiều có thể gây táo bón và cản hấp thu sắt và kẽm. Người có bệnh thận, sỏi thận hoặc thận có vôi hoá nên hỏi bác sĩ trước khi dùng canxi bổ sung (tổng quan chung, hãy xác nhận với bác sĩ).',
+      'Không chỉ uống canxi; đủ vitamin D và vitamin K2 cũng được đề cập trong các bài riêng.'],
+    interactions:['Canxi có thể làm giảm hấp thu một số thuốc: thuốc tuyến giáp levothyroxine, kháng sinh tetracyclin và quinolon, bisphosphonate. Nên uống cách xa nhau vài giờ; hỏi dược sĩ giờ uống phù hợp cho từng thuốc.','Canxi cũng làm giảm hấp thu sắt và kẽm khi uống cùng lúc (NIH).'],
+    foods:'Sữa, sữa chua, phô mai, cá nhỏ ăn cả xương, rau họ cải, đậu phụ có canxi, đồ uống thực vật tăng cường canxi.',
+    sources:[['NIH ODS – Calcium (cho người dùng)','https://ods.od.nih.gov/factsheets/Calcium-Consumer/'],['NIH ODS – Calcium (Health Professional)','https://ods.od.nih.gov/factsheets/Calcium-HealthProfessional/'],['Mayo Clinic – Calcium supplements','https://www.mayoclinic.org/healthy-lifestyle/nutrition-and-healthy-eating/in-depth/calcium-supplements/art-20047097']]}
 };
 
 /* Nhóm danh mục: thứ tự hiển thị và các chất trong từng nhóm (khoá của KB) */
 window.KB_CATS=[
   {n:'Vitamin',keys:['vitA','b1','b2','niacin','b5','b6','biotin','folic','b12','bcomplex','choline','vitC','vitD','vitE','vitK']},
-  {n:'Khoáng chất',keys:['ca','fe','zn','mg','cu','mn','se','io','boron']},
+  {n:'Khoáng chất',keys:['ca','caforms','mg','mgforms','fe','zn','cu','mn','se','io','boron']},
   {n:'Chống oxy hoá và hợp chất khác',keys:['gsh','ala','quercetin','lycopene','inositol']},
   {n:'Đạm, omega-3 và năng lượng',keys:['protein','om3','creatine','coq10','nmn','pqq']},
   {n:'Khớp, da và mắt',keys:['collagen','gluco','boswellia','curc','astaxanthin','lutein']},
