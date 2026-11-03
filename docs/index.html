@@ -54,6 +54,10 @@ dialog::backdrop{background:#0008}
 dialog form{padding:16px;display:grid;gap:10px}
 .imgs{display:flex;gap:6px;flex-wrap:wrap}.imgs img{height:70px;border-radius:6px;border:1px solid var(--line);cursor:zoom-in}
 .ing input.chk{border:2px solid var(--warn);background:var(--warnbg)}
+.w{border:1px solid var(--line);border-radius:10px;padding:10px;font-size:14px;margin-bottom:8px}
+.w3{background:#fef2f2;border-color:#f5b5b5;color:#7f1d1d}.w2{background:var(--warnbg);border-color:var(--warn)}.w1{background:var(--bg)}
+@media (prefers-color-scheme:dark){.w3{background:#3b1414;border-color:#7f1d1d;color:#fecaca}}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden}.bar i{display:block;height:8px}
 .note{background:var(--warnbg);border:1px solid var(--warn);color:var(--warn);border-radius:10px;padding:8px 10px;font-size:13px}
 </style>
 </head>
@@ -67,7 +71,7 @@ dialog form{padding:16px;display:grid;gap:10px}
 'use strict';
 /* ---------- Lưu trữ: IndexedDB ---------- */
 const DB='tpcn-v2',KEY='state';
-const empty=()=>({v:2,members:[],products:[],plans:[],intakes:[],notes:[]});
+const empty=()=>({v:2,members:[],products:[],plans:[],intakes:[],notes:[],dismissed:[]});
 let S=empty();
 const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open(DB,2);
   r.onupgradeneeded=()=>{const d=r.result;if(!d.objectStoreNames.contains('kv'))d.createObjectStore('kv');if(!d.objectStoreNames.contains('img'))d.createObjectStore('img')};
@@ -122,6 +126,93 @@ function dialog(title,fields,data,onSave){
 const upsert=(arr,o)=>{const i=arr.findIndex(x=>x.id===o.id);i<0?arr.push(o):arr[i]=o;save();render()};
 const remove=(arr,id,msg)=>{if(confirm(msg||'Xoá mục này?')){arr.splice(arr.findIndex(x=>x.id===id),1);save();render()}};
 
+/* ---------- Cảnh báo ----------
+   Mức tối đa (UL) cho người lớn từ NIH Office of Dietary Supplements. App chỉ nhắc, không thay bác sĩ. */
+const ODS='https://ods.od.nih.gov/factsheets/',odsUrl=s=>ODS+s+'-HealthProfessional/';
+const NUTR={
+  vitA:{n:'Vitamin A',re:/vitamin a\b|retinol|retinyl/i,ul:3000,u:'mcg',src:'VitaminA',skipForm:/carot/i,note:'Chỉ tính dạng retinol, không tính beta-caroten.'},
+  vitC:{n:'Vitamin C',re:/vitamin c\b|ascorb/i,ul:2000,u:'mg',src:'VitaminC'},
+  vitD:{n:'Vitamin D',re:/vitamin d\d?\b|cholecalciferol|ergocalciferol/i,ul:100,u:'mcg',src:'VitaminD'},
+  vitE:{n:'Vitamin E',re:/vitamin e\b|tocopher/i,ul:1000,u:'mg',src:'VitaminE'},
+  b6:{n:'Vitamin B6',re:/vitamin b-?6\b|pyridox/i,ul:100,u:'mg',src:'VitaminB6',note:'Châu Âu (EFSA) đặt mức thấp hơn: 12 mg/ngày.'},
+  niacin:{n:'Niacin (B3)',re:/niacin|vitamin b-?3\b|nicotin/i,ul:35,u:'mg',src:'Niacin'},
+  folic:{n:'Axit folic',re:/folic|folate|folát|listov/i,ul:1000,u:'mcg',src:'Folate',note:'Mức này tính cho folic acid; nhãn ghi theo DFE sẽ cho số cao hơn lượng thật.'},
+  ca:{n:'Canxi',re:/calci|canxi|vápník/i,ul:2500,ul51:2000,u:'mg',src:'Calcium'},
+  fe:{n:'Sắt',re:/\biron\b|sắt|železo|ferrous|ferric/i,ul:45,u:'mg',src:'Iron'},
+  zn:{n:'Kẽm',re:/zinc|kẽm|zinek/i,ul:40,u:'mg',src:'Zinc'},
+  mg:{n:'Magie',re:/magnes|magie|hořčík/i,ul:350,u:'mg',src:'Magnesium',note:'Chỉ tính magie từ thực phẩm chức năng, không tính từ thức ăn.'},
+  se:{n:'Selen',re:/selen/i,ul:400,u:'mcg',src:'Selenium'},
+  io:{n:'I-ốt',re:/iodine|iod|i-?ốt|jód/i,ul:1100,u:'mcg',src:'Iodine'},
+  cu:{n:'Đồng',re:/copper|cupr|měď/i,ul:10000,u:'mcg',src:'Copper'},
+  mn:{n:'Mangan',re:/mangan/i,ul:11,u:'mg',src:'Manganese'},
+  vitK:{n:'Vitamin K',re:/vitamin k\d?\b|phylloquinone|menaquinone/i,u:'mcg',src:'VitaminK'}
+};
+// Cặp chất nên uống cách nhau (phút)
+const SPACING=[
+  {a:'ca',b:'fe',min:120,why:'Canxi làm giảm hấp thu sắt.',src:'Iron'},
+  {a:'zn',b:'fe',min:120,why:'Sắt liều cao có thể làm giảm hấp thu kẽm.',src:'Zinc'}
+];
+// Tương tác với thuốc kê đơn: dò theo tên thuốc ghi trong hồ sơ
+const DRUG=[
+  {id:'warfarin',re:/warfarin|coumadin|lawarin/i,n:['vitK'],title:'Vitamin K và thuốc chống đông warfarin',text:'Vitamin K làm thay đổi tác dụng của warfarin; lượng vitamin K cần giữ ổn định.',src:'VitaminK'},
+  {id:'levo',re:/levothyrox|euthyrox|letrox|thyrax|synthroid/i,n:['ca','fe'],title:'Canxi, sắt và thuốc tuyến giáp',text:'Canxi và sắt có thể làm giảm hấp thu levothyroxine; thường phải uống cách xa thuốc vài giờ.',src:'Calcium'},
+  {id:'abx',re:/cipro|levoflox|moxiflox|oflox|doxycyc|tetracyc|minocyc/i,n:['ca','fe','zn','mg'],title:'Khoáng chất và kháng sinh quinolon / tetracyclin',text:'Canxi, sắt, kẽm, magie gắn với các kháng sinh này và làm giảm tác dụng của thuốc; cần uống cách xa.',src:'Zinc'}
+];
+const LV=['','Nhẹ','Vừa','Nặng'];
+const fmt=n=>String(Math.round(n*10)/10);
+const ageOf=m=>m.born?new Date().getFullYear()-Number(m.born):null;
+const mins=t=>{const m=/^(\d{1,2}):(\d{2})/.exec(t||'');return m?+m[1]*60+ +m[2]:null};
+const hhmm=x=>pad(Math.floor(x/60))+':'+pad(x%60);
+const nutrKey=g=>{for(const k in NUTR)if(NUTR[k].re.test(g.name||''))return k;return null};
+const counts=(g,k)=>!(NUTR[k].skipForm&&NUTR[k].skipForm.test((g.form||'')+' '+g.name));
+function toUnit(a,u,t,k){if(a===''||a==null||Number.isNaN(Number(a)))return null;a=Number(a);if(u===t)return a;
+  const f={g:1e6,mg:1e3,mcg:1};if(f[u]&&f[t])return a*f[u]/f[t];
+  if(k==='vitD'&&u==='IU'&&t==='mcg')return a/40;return null}
+const activePlans=(mid,day)=>S.plans.filter(p=>p.memberId===mid&&(!p.start||p.start<=day)&&(!p.end||p.end>=day)&&byId(S.products,p.productId));
+const hasN=(p,k)=>(byId(S.products,p.productId)?.ingredients||[]).some(g=>nutrKey(g)===k&&counts(g,k));
+function totals(mid,day){const t={};
+  for(const p of activePlans(mid,day)){const pr=byId(S.products,p.productId),x=Number(p.servings)||1;
+    for(const g of pr.ingredients||[]){const k=nutrKey(g);if(!k||!counts(g,k))continue;
+      const e=t[k]=t[k]||{key:k,total:0,unknown:false,products:new Set()};
+      const v=toUnit(g.amount,g.unit,NUTR[k].u,k);if(v==null)e.unknown=true;else e.total+=v*x;e.products.add(pr.id)}}
+  return t}
+function warningsFor(m,day=today()){
+  const W=[],age=ageOf(m),t=totals(m.id,day),plans=activePlans(m.id,day);
+  const add=(lv,key,title,text,src,fix)=>{if(lv<3&&(S.dismissed||[]).includes(m.id+'|'+key))return;W.push({lv,key,title,text,src,fix,mid:m.id})};
+  const adult=age==null||age>=19;
+  for(const e of Object.values(t)){const N=NUTR[e.key];
+    if(N.ul&&adult){const ul=(age!=null&&age>=51&&N.ul51)||N.ul;
+      if(e.total>ul)add(3,'ul-'+e.key,'Vượt mức tối đa: '+N.n,`Tổng một ngày ${fmt(e.total)} ${N.u}, mức tối đa cho người lớn là ${fmt(ul)} ${N.u}.${N.note?' '+N.note:''}`,odsUrl(N.src));
+      else if(e.total>=ul*.8)add(2,'ul80-'+e.key,'Gần mức tối đa: '+N.n,`Tổng một ngày ${fmt(e.total)} ${N.u}, bằng ${Math.round(e.total/ul*100)}% mức tối đa (${fmt(ul)} ${N.u}).`,odsUrl(N.src))}
+    if(e.products.size>1)add(1,'dup-'+e.key,'Trùng hoạt chất: '+N.n,`Có trong ${e.products.size} sản phẩm: ${[...e.products].map(pname).join(', ')}.`);
+    if(e.unknown)add(1,'unk-'+e.key,'Chưa tính đủ: '+N.n,'Có sản phẩm ghi chất này nhưng thiếu lượng hoặc đơn vị không đổi được, nên tổng có thể thiếu.')}
+  for(const r of SPACING)for(const a of plans.filter(p=>hasN(p,r.a)))for(const b of plans.filter(p=>hasN(p,r.b))){
+    if(a.productId===b.productId)continue;
+    const ta=mins(a.time),tb=mins(b.time);if(ta==null||tb==null||Math.abs(ta-tb)>=r.min)continue;
+    let nt=ta+r.min;if(nt>1439)nt=ta-r.min;
+    add(2,`sp-${a.id}-${b.id}`,`Nên uống cách nhau: ${NUTR[r.a].n} và ${NUTR[r.b].n}`,`${pname(a.productId)} (${a.time}) và ${pname(b.productId)} (${b.time}) chỉ cách ${Math.abs(ta-tb)} phút. ${r.why} Nên cách ít nhất ${r.min/60} giờ.`,odsUrl(r.src),nt>=0?{plan:b.id,time:hhmm(nt)}:null)}
+  for(const r of DRUG){if(!r.re.test(m.meds||''))continue;const hit=plans.filter(p=>r.n.some(k=>hasN(p,k)));
+    if(hit.length)add(3,'drug-'+r.id,r.title,`${r.text} Liên quan: ${[...new Set(hit.map(p=>pname(p.productId)))].join(', ')}. Hỏi bác sĩ hoặc dược sĩ.`,odsUrl(r.src))}
+  if(plans.length){
+    if(!adult)add(2,'child','Chưa có mức cho trẻ em','Mức tối đa trong app là của người lớn. Trẻ em có mức thấp hơn nhiều, hãy hỏi bác sĩ nhi.');
+    if(age==null)add(1,'noage','Chưa có năm sinh','App đang dùng mức tối đa của người lớn. Nhập năm sinh để tính đúng hơn.');
+    if((m.meds||'').trim())add(1,'meds','Đang dùng thuốc kê đơn','App chỉ nhận ra vài tương tác phổ biến. Hãy đưa danh sách này cho bác sĩ hoặc dược sĩ xem cùng đơn thuốc.');
+    else if(age!=null&&age>=65)add(1,'65','Trên 65 tuổi','Nên ghi thuốc kê đơn vào hồ sơ và hỏi bác sĩ trước khi thêm TPCN mới.')}
+  return W.sort((a,b)=>b.lv-a.lv)}
+function warnCard(w,showName){return`<div class="w w${w.lv}"><b>${LV[w.lv]} · ${esc(w.title)}</b>${showName?` <span class="mute">(${esc(mname(w.mid))})</span>`:''}<div>${esc(w.text)}</div>
+  <div class="row" style="margin-top:6px;align-items:center">${w.src?`<a href="${esc(w.src)}" target="_blank" rel="noopener noreferrer" style="font-size:13px">Nguồn: NIH ODS</a>`:''}
+  ${w.fix?`<button class="btn sm" onclick="applyFix('${w.fix.plan}','${w.fix.time}')">Dời giờ sang ${esc(w.fix.time)}</button>`:''}
+  ${w.lv<3?`<button class="btn sm" onclick="dismissW('${w.mid}','${esc(w.key)}')">Bỏ qua</button>`:''}</div></div>`}
+function applyFix(id,time){const p=byId(S.plans,id);if(p){p.time=time;save();render()}}
+function dismissW(mid,key){S.dismissed=[...(S.dismissed||[]),mid+'|'+key];save();render()}
+function todayWarnings(){const W=S.members.filter(m=>!fMember||m.id===fMember).flatMap(m=>warningsFor(m));
+  const big=W.filter(w=>w.lv>=2),small=W.length-big.length;
+  return big.map(w=>warnCard(w,!fMember)).join('')+(small?`<div class="mute" style="margin-bottom:8px">Còn ${small} lưu ý nhẹ, xem ở tab <a href="#" onclick="go('fam');return false">Cả nhà</a>.</div>`:'')}
+function memberHealth(m){const age=ageOf(m),t=Object.values(totals(m.id,today())),W=warningsFor(m);
+  const bars=t.filter(e=>NUTR[e.key].ul).map(e=>{const N=NUTR[e.key],ul=(age!=null&&age>=51&&N.ul51)||N.ul,pc=e.total/ul*100;
+    return`<div style="margin-top:6px"><div style="display:flex;justify-content:space-between;gap:8px;font-size:13px"><span>${esc(N.n)}</span><span>${e.unknown?(e.total?'≥ '+fmt(e.total):'chưa rõ'):fmt(e.total)} / ${fmt(ul)} ${N.u}</span></div><div class="bar"><i style="width:${Math.min(100,pc)}%;background:${pc>100?'var(--bad)':pc>=80?'var(--warn)':'var(--pri)'}"></i></div></div>`}).join('');
+  return (bars?`<div style="margin-top:10px"><b style="font-size:14px">Tổng một ngày so với mức tối đa</b>${bars}</div>`:'')+(W.length?`<div style="margin-top:10px">${W.map(w=>warnCard(w,false)).join('')}</div>`:'')}
+
 /* ---------- Hôm nay ---------- */
 function slotsFor(day){
   const out=[];
@@ -143,7 +234,7 @@ function setIntake(planId,status){
 const chipRow=()=>S.members.length?`<div class="chips"><button class="${!fMember?'on':''}" onclick="fMember='';render()">Cả nhà</button>${S.members.map(m=>`<button class="${m.id===fMember?'on':''}" onclick="fMember='${m.id}';render()">${esc(m.name)}</button>`).join('')}</div>`:'';
 function vToday(){
   const day=today(),sl=slotsFor(day),taken=sl.filter(s=>s.intake?.status==='taken').length;
-  let html=chipRow(),last=null;
+  let html=chipRow()+todayWarnings(),last=null;
   for(const s of sl){
     const p=s.plan,st=s.intake?.status,key=(p.time||'')+(p.label||'');
     if(key!==last){html+=`<div class="slot">${esc(p.label||'Trong ngày')} ${p.time?'· '+esc(p.time):''}</div>`;last=key}
@@ -179,7 +270,7 @@ function vProduct(id){
    ${p.notes?`<div class="card"><b>Ghi chú</b><div class="mute">${esc(p.notes)}</div></div>`:''}
    ${(p.imageIds||[]).length?`<div class="card"><b>Ảnh nhãn</b><div id="pimgs" class="imgs" style="margin-top:6px"></div></div>`:''}
    ${p.text?`<details class="card"><summary><b>Văn bản gốc</b></summary><pre style="white-space:pre-wrap;font:13px/1.45 inherit;margin:8px 0 0">${esc(p.text)}</pre></details>`:''}
-   <div class="card"><b>Ai đang uống</b>${plans.map(x=>`<div class="mute" style="display:flex;gap:8px;align-items:center"><span class="grow">${esc(mname(x.memberId))} · ${esc(x.qty||'')} · ${esc(x.time||'')} ${esc(x.label||'')} · từ ${esc(x.start)}${x.end?' đến '+esc(x.end):''}</span>
+   <div class="card"><b>Ai đang uống</b>${plans.map(x=>`<div class="mute" style="display:flex;gap:8px;align-items:center"><span class="grow">${esc(mname(x.memberId))} · ${esc(x.qty||'')}${x.servings&&x.servings!=1?' ('+esc(x.servings)+' liều nhãn)':''} · ${esc(x.time||'')} ${esc(x.label||'')} · từ ${esc(x.start)}${x.end?' đến '+esc(x.end):''}</span>
      ${x.end?'':`<button class="btn sm" onclick="endPlan('${x.id}')">Dừng</button>`}<button class="btn sm del" onclick="remove(S.plans,'${x.id}')">Xoá</button></div>`).join('')||'<div class="mute">Chưa ai.</div>'}
     <div class="row"><button class="btn pri sm" onclick="editPlan('${id}')">+ Thêm người uống</button></div></div>
    <div class="row"><button class="btn" onclick="editProduct('${id}')">Sửa</button><button class="btn del" onclick="delProduct('${id}')">Xoá sản phẩm</button></div>`);
@@ -189,8 +280,8 @@ function endPlan(id){byId(S.plans,id).end=today();save();render()}
 function delProduct(id){if(!confirm('Xoá sản phẩm và mọi lịch uống của nó?'))return;(byId(S.products,id)?.imageIds||[]).forEach(delImg);S.plans.filter(x=>x.productId===id).forEach(x=>{S.intakes=S.intakes.filter(i=>i.planId!==x.id)});S.plans=S.plans.filter(x=>x.productId!==id);S.products=S.products.filter(x=>x.id!==id);save();go('shelf')}
 function editPlan(productId){
   if(!S.members.length){alert('Cần thêm thành viên ở tab Cả nhà trước.');return}
-  dialog('Thêm người uống',[{k:'memberId',l:'Ai uống',t:'sel',o:S.members.map(m=>[m.id,m.name])},{k:'qty',l:'Liều mỗi lần (vd: 1 viên)'},{k:'time',l:'Giờ uống',t:'time'},{k:'label',l:'Buổi (vd: Sáng, sau ăn)'},{k:'start',l:'Bắt đầu',t:'date'}],
-   {id:uid(),productId,memberId:S.members[0].id,time:'07:30',label:'Sáng, sau ăn',start:today(),qty:'1 viên'},o=>{if(!o.qty)return;upsert(S.plans,o)});
+  dialog('Thêm người uống',[{k:'memberId',l:'Ai uống',t:'sel',o:S.members.map(m=>[m.id,m.name])},{k:'qty',l:'Liều mỗi lần (vd: 1 viên)'},{k:'time',l:'Giờ uống',t:'time'},{k:'label',l:'Buổi (vd: Sáng, sau ăn)'},{k:'servings',l:'Bằng mấy liều ghi trên nhãn? (1 = đúng liều nhãn, dùng để cộng tổng)',t:'number'},{k:'start',l:'Bắt đầu',t:'date'}],
+   {id:uid(),productId,memberId:S.members[0].id,time:'07:30',label:'Sáng, sau ăn',start:today(),qty:'1 viên',servings:1},o=>{if(!o.qty)return;upsert(S.plans,o)});
 }
 
 /* ---------- Thêm / sửa sản phẩm ---------- */
@@ -331,7 +422,7 @@ function dl(name,data,type){const a=document.createElement('a');a.href=URL.creat
 function vFam(){
   view('Cả nhà','Hồ sơ và sao lưu',`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="editMember()">+ Thêm thành viên</button></div>`+
    (S.members.map(m=>`<div class="card"><h3>${esc(m.name)} <span class="mute">${m.born?'· sinh '+esc(m.born)+' ('+(new Date().getFullYear()-m.born)+' tuổi)':''}${m.weight?' · '+esc(m.weight)+' kg':''}</span></h3>
-    <div class="mute">Bệnh nền: ${esc(m.conditions||'—')}</div><div class="mute">Thuốc kê đơn: ${esc(m.meds||'—')}</div><div class="mute">Dị ứng: ${esc(m.allergies||'—')}</div>
+    <div class="mute">Bệnh nền: ${esc(m.conditions||'—')}</div><div class="mute">Thuốc kê đơn: ${esc(m.meds||'—')}</div><div class="mute">Dị ứng: ${esc(m.allergies||'—')}</div>${memberHealth(m)}
     <div class="row"><button class="btn sm" onclick="editMember('${m.id}')">Sửa</button><button class="btn sm del" onclick="delMember('${m.id}')">Xoá</button></div></div>`).join('')||`<div class="empty">Chưa có thành viên.</div>`)+
    `<div class="card"><b>Sao lưu</b><div class="mute">Dữ liệu chỉ nằm trong trình duyệt của máy này. Hãy tải bản sao lưu định kỳ.</div>
     <div class="row"><button class="btn pri" onclick="exportAll()">Tải JSON</button>
