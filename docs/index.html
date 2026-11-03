@@ -805,13 +805,71 @@ async function importProducts(f){
     if(!ok.length)throw new Error('Không có sản phẩm hợp lệ trong file');
     const upd=ok.filter(p=>byId(S.products,p.id)).length;
     if(!confirm(`Nhập ${ok.length} sản phẩm (${upd} sản phẩm đã có sẽ được cập nhật thành phần, lịch uống giữ nguyên). Tiếp tục?`))return;
-    const s=x=>String(x??'').slice(0,300),U=['mg','mcg','g','IU','ml','CFU'];
-    for(const p of ok){const old=byId(S.products,p.id)||{};
-      const o={...blank(),...old,id:p.id,name:s(p.name),brand:s(p.brand),form:s(p.form),dosageLabel:s(p.dosageLabel),url:safeUrl(p.url).slice(0,500),thumb:/^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(p.thumb||'')&&p.thumb.length<60000?p.thumb:(old.thumb||''),notes:s(p.notes).slice(0,1000),
-        ingredients:p.ingredients.slice(0,80).filter(g=>g&&typeof g.name==='string').map(g=>({name:s(g.name),amount:typeof g.amount==='number'&&g.amount>=0?g.amount:'',unit:U.includes(g.unit)?g.unit:'mg',form:s(g.form)}))};
-      const i=S.products.findIndex(x=>x.id===o.id);i<0?S.products.push(o):S.products[i]=o}
+    mergeProducts(ok);
     save();render();alert(`Đã nhập ${ok.length} sản phẩm.`);
   }catch(e){alert('Lỗi: '+e.message)}
+}
+const cleanStr=(x,n=300)=>String(x??'').slice(0,n);
+function mergeProducts(ok){
+  const s=cleanStr,U=['mg','mcg','g','IU','ml','CFU'];
+  for(const p of ok){const old=byId(S.products,p.id)||{};
+    const o={...blank(),...old,id:p.id,name:s(p.name),brand:s(p.brand),form:s(p.form),dosageLabel:s(p.dosageLabel),url:safeUrl(p.url).slice(0,500),thumb:/^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(p.thumb||'')&&p.thumb.length<60000?p.thumb:(old.thumb||''),notes:s(p.notes,1000),
+      ingredients:p.ingredients.slice(0,80).filter(g=>g&&typeof g.name==='string').map(g=>({name:s(g.name),amount:typeof g.amount==='number'&&g.amount>=0?g.amount:'',unit:U.includes(g.unit)?g.unit:'mg',form:s(g.form)}))};
+    const i=S.products.findIndex(x=>x.id===o.id);i<0?S.products.push(o):S.products[i]=o}}
+// Hồ sơ sức khỏe: chỉ giữ chuỗi, số, mảng và đối tượng lồng nhau, cắt độ dài, bỏ mọi thứ khác
+function cleanDeep(v,depth=0){
+  if(typeof v==='string')return v.slice(0,900);
+  if(typeof v==='number'||typeof v==='boolean')return v;
+  if(depth>4)return '';
+  if(Array.isArray(v))return v.slice(0,80).map(x=>cleanDeep(x,depth+1));
+  if(v&&typeof v==='object'){const o={};for(const k of Object.keys(v).slice(0,40))if(/^[a-zA-Z]{1,24}$/.test(k))o[k]=cleanDeep(v[k],depth+1);return o}
+  return ''}
+async function importProfile(f){
+  if(!f)return;
+  try{const d=JSON.parse(await f.text());
+    if(!d||d.kind!=='tpcn-profile'||d.v!==1||!d.member||typeof d.member.name!=='string')throw new Error('Không đúng định dạng file hồ sơ');
+    const m=d.member;if(typeof m.id!=='string'||!/^mem-[a-z0-9-]{1,40}$/.test(m.id))throw new Error('Mã thành viên không hợp lệ');
+    const prods=(d.products||[]).filter(p=>p&&typeof p.id==='string'&&/^prd-[a-z0-9-]{1,60}$/.test(p.id)&&typeof p.name==='string'&&Array.isArray(p.ingredients));
+    const plans=(d.plans||[]).filter(p=>p&&typeof p.id==='string'&&/^pln-[a-z0-9-]{1,60}$/.test(p.id)&&typeof p.productId==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(p.start||''));
+    if(!confirm(`Nhập hồ sơ của ${cleanStr(m.name,80)}: ${prods.length} sản phẩm, ${plans.length} lịch uống. Hồ sơ cũ cùng người sẽ được cập nhật. Tiếp tục?`))return;
+    const old=byId(S.members,m.id)||{};
+    const o={...old,id:m.id,name:cleanStr(m.name,80),born:typeof m.born==='number'?m.born:'',weight:typeof m.weight==='number'?m.weight:'',conditions:cleanStr(m.conditions,1500),meds:cleanStr(m.meds,1500),allergies:cleanStr(m.allergies,500),profile:cleanDeep(m.profile)};
+    const i=S.members.findIndex(x=>x.id===o.id);i<0?S.members.push(o):S.members[i]=o;
+    mergeProducts(prods);
+    for(const p of plans){if(!byId(S.products,p.productId))continue;
+      const pl={...(byId(S.plans,p.id)||{}),id:p.id,productId:p.productId,memberId:m.id,qty:cleanStr(p.qty,60),time:cleanStr(p.time,5),label:cleanStr(p.label,80),servings:typeof p.servings==='number'?p.servings:1,start:p.start,end:/^\d{4}-\d{2}-\d{2}$/.test(p.end||'')?p.end:''};
+      const j=S.plans.findIndex(x=>x.id===pl.id);j<0?S.plans.push(pl):S.plans[j]=pl}
+    save();go('fam','p:'+m.id);
+  }catch(e){alert('Lỗi: '+e.message)}
+}
+// ---- Trang hồ sơ sức khỏe: chữ lớn, tiếng Việt đơn giản, đọc từ trên xuống ----
+const PSTAT={dang:['Đang uống','var(--pri)'],chuaro:['Chưa rõ còn uống không','var(--warn)'],ngung:['Đã ngừng','var(--mute)']};
+const pArr=a=>Array.isArray(a)?a:[];
+const pUl=a=>pArr(a).length?`<ul style="margin:6px 0 0;padding-left:22px">${pArr(a).map(x=>`<li style="margin:6px 0">${esc(x)}</li>`).join('')}</ul>`:'';
+const pCard=(h,body,cls)=>body?`<div class="card ${cls||''}"><h3 style="font-size:20px;margin:0 0 6px">${h}</h3>${body}</div>`:'';
+function pMed(x){const st=PSTAT[x.status]||PSTAT.dang;
+  return`<div style="border-top:1px solid var(--line);padding:10px 0"><div style="font-size:18px"><b>${esc(x.n)}</b> <span style="font-size:15px">· ${esc(x.dose||'')}</span></div>
+   <div><span class="tag" style="background:none;color:${st[1]};border:1px solid ${st[1]}">${st[0]}</span>${x.when?` <span class="tag">${esc(x.when)}</span>`:''}</div>
+   ${x.why?`<div style="margin-top:4px">Để làm gì: ${esc(x.why)}</div>`:''}${x.note?`<div class="mute" style="margin-top:4px">${esc(x.note)}</div>`:''}</div>`}
+function vProfile(mid){
+  const m=byId(S.members,mid),P=m&&m.profile;if(!P){sub=null;return vFam()}
+  const W=warningsFor(m),age=ageOf(m);
+  const top=`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('fam')">‹ Cả nhà</button></div>`;
+  const live=pArr(S.plans.filter(x=>x.memberId===m.id&&(!x.end||x.end>=today())&&byId(S.products,x.productId)).map(x=>{const p=byId(S.products,x.productId);return`<div style="border-top:1px solid var(--line);padding:8px 0;display:flex;gap:10px;align-items:center">${thumbHtml(p,48)}<div><b style="font-size:17px">${esc(p.name)}</b><div class="mute">${esc(p.brand||'')} · ${esc(x.qty||'')} · ${esc(x.time||'')} ${esc(x.label||'')}</div></div></div>`})).join('');
+  view('Hồ sơ sức khỏe',`${m.name}${age?' · '+age+' tuổi':''}${m.weight?' · '+m.weight+' kg':''}`,
+   `<div style="font-size:17px;line-height:1.55">${top}
+    <div class="note" style="font-size:16px">${esc(P.intro||'')}${P.updated?`<br><b>Cập nhật:</b> ${esc(P.updated)}`:''}</div>
+    ${pArr(P.urgent).length?`<div class="w w3" style="font-size:17px"><b style="font-size:20px">🚨 Đi khám hoặc gọi bác sĩ NGAY nếu</b>${pUl(P.urgent)}</div>`:''}
+    ${W.length?pCard('⚠ Cảnh báo về thực phẩm bổ sung đang uống',W.map(w=>warnCard(w,false)).join('')):''}
+    ${pCard('💊 Thuốc bác sĩ kê',pArr(P.meds).map(pMed).join('')+(pArr(P.stopped).length?`<div style="border-top:1px solid var(--line);padding-top:10px;margin-top:6px"><b>Đã ngừng, đừng uống lại</b>${pUl(P.stopped)}</div>`:''))}
+    ${pCard('🌿 Thực phẩm bổ sung (TPCN)',(live?`<b>Đang uống theo app</b>${live}`:'')+pArr(P.supps).map(x=>pMed({...x,dose:x.dose||''})).join(''))}
+    ${pArr(P.avoid).length?pCard('⛔ Cần tránh',pArr(P.avoid).map(x=>`<div style="border-top:1px solid var(--line);padding:8px 0"><b>${esc(x.t)}</b>${x.why?`<div class="mute">${esc(x.why)}</div>`:''}</div>`).join(''),'note'):''}
+    ${pCard('🩺 Các bệnh, nói đơn giản',pArr(P.conditions).map(x=>`<div style="border-top:1px solid var(--line);padding:10px 0"><b style="font-size:18px">${esc(x.n)}</b><div style="margin-top:4px">${esc(x.plain||'')}</div>${x.state?`<div style="margin-top:4px"><b>Hiện nay:</b> ${esc(x.state)}</div>`:''}${x.todo?`<div class="mute" style="margin-top:4px"><b>Cần làm:</b> ${esc(x.todo)}</div>`:''}</div>`).join(''))}
+    ${pArr(P.labs).length?pCard('🧪 Kết quả xét nghiệm gần đây',`<table class="ing2" style="font-size:15px"><tr><th>Chỉ số</th><th>Kết quả</th><th>Bình thường</th></tr>${pArr(P.labs).map(l=>`<tr><td>${esc(l.n)}<div class="mute" style="font-size:12px">${esc(l.date||'')}</div></td><td><b style="color:${l.flag?'var(--warn)':'inherit'}">${esc(l.v)}</b></td><td>${esc(l.ref||'')}</td></tr>`).join('')}</table>`):''}
+    ${pCard('📅 Mốc quan trọng',pUl(P.timeline))}
+    ${pCard('📋 Theo dõi hằng ngày và hằng tuần',pUl(P.monitor))}
+    ${pCard('❓ Hỏi bác sĩ lần khám tới',pUl(P.questions))}
+    <div class="mute" style="font-size:14px;margin-top:12px">${esc(P.disclaimer||'App chỉ ghi lại thông tin gia đình có, không thay lời bác sĩ.')}</div></div>`);
 }
 function editNote(id,pre){const n=byId(S.notes,id)||{id:uid(),added:today(),...(pre||{})};
   dialog(id?'Sửa ghi chú':'Thêm ghi chú',[{k:'title',l:'Tiêu đề'},{k:'substance',l:'Hoạt chất liên quan (vd: Kẽm, giống tên trong danh sách)'},{k:'source',l:'Nguồn (link hoặc tên tài liệu)'},{k:'content',l:'Nội dung',t:'area'}],n,o=>{if(!o.title)return;upsert(S.notes,o)})}
@@ -830,13 +888,16 @@ function editMember(id){const m=byId(S.members,id)||{id:uid()};
 function delMember(id){if(!confirm('Xoá thành viên này và mọi lịch uống của họ?'))return;const ids=S.plans.filter(x=>x.memberId===id).map(x=>x.id);S.intakes=S.intakes.filter(i=>!ids.includes(i.planId));S.plans=S.plans.filter(x=>x.memberId!==id);S.members=S.members.filter(x=>x.id!==id);if(fMember===id)fMember='';save();render()}
 function dl(name,data,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 function vFam(){
+  if(sub&&String(sub).startsWith('p:'))return vProfile(String(sub).slice(2));
   view('Cả nhà','Hồ sơ và sao lưu',`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="editMember()">+ Thêm thành viên</button></div>`+
    (S.members.map(m=>`<div class="card"><h3>${esc(m.name)} <span class="mute">${m.born?'· sinh '+esc(m.born)+' ('+(new Date().getFullYear()-m.born)+' tuổi)':''}${m.weight?' · '+esc(m.weight)+' kg':''}</span></h3>
     <div class="mute">Bệnh nền: ${esc(m.conditions||'—')}</div><div class="mute">Thuốc kê đơn: ${esc(m.meds||'—')}</div><div class="mute">Dị ứng: ${esc(m.allergies||'—')}</div>${memberHealth(m)}
-    <div class="row"><button class="btn sm" onclick="editMember('${m.id}')">Sửa</button><button class="btn sm del" onclick="delMember('${m.id}')">Xoá</button></div></div>`).join('')||`<div class="empty">Chưa có thành viên.</div>`)+
+    <div class="row">${m.profile?`<button class="btn pri" onclick="go('fam','p:${m.id}')">Xem hồ sơ sức khỏe</button>`:''}<button class="btn sm" onclick="editMember('${m.id}')">Sửa</button><button class="btn sm del" onclick="delMember('${m.id}')">Xoá</button></div></div>`).join('')||`<div class="empty">Chưa có thành viên.</div>`)+
    `<div class="card"><b>Sao lưu</b><div class="mute">Dữ liệu chỉ nằm trong trình duyệt của máy này. Hãy tải bản sao lưu định kỳ.</div>
     <div class="row"><button class="btn pri" onclick="exportAll()">Tải JSON</button>
     <label class="btn" style="display:inline-block">Khôi phục từ JSON<input type="file" accept=".json" hidden onchange="restore(this.files[0])"></label></div></div>
+    <div class="card"><b>Nhập hồ sơ sức khỏe từ file</b><div class="mute">File do người nhà soạn (bệnh, thuốc, điều cần tránh). Dữ liệu chỉ lưu trong máy này.</div>
+    <div class="row"><label class="btn" style="display:inline-block">Chọn file hồ sơ<input type="file" accept=".json" hidden onchange="importProfile(this.files[0]);this.value=''"></label></div></div>
     <div class="card"><b>Chuẩn mức tối đa dùng để cảnh báo</b><div class="mute">EFSA là chuẩn châu Âu (áp dụng ở Séc), thường chặt hơn. NIH là chuẩn Mỹ.</div>
      <select style="margin-top:8px" onchange="S.settings={...(S.settings||{}),ul:this.value};save();render()"><option value="efsa" ${ulStd()==='efsa'?'selected':''}>EFSA (châu Âu)</option><option value="nih" ${ulStd()==='nih'?'selected':''}>NIH (Mỹ)</option></select></div>
     <div class="card"><b>Xuất bảng tính (CSV, mở bằng Excel hoặc Google Sheets)</b>
