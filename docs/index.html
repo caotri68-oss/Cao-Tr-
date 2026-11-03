@@ -652,7 +652,7 @@ function kbHtml(s){
     sec('Ai cần thận trọng',ul(k.cautions))+
     sec('Tương tác với thuốc',ul(k.interactions))+
     sec('Có trong thực phẩm',`<div>${esc(k.foods)}</div>`)+
-    sec('Nguồn',k.sources.map(([n,u])=>`<div><a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(n)}</a></div>`).join('')+'<div class="mute" style="margin-top:6px">Nội dung được tóm tắt lại bằng lời của app, không thay lời khuyên của bác sĩ hay dược sĩ.</div>');
+    sec('Nguồn',k.sources.map(([n,u])=>u?`<div><a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(n)}</a></div>`:`<div class="mute">${esc(n)}</div>`).join('')+'<div class="mute" style="margin-top:6px">Nội dung được tóm tắt lại bằng lời của app, không thay lời khuyên của bác sĩ hay dược sĩ.</div>');
 }
 function vSubstance(name){
   const s=substList().find(x=>x.name===name);if(!s){sub=null;return vKnow()}

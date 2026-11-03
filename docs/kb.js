@@ -421,5 +421,202 @@ window.KB={
     interactions:[
       'Thuốc ảnh hưởng thận (NSAID dùng lâu, một số thuốc lợi tiểu) và caffeine liều cao: kho Obsidian ghi cần đối chiếu đơn thuốc, nhưng ghi chú này trong kho chưa được xác minh bằng nguồn độc lập.'],
     foods:'Thịt đỏ và cá (cá trích, cá hồi).',
-    sources:[['ISSN – đồng thuận về creatine','https://pmc.ncbi.nlm.nih.gov/articles/PMC5469049/']]}
+    sources:[['ISSN – đồng thuận về creatine','https://pmc.ncbi.nlm.nih.gov/articles/PMC5469049/']]},
+
+  cu:{
+    name:'Đồng',aka:'Copper, měď',updated:'2026-11-03',
+    what:'Khoáng chất vi lượng, thành phần của nhiều enzyme trong cơ thể. Nhu cầu rất nhỏ nên thường đủ từ thức ăn. Chất này quan trọng chủ yếu vì liên quan trực tiếp đến kẽm: dùng kẽm liều cao kéo dài có thể gây thiếu đồng.',
+    benefits:[
+      ['chac','Cần cho nhiều enzyme (kho Obsidian ghi nhu cầu khoảng 0,9 mg mỗi ngày). Thiếu đồng làm thay đổi mỡ máu; nghiên cứu trên động vật ghi nhận bất thường ở tim do giảm hoạt động các enzyme chứa đồng.','NIH'],
+      ['chac','Kẽm liều cao kéo dài (từ khoảng 40–50 mg/ngày) có thể gây thiếu đồng: thiếu máu, giảm bạch cầu trung tính.','Kho Obsidian, NIH'],
+      ['chuaro','Alzheimer và tim mạch: một số chuyên gia cho rằng thiếu đồng có liên quan, nhưng bằng chứng chưa kết luận được.','NIH']],
+    need:'Khoảng 0,9 mg (900 mcg) mỗi ngày (kho Obsidian; NIH ghi viên chứa 15 mg bằng khoảng 17 lần giá trị tham chiếu trên nhãn). Mức tối đa: EFSA 5 mg, NIH 10 mg mỗi ngày.',
+    how:[
+      'Thường không cần bổ sung riêng: thức ăn đã đủ.',
+      'Nếu thiếu đồng do kẽm liều cao, uống thêm đồng không giải quyết được: phải giảm kẽm (kho Obsidian). Vấn đề nằm ở trong tế bào ruột, nơi kẽm làm protein metallothionein giữ chặt đồng và đem đi.',
+      'Nếu vẫn dùng cả hai thì uống cách nhau ít nhất 4 giờ (kho Obsidian).',
+      'Hấp thu giảm khi lượng đồng ăn vào tăng: khoảng 75% khi ăn rất ít, chỉ khoảng 12% khi ăn nhiều (NIH).'],
+    forms:'Đồng oxit (cupric oxide), đồng sulfat, đồng chelate amino acid, đồng gluconat. Chưa có nghiên cứu so sánh sinh khả dụng giữa các dạng (NIH). Viên bổ sung chứa từ vài microgram đến 15 mg.',
+    cautions:[
+      'Thừa đồng kéo dài gây tổn thương gan và rối loạn tiêu hoá (đau bụng, buồn nôn, tiêu chảy, nôn). Ngộ độc hiếm ở người khoẻ (NIH).',
+      'Người mắc bệnh Wilson (rối loạn di truyền chuyển hoá đồng) có nguy cơ cao: không tự bổ sung đồng (NIH).',
+      'Nước uống chảy qua ống đồng, nhất là nước đọng lâu, có thể chứa nhiều đồng (NIH).',
+      'Dễ thiếu: người mắc bệnh celiac do kém hấp thu; người dùng kẽm liều cao kéo dài (NIH, kho Obsidian).'],
+    interactions:[
+      'Kẽm liều cao làm giảm hấp thu đồng (NIH, kho Obsidian).',
+      'Sắt, kẽm, đồng cạnh tranh hấp thu khi uống cùng lúc; nên tách giờ (kho Obsidian).'],
+    foods:'Hàu và hải sản có vỏ, hạt, nội tạng, cám lúa mì, ngũ cốc nguyên hạt, sô-cô-la đen (NIH).',
+    sources:[['NIH ODS – Copper','https://ods.od.nih.gov/factsheets/Copper-HealthProfessional/'],['EFSA – mức tối đa','https://www.efsa.europa.eu/sites/default/files/2024-05/ul-summary-report.pdf']]},
+
+  astaxanthin:{
+    name:'Astaxanthin',aka:'Astaxanthin tảo, Haematococcus pluvialis',updated:'2026-11-03',
+    what:'Carotenoid màu đỏ chiết từ tảo Haematococcus pluvialis, có hoạt tính chống oxy hoá mạnh trong ống nghiệm. Khác beta-caroten, astaxanthin không chuyển thành vitamin A, nên không có nguy cơ ngộ độc vitamin A.',
+    benefits:[
+      ['cothe','Da: giúp giữ độ ẩm và độ đàn hồi, chống xuống cấp theo mùa chứ không trẻ hoá. Phân tích gộp 11 nghiên cứu (162 người dùng so với 131 giả dược, 2–12 mg/ngày, 4–16 tuần). Nếp nhăn thì KHÔNG cải thiện có ý nghĩa (p = 0,11). Nghiên cứu điển hình do nhân viên hãng AstaReal thực hiện.','Kho Obsidian'],
+      ['cothe','Phục hồi sau vận động: giảm creatine kinase (chỉ dấu tổn thương cơ) trong phân tích gộp 24 RCT, độ tin cậy trung bình. Giúp đỡ ê mỏi chứ không tăng thành tích.','Kho Obsidian'],
+      ['khong','Thành tích thể thao (VO2max, công suất, thành tích chạy đạp): không thấy cải thiện trong phân tích gộp.','Kho Obsidian'],
+      ['chuaro','Chống oxy hoá toàn thân: chỉ đạt ý nghĩa ở liều từ 20 mg/ngày trở lên, mà viên bán ở EU tối đa 8 mg. Chính các tác giả kết luận tác dụng chống oxy hoá ở người còn chưa rõ.','Kho Obsidian'],
+      ['chuaro','Trí nhớ: phân tích gộp 11 nghiên cứu cho hiệu ứng rất nhỏ (SMD 0,12).','Kho Obsidian'],
+      ['khong','"Lão hoá ngược", telomere: không có thử nghiệm người nào. Tuổi thọ chuột đực tăng 12% trong một thử nghiệm năm 2023 nhưng thử lại năm 2026 không tái lập được.','Kho Obsidian']],
+    need:'Không có mức khuyến nghị. Các nghiên cứu dùng 2–12 mg cho da và 4–28 mg cho cơ. EU chỉ cho phép viên bổ sung tối đa 8 mg astaxanthin mỗi ngày. EFSA đặt mức ăn vào chấp nhận được hằng ngày (ADI) là 0,2 mg/kg cân nặng, khoảng 12 mg cho người 60 kg, tính cả lượng từ tôm, cua, cá hồi.',
+    how:[
+      'Uống cùng bữa có chất béo vì astaxanthin tan trong dầu (kho Obsidian).',
+      'Chọn sản phẩm ghi rõ nguồn Haematococcus pluvialis (tảo). Astaxanthin tổng hợp chưa được phê duyệt cho người ở nhiều nước.',
+      'Hiệu ứng đo được nằm ở chỉ số máy đo (độ ẩm da, men cơ), không ở cảm giác. Dùng 3 tháng không cảm nhận gì là bình thường (kho Obsidian).',
+      'Đừng kỳ vọng "chống lão hoá": dữ liệu người chỉ ủng hộ da và phục hồi cơ.'],
+    forms:'Dạng tự nhiên từ H. pluvialis chủ yếu ở dạng ester, kho Obsidian ghi hấp thu và hoạt tính tốt hơn dạng tự do theo nghiên cứu động vật. Các nguyên liệu có nhiều dữ liệu: AstaReal, BioAstin. Viên thật khi bóp ra có màu đỏ sẫm gần đen, không phải cam sáng.',
+    cautions:[
+      'Người dưới 14 tuổi: EU loại trừ hoàn toàn vì cộng với hải sản sẽ vượt ADI. Không có dữ liệu nhi khoa, không khuyến nghị cho người dưới 18 tuổi (kho Obsidian).',
+      'Tác dụng phụ hay gặp nhất: phân hơi đỏ cam do sắc tố, vô hại (phản hồi người dùng, kho Obsidian).',
+      'Hàng "astaxanthin" có thể bị làm giả bằng dầu gấc, beta-caroten hoặc astaxanthin tổng hợp; kiểm tra nhãn, mã lô, mua ở nơi uy tín (kho Obsidian).',
+      '"An toàn tuyệt đối" là chữ quảng cáo, không dùng.'],
+    interactions:[
+      'Thuốc hạ huyết áp (astaxanthin có xu hướng hạ nhẹ), thuốc chống đông và chống tiểu cầu (warfarin, clopidogrel), thuốc hạ đường huyết, thuốc chuyển hoá qua CYP3A4: cần đối chiếu đơn thuốc trước khi dùng (kho Obsidian).',
+      'Dùng cùng nhiều chất chống oxy hoá liều cao khác chưa có nghiên cứu về an toàn dài hạn (kho Obsidian).'],
+    foods:'Cá hồi, tôm, cua (sắc tố đỏ của astaxanthin).',
+    sources:[['Kho Obsidian: Astaxanthin (phụ lục B, 04/09/2026), dẫn phân tích gộp Nutrients 2021 và 2026, GeroScience 2023 và 2026, EFSA ADI 2019','']]},
+
+  lutein:{
+    name:'Lutein và Zeaxanthin',aka:'Carotenoid của mắt, AREDS2',updated:'2026-11-03',
+    what:'Hai carotenoid tích luỹ đặc hiệu ở điểm vàng của võng mạc. Chúng lọc ánh sáng xanh và chống oxy hoá cho mắt. Công thức tham chiếu trong y học là AREDS2 của Viện Mắt Quốc gia Mỹ: 10 mg lutein và 2 mg zeaxanthin mỗi ngày (tỷ lệ 5:1).',
+    benefits:[
+      ['cothe','Thoái hoá điểm vàng: công thức AREDS2 (thử nghiệm lớn do NIH tài trợ) làm chậm tiến triển ở người đã có bệnh.','Kho Obsidian, NIH'],
+      ['chuaro','Nguồn thương hiệu (như FloraGLO) so với nguồn thường: AREDS2 không so sánh, nên mua hàng thương hiệu chỉ là mua khả năng truy xuất nguồn gốc, chưa chứng minh hiệu quả vượt trội.','Kho Obsidian']],
+    need:'Công thức tham chiếu: 10 mg lutein cộng 2 mg zeaxanthin mỗi ngày (kho Obsidian). Không có mức tối đa chính thức; an toàn ở liều trong nghiên cứu.',
+    how:[
+      'Uống cùng bữa có chất béo; dạng viên nang mềm (dầu) hấp thu tốt hơn viên nén khô.',
+      'Kiểm tra tỷ lệ lutein và zeaxanthin trên nhãn; tỷ lệ gần 5:1 là sát công thức AREDS2.',
+      'Dạng free-form (không ester hoá) được xem là hấp thu trực tiếp hơn, ngược với astaxanthin.'],
+    forms:'Lutein và zeaxanthin tự do (free-form) hoặc ester. Một số sản phẩm dùng nguyên liệu thương hiệu.',
+    cautions:[
+      'Không có ngưỡng tối đa chính thức; an toàn ở liều nghiên cứu (kho Obsidian).',
+      'Công thức nhiều thành phần có kẽm liều cao: dùng dài hạn có thể gây thiếu đồng, nên hỏi dược sĩ (kho Obsidian).'],
+    interactions:['Không đáng kể (kho Obsidian).'],
+    foods:'Rau lá xanh đậm (cải xoăn, rau chân vịt), lòng đỏ trứng, ngô.',
+    sources:[['NIH ODS – Zinc (nhắc đến công thức AREDS)','https://ods.od.nih.gov/factsheets/Zinc-HealthProfessional/'],['Kho Obsidian: Lutein và Zeaxanthin','']]},
+
+  nmn:{
+    name:'NMN',aka:'Nicotinamide mononucleotide, tiền chất NAD+',updated:'2026-11-03',
+    what:'Hợp chất tự nhiên, tiền chất trực tiếp của NAD+, một coenzyme cần cho hơn 500 phản ứng trong tế bào. Cơ thể tự tạo NAD+ qua nhiều con đường nên không cần NMN từ ngoài. NAD+ giảm theo tuổi chủ yếu do enzyme CD38 tiêu thụ chứ không phải do thiếu nguyên liệu (kho Obsidian).',
+    benefits:[
+      ['chac','Uống NMN làm tăng NAD+ trong máu, phụ thuộc liều, bão hoà quanh 600 mg/ngày (RCT: Yi 2023, Igarashi 2022, Fukamizu 2022). Ngưng 4 tuần thì NAD+ về mức nền.','Kho Obsidian'],
+      ['chac','An toàn ngắn hạn ở liều đã thử (tới 1250 mg/ngày trong 4 tuần): phân tích gộp 15 RCT, 383 người không thấy tăng biến cố bất lợi.','Kho Obsidian'],
+      ['khong','Lực nắm tay và khối cơ: phân tích gộp 10 RCT (người trên 60 tuổi, NMN và NR) không có chỉ số nào đạt ý nghĩa.','Kho Obsidian'],
+      ['chuaro','Độ nhạy insulin: một thử nghiệm nhỏ (n=25) có kết quả tốt, nhưng phân tích gộp 8 RCT với 342 người không đạt ý nghĩa (p = 0,06).','Kho Obsidian'],
+      ['chuaro','Tốc độ đi bộ, giấc ngủ, sức bền: các nghiên cứu mâu thuẫn nhau; nhiều RCT do nhà sản xuất tài trợ.','Kho Obsidian'],
+      ['khong','Kéo dài tuổi thọ ở người, "đảo ngược Alzheimer": chưa có nghiên cứu người nào. Các tác dụng này chỉ có trên chuột và sinh vật mô hình.','Kho Obsidian']],
+    need:'Không có nhu cầu khuyến nghị. Liều có bằng chứng làm tăng NAD+ là 250–600 mg mỗi ngày, trên 600 mg không hơn. EFSA ra ý kiến an toàn cho 300 mg mỗi ngày (13/05/2026), loại trừ phụ nữ mang thai và cho con bú. Đây là ý kiến an toàn, không phải mức tối đa chính thức. Úc (TGA) cấp phép tối đa 500 mg mỗi ngày, chỉ người lớn.',
+    how:[
+      'NMN tan trong nước, không cần uống cùng chất béo; lời đồn "phải uống cùng dầu" là vô căn cứ (kho Obsidian).',
+      'Uống một lần mỗi ngày. Sáng hay chiều: chưa ai biết chắc. Một RCT cho thấy nhóm uống buổi chiều ít buồn ngủ ban ngày hơn; chọn chiều nếu khó ngủ.',
+      'Giữ dưới 600 mg mỗi ngày: trên mức này chỉ tăng gánh nặng chuyển hoá, không tăng hiệu quả.',
+      'Nếu muốn thử, làm có kế hoạch: đặt mục tiêu đo được và dừng nếu không thấy lợi.',
+      'Tình trạng pháp lý EU: NMN chưa được cấp phép như thực phẩm mới, và chưa có công bố sức khoẻ nào được duyệt. Nicotinamide riboside (NR), họ hàng gần, đã được EU cấp phép từ 2019 với bằng chứng lâm sàng tương đương (cùng âm tính trong phân tích gộp).'],
+    forms:'Viên nang, bột, dạng liposome và dạng ngậm dưới lưỡi. Tuyên bố liposome hay ngậm dưới lưỡi hấp thu tốt hơn chưa có bằng chứng độc lập (kho Obsidian).',
+    cautions:[
+      'Người có tiền sử ung thư hoặc đang điều trị ung thư: không dùng. Mức bằng chứng chỉ ở tiền lâm sàng, nhưng hậu quả không thể đảo ngược nên áp dụng nguyên tắc phòng ngừa (kho Obsidian).',
+      'Phụ nữ mang thai, cho con bú: loại trừ khỏi đánh giá của EFSA. Người dưới 18 tuổi: không khuyến nghị, chưa có RCT nào ở người dưới 20 tuổi (kho Obsidian).',
+      'Tim mạch: chất chuyển hoá cuối của niacin (2PY, 4PY) cao trong máu liên quan biến cố tim mạch trong một nghiên cứu Nature Medicine 2024; mới là quan sát và chuột, chưa chứng minh nhân quả. Vì vậy không nên dùng nhiều năm mà không theo dõi (kho Obsidian).',
+      'Giả thuyết dùng lâu dài liều cao có thể làm cạn nhóm methyl của tế bào (cơ chế, chưa có dữ liệu người) (kho Obsidian).',
+      'Người trên 65 tuổi hoặc có bệnh nền: hỏi bác sĩ, vì chưa có nghiên cứu tương tác thuốc ở người.'],
+    interactions:[
+      'Chưa có nghiên cứu tương tác thuốc trên người với NMN. Các ý dưới đây là ngoại suy từ nicotinamide hoặc cơ chế (kho Obsidian):',
+      'Hoá trị và điều trị đích: có thể đối kháng, tránh trong chu kỳ hoá trị.',
+      'Thuốc tiểu đường (metformin, insulin, sulfonylurea): có thể cộng thêm nguy cơ hạ đường huyết.',
+      'Thuốc hạ huyết áp: có thể cộng dồn tác dụng hạ áp.',
+      'Thuốc chống lao (isoniazid, pyrazinamide): theo dõi nguy cơ thiếu niacin.',
+      'Chống đông, chống tiểu cầu: nicotinamide 3000 mg/ngày có thể gây giảm tiểu cầu; ở 250–600 mg thì chưa có dữ liệu.'],
+    foods:'Không cần nạp từ thức ăn: cơ thể tự tạo NAD+ từ nhiều nguyên liệu (kho Obsidian).',
+    sources:[['Kho Obsidian: NMN (gộp hai bản tra cứu, 05/09/2026), dẫn EFSA 13/05/2026, Prokopidis 2025, Yi 2023, Kim 2022, Ferrell 2024','']]},
+
+  pqq:{
+    name:'PQQ',aka:'Pyrroloquinoline quinone',updated:'2026-11-03',
+    what:'Hợp chất chống oxy hoá được nghiên cứu về khả năng kích thích tạo ty thể mới và hỗ trợ nhận thức. Không phải vi chất thiết yếu. EFSA cấp phép là thực phẩm mới năm 2017–2018.',
+    benefits:[
+      ['chuaro','Trí nhớ: một RCT (n=70, 20 mg/ngày, 12 tuần) cải thiện trí nhớ tổng hợp và trí nhớ ngôn từ. Nhưng RCT này do chính hãng sản xuất nguyên liệu BioPQQ tài trợ 100%.','Kho Obsidian'],
+      ['chuaro','Người có suy giảm nhận thức nhẹ (n=34, 6 tuần): một số chỉ số cải thiện nhưng thang MMSE (chỉ số chuẩn) không khác biệt có ý nghĩa; tác giả có liên hệ tài chính với nhà cung cấp.','Kho Obsidian'],
+      ['chuaro','Chưa tìm được RCT độc lập hoàn toàn không do ngành tài trợ. Độ tin cậy tổng thể: trung bình đến thấp.','Kho Obsidian']],
+    need:'Không có nhu cầu khuyến nghị. Liều trong thử nghiệm: 20 mg mỗi ngày, cũng là mức tối đa EU cho phép với thực phẩm mới.',
+    how:[
+      'Dạng muối disodium tan trong nước. Các thương hiệu (BioPQQ, MGCPQQ, PureQQ) cùng một dạng hoá học, không có dữ liệu cho thấy công nghệ hấp thu khác nhau có ưu thế.',
+      'Không có dữ liệu về chất đi kèm bắt buộc.'],
+    forms:'PQQ disodium salt, nhiều thương hiệu cùng dạng này.',
+    cautions:[
+      'Phụ nữ mang thai và cho con bú: không dùng (điều kiện cấp phép của EFSA).',
+      'Thử nghiệm trên động vật ở liều rất cao ghi nhận độc tính thận và kết tinh trong nước tiểu (kho Obsidian).'],
+    interactions:['Chưa tìm thấy dữ liệu tương tác thuốc cụ thể.'],
+    foods:'Có lượng rất nhỏ trong một số thực phẩm; cơ thể không cần nạp từ ngoài.',
+    sources:[['Kho Obsidian: PQQ (24/08/2026), dẫn RCT Food & Function 2023 và EFSA novel food','']]},
+
+  blackgarlic:{
+    name:'Tỏi đen',aka:'Black garlic, aged garlic extract, S-allyl cysteine (SAC)',updated:'2026-11-03',
+    what:'Tỏi trắng ủ nhiệt ở 60–80 °C, độ ẩm cao, 1–4 tuần. Allicin bị phá huỷ, tạo ra S-allyl-L-cysteine (SAC), chất tan trong nước, hấp thu tốt, và là chất duy nhất có bằng chứng lâm sàng. Hàm lượng SAC chênh nhau hai bậc độ lớn giữa các quy trình.',
+    benefits:[
+      ['cothe','Hạ huyết áp ở người đã tăng huyết áp. Thử nghiệm Ried 2013 (79 người) thấy huyết áp tâm thu giảm 11,8 mmHg ở liều 1,2 mg SAC. Phân tích gộp 10 RCT năm 2025 cho kết quả nhỏ hơn: giảm 4,2 mmHg (tâm thu) và 3,1 mmHg (tâm trương). Các tác giả tự nhận tác động có thể hạn chế.','Kho Obsidian'],
+      ['cothe','Tăng nhẹ HDL (cholesterol tốt).','Kho Obsidian'],
+      ['chuaro','Miễn dịch, chức năng gan, "tinh thần thoải mái": chưa có bằng chứng độc lập.','Kho Obsidian'],
+      ['khong','Chống ung thư, thải độc: chưa có bằng chứng lâm sàng đủ mạnh ở người.','Kho Obsidian']],
+    need:'Liều SAC có hiệu quả chi phí theo kho Obsidian: khoảng 1,2–1,25 mg SAC mỗi ngày, tương đương 480–500 mg chiết xuất chuẩn hoá. Liều cao hơn (2,4 mg) cho kết quả mâu thuẫn và tăng tác dụng phụ tiêu hoá. Không có mức tối đa chính thức.',
+    how:[
+      'Uống sau ăn để bớt khó chịu dạ dày.',
+      'Chọn sản phẩm công bố rõ hàm lượng SAC. Sản phẩm không ghi SAC thì không so sánh và không đánh giá được.',
+      'Cẩn thận hàng giả: thị trường chiết xuất tỏi ủ có biến thiên lớn, có gian lận (chất tổng hợp rẻ hơn, khai sai hàm lượng). Nhãn ghi SAC không bảo đảm có SAC thật trong viên.',
+      'Nếu uống để hạ huyết áp, hãy đo huyết áp trước để biết có cần hay không.'],
+    forms:'Tỏi đen nguyên tép, bột và chiết xuất tỏi ủ chuẩn hoá theo SAC (ví dụ Kyolic). Tép thật dẻo, đen đồng nhất đến lõi.',
+    cautions:[
+      'EFSA chưa phê duyệt bất kỳ công bố sức khoẻ nào cho tỏi. Các câu in trên hộp bán ở Séc nằm trong danh sách chờ xử lý. "Được phép in" khác với "đã chứng minh".',
+      'Tác dụng phụ tiêu hoá phụ thuộc liều (táo bón, đầy hơi, trào ngược): khoảng 15% ở liều thấp, 32% ở liều 4 viên.',
+      'Dị ứng tỏi. Không dùng cho trẻ dưới 3 tuổi theo nhãn các sản phẩm bán ở Séc.',
+      'Ngừng 7–10 ngày trước mọi phẫu thuật, kể cả nhổ răng: có báo cáo chảy máu sau mổ.',
+      'An toàn dài hạn của chiết xuất cô đặc trên 24 tuần: chưa có dữ liệu.'],
+    interactions:[
+      'Thuốc chống đông và chống tiểu cầu (warfarin, acenocoumarol, aspirin, clopidogrel): tăng nguy cơ chảy máu. Một nghiên cứu nhỏ cho thấy chiết xuất tỏi ủ có thể an toàn với người dùng warfarin, nhưng một nghiên cứu nhỏ chưa đủ để bỏ qua cảnh báo.',
+      'Thuốc hạ đường huyết (metformin, sulfonylurea): có thể tăng tác dụng, nguy cơ hạ đường huyết.',
+      'Thuốc ức chế protease (điều trị HIV): có thể giảm nồng độ thuốc.',
+      'Thuốc tiêu sợi huyết: tăng nguy cơ xuất huyết (kho Obsidian).'],
+    foods:'Tỏi đen (tỏi ủ nhiệt), tỏi trắng. Tỏi đen gần như không có mùi hăng của tỏi thường.',
+    sources:[['Kho Obsidian: Tỏi đen (02/09/2026), dẫn Ried 2013, phân tích gộp Front Nutr 2025, NutraIngredients 12/2024','']]},
+
+  boswellia:{
+    name:'AKBA Boswellia',aka:'Boswellia serrata, nhũ hương Ấn Độ',updated:'2026-11-03',
+    what:'Chiết xuất nhựa cây trầm hương Ấn Độ, chuẩn hoá theo hàm lượng boswellic acid, trong đó AKBA là hoạt chất mạnh nhất. Cơ chế: ức chế enzyme 5-LOX (tham gia tạo chất gây viêm), khác với thuốc NSAID vốn ức chế COX nên ít ảnh hưởng dạ dày hơn.',
+    benefits:[
+      ['cothe','Thoái hoá khớp gối: các thử nghiệm trên người ghi nhận giảm đau và cải thiện vận động sau 4–8 tuần, hiệu quả khiêm tốn nhưng thật.','Kho Obsidian (ghi chú chưa rà)'],
+      ['chuaro','Các công dụng khác như tiêu hoá, hen suyễn: chưa có bằng chứng độc lập ở liều thực phẩm chức năng thông thường.','Kho Obsidian (ghi chú chưa rà)']],
+    need:'Theo nhãn: chiết xuất chuẩn hoá khoảng 85% boswellic acid, 20% AKBA (ví dụ 400 mg chiết xuất chứa khoảng 80 mg AKBA). Dùng cùng bữa ăn có chất béo.',
+    how:[
+      'Uống cùng bữa ăn có chất béo để hấp thu.',
+      'Đánh giá sau 8 tuần: nếu không đỡ đau khớp thì nên ngừng, đừng dùng kéo dài không cần thiết.',
+      'Lưu ý quan trọng: bài này dựa trên ghi chú thô chưa rà của kho Obsidian, chưa đối chiếu với nguồn độc lập như các bài khác. Hãy coi là thông tin sơ bộ.'],
+    forms:'Chiết xuất chuẩn hoá theo boswellic acid và AKBA; một số sản phẩm dùng nguyên liệu thương hiệu (ví dụ AprèsFlex).',
+    cautions:[
+      'Chưa ghi nhận chống chỉ định nghiêm trọng ở liều thông thường (kho Obsidian, ghi chú chưa rà).'],
+    interactions:[
+      'Kho Obsidian không ghi tương tác đáng kể với thuốc tim mạch, tuyến giáp hay statin.',
+      'Curcumin, omega-3 và boswellia đều có tác dụng chống kết tập tiểu cầu nhẹ; dùng cả ba cùng lúc, hoặc cùng thuốc chống đông, là tổ hợp cần rà soát (kho Obsidian).'],
+    foods:'Không có trong thức ăn thông thường.',
+    sources:[['Kho Obsidian: AKBA Boswellia (22/08/2026, ghi chú chưa rà)','']]},
+
+  collagen:{
+    name:'Collagen',aka:'Collagen thuỷ phân (peptide), collagen typ II không biến tính (UC-II)',updated:'2026-11-03',
+    what:'Protein cấu trúc của da, gân, sụn, xương. "Collagen" trên nhãn là hai nhóm rất khác nhau: collagen thuỷ phân (peptide) làm nguyên liệu cho sụn và gân, cần liều tính bằng gam; collagen typ II không biến tính tác động qua dung nạp miễn dịch đường ruột, theo lý thuyết chỉ cần microgram đến chục miligam.',
+    benefits:[
+      ['cothe','Collagen peptide cho khớp và gân: có thử nghiệm với liều 5–10 gam mỗi ngày (Clark 2008, Zdzieblik 2017).','Kho Obsidian'],
+      ['chuaro','Collagen typ II không biến tính cho thoái hoá khớp gối: thử nghiệm Lugo 2016 dùng 40 mg sản phẩm, trong đó collagen typ II thật chỉ khoảng 1,2 mg (đã đính chính từ con số ~10 mg).','Kho Obsidian'],
+      ['chuaro','Collagen typ II ở liều microgram (20–2500 µg) được thử trong viêm khớp dạng thấp (Barnett 1998, liều 20 µg đáp ứng tốt nhất). Áp dụng sang thoái hoá khớp là suy đoán.','Kho Obsidian'],
+      ['chuaro','Hướng dẫn của ACR và Arthritis Foundation về thoái hoá khớp không nhắc đến collagen ở mức khuyến cáo nào: không bị bác bỏ mà chưa đủ dữ liệu để được xét.','Kho Obsidian']],
+    need:'Không có nhu cầu khuyến nghị. Liều trong các thử nghiệm: 5–10 g collagen peptide mỗi ngày. Một số sản phẩm bán ở Séc chỉ chứa vài chục miligam collagen, thấp hơn liều thử nghiệm hàng trăm lần.',
+    how:[
+      'Đọc dòng "mg collagen" trên nhãn, không đọc tên công thức hay số "gấp đôi". "2x mạnh hơn" có thể chỉ là so với bản cũ của chính sản phẩm.',
+      'Vitamin C cần cho tổng hợp collagen; nhiều viên chỉ chứa 20 mg (25% giá trị tham chiếu).',
+      'Cần dùng tối thiểu khoảng 2 tháng mới đánh giá được.',
+      'Điểm số "NutraRating" trên một số trang bán hàng là điểm nội bộ của cửa hàng, không phải kiểm nghiệm độc lập.'],
+    forms:'Collagen biển (từ cá), collagen động vật (gelatin), collagen thuỷ phân (Verisol, Peptan), UC-II và collagen typ II không biến tính. Không có thử nghiệm độc lập trực tiếp cho từng sản phẩm liều thấp trên thị trường.',
+    cautions:[
+      'Nguồn cá hoặc gelatin động vật: không hợp với người ăn chay, người dị ứng cá; một số viên có dầu đậu nành (kho Obsidian).',
+      'Phụ nữ mang thai, cho con bú: tránh.',
+      'Hướng dẫn ACR và Arthritis Foundation khuyến cáo MẠNH không dùng glucosamin cho thoái hoá khớp; hãy tách bạch collagen với glucosamin (kho Obsidian).'],
+    interactions:['Ở liều thấp không ghi nhận tương tác thuốc đáng kể. Một số viên có kẽm vài mg: nhớ cộng vào tổng kẽm mỗi ngày (kho Obsidian).'],
+    foods:'Collagen có trong da, sụn, xương động vật; cơ thể tự tổng hợp từ protein và vitamin C.',
+    sources:[['Kho Obsidian: Collagen nativní liều thấp (31/08 và 02/09/2026), dẫn Lugo 2016, Barnett 1998, Clark 2008, Zdzieblik 2017','']]}
 };
