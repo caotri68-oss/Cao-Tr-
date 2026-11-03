@@ -406,6 +406,32 @@ async function ocr(urls,log){
   await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js');
   const w=await Tesseract.createWorker('eng+ces+vie',1,{logger:m=>{if(m.status==='recognizing text')log('Đang đọc chữ… '+Math.round(m.progress*100)+'%')}});
   let out='';try{for(const [i,u] of urls.entries()){log(`Ảnh ${i+1}/${urls.length}…`);const r=await w.recognize(u);out+=(out?'\n\n':'')+r.data.text.trim()}}finally{await w.terminate()}return out}
+/* Xử lý ảnh trước khi đọc chữ: phóng to, chuyển xám, kéo giãn độ tương phản.
+   Cách "flat" còn chia cho nền đã làm mờ để khử bóng đổ. Thử cả hai, giữ kết quả tách được nhiều hoạt chất hơn. */
+const loadImg=u=>new Promise((r,j)=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>j(new Error('Không đọc được ảnh'));i.src=u});
+async function prepImage(url,flat){
+  const im=await loadImg(url),k=Math.max(1,Math.min(2.5,1800/Math.max(im.width,im.height))),W=Math.round(im.width*k),H=Math.round(im.height*k);
+  const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');x.drawImage(im,0,0,W,H);
+  let B=null;
+  if(flat){const sm=document.createElement('canvas');sm.width=Math.max(8,W>>4);sm.height=Math.max(8,H>>4);sm.getContext('2d').drawImage(c,0,0,sm.width,sm.height);
+    const bg=document.createElement('canvas');bg.width=W;bg.height=H;const bx=bg.getContext('2d');bx.filter='blur(6px)';bx.drawImage(sm,0,0,W,H);B=bx.getImageData(0,0,W,H).data}
+  const d=x.getImageData(0,0,W,H),p=d.data,n=W*H,g=new Uint8Array(n),h=new Uint32Array(256);
+  for(let i=0;i<n;i++){let v=p[4*i]*.299+p[4*i+1]*.587+p[4*i+2]*.114;
+    if(B)v=Math.min(255,v/Math.max(1,B[4*i]*.299+B[4*i+1]*.587+B[4*i+2]*.114)*235);
+    v|=0;g[i]=v;h[v]++}
+  const cut=n*(flat?.02:.01);let lo=0,hi=255,a=0;while(lo<255&&(a+=h[lo])<cut)lo++;a=0;while(hi>0&&(a+=h[hi])<cut)hi--;
+  const s=hi>lo?255/(hi-lo):1;
+  for(let i=0;i<n;i++)p[4*i]=p[4*i+1]=p[4*i+2]=Math.max(0,Math.min(255,(g[i]-lo)*s));
+  x.putImageData(d,0,0);return c.toDataURL('image/png')}
+async function ocrBest(urls,log){
+  const outs=[];
+  for(const [i,u] of urls.entries()){
+    log(`Ảnh ${i+1}/${urls.length}: xử lý ảnh…`);
+    const cands=[];let err=null;
+    for(const flat of [false,true]){try{const t=await ocr([await prepImage(u,flat)],log),f=parseFacts(t).ingredients;cands.push({t,n:f.length,c:f.filter(g=>g.check).length})}catch(e){err=e}}
+    if(!cands.length)throw err||new Error('Không đọc được ảnh');
+    cands.sort((a,b)=>b.n-a.n||a.c-b.c||b.t.length-a.t.length);outs.push(cands[0].t)}
+  return outs.join('\n\n')}
 async function fetchText(url){
   if(!safeUrl(url))throw new Error('Link phải bắt đầu bằng http:// hoặc https://');
   try{const r=await fetch(url);if(!r.ok)throw 0;const h=await r.text();const d=new DOMParser().parseFromString(h,'text/html');d.querySelectorAll('script,style,nav,footer,noscript,svg').forEach(e=>e.remove());return{title:d.title,text:(d.body.innerText||d.body.textContent).replace(/\n{3,}/g,'\n\n').trim()}}
@@ -516,7 +542,7 @@ async function addPhotosToDraft(files){
   const fs=[...files];if(!fs.length)return;const d=draft,st=m=>{const e=$('#addst');if(e)e.textContent=m};
   try{st('Đang xử lý ảnh…');const urls=[];for(const f of fs)urls.push(await shrink(f));
     for(const u of urls){const id=uid();await putImg(id,u);d.imageIds.push(id)}
-    const t=await ocr(urls,st),f=parseFacts(t);let added=0;
+    const t=await ocrBest(urls,st),f=parseFacts(t);let added=0;
     for(const g of f.ingredients){if(!d.ingredients.some(x=>x.name.trim()&&ingKey(x)===ingKey(g))){if(d.ingredients.length===1&&!d.ingredients[0].name.trim())d.ingredients=[];d.ingredients.push(g);added++}}
     if(!d.dosageLabel)d.dosageLabel=(f.directions||f.serving).trim();
     if(!d.warnings)d.warnings=f.warnings.trim();
@@ -554,7 +580,7 @@ function vImport(){
   $('#im').onchange=async e=>{const fs=[...e.target.files];if(!fs.length)return;sync();
     try{st('Đang xử lý ảnh…');const urls=[];for(const f of fs)urls.push(await shrink(f));stage.images.push(...urls);
       let ok=true;
-      try{const t=await ocr(urls,st);stage.text=(stage.text?stage.text+'\n\n':'')+t}
+      try{const t=await ocrBest(urls,st);stage.text=(stage.text?stage.text+'\n\n':'')+t}
       catch(err){ok=false;vImport();$('#st').textContent='Không đọc được chữ: '+err.message+'. Ảnh vẫn được giữ, bạn có thể dán chữ vào ô văn bản rồi bấm Phân tích.'}
       if(ok){st('Đang phân tích…');await createFromStage()}
     }catch(err){st('Lỗi: '+err.message)}};
