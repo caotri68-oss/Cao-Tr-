@@ -75,7 +75,7 @@ dialog form{padding:16px;display:grid;gap:10px}
 'use strict';
 /* ---------- Lưu trữ: IndexedDB ---------- */
 const DB='tpcn-v2',KEY='state';
-const empty=()=>({v:2,members:[],products:[],plans:[],intakes:[],notes:[],dismissed:[],settings:{ul:'efsa'}});
+const empty=()=>({v:2,members:[],products:[],plans:[],intakes:[],notes:[],diary:[],dismissed:[],settings:{ul:'efsa'}});
 let S=empty();
 const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open(DB,2);
   r.onupgradeneeded=()=>{const d=r.result;if(!d.objectStoreNames.contains('kv'))d.createObjectStore('kv');if(!d.objectStoreNames.contains('img'))d.createObjectStore('img')};
@@ -846,6 +846,10 @@ async function importProfile(f){
     for(const p of plans){if(!byId(S.products,p.productId))continue;
       const pl={...(byId(S.plans,p.id)||{}),id:p.id,productId:p.productId,memberId:m.id,qty:cleanStr(p.qty,60),time:cleanStr(p.time,5),label:cleanStr(p.label,80),servings:typeof p.servings==='number'?p.servings:1,start:p.start,end:/^\d{4}-\d{2}-\d{2}$/.test(p.end||'')?p.end:''};
       const j=S.plans.findIndex(x=>x.id===pl.id);j<0?S.plans.push(pl):S.plans[j]=pl}
+    S.diary=S.diary||[];
+    for(const x of (d.diary||[]).filter(x=>x&&typeof x.id==='string'&&/^dia-[a-z0-9-]{1,60}$/.test(x.id)&&/^\d{4}-\d{2}-\d{2}$/.test(x.date||''))){
+      if(S.diary.some(y=>y.id===x.id))continue; // không ghi đè nhật ký đã chỉnh
+      S.diary.push({id:x.id,memberId:m.id,date:x.date,weight:typeof x.weight==='number'?x.weight:'',hr:typeof x.hr==='number'?x.hr:'',bp:cleanStr(x.bp,20),symptom:cleanStr(x.symptom,200),note:cleanStr(x.note,600)})}
     save();go('fam','p:'+m.id);
   }catch(e){alert('Lỗi: '+e.message)}
 }
@@ -858,6 +862,20 @@ function pMed(x){const st=PSTAT[x.status]||PSTAT.dang;
   return`<div style="border-top:1px solid var(--line);padding:10px 0"><div style="font-size:18px"><b>${esc(x.n)}</b> <span style="font-size:15px">· ${esc(x.dose||'')}</span></div>
    <div><span class="tag" style="background:none;color:${st[1]};border:1px solid ${st[1]}">${st[0]}</span>${x.when?` <span class="tag">${esc(x.when)}</span>`:''}</div>
    ${x.why?`<div style="margin-top:4px">Để làm gì: ${esc(x.why)}</div>`:''}${x.note?`<div class="mute" style="margin-top:4px">${esc(x.note)}</div>`:''}</div>`}
+// ---- Nhật ký: ghi cân, nhịp tim, huyết áp, triệu chứng, ghi chú theo ngày (lưu trong máy, có trong bản sao lưu) ----
+function editDiary(mid,id){
+  const e=(S.diary||[]).find(x=>x.id===id)||{id:'dia-'+uid(),memberId:mid,date:today()};
+  dialog(id?'Sửa nhật ký':'Thêm nhật ký',[{k:'date',l:'Ngày',t:'date'},{k:'weight',l:'Cân nặng (kg)',t:'number'},{k:'hr',l:'Nhịp tim lúc nghỉ (lần/phút)',t:'number'},{k:'bp',l:'Huyết áp (vd: 120/80)'},{k:'symptom',l:'Triệu chứng (bồn chồn, đau bụng, mất ngủ...)'},{k:'note',l:'Ghi chú (thuốc đã đổi, kết quả khám...)',t:'area'}],e,
+    o=>{if(!o.date)return;S.diary=S.diary||[];const i=S.diary.findIndex(x=>x.id===o.id);i<0?S.diary.push(o):S.diary[i]=o;save();render()})}
+function delDiary(id){if(!confirm('Xoá dòng nhật ký này?'))return;S.diary=(S.diary||[]).filter(x=>x.id!==id);save();render()}
+function diaryCard(m){
+  const l=(S.diary||[]).filter(x=>x.memberId===m.id).sort((a,b)=>b.date.localeCompare(a.date));
+  const row=x=>`<div style="border-top:1px solid var(--line);padding:10px 0"><div><b>${esc(x.date.split('-').reverse().join('/'))}</b>
+    ${x.weight!==''&&x.weight!=null?`<span class="tag">${esc(x.weight)} kg</span>`:''}${x.hr!==''&&x.hr!=null?`<span class="tag">tim ${esc(x.hr)}/phút</span>`:''}${x.bp?`<span class="tag">HA ${esc(x.bp)}</span>`:''}</div>
+    ${x.symptom?`<div>Triệu chứng: ${esc(x.symptom)}</div>`:''}${x.note?`<div class="mute">${esc(x.note)}</div>`:''}
+    <div class="row"><button class="btn sm" onclick="editDiary('${m.id}','${x.id}')">Sửa</button><button class="btn sm del" onclick="delDiary('${x.id}')">Xoá</button></div></div>`;
+  return`<div class="card"><h3 style="font-size:20px;margin:0 0 6px">📓 Nhật ký</h3><div class="mute">Ghi mỗi khi có thay đổi: cân, nhịp tim, huyết áp, triệu chứng, đổi thuốc.</div>
+    <div class="row" style="margin:8px 0"><button class="btn pri" onclick="editDiary('${m.id}')">+ Thêm nhật ký hôm nay</button></div>${l.map(row).join('')||'<div class="mute">Chưa có dòng nhật ký nào.</div>'}</div>`}
 function vProfile(mid){
   const m=byId(S.members,mid),P=m&&m.profile;if(!P){sub=null;return vFam()}
   const W=warningsFor(m),age=ageOf(m);
@@ -875,6 +893,7 @@ function vProfile(mid){
     ${pArr(P.labs).length?pCard('🧪 Kết quả xét nghiệm gần đây',`<table class="ing2" style="font-size:15px"><tr><th>Chỉ số</th><th>Kết quả</th><th>Bình thường</th></tr>${pArr(P.labs).map(l=>`<tr><td>${esc(l.n)}<div class="mute" style="font-size:12px">${esc(l.date||'')}</div></td><td><b style="color:${l.flag?'var(--warn)':'inherit'}">${esc(l.v)}</b></td><td>${esc(l.ref||'')}</td></tr>`).join('')}</table>`):''}
     ${pCard('📅 Mốc quan trọng',pUl(P.timeline))}
     ${pCard('📋 Theo dõi hằng ngày và hằng tuần',pUl(P.monitor))}
+    ${diaryCard(m)}
     ${pCard('❓ Hỏi bác sĩ lần khám tới',pUl(P.questions))}
     <div class="mute" style="font-size:14px;margin-top:12px">${esc(P.disclaimer||'App chỉ ghi lại thông tin gia đình có, không thay lời bác sĩ.')}</div></div>`);
 }
