@@ -232,13 +232,39 @@ function setIntake(planId,status){
   save();render();
 }
 const chipRow=()=>S.members.length?`<div class="chips"><button class="${!fMember?'on':''}" onclick="fMember='';render()">Cả nhà</button>${S.members.map(m=>`<button class="${m.id===fMember?'on':''}" onclick="fMember='${m.id}';render()">${esc(m.name)}</button>`).join('')}</div>`:'';
+/* ---------- Nhắc giờ ----------
+   Khi app đang mở, kiểm tra mỗi phút. Thông báo hệ thống chỉ hiện khi đã được cho phép. */
+const nowMin=()=>{const d=new Date();return d.getHours()*60+d.getMinutes()};
+function dueNow(){const day=today(),n=nowMin();
+  return slotsFor(day).filter(s=>{const t=mins(s.plan.time);return t!=null&&t<=n&&s.intake?.status!=='taken'&&s.intake?.status!=='skipped'})}
+let lastPing='';
+function checkReminders(){
+  const due=dueNow();if(!due.length)return;
+  const key=today()+'|'+due.map(s=>s.plan.id).join(',');
+  if(key===lastPing)return;lastPing=key;
+  if('Notification' in window&&Notification.permission==='granted'){
+    try{new Notification('Đến giờ uống TPCN',{body:due.map(s=>mname(s.plan.memberId)+': '+pname(s.plan.productId)).join('\n'),tag:'tpcn-due'})}catch{}
+  }
+  if(tab==='today')render();
+}
+function askReminders(){
+  if(!('Notification' in window)){alert('Trình duyệt này không hỗ trợ thông báo. Bạn vẫn thấy nhắc trong app khi mở.');return}
+  Notification.requestPermission().then(p=>{alert(p==='granted'?'Đã bật thông báo. Khi app đang mở, sẽ có nhắc đúng giờ.':'Chưa bật được thông báo. Vẫn thấy nhắc trong app khi mở.');render()});
+}
+setInterval(checkReminders,60000);
+
 function vToday(){
   const day=today(),sl=slotsFor(day),taken=sl.filter(s=>s.intake?.status==='taken').length;
-  let html=chipRow()+todayWarnings(),last=null;
+  const due=dueNow(),dueIds=new Set(due.map(s=>s.plan.id));
+  const perm='Notification' in window?Notification.permission:'unsupported';
+  let html=chipRow()+todayWarnings();
+  if(due.length)html+=`<div class="note" style="margin-bottom:10px;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Đến giờ uống:</b> ${due.map(s=>esc(mname(s.plan.memberId))+' · '+esc(pname(s.plan.productId))).join(', ')}</div>`;
+  if(perm==='default')html+=`<div class="row" style="margin:0 0 10px"><button class="btn sm" onclick="askReminders()">Bật thông báo giờ uống</button></div>`;
+  let last=null;
   for(const s of sl){
     const p=s.plan,st=s.intake?.status,key=(p.time||'')+(p.label||'');
     if(key!==last){html+=`<div class="slot">${esc(p.label||'Trong ngày')} ${p.time?'· '+esc(p.time):''}</div>`;last=key}
-    html+=`<div class="card dose ${st==='taken'?'done':''}"><input type="checkbox" aria-label="Đã uống" ${st==='taken'?'checked':''} onchange="setIntake('${p.id}','taken')">
+    html+=`<div class="card dose ${st==='taken'?'done':''}" ${dueIds.has(p.id)?'style="border-color:var(--pri)"':''}><input type="checkbox" aria-label="Đã uống" ${st==='taken'?'checked':''} onchange="setIntake('${p.id}','taken')">
       <div class="grow"><div class="t"><b>${esc(pname(p.productId))}</b></div><div class="mute">${esc(mname(p.memberId))} · ${esc(p.qty||'')}${st==='skipped'?' · đã bỏ liều':''}</div></div>
       <button class="btn sm" onclick="setIntake('${p.id}','skipped')">${st==='skipped'?'Huỷ bỏ':'Bỏ liều'}</button></div>`;
   }
