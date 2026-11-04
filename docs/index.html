@@ -912,7 +912,7 @@ async function importDocs(f){
     const upd=ok.filter(x=>byId(S.docs,x.id)).length;
     if(!confirm(`Nhập ${ok.length} tài liệu (${upd} bài đã có sẽ được cập nhật). Tiếp tục?`))return;
     for(const x of ok){const o=cleanDeep(x);o.original=typeof x.original==='string'?x.original.slice(0,200000):'';o.source=cleanStr(d.source,120);const i=S.docs.findIndex(y=>y.id===o.id);i<0?S.docs.push(o):S.docs[i]=o}
-    save();go('know','d:');alert(`Đã nhập ${ok.length} tài liệu.`);
+    save();syncDocsSheet(false);go('know','d:');alert(`Đã nhập ${ok.length} tài liệu.`);
   }catch(e){alert('Lỗi: '+e.message)}
 }
 const docText=x=>[x.title,x.group,...pArr(x.tags),...pArr(x.tldr),...pArr(x.points).flatMap(p=>[p.h,...pArr(p.items)]),...pArr(x.claims).map(c=>c.text)].join(' ').toLowerCase();
@@ -924,10 +924,22 @@ function exportDocs(){
   const d={kind:'tpcn-docs',v:1,source:'Bài chia sẻ của chị Thảo Nguyên trong nhóm',exported:today(),docs:S.docs||[]};
   dl('tai-lieu-thao-nguyen-'+today()+'.json',JSON.stringify(d,null,1),'application/json');
 }
+// Đồng bộ mục lục tài liệu lên Google Sheet (chỉ tiêu đề, nhóm, chủ đề, trạng thái; không gửi nội dung bài hay hồ sơ sức khỏe)
+const GSYNC={clientId:'889192815010-jf7pl02vf6rivd43mj1g316rgjl40vk6.apps.googleusercontent.com',sheetId:'1jkpWUTir3hB5Uhdb1RdJ_7F7Yg-Kx3lWnEo5yaODTRU',token:null,exp:0};
+function loadGis(){return new Promise((res,rej)=>{if(window.google&&google.accounts)return res();const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.onload=res;s.onerror=()=>rej(new Error('Không tải được đăng nhập Google'));document.head.appendChild(s)})}
+async function gLogin(){await loadGis();return new Promise((res,rej)=>{const c=google.accounts.oauth2.initTokenClient({client_id:GSYNC.clientId,scope:'https://www.googleapis.com/auth/spreadsheets',callback:r=>{if(r.error){rej(new Error(r.error));return}GSYNC.token=r.access_token;GSYNC.exp=Date.now()+(r.expires_in-60)*1000;res()}});c.requestAccessToken()})}
+async function gSheet(path,opt={}){const r=await fetch('https://sheets.googleapis.com/v4/spreadsheets/'+GSYNC.sheetId+path,{...opt,headers:{Authorization:'Bearer '+GSYNC.token,'Content-Type':'application/json'}});if(!r.ok)throw new Error('Google Sheet trả lỗi '+r.status);return r.json()}
+async function syncDocsSheet(manual){
+  if(!GSYNC.token||Date.now()>GSYNC.exp){if(manual)alert('Bấm "Đăng nhập Google và đồng bộ" trước.');return}
+  const head=['Mã','Tiêu đề','Nhóm','Cập nhật','Chủ đề','Số cảnh báo','Trạng thái rà soát','Tên file'];
+  const rows=[head].concat((S.docs||[]).map(x=>[x.id,x.title,x.group||'',x.updated||'',pArr(x.tags).join(', '),pArr(x.claims).filter(c=>c.lv==='trai').length,x.reviewed||'Chưa rà lần 2','tai-lieu-thao-nguyen.json']));
+  try{await gSheet('/values/A1:H500:clear',{method:'POST'});await gSheet('/values/A1?valueInputOption=RAW',{method:'PUT',body:JSON.stringify({values:rows})});if(manual)alert('Đã đồng bộ '+(rows.length-1)+' tài liệu lên Google Sheet.')}
+  catch(e){alert('Đồng bộ lỗi: '+e.message)}
+}
 function vDocList(){
   const docs=(S.docs||[]).filter(x=>!docQ||docText(x).includes(docQ));
   const groups=[...new Set(docs.map(x=>x.group||'Khác'))];
-  view('Tài liệu',(S.docs||[]).length+' bài',`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('know')">‹ Kiến thức</button><label class="btn" style="display:inline-block">Nhập file tài liệu<input type="file" accept=".json" hidden onchange="importDocs(this.files[0]);this.value=''"></label><button class="btn" onclick="exportDocs()">Xuất toàn bộ (.json)</button></div>
+  view('Tài liệu',(S.docs||[]).length+' bài',`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('know')">‹ Kiến thức</button><label class="btn" style="display:inline-block">Nhập file tài liệu<input type="file" accept=".json" hidden onchange="importDocs(this.files[0]);this.value=''"></label><button class="btn" onclick="exportDocs()">Xuất toàn bộ (.json)</button><button class="btn" onclick="gLogin().then(()=>syncDocsSheet(true)).catch(e=>alert('Đăng nhập lỗi: '+e.message))">Đăng nhập Google và đồng bộ</button><button class="btn" onclick="syncDocsSheet(true)">Đồng bộ ngay</button></div>
    <div class="note" style="margin-bottom:10px">Đây là bài chia sẻ của chị Thảo Nguyên trong nhóm, đã được tóm tắt lại và gắn mức tin cậy từng ý. Không phải tài liệu y khoa chính thức và không thay lời bác sĩ.</div>
    <input id="docQ" placeholder="Tìm trong tài liệu (vd: ngủ, B12, mệt)…" value="${esc(docQ)}" oninput="docQ=this.value.toLowerCase();vDocList();const i=document.getElementById('docQ');i.focus();i.setSelectionRange(99,99)" style="margin-bottom:10px">`+
    (()=>{const c={};for(const x of S.docs||[])for(const t of pArr(x.tags))c[t]=(c[t]||0)+1;const ts=Object.keys(c).sort((a,b)=>c[b]-c[a]||a.localeCompare(b,'vi'));
