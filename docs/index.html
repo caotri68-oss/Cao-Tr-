@@ -81,7 +81,7 @@ const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open(DB,2);
   r.onupgradeneeded=()=>{const d=r.result;if(!d.objectStoreNames.contains('kv'))d.createObjectStore('kv');if(!d.objectStoreNames.contains('img'))d.createObjectStore('img')};
   r.onsuccess=()=>{r.result.onversionchange=()=>r.result.close();res(r.result)};r.onerror=()=>rej(r.error)});
 async function load(){try{const db=await idb();const d=await new Promise(res=>{const q=db.transaction('kv').objectStore('kv').get(KEY);q.onsuccess=()=>res(q.result);q.onerror=()=>res(null)});S={...empty(),...(d||{})}}catch(e){alert('Không mở được bộ nhớ trình duyệt: '+e.message)}
-  if(!S.products.length)loadSharedProducts()}
+  }
 // Danh sách sản phẩm chung (không có thông tin cá nhân) lấy từ GitHub khi tủ còn trống
 async function loadSharedProducts(){
   try{const r=await fetch('data/san-pham.json',{cache:'no-cache'});if(!r.ok)return;
@@ -400,7 +400,7 @@ function vToday(){
 function vShelf(){
   if(sub)return vProduct(sub);
   const l=S.products;
-  view('Tủ TPCN',l.length+' sản phẩm',`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="go('add')">+ Thêm sản phẩm</button><label class="btn" style="display:inline-block">Nhập từ file<input type="file" accept=".json" hidden onchange="importProducts(this.files[0]);this.value=''"></label></div>`+overlapHtml()+
+  view('Tủ TPCN',l.length+' sản phẩm',`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="go('add')">+ Thêm sản phẩm</button><button class="btn" onclick="go('fam')">Cập nhật từ file</button></div>`+overlapHtml()+
     (l.map(p=>{const who=[...new Set(S.plans.filter(x=>x.productId===p.id&&(!x.end||x.end>=today())).map(x=>mname(x.memberId)))];
       return`<div class="card" onclick="go('shelf','${p.id}')" style="cursor:pointer;display:flex;gap:12px;align-items:center">${thumbHtml(p,64)}<div class="grow"><h3>${esc(p.name)}</h3>
       <div class="mute">${esc([p.brand,p.form].filter(Boolean).join(' · '))}</div>
@@ -939,7 +939,7 @@ async function syncDocsSheet(manual){
 function vDocList(){
   const docs=(S.docs||[]).filter(x=>!docQ||docText(x).includes(docQ));
   const groups=[...new Set(docs.map(x=>x.group||'Khác'))];
-  view('Tài liệu',(S.docs||[]).length+' bài',`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('know')">‹ Kiến thức</button><label class="btn" style="display:inline-block">Nhập file tài liệu<input type="file" accept=".json" hidden onchange="importDocs(this.files[0]);this.value=''"></label><button class="btn" onclick="exportDocs()">Xuất toàn bộ (.json)</button><button class="btn" onclick="gLogin().then(()=>syncDocsSheet(true)).catch(e=>alert('Đăng nhập lỗi: '+e.message))">Đăng nhập Google và đồng bộ</button><button class="btn" onclick="syncDocsSheet(true)">Đồng bộ ngay</button></div>
+  view('Tài liệu',(S.docs||[]).length+' bài',`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('know')">‹ Kiến thức</button><button class="btn" onclick="go('fam')">Cập nhật từ file</button><button class="btn" onclick="exportDocs()">Xuất toàn bộ (.json)</button></div>
    <div class="note" style="margin-bottom:10px">Đây là bài chia sẻ của chị Thảo Nguyên trong nhóm, đã được tóm tắt lại và gắn mức tin cậy từng ý. Không phải tài liệu y khoa chính thức và không thay lời bác sĩ.</div>
    <input id="docQ" placeholder="Tìm trong tài liệu (vd: ngủ, B12, mệt)…" value="${esc(docQ)}" oninput="docQ=this.value.toLowerCase();vDocList();const i=document.getElementById('docQ');i.focus();i.setSelectionRange(99,99)" style="margin-bottom:10px">`+
    (()=>{const c={};for(const x of S.docs||[])for(const t of pArr(x.tags))c[t]=(c[t]||0)+1;const ts=Object.keys(c).sort((a,b)=>c[b]-c[a]||a.localeCompare(b,'vi'));
@@ -968,7 +968,7 @@ function vDoc(id){
 function vKnow(){
   if(sub&&String(sub).startsWith('d:'))return vDoc(String(sub).slice(2));
   if(sub)return vSubstance(sub);
-  view('Kiến thức',S.notes.length+' ghi chú · '+substList().length+' hoạt chất',`<div class="card" style="cursor:pointer" onclick="go('know','d:')"><b>Tài liệu của chị Thảo Nguyên</b> <span class="mute">(${(S.docs||[]).length} bài)</span><div class="mute">Bài chia sẻ đã tóm tắt, gắn mức tin cậy và cảnh báo. Bấm để mở.</div></div>`+substGrid()+`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="editNote()">+ Thêm ghi chú</button><label class="btn" style="display:inline-block">Nhập file Obsidian<input type="file" accept=".json" hidden onchange="importKnowledge(this.files[0]);this.value=''"></label></div>
+  view('Kiến thức',S.notes.length+' ghi chú · '+substList().length+' hoạt chất',`<div class="card" style="cursor:pointer" onclick="go('know','d:')"><b>Tài liệu của chị Thảo Nguyên</b> <span class="mute">(${(S.docs||[]).length} bài)</span><div class="mute">Bài chia sẻ đã tóm tắt, gắn mức tin cậy và cảnh báo. Bấm để mở.</div></div>`+substGrid()+`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="editNote()">+ Thêm ghi chú</button><button class="btn" onclick="go('fam')">Cập nhật từ file</button></div>
    <input id="knowQ" placeholder="Tìm trong ghi chú…" value="${esc(knowQ)}" oninput="knowQ=this.value.toLowerCase();vKnow();const i=document.getElementById('knowQ');i.focus();i.setSelectionRange(99,99)" style="margin-bottom:10px">`+
    (noteList().map(n=>`<div class="card"><h3>${esc(n.title)}</h3>${noteTags(n)}${noteBody(n)}
     <div class="mute">${esc(n.added||'')} · ${safeUrl(n.source)?`<a href="${esc(n.source)}" target="_blank" rel="noopener noreferrer">nguồn</a>`:esc(n.source||'')}</div>
@@ -982,15 +982,12 @@ function delMember(id){if(!confirm('Xoá thành viên này và mọi lịch uố
 function dl(name,data,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 function vFam(){
   if(sub&&String(sub).startsWith('p:'))return vProfile(String(sub).slice(2));
-  view('Cả nhà','Hồ sơ và sao lưu',`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="editMember()">+ Thêm thành viên</button></div>`+
+  view('Cả nhà','Hồ sơ, cập nhật và sao lưu',updateCard()+`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="editMember()">+ Thêm thành viên</button></div>`+
    (S.members.map(m=>`<div class="card"><h3>${esc(m.name)} <span class="mute">${m.born?'· sinh '+esc(m.born)+' ('+(new Date().getFullYear()-m.born)+' tuổi)':''}${m.weight?' · '+esc(m.weight)+' kg':''}</span></h3>
     <div class="mute">Bệnh nền: ${esc(m.conditions||'—')}</div><div class="mute">Thuốc kê đơn: ${esc(m.meds||'—')}</div><div class="mute">Dị ứng: ${esc(m.allergies||'—')}</div>${memberHealth(m)}
     <div class="row">${m.profile?`<button class="btn pri" onclick="go('fam','p:${m.id}')">Xem hồ sơ sức khỏe</button>`:''}<button class="btn sm" onclick="editMember('${m.id}')">Sửa</button><button class="btn sm del" onclick="delMember('${m.id}')">Xoá</button></div></div>`).join('')||`<div class="empty">Chưa có thành viên.</div>`)+
    `<div class="card"><b>Sao lưu</b><div class="mute">Dữ liệu chỉ nằm trong trình duyệt của máy này. Hãy tải bản sao lưu định kỳ.</div>
-    <div class="row"><button class="btn pri" onclick="exportAll()">Tải JSON</button>
-    <label class="btn" style="display:inline-block">Khôi phục từ JSON<input type="file" accept=".json" hidden onchange="restore(this.files[0])"></label></div></div>
-    <div class="card"><b>Nhập hồ sơ sức khỏe từ file</b><div class="mute">File do người nhà soạn (bệnh, thuốc, điều cần tránh). Dữ liệu chỉ lưu trong máy này.</div>
-    <div class="row"><label class="btn" style="display:inline-block">Chọn file hồ sơ<input type="file" accept=".json" hidden onchange="importProfile(this.files[0]);this.value=''"></label></div></div>
+    <div class="row"><button class="btn pri" onclick="exportAll()">Tải JSON</button></div><div class="mute" style="margin-top:6px">Khôi phục: dùng "Cập nhật dữ liệu" ở trên.</div></div>
     <div class="card"><b>Chuẩn mức tối đa dùng để cảnh báo</b><div class="mute">EFSA là chuẩn châu Âu (áp dụng ở Séc), thường chặt hơn. NIH là chuẩn Mỹ.</div>
      <select style="margin-top:8px" onchange="S.settings={...(S.settings||{}),ul:this.value};save();render()"><option value="efsa" ${ulStd()==='efsa'?'selected':''}>EFSA (châu Âu)</option><option value="nih" ${ulStd()==='nih'?'selected':''}>NIH (Mỹ)</option></select></div>
     <div class="card"><b>Xuất bảng tính (CSV, mở bằng Excel hoặc Google Sheets)</b>
@@ -1018,6 +1015,114 @@ function reportHtml(m){
 function printReport(mid){const m=byId(S.members,mid);if(!m){alert('Chưa có thành viên.');return}$('#report').innerHTML=reportHtml(m);print()}
 async function exportAll(){const images={};for(const id of S.products.flatMap(p=>p.imageIds||[])){const u=await getImg(id).catch(()=>null);if(u)images[id]=u}dl('tpcn-backup-'+today()+'.json',JSON.stringify({...S,images}),'application/json')}
 async function restore(f){if(!f)return;try{const d=JSON.parse(await f.text());if(!d||!Array.isArray(d.products)||!Array.isArray(d.members)||d.v!==2)throw new Error('Không đúng định dạng sao lưu của bản này');if(!confirm('Khôi phục sẽ GHI ĐÈ toàn bộ dữ liệu hiện tại. Tiếp tục?'))return;const {images,...rest}=d;S={...empty(),...rest};for(const [id,u] of Object.entries(images||{}))if(/^data:image\//.test(u))await putImg(id,u);save();render()}catch(e){alert('Lỗi: '+e.message)}}
+
+/* ---------- Cửa duy nhất: Cập nhật dữ liệu (tự nhận dạng loại file, xếp đúng mục) ---------- */
+const UPDATE_KINDS={'tpcn-products':importProducts,'tpcn-profile':importProfile,'tpcn-knowledge':importKnowledge,'tpcn-docs':importDocs};
+async function updateFiles(files){
+  for(const f of [...files]){
+    try{
+      const d=JSON.parse(await f.text());
+      if(d&&!d.kind&&d.v===2&&Array.isArray(d.members)&&Array.isArray(d.products)){await restore(f);continue}
+      const fn=d&&UPDATE_KINDS[d.kind];
+      if(!fn){alert(`File "${f.name}" không nhận dạng được loại dữ liệu (cần sản phẩm, hồ sơ sức khỏe, kiến thức, tài liệu hoặc bản sao lưu).`);continue}
+      await fn(f);
+    }catch(e){alert(`Không đọc được "${f.name}": ${e.message}`)}
+  }
+}
+const updateCard=()=>`<div class="card" ondragover="event.preventDefault()" ondrop="event.preventDefault();updateFiles(event.dataTransfer.files)"><b>Cập nhật dữ liệu</b>
+  <div class="mute">Một cửa duy nhất. Chọn hoặc kéo thả file (sản phẩm, hồ sơ sức khỏe, kiến thức, tài liệu, bản sao lưu). App tự nhận dạng loại file, xếp vào đúng mục và hỏi xác nhận trước khi ghi.</div>
+  <div class="row"><label class="btn pri" style="display:inline-block">Chọn file cập nhật<input type="file" accept=".json" multiple hidden onchange="const fs=[...this.files];this.value='';updateFiles(fs)"></label>
+  <button class="btn" onclick="syncAll()">Đồng bộ Google Sheet</button></div>
+  <div class="mute" style="margin-top:6px">Đồng bộ gửi lên Sheet: thành viên (chỉ tên, năm sinh, cân nặng), lịch uống, lượt uống, nhật ký, ghi chú tự viết. KHÔNG gửi: sản phẩm, hồ sơ bệnh án, bệnh nền, thuốc, dị ứng, ghi chú từ Obsidian.</div></div>`;
+
+/* ---------- Đồng bộ Google Sheet (gộp 3 chiều theo mã bản ghi, không cần giờ sửa) ---------- */
+const SYNC_TABS=[
+  {key:'members',tab:'ThanhVien',cols:['id','name','born','weight'],pub:m=>({id:m.id,name:m.name,born:m.born,weight:m.weight})},
+  {key:'plans',tab:'LichUong',cols:['id','memberId','productId','qty','time','label','servings','start','end'],pub:p=>p},
+  {key:'intakes',tab:'LuotUong',cols:['id','planId','date','status','at'],pub:i=>i},
+  {key:'diary',tab:'NhatKy',cols:['id','memberId','date','weight','hr','bp','symptom','note'],pub:d=>d},
+  {key:'notes',tab:'GhiChu',cols:['id','title','substance','source','content','added'],filter:n=>!String(n.id).startsWith('obs-'),pub:n=>({...n,content:String(n.content||'').slice(0,38000)})}
+];
+const stable=o=>Array.isArray(o)?'['+o.map(stable).join(',')+']':o&&typeof o==='object'?'{'+Object.keys(o).sort().map(k=>JSON.stringify(k)+':'+stable(o[k])).join(',')+'}':JSON.stringify(o===undefined?null:o);
+const hsh=o=>{const s=stable(o);let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(36)};
+const DATA_SHEET='16UyC59jsXOBnWIWirj9z_rdWO_rmDpVt--K0WiynAto';
+async function gApi(path,opt={}){
+  const r=await fetch('https://sheets.googleapis.com/v4/spreadsheets/'+DATA_SHEET+path,{...opt,headers:{Authorization:'Bearer '+GSYNC.token,'Content-Type':'application/json'}});
+  if(!r.ok)throw new Error('Google Sheet trả lỗi '+r.status);return r.json()}
+async function gEnsureTabs(){
+  const meta=await gApi('?fields=sheets.properties.title');
+  const have=new Set((meta.sheets||[]).map(s=>s.properties.title));
+  const add=SYNC_TABS.filter(t=>!have.has(t.tab)).map(t=>({addSheet:{properties:{title:t.tab}}}));
+  if(add.length)await gApi(':batchUpdate',{method:'POST',body:JSON.stringify({requests:add})})}
+const colLetter=n=>String.fromCharCode(64+n);
+/* Tính kết quả gộp cho một bảng. Không ghi gì cả. */
+function mergeTab(t,locList,rows,base){
+  const L={},R={};
+  for(const x of locList)L[x.id]=t.pub(x);
+  for(const row of rows){try{const j=JSON.parse(row[t.cols.length]||'');if(j&&typeof j.id==='string')R[j.id]=j}catch(e){}}
+  const ids=new Set([...Object.keys(L),...Object.keys(R)]);
+  const out={keep:{},stats:{up:0,down:0,delLocal:0,conflict:0,same:0},conflicts:[],skipDelLocal:[]};
+  for(const id of ids){
+    const l=L[id],r=R[id],b=base[id],hl=l?hsh(l):null,hr=r?hsh(r):null;
+    if(l&&r){
+      if(hl===hr){out.keep[id]=l;out.stats.same++}
+      else if(b===undefined||(hl!==b&&hr!==b)){out.conflicts.push({id,l,r});out.stats.conflict++}
+      else if(hl===b){out.keep[id]=r;out.stats.down++}
+      else{out.keep[id]=l;out.stats.up++}
+    }else if(l&&!r){
+      if(b!==undefined&&hl===b){out.stats.delLocal++;out.skipDelLocal.push(id)} // đã bị xoá ở nơi khác
+      else{out.keep[id]=l;out.stats.up++}
+    }else if(!l&&r){
+      if(b!==undefined&&hr===b){/* đã xoá ở máy này: không gửi lại */}
+      else{out.keep[id]=r;out.stats.down++}
+    }
+  }
+  return out}
+async function syncAll(){
+  try{
+    if(!GSYNC.token||Date.now()>GSYNC.exp)await gLogin();
+    await gEnsureTabs();
+    const got=await gApi('/values:batchGet?'+SYNC_TABS.map(t=>'ranges='+t.tab+'!A2:'+colLetter(t.cols.length+2)+'2000').join('&'));
+    S.sync=S.sync||{};
+    const plan=[];let up=0,down=0,del=0,conf=0;
+    SYNC_TABS.forEach((t,i)=>{
+      const loc=(S[t.key]||[]).filter(t.filter||(()=>true));
+      const m=mergeTab(t,loc,(got.valueRanges[i].values||[]),S.sync[t.key]||{});
+      plan.push({t,m});up+=m.stats.up;down+=m.stats.down;del+=m.stats.delLocal;conf+=m.stats.conflict});
+    // Xử lý xung đột: hỏi từng mục
+    for(const {t,m} of plan)for(const c of m.conflicts){
+      const label=c.l.name||c.l.title||c.l.date||c.id;
+      m.keep[c.id]=confirm(`Mục "${label}" (${t.tab}) khác nhau giữa máy này và Google Sheet.\nOK = giữ bản trên máy này.\nHuỷ = lấy bản trên Sheet.`)?c.l:c.r}
+    if(!confirm(`Đồng bộ với Google Sheet:\n- Gửi lên: ${up}\n- Lấy về: ${down}\n- Xoá trên máy này (đã xoá ở nơi khác): ${del}\n- Xung đột đã chọn: ${conf}\nTiếp tục?`))return;
+    // Áp dụng về máy
+    let skipped=0;const newBase={};
+    for(const {t,m} of plan){
+      const cur=S[t.key]||[];const excl=cur.filter(x=>!(t.filter||(()=>true))(x)); // phần không đồng bộ (ghi chú Obsidian)
+      const byId0=Object.fromEntries(cur.map(x=>[x.id,x]));
+      const next=[];const pushOnly=[];
+      for(const id of Object.keys(m.keep)){
+        let rec=m.keep[id];
+        if(byId0[id]&&hsh(t.pub(byId0[id]))===hsh(rec))rec=byId0[id]; // bản máy này thắng: giữ nguyên, không cắt bớt
+        else if(t.key==='members'&&byId0[id])rec={...byId0[id],...rec}; // lấy từ Sheet nhưng giữ phần riêng tư của máy này
+        if(!byId0[id]){ // bản ghi mới từ Sheet: chỉ nhận khi đã có thứ nó tham chiếu
+          if(t.key==='plans'&&!byId(S.products,rec.productId)){skipped++;pushOnly.push(rec);continue}
+          if(t.key==='intakes'&&!byId(S.plans,rec.planId)){skipped++;pushOnly.push(rec);continue}
+          if(t.key==='members')rec={conditions:'',meds:'',allergies:'',...rec}}
+        next.push(rec)}
+      m.pushOnly=pushOnly;S[t.key]=[...excl,...next]}
+    // Gửi bản đã gộp lên Sheet
+    for(const {t,m} of plan){
+      const final=[...(S[t.key]||[]).filter(t.filter||(()=>true)).map(t.pub),...m.pushOnly];
+      const rows=final.map(r=>[...t.cols.map(c=>{const v=r[c];return v==null?'':typeof v==='object'?JSON.stringify(v):v}),JSON.stringify(r),hsh(r)]);
+      const head=[...t.cols,'json','hash'];
+      await gApi('/values/'+t.tab+'!A1:'+colLetter(head.length)+'2000:clear',{method:'POST'});
+      await gApi('/values/'+t.tab+'!A1?valueInputOption=RAW',{method:'PUT',body:JSON.stringify({values:[head,...rows]})});
+      const base={};for(const r of (S[t.key]||[]).filter(t.filter||(()=>true)).map(t.pub))base[r.id]=hsh(r);newBase[t.key]=base}
+    S.sync=newBase;save();render();
+    await syncDocsSheet(false);
+    alert('Đồng bộ xong.'+(skipped?`\nBỏ qua ${skipped} lịch uống vì máy này chưa có sản phẩm tương ứng. Hãy cập nhật file sản phẩm trước rồi đồng bộ lại.`:''));
+  }catch(e){alert('Đồng bộ lỗi: '+e.message)}
+}
 
 /* ---------- Khởi động ---------- */
 load().then(render);
