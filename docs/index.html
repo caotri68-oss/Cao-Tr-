@@ -885,7 +885,7 @@ function diaryCard(m){
 function vProfile(mid){
   const m=byId(S.members,mid),P=m&&m.profile;if(!P){sub=null;return vFam()}
   const W=warningsFor(m),age=ageOf(m);
-  const top=`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('fam')">‹ Gia đình</button></div>`;
+  const top=`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('fam','m:${m.id}')">‹ ${esc(m.name)}</button></div>`;
   const live=pArr(S.plans.filter(x=>x.memberId===m.id&&(!x.end||x.end>=today())&&byId(S.products,x.productId)).map(x=>{const p=byId(S.products,x.productId);return`<div style="border-top:1px solid var(--line);padding:8px 0;display:flex;gap:10px;align-items:center">${thumbHtml(p,48)}<div><b style="font-size:17px">${esc(p.name)}</b><div class="mute">${esc(p.brand||'')} · ${esc(x.qty||'')} · ${esc(x.time||'')} ${esc(x.label||'')}</div></div></div>`})).join('');
   view('Hồ sơ sức khỏe',`${m.name}${age?' · '+age+' tuổi':''}${m.weight?' · '+m.weight+' kg':''}`,
    `<div style="font-size:17px;line-height:1.55">${top}
@@ -986,12 +986,50 @@ function editMember(id){const m=byId(S.members,id)||{id:uid()};
   dialog(id?'Sửa thành viên':'Thêm thành viên',[{k:'name',l:'Tên / vai trò'},{k:'born',l:'Năm sinh',t:'number'},{k:'weight',l:'Cân nặng (kg)',t:'number'},{k:'conditions',l:'Bệnh nền',t:'area'},{k:'meds',l:'Thuốc kê đơn đang dùng (tên, liều, giờ)',t:'area'},{k:'allergies',l:'Dị ứng',t:'area'}],m,o=>{if(!o.name)return;upsert(S.members,o)})}
 function delMember(id){if(!confirm('Xoá thành viên này và mọi lịch uống của họ?'))return;const ids=S.plans.filter(x=>x.memberId===id).map(x=>x.id);S.intakes=S.intakes.filter(i=>!ids.includes(i.planId));S.plans=S.plans.filter(x=>x.memberId!==id);S.members=S.members.filter(x=>x.id!==id);if(fMember===id)fMember='';save();render()}
 function dl(name,data,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+/* ---------- Trang riêng từng người ---------- */
+let personTab='tq';
+const PTABS=[['tq','Tổng quan'],['lu','Lịch uống'],['nk','Nhật ký'],['hs','Hồ sơ']];
+function vPerson(mid){
+  const m=byId(S.members,mid);if(!m){sub=null;return vFam()}
+  const age=ageOf(m),day=today(),P=m.profile;
+  const plans=activePlans(m.id,day).sort((a,b)=>(a.time||'99').localeCompare(b.time||'99'));
+  const W=warningsFor(m);
+  const chips=`<div class="chips" style="margin-bottom:10px;flex-wrap:wrap;overflow:visible">${PTABS.map(([k,l])=>`<button class="${k===personTab?'on':''}" onclick="personTab='${k}';render()">${l}${k==='lu'?' · '+plans.length:''}</button>`).join('')}</div>`;
+  let body='';
+  if(personTab==='tq'){
+    const dr=(S.diary||[]).filter(x=>x.memberId===m.id).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,3);
+    const tag=(v,suf)=>v!==''&&v!=null?`<span class="tag">${esc(v)}${suf}</span>`:'';
+    body=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div class="card" style="margin:0"><div class="mute">Đang uống</div><b style="font-size:22px">${plans.length}</b></div>
+      <div class="card" style="margin:0"><div class="mute">Lưu ý</div><b style="font-size:22px;color:${W.length?'var(--warn)':'var(--pri)'}">${W.length}</b></div></div>`+
+      (P&&pArr(P.urgent).length?`<div class="w w3"><b>Khi nào đi khám ngay</b>${pUl(pArr(P.urgent).slice(0,3))}<div class="row"><button class="btn sm" onclick="personTab='hs';render()">Xem đủ ở tab Hồ sơ</button></div></div>`:'')+
+      memberHealth(m)+
+      `<div class="card" style="margin-top:10px"><b>Nhật ký gần nhất</b>${dr.map(x=>`<div style="border-top:1px solid var(--line);padding:8px 0"><b>${esc(x.date.split('-').reverse().join('/'))}</b> ${tag(x.weight,' kg')}${tag(x.hr,'/phút')}${tag(x.bp,'')}${x.symptom?`<div class="mute">${esc(x.symptom)}</div>`:''}</div>`).join('')||'<div class="mute">Chưa có dòng nào.</div>'}
+        <div class="row"><button class="btn pri sm" onclick="editDiary('${m.id}')">+ Ghi nhật ký</button><button class="btn sm" onclick="personTab='nk';render()">Xem tất cả</button></div></div>
+       <div class="row"><button class="btn" onclick="printReport('${m.id}')">In báo cáo</button><button class="btn" onclick="editMember('${m.id}')">Sửa thông tin</button></div>`;
+  }else if(personTab==='lu'){
+    const ended=S.plans.filter(x=>x.memberId===m.id&&x.end&&x.end<day&&byId(S.products,x.productId));
+    body=(plans.map(x=>{const pr=byId(S.products,x.productId);return`<div class="card" style="cursor:pointer" onclick="go('shelf','${x.productId}')"><b>${esc(pr.name)}</b> <span class="mute">${esc(pr.brand||'')}</span>
+        <div class="mute">${esc(x.time||'')} ${esc(x.label||'')} · ${esc(x.qty||'')}${x.servings&&x.servings!=1?' ('+esc(x.servings)+' liều nhãn)':''} · từ ${esc(x.start||'')}</div></div>`}).join('')
+      ||`<div class="empty">Chưa có lịch uống. Mở một sản phẩm trong tab Tủ thuốc và bấm “Thêm người uống”.</div>`)+
+      (ended.length?`<div class="mute" style="margin-top:8px">${ended.length} lịch đã kết thúc (xem trong từng sản phẩm).</div>`:'');
+  }else if(personTab==='nk'){
+    body=diaryCard(m);
+  }else{
+    body=`<div class="card"><b>Bệnh nền</b><div>${esc(m.conditions||'—')}</div><b style="display:block;margin-top:8px">Thuốc kê đơn</b><div>${esc(m.meds||'—')}</div><b style="display:block;margin-top:8px">Dị ứng</b><div>${esc(m.allergies||'—')}</div>
+      <div class="row"><button class="btn sm" onclick="editMember('${m.id}')">Sửa</button></div></div>`+
+      (P?`<div class="card"><b>Hồ sơ sức khỏe chi tiết</b><div class="mute">Thuốc, điều cần tránh, xét nghiệm, câu hỏi cho bác sĩ. Viết bằng chữ lớn, dễ đọc.</div><div class="row"><button class="btn pri" onclick="go('fam','p:${m.id}')">Mở hồ sơ chi tiết</button></div></div>`
+        :`<div class="note">Chưa có hồ sơ chi tiết. Nhập file hồ sơ ở Cài đặt, mục Cập nhật dữ liệu.</div>`);
+  }
+  view(m.name,`${age?age+' tuổi':''}${m.weight?(age?' · ':'')+m.weight+' kg':''}`||'Thành viên',`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('fam')">‹ Gia đình</button></div>`+chips+body);
+}
 function vFam(){
   if(sub&&String(sub).startsWith('p:'))return vProfile(String(sub).slice(2));
+  if(sub&&String(sub).startsWith('m:'))return vPerson(String(sub).slice(2));
   view('Gia đình','Mỗi người một hồ sơ',`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="editMember()">+ Thêm thành viên</button></div>`+
-   (S.members.map(m=>`<div class="card"><h3>${esc(m.name)} <span class="mute">${m.born?'· sinh '+esc(m.born)+' ('+(new Date().getFullYear()-m.born)+' tuổi)':''}${m.weight?' · '+esc(m.weight)+' kg':''}</span></h3>
-    <div class="mute">Bệnh nền: ${esc(m.conditions||'—')}</div><div class="mute">Thuốc kê đơn: ${esc(m.meds||'—')}</div><div class="mute">Dị ứng: ${esc(m.allergies||'—')}</div>${memberHealth(m)}
-    <div class="row">${m.profile?`<button class="btn pri" onclick="go('fam','p:${m.id}')">Xem hồ sơ sức khỏe</button>`:''}<button class="btn sm" onclick="printReport('${m.id}')">In báo cáo</button><button class="btn sm" onclick="editMember('${m.id}')">Sửa</button><button class="btn sm del" onclick="delMember('${m.id}')">Xoá</button></div></div>`).join('')||`<div class="empty">Chưa có thành viên.</div>`)+
+   (S.members.map(m=>{const age=ageOf(m),n=activePlans(m.id,today()).length,w=warningsFor(m).length;return`<div class="card" style="cursor:pointer" onclick="go('fam','m:${m.id}')"><h3 style="margin:0">${esc(m.name)} <span class="mute">${age?'· '+age+' tuổi':''}${m.weight?' · '+esc(m.weight)+' kg':''}</span></h3>
+    <div class="mute">${n} sản phẩm đang uống${w?' · <span style="color:var(--warn)">'+w+' lưu ý</span>':''}</div>
+    <div class="row"><button class="btn pri sm" onclick="event.stopPropagation();go('fam','m:${m.id}')">Mở</button><button class="btn sm" onclick="event.stopPropagation();editMember('${m.id}')">Sửa</button><button class="btn sm del" onclick="event.stopPropagation();delMember('${m.id}')">Xoá</button></div></div>`}).join('')||`<div class="empty">Chưa có thành viên.</div>`)+
    `    <div class="note">App chỉ lưu và nhắc theo dữ liệu bạn nhập, không thay lời khuyên của bác sĩ hay dược sĩ.</div>`);
 }
 function vSet(){
