@@ -129,7 +129,21 @@ function render(){
   $('#gear').classList.toggle('on',tab==='set');
   ({today:vToday,shelf:vShelf,add:vAdd,know:vKnow,fam:vFam,set:vSet})[tab]();
 }
-function view(title,sub_,html){$('#ttl').textContent=title;$('#sub').textContent=sub_||'';$('#view').innerHTML=html}
+const APP_VER='tpcn-v2-37';
+let newVer='';
+const updBanner=()=>newVer?`<div class="note" style="margin-bottom:12px;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Có bản mới của app.</b> <button class="btn sm pri" onclick="forceUpdate()">Cập nhật ngay</button></div>`:'';
+function view(title,sub_,html){$('#ttl').textContent=title;$('#sub').textContent=sub_||'';$('#view').innerHTML=updBanner()+html}
+/* Xoá bộ nhớ đệm của app và tải lại. Dữ liệu bạn đã nhập (trong IndexedDB) KHÔNG bị xoá. */
+async function forceUpdate(){
+  try{if('serviceWorker' in navigator)for(const r of await navigator.serviceWorker.getRegistrations())await r.unregister();
+    if(window.caches)for(const k of await caches.keys())await caches.delete(k)}catch(e){}
+  location.reload();
+}
+async function checkUpdate(){
+  try{const t=await (await fetch('sw.js?c='+Date.now(),{cache:'no-store'})).text();
+    const m=t.match(/const VER='([^']+)'/);newVer=m&&m[1]!==APP_VER?m[1]:'';
+    if(newVer)render();else if(tab==='set')render();return newVer||APP_VER}catch(e){return null}
+}
 
 /* ---------- Hộp thoại ---------- */
 function dialog(title,fields,data,onSave){
@@ -1082,6 +1096,8 @@ function vSet(){
      <select style="margin-top:8px" onchange="S.settings={...(S.settings||{}),ul:this.value};save();render()"><option value="efsa" ${ulStd()==='efsa'?'selected':''}>EFSA (châu Âu)</option><option value="nih" ${ulStd()==='nih'?'selected':''}>NIH (Mỹ)</option></select></div>
     <div class="card"><b>Xuất bảng tính (CSV, mở bằng Excel hoặc Google Sheets)</b>
      <div class="row"><button class="btn" onclick="exportCsv('p')">Sản phẩm</button><button class="btn" onclick="exportCsv('l')">Lịch uống</button><button class="btn" onclick="exportCsv('i')">Lượt đã uống</button></div></div>
+    <div class="card"><b>Phiên bản app</b><div class="mute">Đang chạy: ${APP_VER}${newVer?' · <b style="color:var(--pri)">có bản mới '+esc(newVer)+'</b>':' · đã là bản mới nhất (khi có mạng)'}</div>
+     <div class="row"><button class="btn" onclick="forceUpdate()">Cập nhật app ngay</button></div><div class="mute" style="margin-top:6px">Nút này xoá bộ nhớ đệm của app và tải lại. Dữ liệu bạn đã nhập không bị mất.</div></div>
     <div class="note">App chỉ lưu và nhắc theo dữ liệu bạn nhập, không thay lời khuyên của bác sĩ hay dược sĩ.</div>`);
 }
 const csvCell=v=>{v=String(v??'');if(/^[=+\-@\t\r]/.test(v))v="'"+v;return /[",\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}; // chặn công thức độc khi mở bằng Excel
@@ -1213,7 +1229,8 @@ async function syncAll(){
 }
 
 /* ---------- Khởi động ---------- */
-load().then(render);
+load().then(()=>{render();checkUpdate()});
+setInterval(checkUpdate,30*60*1000);
 if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 </script>
 </body>
