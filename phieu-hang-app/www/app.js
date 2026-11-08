@@ -9,12 +9,19 @@
   function store(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
   function load(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }
 
-  $('provider').value = load('ps_provider') || 'claude';
-  $('apikey').value = load('ps_key_' + $('provider').value);
-  if (!$('apikey').value) $('settings').hidden = false;
+  // Lần đầu chưa có key nào thì mặc định đọc trên máy, không cần key.
+  $('provider').value = load('ps_provider') || (load('ps_key_claude') || load('ps_key_gemini') ? 'claude' : 'ocr');
+  function syncProvider() {
+    var isOcr = $('provider').value === 'ocr';
+    $('keyWrap').hidden = isOcr; $('keyHint').hidden = isOcr; $('ocrHint').hidden = !isOcr;
+    $('saveKey').hidden = isOcr; $('clearKey').hidden = isOcr;
+    $('apikey').value = isOcr ? '' : load('ps_key_' + $('provider').value);
+  }
+  syncProvider();
+  if ($('provider').value !== 'ocr' && !$('apikey').value) $('settings').hidden = false;
 
   $('settingsBtn').onclick = function () { $('settings').hidden = !$('settings').hidden; };
-  $('provider').onchange = function () { $('apikey').value = load('ps_key_' + this.value); };
+  $('provider').onchange = function () { syncProvider(); };
   $('saveKey').onclick = function () {
     store('ps_provider', $('provider').value);
     store('ps_key_' + $('provider').value, $('apikey').value.trim() || null);
@@ -112,17 +119,44 @@
     });
   }
 
+  // --- đọc trên máy: Tesseract (tiếng Séc), chạy trong WebView, không gửi ảnh đi đâu ---
+  var ocrWorker = null, ocrPromise = null;
+  function getOcrWorker() {
+    if (ocrWorker) return Promise.resolve(ocrWorker);
+    if (!ocrPromise) {
+      ocrPromise = Tesseract.createWorker('ces', 1, {
+        workerPath: 'vendor/tesseract/worker.min.js',
+        corePath: 'vendor/tesseract/',
+        langPath: 'tessdata/',
+        gzip: true,
+        logger: function (m) {
+          if (m.status === 'recognizing text') setStatus('Đang đọc trên máy… ' + Math.round((m.progress || 0) * 100) + '%');
+        }
+      }).then(function (w) { ocrWorker = w; return w; }, function (e) { ocrPromise = null; throw e; });
+    }
+    return ocrPromise;
+  }
+  function ocrImage(img) {
+    // Phóng to ảnh cho Tesseract đọc chữ nhỏ tốt hơn; ảnh quá lớn thì thu về 2600px.
+    var w = img.naturalWidth, h = img.naturalHeight, k = Math.min(2600 / Math.max(w, h), 2);
+    var c = document.createElement('canvas'); c.width = Math.round(w * k); c.height = Math.round(h * k);
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    return getOcrWorker().then(function (wk) { return wk.recognize(c); }).then(function (res) { return res.data.text || ''; });
+  }
+
   var busy = false;
   function handleFile(file) {
     if (!file || busy) return;
-    var provider = $('provider').value, key = load('ps_key_' + provider);
-    if (!key) { $('settings').hidden = false; setStatus('Hãy dán API key và bấm Lưu trước.', true); return; }
-    busy = true; setBusy(true); setStatus('Đang đọc ảnh, thường mất 10–30 giây…');
+    var provider = $('provider').value, key = provider === 'ocr' ? '' : load('ps_key_' + provider);
+    if (provider !== 'ocr' && !key) { $('settings').hidden = false; setStatus('Hãy dán API key và bấm Lưu trước.', true); return; }
+    busy = true; setBusy(true);
+    setStatus(provider === 'ocr' ? 'Đang đọc trên máy, lần đầu có thể lâu hơn…' : 'Đang đọc ảnh, thường mất 10–30 giây…');
     loadImage(file).then(function (r) {
       $('preview').src = r.url;
-      return (provider === 'gemini' ? askGemini : askClaude)(key, toJpegBase64(r.img, 2000));
-    }).then(function (text) {
-      var added = P.toRows(P.parseModelJson(text));
+      if (provider === 'ocr') return ocrImage(r.img).then(function (text) { return P.parseOcrText(text); });
+      return (provider === 'gemini' ? askGemini : askClaude)(key, toJpegBase64(r.img, 2000))
+        .then(function (text) { return P.toRows(P.parseModelJson(text)); });
+    }).then(function (added) {
       if (!added.length) throw new Error('Không đọc được dòng nào. Thử chụp lại gần và thẳng hơn.');
       rows = rows.concat(added); render();
       var warn = added.filter(function (r) { return P.status(r.kod) !== 'ok'; }).length;

@@ -48,7 +48,31 @@
     });
   }
 
-  var api = { cleanKod: cleanKod, eanOk: eanOk, status: status, parseModelJson: parseModelJson, toRows: toRows };
+  // Đọc văn bản OCR thành dòng: số Pol. ở đầu, mã sau dấu gạch ngang (hoặc chuỗi số), phần còn lại là tên.
+  // Dòng không có số Pol. và không có mã (tiêu đề bảng, rác) bị bỏ qua.
+  function parseOcrText(text) {
+    var out = [];
+    String(text || '').split(/\r?\n/).forEach(function (line) {
+      var s = line.replace(/\s+/g, ' ').trim();
+      if (!s) return;
+      var pol = '', m = s.match(/^(\d{1,3})(?=\D|$)\s*/);
+      if (m) { pol = m[1]; s = s.slice(m[0].length); }
+      var kod = '', nazev = s;
+      var k = s.match(/[A-Za-z0-9]*-\s*[\d ]{6,}/);
+      if (k) {
+        kod = cleanKod(k[0]);
+        nazev = (s.slice(0, k.index) + ' ' + s.slice(k.index + k[0].length)).replace(/\s+/g, ' ').trim();
+      } else {
+        var d = s.match(/\d{8,}/);
+        if (d) { kod = d[0].slice(0, 13); nazev = (s.slice(0, d.index) + ' ' + s.slice(d.index + d[0].length)).replace(/\s+/g, ' ').trim(); }
+      }
+      if (!pol && !kod) return;
+      out.push({ pol: pol, kod: kod, nazev: nazev });
+    });
+    return out;
+  }
+
+  var api = { cleanKod: cleanKod, eanOk: eanOk, status: status, parseModelJson: parseModelJson, toRows: toRows, parseOcrText: parseOcrText };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.PhieuParse = api;
 })(typeof self !== 'undefined' ? self : this);

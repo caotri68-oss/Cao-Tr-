@@ -176,16 +176,18 @@
       <div class="grow">
         <label class="cap" for="provider">Dịch vụ đọc ảnh</label>
         <select id="provider">
-          <option value="claude">Claude</option>
-          <option value="gemini">Gemini</option>
+          <option value="ocr">Đọc trên máy (không cần key)</option>
+          <option value="claude">Claude (cần API key)</option>
+          <option value="gemini">Gemini (cần API key)</option>
         </select>
       </div>
-      <div class="grow">
+      <div class="grow" id="keyWrap">
         <label class="cap" for="apikey">API key</label>
         <input id="apikey" type="password" autocomplete="off" placeholder="Dán API key vào đây">
       </div>
     </div>
-    <p class="hint">Key chỉ lưu trong app trên thiết bị này và chỉ gửi tới dịch vụ bạn chọn. Không dùng trên máy dùng chung.</p>
+    <p class="hint" id="keyHint">Key chỉ lưu trong app trên thiết bị này và chỉ gửi tới dịch vụ bạn chọn. Không dùng trên máy dùng chung.</p>
+    <p class="hint" id="ocrHint" hidden>Đọc trên máy: không gửi ảnh đi đâu, chạy offline. Chính xác thấp hơn Claude/Gemini, nên hãy kiểm tra lại các mã có cảnh báo.</p>
     <div class="row" style="margin-top:10px">
       <button id="saveKey" type="button" class="primary">Lưu</button>
       <button id="clearKey" type="button">Xoá key đã lưu</button>
@@ -230,6 +232,7 @@
 </div>
 
 <script src="parse.js"></script>
+<script src="vendor/tesseract/tesseract.min.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
