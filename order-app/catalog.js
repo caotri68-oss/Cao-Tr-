@@ -3,13 +3,13 @@
  * - id: số thứ tự sản phẩm trong đơn (dùng trong dòng "* id. tên *").
  * - variants: danh sách loại (mã) của sản phẩm. [] = không có loại, chỉ nhập "các loại khác".
  *
- * Các loại của mục 1, 6, 7 mới có một phần (theo đơn mẫu). Trong app có thể bấm
+ * Các loại của mục 6, 7 mới có một phần (theo đơn mẫu). Trong app có thể bấm
  * "+ Thêm loại" để thêm loại còn thiếu, không cần sửa file này.
  * units: đơn vị khác 'balení' cho từng loại (ví dụ paleta).
  */
 window.CATALOG = [
-  { id: 1, name: 'Pleťový a tělový krém 250ml', variants: ['Aloe'] },
-  { id: 2, name: 'Krem na ruce 100ml', variants: [] },
+  { id: 1, name: 'Pleťový a tělový krém 250ml', variants: ['Aloe', 'Mandlovy', 'Hermanek'] },
+  { id: 2, name: 'Krem na ruce 100ml', variants: ['Aloe', 'Ibiskovy', 'Mesíckovy'] },
   { id: 3, name: 'Sul do koupele 600g', variants: [] },
   { id: 4, name: 'Trim prací prášek', variants: ['2kg', '4,5kg', '9kg'], units: { '9kg': 'paleta' } },
   {
