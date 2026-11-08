@@ -320,7 +320,7 @@ function render(){
   document.querySelector('header').style.display=tab==='today'?'none':'';
   ({today:vToday,shelf:vShelf,add:vAdd,know:vKnow,fam:vFam,set:vSet})[tab]();
 }
-const APP_VER='tpcn-v2-47';
+const APP_VER='tpcn-v2-48';
 let newVer='';
 const updBanner=()=>newVer?`<div class="note" style="margin-bottom:12px;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Có bản mới của app.</b> <button class="btn sm pri" onclick="forceUpdate()">Cập nhật ngay</button></div>`:'';
 function view(title,sub_,html){$('#ttl').textContent=title;$('#sub').textContent=sub_||'';$('#view').innerHTML=updBanner()+html}
@@ -1487,7 +1487,9 @@ async function updateFiles(files){
 const updateCard=()=>`<div class="card" ondragover="event.preventDefault()" ondrop="event.preventDefault();updateFiles(event.dataTransfer.files)"><b>Cập nhật dữ liệu</b>
   <div class="mute">Một cửa duy nhất. Chọn hoặc kéo thả file (sản phẩm, hồ sơ sức khỏe, kiến thức, tài liệu, bản sao lưu). App tự nhận dạng loại file, xếp vào đúng mục và hỏi xác nhận trước khi ghi.</div>
   <div class="row"><label class="btn pri" style="display:inline-block">Chọn file cập nhật<input type="file" accept=".json" multiple hidden onchange="const fs=[...this.files];this.value='';updateFiles(fs)"></label>
-  <button class="btn" onclick="syncAll()">Đồng bộ Google Sheet</button></div>
+  <button class="btn" onclick="syncAll()">Đồng bộ Google Sheet</button>
+  <button class="btn" onclick="driveSync()">Đồng bộ Google Drive</button></div>
+  <div class="mute" style="margin-top:6px">Google Drive: dữ liệu được mã hoá bằng mật khẩu của bạn ngay trên máy trước khi gửi, Google chỉ giữ bản mã. Dùng cùng một mật khẩu trên mọi máy. Cùng các bảng như Sheet, không gồm sản phẩm hay hồ sơ bệnh án.${(S.settings||{}).lastDriveSync?` Lần cuối: ${new Date(S.settings.lastDriveSync).toLocaleString('vi-VN')}.`:''}</div>
   <div class="mute" style="margin-top:6px">Đồng bộ gửi lên Sheet: thành viên (chỉ tên, năm sinh, cân nặng), lịch uống, lượt uống, nhật ký, ghi chú tự viết. KHÔNG gửi: sản phẩm, hồ sơ bệnh án, bệnh nền, thuốc, dị ứng, ghi chú từ Obsidian.</div></div>`;
 
 /* ---------- Đồng bộ Google Sheet (gộp 3 chiều theo mã bản ghi, không cần giờ sửa) ---------- */
@@ -1577,6 +1579,108 @@ async function syncAll(){
     await syncDocsSheet(false);
     alert('Đồng bộ xong.'+(skipped?`\nBỏ qua ${skipped} lịch uống vì máy này chưa có sản phẩm tương ứng. Hãy cập nhật file sản phẩm trước rồi đồng bộ lại.`:''));
   }catch(e){alert('Đồng bộ lỗi: '+e.message)}
+}
+
+/* ---------- Đồng bộ qua Google Drive (bước 2: lõi đọc/ghi + mã hoá) ----------
+   - Quyền drive.file: app chỉ thấy thư mục và file do chính app tạo, không đọc được file khác trong Drive.
+   - Dữ liệu được mã hoá trong trình duyệt (AES-GCM 256, khoá từ mật khẩu qua PBKDF2-SHA256). Google chỉ giữ bản mã.
+   - Mật khẩu chỉ nằm trong bộ nhớ khi app đang mở, không lưu vào máy, Drive hay mã nguồn. Mọi máy phải dùng cùng một mật khẩu.
+   - Chỉ gửi các bảng như đồng bộ Sheet (SYNC_TABS, cùng bộ lọc riêng tư). Sản phẩm và hồ sơ sức khỏe không đi qua đây. */
+const DSYNC={scope:'https://www.googleapis.com/auth/drive.file',token:null,exp:0,pass:null,folder:'So TPCN gia dinh - dong bo',file:'tpcn-sync.json',ITER:310000};
+const DAPI='https://www.googleapis.com/drive/v3/files',DUP='https://www.googleapis.com/upload/drive/v3/files';
+async function dLogin(){await loadGis();return new Promise((res,rej)=>{const c=google.accounts.oauth2.initTokenClient({client_id:GSYNC.clientId,scope:DSYNC.scope,callback:r=>{if(r.error){rej(new Error(r.error));return}DSYNC.token=r.access_token;DSYNC.exp=Date.now()+(r.expires_in-60)*1000;res()}});c.requestAccessToken()})}
+async function dFetch(url,opt={}){
+  if(!DSYNC.token||Date.now()>DSYNC.exp)await dLogin();
+  const r=await fetch(url,{...opt,headers:{Authorization:'Bearer '+DSYNC.token,...(opt.headers||{})}});
+  if(r.status===401){DSYNC.token=null;throw new Error('Phiên đăng nhập Google đã hết, hãy thử lại')}
+  if(!r.ok)throw new Error('Google Drive trả lỗi '+r.status);return r}
+// mã hoá base64 theo từng đoạn để không tràn bộ nhớ với file lớn
+const b64e=u=>{let s='';for(let i=0;i<u.length;i+=0x8000)s+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(s)};
+const b64d=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function dKey(pass,salt,iter){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(pass),'PBKDF2',false,['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:iter,hash:'SHA-256'},k,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
+async function dEncrypt(obj,pass){
+  if(!pass||pass.length<8)throw new Error('Mật khẩu đồng bộ cần ít nhất 8 ký tự');
+  const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12));
+  const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},await dKey(pass,salt,DSYNC.ITER),new TextEncoder().encode(JSON.stringify(obj))));
+  return JSON.stringify({kind:'tpcn-sync',v:1,kdf:'PBKDF2-SHA256',iter:DSYNC.ITER,salt:b64e(salt),iv:b64e(iv),ct:b64e(ct)})}
+async function dDecrypt(text,pass){
+  let j;try{j=JSON.parse(text)}catch(e){throw new Error('File đồng bộ bị hỏng')}
+  if(!j||j.kind!=='tpcn-sync'||j.v!==1||typeof j.ct!=='string')throw new Error('File đồng bộ không đúng định dạng');
+  const iter=Number(j.iter);if(!(iter>=100000&&iter<=2000000))throw new Error('File đồng bộ có thông số không hợp lệ');
+  let plain;try{plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64d(j.iv)},await dKey(pass,b64d(j.salt),iter),b64d(j.ct))}
+  catch(e){throw new Error('Sai mật khẩu đồng bộ, hoặc file đã bị sửa')}
+  const d=JSON.parse(new TextDecoder().decode(plain));if(!d||d.kind!=='tpcn-data'||typeof d.tables!=='object')throw new Error('Nội dung đồng bộ không đúng định dạng');return d}
+// Dữ liệu gửi đi: đúng các bảng và bộ lọc riêng tư của đồng bộ Sheet
+function dPayload(){const tables={};for(const t of SYNC_TABS)tables[t.key]=(S[t.key]||[]).filter(t.filter||(()=>true)).map(t.pub);return{kind:'tpcn-data',at:new Date().toISOString(),tables}}
+const dq=s=>"'"+String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'")+"'";
+async function dFind(q){const r=await dFetch(DAPI+'?spaces=drive&fields=files(id,version,modifiedTime)&orderBy=modifiedTime%20desc&q='+encodeURIComponent(q+' and trashed=false'));return((await r.json()).files||[])[0]||null}
+async function dFolder(){
+  const f=await dFind("mimeType='application/vnd.google-apps.folder' and name="+dq(DSYNC.folder));if(f)return f.id;
+  const r=await dFetch(DAPI+'?fields=id',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:DSYNC.folder,mimeType:'application/vnd.google-apps.folder'})});return(await r.json()).id}
+/* Đọc file đồng bộ. Trả về {id,version,data} hoặc {id:null} khi chưa có file. */
+async function dPull(pass){
+  const folder=await dFolder();
+  const f=await dFind('name='+dq(DSYNC.file)+' and '+dq(folder)+' in parents');if(!f)return{id:null,version:null,data:null,folder};
+  const text=await (await dFetch(DAPI+'/'+f.id+'?alt=media')).text();
+  return{id:f.id,version:f.version,data:await dDecrypt(text,pass),folder}}
+/* Ghi file đồng bộ. Nếu file trên Drive đã đổi kể từ lần đọc (máy khác vừa ghi) thì báo lỗi CHANGED, không ghi đè. */
+async function dPush(data,pass,cur){
+  const body=await dEncrypt(data,pass);
+  if(!cur.id){
+    const bd='tpcn'+Date.now().toString(36);
+    const mp=`--${bd}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify({name:DSYNC.file,parents:[cur.folder],mimeType:'application/json'})}\r\n--${bd}\r\nContent-Type: application/json\r\n\r\n${body}\r\n--${bd}--`;
+    const r=await dFetch(DUP+'?uploadType=multipart&fields=id,version',{method:'POST',headers:{'Content-Type':'multipart/related; boundary='+bd},body:mp});return r.json()}
+  const meta=await (await dFetch(DAPI+'/'+cur.id+'?fields=version')).json();
+  if(String(meta.version)!==String(cur.version)){const e=new Error('File đồng bộ vừa được máy khác cập nhật, hãy đồng bộ lại');e.code='CHANGED';throw e}
+  const r=await dFetch(DUP+'/'+cur.id+'?uploadType=media&fields=id,version',{method:'PATCH',headers:{'Content-Type':'application/json'},body});return r.json()}
+
+/* ---------- Đồng bộ Google Drive (bước 3: gộp 3 chiều + nút bấm) ----------
+   Dùng lại mergeTab của đồng bộ Sheet nhưng với mốc riêng S.dsync, để hai kiểu đồng bộ không làm lệch nhau.
+   Thứ tự an toàn: đọc, gộp, hỏi xung đột, hỏi xác nhận, GHI LÊN DRIVE, rồi mới áp dụng về máy. Ghi lỗi thì máy này không bị đổi gì. */
+async function driveSync(){
+  if(DSYNC.busy)return;DSYNC.busy=true;
+  try{
+    let pass=DSYNC.pass;
+    if(!pass){pass=prompt('Nhập mật khẩu đồng bộ (ít nhất 8 ký tự). Mọi máy phải dùng cùng một mật khẩu. Mất mật khẩu thì không đọc lại được file trên Drive.');if(!pass)return;if(pass.length<8){alert('Mật khẩu cần ít nhất 8 ký tự.');return}}
+    let cur;try{cur=await dPull(pass)}catch(e){if(/mật khẩu/i.test(e.message))DSYNC.pass=null;throw e}
+    if(!cur.id){const p2=prompt('Chưa có file đồng bộ trên Drive, đây là lần đầu. Nhập lại mật khẩu để xác nhận.');if(p2!==pass){alert('Hai lần nhập không khớp, chưa làm gì.');return}}
+    const remote=(cur.data&&cur.data.tables)||{};
+    S.dsync=S.dsync||{};
+    const plan=[];let up=0,down=0,del=0,conf=0;
+    for(const t of SYNC_TABS){
+      const ok=t.filter||(()=>true);
+      const rows=(Array.isArray(remote[t.key])?remote[t.key]:[]).map(r=>{const row=Array(t.cols.length+1).fill('');row[t.cols.length]=JSON.stringify(r);return row});
+      const m=mergeTab(t,(S[t.key]||[]).filter(ok),rows,S.dsync[t.key]||{});
+      plan.push({t,m});up+=m.stats.up;down+=m.stats.down;del+=m.stats.delLocal;conf+=m.stats.conflict}
+    for(const {t,m} of plan)for(const c of m.conflicts){
+      const label=c.l.name||c.l.title||c.l.date||c.id;
+      m.keep[c.id]=confirm(`Mục "${label}" (${t.tab}) khác nhau giữa máy này và Google Drive.\nOK = giữ bản trên máy này.\nHuỷ = lấy bản trên Drive.`)?c.l:c.r}
+    if(!confirm(`Đồng bộ với Google Drive:\n- Gửi lên: ${up}\n- Lấy về: ${down}\n- Xoá trên máy này (đã xoá ở nơi khác): ${del}\n- Xung đột đã chọn: ${conf}\nTiếp tục?`))return;
+    let skipped=0;const next={},final={},newBase={};
+    for(const {t,m} of plan){
+      const ok=t.filter||(()=>true),curL=S[t.key]||[],excl=curL.filter(x=>!ok(x)),byId0=Object.fromEntries(curL.map(x=>[x.id,x]));
+      const nx=[],pushOnly=[];
+      for(const id of Object.keys(m.keep)){
+        let rec=m.keep[id];
+        if(byId0[id]&&hsh(t.pub(byId0[id]))===hsh(rec))rec=byId0[id];
+        else if(t.key==='members'&&byId0[id])rec={...byId0[id],...rec};
+        if(!byId0[id]){
+          if(t.key==='plans'&&!byId(S.products,rec.productId)){skipped++;pushOnly.push(rec);continue}
+          if(t.key==='intakes'&&!byId(S.plans,rec.planId)){skipped++;pushOnly.push(rec);continue}
+          if(t.key==='members')rec={conditions:'',meds:'',allergies:'',...rec}}
+        nx.push(rec)}
+      next[t.key]=[...excl,...nx];
+      const mine=nx.filter(ok).map(t.pub);
+      final[t.key]=[...mine,...pushOnly];
+      const base={};for(const r of mine)base[r.id]=hsh(r);newBase[t.key]=base}
+    // Chỉ ghi khi nội dung thật sự khác bản trên Drive
+    if(!cur.id||hsh(final)!==hsh(remote))await dPush({kind:'tpcn-data',at:new Date().toISOString(),tables:final},pass,cur);
+    for(const t of SYNC_TABS)S[t.key]=next[t.key];
+    DSYNC.pass=pass;S.dsync=newBase;S.settings={...(S.settings||{}),lastDriveSync:new Date().toISOString()};save();render();
+    alert('Đồng bộ Google Drive xong.'+(skipped?`\nBỏ qua ${skipped} bản ghi vì máy này chưa có sản phẩm hoặc lịch tương ứng. Hãy cập nhật file sản phẩm trước rồi đồng bộ lại.`:''));
+  }catch(e){alert('Đồng bộ Drive lỗi: '+e.message)}
+  finally{DSYNC.busy=false}
 }
 
 /* ---------- Khởi động ---------- */
