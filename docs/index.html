@@ -164,6 +164,34 @@ body{background:radial-gradient(520px 320px at 100% 0,rgba(125,211,252,.35),tran
 .cta .pill{padding:10px 14px;font-size:14px;white-space:nowrap;margin-left:auto}
 .sec h2{color:var(--navy)}
 .sec h2 svg{width:22px;height:22px;vertical-align:-4px;margin-right:6px}
+
+/* ---------- Trang chủ dùng hình minh họa thật (bản 3) ---------- */
+.brand{margin:-16px -16px 16px;padding:calc(18px + env(safe-area-inset-top)) 16px 16px;border-radius:0 0 28px 28px;min-height:0;background:linear-gradient(95deg,#edf1fe 0%,#e0e9fd 45%,#c4daff 100%);box-shadow:0 8px 24px rgba(60,100,170,.12)}
+.brand h1{color:#15306b;white-space:normal;font-size:20px}
+.brand .tg{color:#5a6a8c}
+.brand .verb{color:#5a6a8c}
+.brand .bt{padding-right:112px}
+.brand .lg{width:58px;height:auto;border-radius:16px;mix-blend-mode:multiply}
+.brand .deco{position:absolute;right:0;top:30px;width:150px;height:auto;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 24%,#000 80%,transparent 100%),linear-gradient(180deg,transparent 0,#000 18%,#000 82%,transparent 100%);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent 0,#000 24%,#000 80%,transparent 100%),linear-gradient(180deg,transparent 0,#000 18%,#000 82%,transparent 100%);mask-composite:intersect}
+.brand .gearb{top:calc(14px + env(safe-area-inset-top));right:16px;color:#15306b;background:#fff}
+@media (max-width:370px){.brand .deco{display:none}.brand .bt{padding-right:52px}}
+.tile{background:linear-gradient(180deg,#f8f9ff,#eef2fd);color:#15306b}
+.tile .art,.dcard .art,.cta .art{object-fit:contain;border-radius:16px;-webkit-mask-image:radial-gradient(closest-side,#000 86%,transparent 100%);mask-image:radial-gradient(closest-side,#000 86%,transparent 100%)}
+.tile .art{width:60px;height:60px}
+.dcard{background:linear-gradient(180deg,#f8f9ff,#eef2fd)}
+.dcard .art{width:62px;height:62px}
+.dcard b{color:#15306b}.dcard .s{color:#5a6a8c}
+@media (prefers-color-scheme:dark){.tile,.dcard{background:var(--card);color:var(--ink)}.dcard b{color:var(--ink)}.dcard .s{color:var(--mute)}.tile .art,.dcard .art{background:#eef1fd;-webkit-mask-image:none;mask-image:none}}
+.hero2{margin-top:26px;overflow:visible;min-height:172px;background:linear-gradient(120deg,#e5f6f6,#cdeee6)}
+.hero2 .tx{max-width:60%}
+.hero2 .doc{position:absolute;right:2px;bottom:0;width:39%;height:auto;max-height:118%;object-fit:contain;object-position:bottom right;pointer-events:none}
+.hero2 h2{font-size:18px}
+.hero2 h2{color:#15306b}.hero2 p{color:#4b5d78}
+.hero2 .bar{background:rgba(255,255,255,.75)}
+.cta{background:linear-gradient(95deg,#c8e8ff,#dbe6fd)}
+.cta b{color:#15306b}.cta .s{color:#5a6a8c}
+.cta .art{width:68px;height:auto;aspect-ratio:284/250}
+.hscroll{scrollbar-width:none;-ms-overflow-style:none}.hscroll::-webkit-scrollbar{display:none}
 </style>
 </head>
 <body>
@@ -227,7 +255,7 @@ function render(){
   document.querySelector('header').style.display=tab==='today'?'none':'';
   ({today:vToday,shelf:vShelf,add:vAdd,know:vKnow,fam:vFam,set:vSet})[tab]();
 }
-const APP_VER='tpcn-v2-42';
+const APP_VER='tpcn-v2-43';
 let newVer='';
 const updBanner=()=>newVer?`<div class="note" style="margin-bottom:12px;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Có bản mới của app.</b> <button class="btn sm pri" onclick="forceUpdate()">Cập nhật ngay</button></div>`:'';
 function view(title,sub_,html){$('#ttl').textContent=title;$('#sub').textContent=sub_||'';$('#view').innerHTML=updBanner()+html}
@@ -532,6 +560,19 @@ const ART={
  jar:'<svg class="art" viewBox="0 0 64 72" aria-hidden="true"><rect x="12" y="22" width="38" height="46" rx="8" fill="url(#gBlue)"/><rect x="14" y="8" width="34" height="17" rx="5" fill="#fff" stroke="#bfdbfe" stroke-width="1.5"/><rect x="18" y="34" width="26" height="22" rx="4" fill="#fff"/><path d="M29 38h4v5h5v4h-5v5h-4v-5h-5v-4h5z" fill="#2563eb"/><g transform="rotate(-30 54 62)"><rect x="43" y="56" width="22" height="11" rx="5.5" fill="url(#gOrange)"/></g></svg>',
  leaf:'<svg class="art" viewBox="0 0 48 48" aria-hidden="true"><path d="M7 41C4 19 18 5 43 5c0 24-13 38-31 36" fill="url(#gGreen)"/><path d="M7 41C17 27 27 19 37 11" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".75"/></svg>',
  spark:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.2 6.3L21 10l-6.8 1.7L12 18l-2.2-6.3L3 10l6.8-1.7z" fill="url(#gGreen)"/><path d="M19 15l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z" fill="#38bdf8"/></svg>'};
+
+Object.assign(ART,{
+ logo:'<img class="lg" src="img/logo.jpg" alt="">',
+ deco:'<img class="deco" src="img/decor.jpg" alt="">',
+ shield:'<img class="art" src="img/shield.jpg" alt="">',
+ doctor:'<img class="doc" src="img/doctor.webp" alt="">',
+ pill:'<img class="art" src="img/pill.jpg" alt="">',
+ book:'<img class="art" src="img/book.jpg" alt="">',
+ sketch:'<img class="art" src="img/clip.jpg" alt="">',
+ home:'<img class="art" src="img/home.jpg" alt="">',
+ cal:'<img class="art" src="img/cal.jpg" alt="">',
+ jar:'<img class="art" src="img/jar.jpg" alt="">',
+ leaf:'<img class="art" src="img/leaf.jpg" alt="">'});
 const goFirst=t=>{if(S.members.length===1){personTab=t;go('fam','m:'+S.members[0].id)}else go('fam')};
 function vToday(){
   if(!document.getElementById('artdefs')){const d=document.createElement('div');d.id='artdefs';d.innerHTML=ART.defs;document.body.appendChild(d)}
