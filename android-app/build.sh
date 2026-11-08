@@ -36,7 +36,7 @@ if [ ! -f debug.keystore ]; then
     -dname "CN=Android Debug,O=Android,C=US" >/dev/null 2>&1
 fi
 zipalign -f -p 4 "$BUILD/unsigned.apk" "$BUILD/aligned.apk"
-apksigner sign --ks debug.keystore --ks-pass pass:android --key-pass pass:android \
+apksigner sign --v4-signing-enabled false --ks debug.keystore --ks-pass pass:android --key-pass pass:android \
   --ks-key-alias androiddebugkey --out "$OUT/$APK_NAME" "$BUILD/aligned.apk"
 
 apksigner verify --verbose "$OUT/$APK_NAME" | head -6
