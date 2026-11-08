@@ -69,6 +69,59 @@ dialog form{padding:16px;display:grid;gap:10px}
 @media (prefers-color-scheme:dark){.w3{background:#3b1414;border-color:#7f1d1d;color:#fecaca}}
 .bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden}.bar i{display:block;height:8px}
 .note{background:var(--warnbg);border:1px solid var(--warn);color:var(--warn);border-radius:12px;padding:10px 12px;font-size:14px}
+
+/* ---------- Giao diện mới: nền gradient, thẻ bo tròn, ô truy cập nhanh ---------- */
+:root{--g1:#d9f2ef;--g2:#e4ecfb;--sh:0 6px 22px rgba(15,70,80,.09);--hero1:#0f766e;--hero2:#0e7490;
+ --t1:#dbeafe;--t1i:#2563eb;--t2:#ccfbf1;--t2i:#0f766e;--t3:#ede9fe;--t3i:#7c3aed;--t4:#ffedd5;--t4i:#c2410c;--t5:#fee2e2;--t5i:#b91c1c;--t6:#dcfce7;--t6i:#15803d}
+@media (prefers-color-scheme:dark){:root{--g1:#0e2a2b;--g2:#111f38;--sh:0 6px 22px rgba(0,0,0,.4);--hero1:#115e59;--hero2:#155e75;
+ --t1:#172554;--t1i:#93c5fd;--t2:#0f3b38;--t2i:#5eead4;--t3:#2e1f5a;--t3i:#c4b5fd;--t4:#3a2210;--t4i:#fdba74;--t5:#3b1616;--t5i:#fca5a5;--t6:#12341e;--t6i:#86efac}}
+body{background:linear-gradient(180deg,var(--g1) 0,var(--g2) 240px,var(--bg) 480px) no-repeat,var(--bg)}
+header{background:transparent;border-bottom:0}
+header h1{font-size:22px}
+.card{border-radius:18px;box-shadow:var(--sh)}
+.btn{border-radius:14px}
+nav{margin:0 10px calc(8px + env(safe-area-inset-bottom));border:1px solid var(--line);border-radius:22px;box-shadow:var(--sh);padding-bottom:0;overflow:hidden}
+nav button.on{box-shadow:inset 0 -3px 0 var(--pri)}
+.hsearch{position:relative;margin:2px 0 14px}
+.hsearch input{border-radius:16px;padding:13px 48px 13px 44px;box-shadow:var(--sh);border-color:transparent;font-size:16px}
+.hsearch .hs-i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--mute);display:grid}
+.hsearch svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.hsearch .hs-go{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:0;border-radius:12px;background:var(--pri);color:#fff;font-size:18px;cursor:pointer}
+@media (prefers-color-scheme:dark){.hsearch .hs-go{color:#06201d}}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.tile{border:0;border-radius:18px;padding:12px 4px 10px;display:grid;justify-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;box-shadow:var(--sh);background:var(--card)}
+.tile:active{transform:scale(.97)}
+.tile .ti{width:46px;height:46px;border-radius:15px;display:grid;place-items:center}
+.tile svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.t1 .ti{background:var(--t1);color:var(--t1i)}.t2 .ti{background:var(--t2);color:var(--t2i)}.t3 .ti{background:var(--t3);color:var(--t3i)}.t4 .ti{background:var(--t4);color:var(--t4i)}.t5 .ti{background:var(--t5);color:var(--t5i)}.t6 .ti{background:var(--t6);color:var(--t6i)}
+.hero{display:flex;align-items:center;gap:16px;border-radius:22px;padding:18px;margin-bottom:16px;color:#fff;background:linear-gradient(135deg,var(--hero1),var(--hero2));box-shadow:0 10px 26px rgba(15,100,110,.28)}
+.ringw{position:relative;width:78px;height:78px;flex:none}
+.ringw svg{width:78px;height:78px;transform:rotate(-90deg)}
+.ringw circle{fill:none;stroke-width:8;stroke-linecap:round}
+.ringw .rb{stroke:rgba(255,255,255,.28)}.ringw .rf{stroke:#fff}
+.ringw b{position:absolute;inset:0;display:grid;place-items:center;font-size:18px}
+.hero-k{font-size:13px;opacity:.85;font-weight:600;letter-spacing:.02em;text-transform:uppercase}
+.hero-n{font-size:20px;font-weight:700;line-height:1.25;margin-top:2px}
+.hero-s{font-size:14px;opacity:.92;margin-top:4px}
+.sec{display:flex;justify-content:space-between;align-items:baseline;margin:20px 2px 10px}
+.sec h2{margin:0;font-size:18px}
+.sec a{font-size:14px;color:var(--pri);cursor:pointer;font-weight:600}
+.hscroll{display:flex;gap:10px;overflow-x:auto;padding:2px 2px 10px;scroll-snap-type:x proximity}
+.mem{flex:0 0 190px;scroll-snap-align:start;background:var(--card);border-radius:18px;padding:14px;box-shadow:var(--sh);cursor:pointer}
+.mem .av{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;font-weight:700;font-size:18px;margin-bottom:8px}
+.mem b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mem .bar{margin-top:8px}
+.mem .tag2{display:inline-block;margin-top:8px;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--t5);color:var(--t5i)}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tool{border:0;text-align:left;background:var(--card);border-radius:18px;padding:12px;box-shadow:var(--sh);display:flex;gap:12px;align-items:center;cursor:pointer;color:var(--ink)}
+.tool .ti{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;flex:none}
+.tool svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.tool b{display:block;font-size:15px;line-height:1.25}.tool span.s{font-size:12.5px;color:var(--mute);line-height:1.3;display:block}
+.tool.t1 .ti{background:var(--t1);color:var(--t1i)}.tool.t3 .ti{background:var(--t3);color:var(--t3i)}.tool.t4 .ti{background:var(--t4);color:var(--t4i)}.tool.t6 .ti{background:var(--t6);color:var(--t6i)}
+.daily{display:block;width:100%;text-align:left;border:0;border-radius:18px;padding:16px;color:var(--ink);cursor:pointer;background:linear-gradient(135deg,var(--t3),var(--t1));box-shadow:var(--sh)}
+.daily .k{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--t3i)}
+.daily b{display:block;font-size:18px;margin:4px 0}
+.daily span.s{font-size:14px;color:var(--mute);display:block}
 </style>
 </head>
 <body>
@@ -131,7 +184,7 @@ function render(){
   $('#gear').classList.toggle('on',tab==='set');
   ({today:vToday,shelf:vShelf,add:vAdd,know:vKnow,fam:vFam,set:vSet})[tab]();
 }
-const APP_VER='tpcn-v2-40';
+const APP_VER='tpcn-v2-41';
 let newVer='';
 const updBanner=()=>newVer?`<div class="note" style="margin-bottom:12px;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Có bản mới của app.</b> <button class="btn sm pri" onclick="forceUpdate()">Cập nhật ngay</button></div>`:'';
 function view(title,sub_,html){$('#ttl').textContent=title;$('#sub').textContent=sub_||'';$('#view').innerHTML=updBanner()+html}
@@ -401,13 +454,41 @@ function askReminders(){
 }
 setInterval(checkReminders,60000);
 
+
+const HI={...IC,
+ search:'<circle cx="11" cy="11" r="7"/><path d="M20.5 20.5L16 16"/>',
+ sketch:'<rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M9 3v2h6V3M9 11h6M9 15h4"/>',
+ bmi:'<path d="M4 20h16M7 20v-7M12 20V5M17 20v-10"/>',
+ shield:'<path d="M12 3l7 3v5c0 5-3.5 8-7 10-3.5-2-7-5-7-10V6z"/><path d="M12 9v4M12 16v.5"/>',
+ backup:'<path d="M12 16V4M7 9l5-5 5 5M5 20h14"/>',
+ bell:'<path d="M6 16V11a6 6 0 0112 0v5l1.5 2h-15zM10 20.5a2 2 0 004 0"/>'};
+const hico=k=>`<svg viewBox="0 0 24 24" aria-hidden="true">${HI[k]||''}</svg>`;
+function homeSearch(e){e.preventDefault();libQ=(document.getElementById('hq').value||'').trim();libF='all';go('know')}
+function goSketch(){if(S.members.length===1){personTab='ps';go('fam','m:'+S.members[0].id)}else go('fam')}
+function bmiAll(){
+  const rows=S.members.filter(m=>m.weight&&m.height).map(m=>{const b=Number(m.weight)/Math.pow(Number(m.height)/100,2);
+    const cls=b<18.5?'thấp cân':b<23?'bình thường (chuẩn châu Á)':b<25?'thừa cân nhẹ':'thừa cân';return `${m.name}: BMI ${b.toFixed(1)}, ${cls}`});
+  const miss=S.members.filter(m=>!(m.weight&&m.height)).map(m=>m.name);
+  alert((rows.length?rows.join('\n'):'Chưa ai có đủ cân nặng và chiều cao.')+(miss.length?`\n\nCòn thiếu số đo: ${miss.join(', ')}. Vào Gia đình, chọn người, bấm Sửa để bổ sung.`:'')+'\n\nBMI chỉ là con số tham khảo, hỏi bác sĩ để đọc đúng với bệnh nền.')}
+const dayKb=()=>{const k=window.KB||{},keys=Object.keys(k);if(!keys.length)return null;const d=new Date(),n=Math.floor((d-new Date(d.getFullYear(),0,0))/864e5);return k[keys[n%keys.length]]};
+function memStats(day){const o={};for(const p of S.plans){if(p.start&&p.start>day)continue;if(p.end&&p.end<day)continue;if(!byId(S.products,p.productId))continue;
+  const r=o[p.memberId]=o[p.memberId]||{t:0,d:0};r.t++;if(S.intakes.find(i=>i.planId===p.id&&i.date===day&&i.status==='taken'))r.d++}return o}
+const AVC=['t1','t2','t3','t4','t6'];
 function vToday(){
   const day=today(),sl=slotsFor(day),taken=sl.filter(s=>s.intake?.status==='taken').length;
+  const left=sl.filter(s=>s.intake?.status!=='taken'&&s.intake?.status!=='skipped').length;
   const due=dueNow(),dueIds=new Set(due.map(s=>s.plan.id));
   const perm='Notification' in window?Notification.permission:'unsupported';
-  let html=chipRow()+(sl.length?`<div class="card" style="padding:12px 14px"><div style="display:flex;justify-content:space-between"><b>Hôm nay</b><span class="mute">${taken}/${sl.length} lượt đã uống</span></div><div class="bar" style="margin-top:8px"><i style="width:${Math.round(taken/sl.length*100)}%;background:var(--pri)"></i></div></div>`:'')+todayWarnings();
+  const pct=sl.length?taken/sl.length:0,C=2*Math.PI*34;
+  const search=`<form class="hsearch" onsubmit="homeSearch(event)" role="search"><span class="hs-i">${hico('search')}</span><input id="hq" type="search" placeholder="Tìm: mất ngủ, magie, B12, gout…" aria-label="Tìm kiếm trong Thư viện" enterkeyhint="search"><button class="hs-go" aria-label="Tìm" type="submit">→</button></form>`;
+  const tiles=`<div class="tiles">${[['shelf','Tủ thuốc',"go('shelf')",1],['know','Thư viện',"go('know')",2],['sketch','Phác thảo',"goSketch()",3],['fam','Gia đình',"go('fam')",4]].map(([ic,l,fn,n])=>`<button class="tile t${n}" onclick="${fn}"><span class="ti">${hico(ic)}</span>${l}</button>`).join('')}</div>`;
+  const hero=sl.length?`<div class="hero"><div class="ringw"><svg viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="34" class="rb"/><circle cx="40" cy="40" r="34" class="rf" style="stroke-dasharray:${(pct*C).toFixed(1)} ${C.toFixed(1)}"/></svg><b>${Math.round(pct*100)}%</b></div>
+    <div><div class="hero-k">Hôm nay</div><div class="hero-n">${taken}/${sl.length} lượt đã uống</div><div class="hero-s">${left?`Còn ${left} lượt chưa uống`:'Đã xong tất cả. Giỏi lắm!'}</div></div></div>`
+    :`<div class="hero"><div><div class="hero-k">Hôm nay</div><div class="hero-n">Chưa có lịch uống</div><div class="hero-s">${S.members.length&&S.products.length?'Mở Tủ thuốc và thêm người uống cho sản phẩm.':'Thêm thành viên và sản phẩm để bắt đầu.'}</div></div></div>`;
+  let html=search+tiles+hero+todayWarnings();
   if(due.length)html+=`<div class="note" style="margin-bottom:10px;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Đến giờ uống:</b> ${due.map(s=>esc(mname(s.plan.memberId))+' · '+esc(pname(s.plan.productId))).join(', ')}</div>`;
   if(perm==='default')html+=`<div class="row" style="margin:0 0 10px"><button class="btn sm" onclick="askReminders()">Bật thông báo giờ uống</button></div>`;
+  html+=`<div class="sec"><h2>Lịch uống hôm nay</h2><span class="mute">${sl.length?sl.length+' lượt':''}</span></div>`+chipRow();
   let last=null;
   for(const s of sl){
     const p=s.plan,st=s.intake?.status,key=(p.time||'')+(p.label||'');
@@ -416,8 +497,23 @@ function vToday(){
       <div class="grow"><div class="t"><b>${esc(pname(p.productId))}</b></div><div class="mute">${esc(mname(p.memberId))} · ${esc(p.qty||'')}${st==='skipped'?' · đã bỏ liều':''}</div></div>
       <button class="btn sm" onclick="setIntake('${p.id}','skipped')">${st==='skipped'?'Huỷ bỏ':'Bỏ liều'}</button></div>`;
   }
-  html+=sl.length?'':`<div class="empty"><b style="display:block;font-size:18px;color:var(--ink);margin-bottom:6px">Chưa có lịch uống hôm nay</b>${S.members.length&&S.products.length?'Mở một sản phẩm trong tab Tủ thuốc và bấm “Thêm người uống”.':'Bắt đầu bằng hai bước: thêm thành viên, rồi thêm sản phẩm.'}
+  if(!sl.length)html+=`<div class="empty"><b style="display:block;font-size:18px;color:var(--ink);margin-bottom:6px">Chưa có lịch uống hôm nay</b>${S.members.length&&S.products.length?'Mở một sản phẩm trong tab Tủ thuốc và bấm “Thêm người uống”.':'Bắt đầu bằng hai bước: thêm thành viên, rồi thêm sản phẩm.'}
       <div class="row" style="justify-content:center;margin-top:14px">${S.members.length?'':`<button class="btn pri" onclick="go('fam')">+ Thêm thành viên</button>`}${S.products.length?'':`<button class="btn ${S.members.length?'pri':''}" onclick="go('add')">+ Thêm sản phẩm</button>`}${S.members.length&&S.products.length?`<button class="btn pri" onclick="go('shelf')">Mở Tủ thuốc</button>`:''}</div></div>`;
+  if(S.members.length){
+    const st=memStats(day);
+    html+=`<div class="sec"><h2>Sức khỏe gia đình</h2><a onclick="go('fam')">Xem tất cả ›</a></div><div class="hscroll">${S.members.map((m,i)=>{
+      const a=ageOf(m),r=st[m.id]||{t:0,d:0},w=warningsFor(m).length,ini=String(m.name||'?').trim().charAt(0).toUpperCase();
+      return `<div class="mem" role="button" tabindex="0" onclick="go('fam','m:${m.id}')"><div class="av ${AVC[i%AVC.length]}" style="background:var(--${AVC[i%AVC.length]});color:var(--${AVC[i%AVC.length]}i)">${esc(ini)}</div>
+        <b>${esc(m.name)}</b><div class="mute">${a?a+' tuổi':''}${m.weight?(a?' · ':'')+esc(m.weight)+' kg':''}</div>
+        <div class="bar"><i style="width:${r.t?Math.round(r.d/r.t*100):0}%;background:var(--pri)"></i></div><div class="mute" style="margin-top:4px">${r.t?r.d+'/'+r.t+' lượt hôm nay':'Chưa có lịch'}</div>
+        ${w?`<span class="tag2">${w} cảnh báo</span>`:''}</div>`}).join('')}</div>`}
+  html+=`<div class="sec"><h2>Công cụ hữu ích</h2></div><div class="tools">
+    <button class="tool t1" onclick="bmiAll()"><span class="ti">${hico('bmi')}</span><span><b>Chỉ số BMI</b><span class="s">Từ cân nặng, chiều cao</span></span></button>
+    <button class="tool t3" onclick="goSketch()"><span class="ti">${hico('sketch')}</span><span><b>Phác thảo</b><span class="s">Mục liên quan, xét nghiệm</span></span></button>
+    <button class="tool t4" onclick="go('set')"><span class="ti">${hico('backup')}</span><span><b>Sao lưu</b><span class="s">Lưu và khôi phục dữ liệu</span></span></button>
+    <button class="tool t6" onclick="go('set')"><span class="ti">${hico('bell')}</span><span><b>Thông báo</b><span class="s">Nhắc giờ uống</span></span></button></div>`;
+  const kb=dayKb();
+  if(kb)html+=`<div class="sec"><h2>Kiến thức hôm nay</h2></div><button class="daily" onclick="libQ=${JSON.stringify(kb.name).replace(/"/g,'&quot;')};libF='all';go('know')"><div class="k">Gợi ý đọc</div><b>${esc(kb.name)}</b><span class="s">${esc(String(kb.what||'').slice(0,110))}${String(kb.what||'').length>110?'…':''}</span></button>`;
   view('Hôm nay',fmtDay(),html);
 }
 
