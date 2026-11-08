@@ -971,14 +971,54 @@ function vDoc(id){
    (links.length?`<div class="card"><b>Bài kiến thức liên quan</b><div class="chips" style="flex-wrap:wrap;overflow:visible;margin-top:6px">${links.map(n=>`<button data-n="${esc(n)}" onclick="go('know',this.dataset.n)">${esc(n)}</button>`).join('')}</div></div>`:'')+
    `<div class="mute" style="margin-top:8px">Nội dung được tóm tắt lại bằng lời của app. Hãy hỏi bác sĩ hoặc dược sĩ trước khi thay đổi thuốc hay thực phẩm bổ sung.</div>`);
 }
+/* ---------- Thư viện: một ô tìm chung cho hoạt chất, tài liệu và ghi chú ---------- */
+let libQ='',libF='all';
+const libSet=(f,q)=>{libF=f;if(q!=null)libQ=q;vKnow();const i=document.getElementById('libQ');if(i&&q!=null&&q!=='')i.setSelectionRange(99,99)};
+function libNoteCard(n){return`<div class="card"><h3>${esc(n.title)}</h3>${noteTags(n)}${noteBody(n)}
+  <div class="mute">${esc(n.added||'')} · ${safeUrl(n.source)?`<a href="${esc(n.source)}" target="_blank" rel="noopener noreferrer">nguồn</a>`:esc(n.source||'')}</div>
+  <div class="row"><button class="btn sm" onclick="editNote('${n.id}')">Sửa</button><button class="btn sm del" onclick="remove(S.notes,'${n.id}')">Xoá</button></div></div>`}
+function libSubRow(s){const k=kbOf(s);return`<div class="card" style="cursor:pointer;padding:10px 12px" data-n="${esc(s.name)}" onclick="go('know',this.dataset.n)"><b>${esc(s.name)}</b> <span class="tag">Hoạt chất</span>${s.count?'<span class="tag" style="background:var(--pri);color:#fff">trong tủ</span>':''}<div class="mute">${esc(k&&k.aka?k.aka:catNameOf(s))}</div></div>`}
+function libDocRow(x){return`<div class="card" style="cursor:pointer;padding:10px 12px" data-i="${esc(x.id)}" onclick="go('know','d:'+this.dataset.i)"><b>${esc(x.title)}</b> <span class="tag">Tài liệu</span>${pArr(x.claims).some(c=>c.lv==='trai')?'<span class="tag" style="background:none;color:#9a3412;border:1px solid #9a3412">có ý trái khuyến cáo</span>':''}<div class="mute">${esc(x.group||'')}${pArr(x.tldr)[0]?' · '+esc(pArr(x.tldr)[0].slice(0,110)):''}</div></div>`}
+function vLib(){
+  const q=norm(libQ),subs=substList(),docs=S.docs||[],notes=S.notes;
+  const kbText=s=>{const k=kbOf(s);return k?norm([k.what,...(k.benefits||[]).map(b=>b[1])].join(' ')):''};
+  const nameHit=s=>norm(s.name+' '+((kbOf(s)||{}).aka||'')).includes(q);
+  const rs=q?subs.filter(s=>nameHit(s)||kbText(s).includes(q)).sort((a,b)=>nameHit(b)-nameHit(a)):subs;
+  const rd=docs.filter(x=>!q||docText(x).includes(q));
+  const rn=notes.filter(n=>!q||(n.title+' '+n.substance+' '+n.kind+' '+n.content).toLowerCase().includes(q));
+  const chips=[['all','Tất cả',rs.length+rd.length+rn.length],['sub','Hoạt chất',rs.length],['doc','Tài liệu',rd.length],['note','Ghi chú',rn.length]];
+  const head=`<input id="libQ" placeholder="Tìm: mất ngủ, magie, B12, gout…" value="${esc(libQ)}" oninput="libQ=this.value;vKnow();const i=document.getElementById('libQ');i.focus();i.setSelectionRange(99,99)" style="margin-bottom:10px">
+    <div class="chips" style="flex-wrap:wrap;overflow:visible;margin-bottom:10px">${chips.map(([k,l,n])=>`<button class="${libF===k?'on':''}" onclick="libSet('${k}')">${l} · ${n}</button>`).join('')}</div>`;
+  const sec=(t,n,body,more)=>body?`<div style="margin:14px 0 6px"><b>${t}</b> <span class="mute">(${n})</span></div>${body}${more||''}`:'';
+  const moreBtn=(k,n,cap)=>n>cap?`<div class="row"><button class="btn sm" onclick="libSet('${k}')">Xem cả ${n}</button></div>`:'';
+  let body='';
+  if(!q&&libF==='all'){
+    const mine=rs.filter(s=>s.count>0),tags={};
+    for(const x of docs)for(const t of pArr(x.tags))tags[t]=(tags[t]||0)+1;
+    const tl=Object.keys(tags).sort((a,b)=>tags[b]-tags[a]||a.localeCompare(b,'vi')).slice(0,14);
+    body=(mine.length?`<div class="card"><b>Có trong tủ của bạn</b><div class="chips" style="flex-wrap:wrap;overflow:visible;margin-top:6px">${mine.map(chipOf).join('')}</div></div>`:'')+
+      (tl.length?`<div class="card"><b>Tìm theo chủ đề</b><div class="chips" style="flex-wrap:wrap;overflow:visible;margin-top:6px">${tl.map(t=>`<button data-t="${esc(t)}" onclick="libSet('doc',this.dataset.t)">${esc(t)} · ${tags[t]}</button>`).join('')}</div></div>`:'')+
+      `<div class="card" style="cursor:pointer" onclick="libSet('sub')"><b>Hoạt chất</b> <span class="mute">(${Object.keys(window.KB||{}).length} chất có bài đầy đủ)</span><div class="mute">Vitamin, khoáng chất, các dạng muối magie và canxi, thảo dược…</div></div>
+       <div class="card" style="cursor:pointer" onclick="libSet('doc')"><b>Tài liệu</b> <span class="mute">(${docs.length} bài)</span><div class="mute">${docs.length?'Bài chia sẻ đã tóm tắt, gắn mức tin cậy và cảnh báo.':'Chưa có. Nhập file ở Cài đặt, mục Cập nhật dữ liệu.'}</div></div>
+       <div class="card" style="cursor:pointer" onclick="libSet('note')"><b>Ghi chú của bạn</b> <span class="mute">(${notes.length})</span><div class="mute">Ghi chú tự viết và ghi chú nhập từ Obsidian.</div></div>`;
+  }else if(libF==='sub'&&!q){
+    const order=[...(window.KB_CATS||[]).map(c=>c.n),'Khác (chưa có bài)'];
+    const groups=order.map(n=>[n,subs.filter(s=>catNameOf(s)===n)]).filter(([,l])=>l.length);
+    body=groups.map(([n,l])=>`<details style="margin-top:6px"><summary style="cursor:pointer"><b style="font-size:14px">${esc(n)}</b> <span class="mute">(${l.length})</span></summary><div class="chips" style="flex-wrap:wrap;overflow:visible;margin-top:6px">${l.map(chipOf).join('')}</div></details>`).join('');
+  }else{
+    const capS=libF==='all'?6:200,capD=libF==='all'?6:200,capN=libF==='all'?4:200;
+    if(libF==='all'||libF==='sub')body+=sec('Hoạt chất',rs.length,rs.slice(0,capS).map(libSubRow).join(''),libF==='all'?moreBtn('sub',rs.length,capS):'');
+    if(libF==='all'||libF==='doc')body+=sec('Tài liệu',rd.length,rd.slice(0,capD).map(libDocRow).join(''),libF==='all'?moreBtn('doc',rd.length,capD):'');
+    if(libF==='all'||libF==='note')body+=sec('Ghi chú',rn.length,rn.slice(0,capN).map(libNoteCard).join(''),libF==='all'?moreBtn('note',rn.length,capN):'');
+    if(!body)body=`<div class="empty">Không tìm thấy “${esc(libQ)}”. Thử từ khác, hoặc bỏ bộ lọc loại.</div>`;
+  }
+  const actions=`<div class="row" style="margin-top:12px"><button class="btn pri" onclick="editNote()">+ Thêm ghi chú</button><button class="btn" onclick="go('set')">Cập nhật từ file</button>${(q||libF!=='all')?`<button class="btn" onclick="libQ='';libF='all';vKnow()">Xoá tìm kiếm</button>`:''}</div>`;
+  view('Thư viện',`${Object.keys(window.KB||{}).length} hoạt chất · ${docs.length} tài liệu · ${notes.length} ghi chú`,head+body+actions);
+}
 function vKnow(){
   if(sub&&String(sub).startsWith('d:'))return vDoc(String(sub).slice(2));
   if(sub)return vSubstance(sub);
-  view('Thư viện',S.notes.length+' ghi chú · '+substList().length+' hoạt chất',`<div class="card" style="cursor:pointer" onclick="go('know','d:')"><b>Tài liệu của chị Thảo Nguyên</b> <span class="mute">(${(S.docs||[]).length} bài)</span><div class="mute">Bài chia sẻ đã tóm tắt, gắn mức tin cậy và cảnh báo. Bấm để mở.</div></div>`+substGrid()+`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="editNote()">+ Thêm ghi chú</button><button class="btn" onclick="go('set')">Cập nhật từ file</button></div>
-   <input id="knowQ" placeholder="Tìm trong ghi chú…" value="${esc(knowQ)}" oninput="knowQ=this.value.toLowerCase();vKnow();const i=document.getElementById('knowQ');i.focus();i.setSelectionRange(99,99)" style="margin-bottom:10px">`+
-   (noteList().map(n=>`<div class="card"><h3>${esc(n.title)}</h3>${noteTags(n)}${noteBody(n)}
-    <div class="mute">${esc(n.added||'')} · ${safeUrl(n.source)?`<a href="${esc(n.source)}" target="_blank" rel="noopener noreferrer">nguồn</a>`:esc(n.source||'')}</div>
-    <div class="row"><button class="btn sm" onclick="editNote('${n.id}')">Sửa</button><button class="btn sm del" onclick="remove(S.notes,'${n.id}')">Xoá</button></div></div>`).join('')||`<div class="empty">Chưa có ghi chú riêng. Bấm một hoạt chất ở trên để thêm ghi chú kèm nguồn.</div>`));
+  vLib();
 }
 
 /* ---------- Cả nhà + sao lưu ---------- */
