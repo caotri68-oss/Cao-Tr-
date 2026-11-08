@@ -455,6 +455,10 @@
     }
 
     function copyText(text) {
+      // Trong app Android: dùng clipboard của hệ thống.
+      if (window.AndroidBridge && typeof window.AndroidBridge.copy === 'function') {
+        try { window.AndroidBridge.copy(text); toast('Đã sao chép'); return; } catch (e) { /* thử cách khác */ }
+      }
       function fallback() {
         var ta = document.createElement('textarea');
         ta.value = text;
@@ -542,6 +546,17 @@
         });
       }
     });
+
+    // Nút Back của app Android: đóng hộp thoại đang mở, trả về true nếu đã xử lý.
+    window.__onBack = function () {
+      var open = false;
+      ['confirmOverlay', 'orderOverlay', 'histOverlay'].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el && !el.classList.contains('hidden')) { el.classList.add('hidden'); open = true; }
+      });
+      if (open) confirmYes = null;
+      return open;
+    };
 
     document.querySelectorAll('[data-close]').forEach(function (b) {
       b.addEventListener('click', closeOverlays);
