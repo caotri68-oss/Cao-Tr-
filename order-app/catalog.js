@@ -10,7 +10,11 @@
 window.CATALOG = [
   { id: 1, name: 'Pleťový a tělový krém 250ml', variants: ['Aloe', 'Mandlovy', 'Hermanek'] },
   { id: 2, name: 'Krem na ruce 100ml', variants: ['Aloe', 'Ibiskovy', 'Mesíckovy'] },
-  { id: 3, name: 'Sul do koupele 600g', variants: [] },
+  {
+    id: 3,
+    name: 'Sul do koupele 600g',
+    variants: ['Lavandule', 'Ocean', 'Madarinka', 'Jehliči', 'Rozmanryn', 'Eukalyptus', 'Cajova Ruze', 'Skorice']
+  },
   { id: 4, name: 'Trim prací prášek', variants: ['2kg', '4,5kg', '9kg'], units: { '9kg': 'paleta' } },
   {
     id: 5,

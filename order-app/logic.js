@@ -32,9 +32,16 @@
       .toLowerCase();
   }
 
-  function toQty(v) {
-    var n = parseInt(v, 10);
-    return isNaN(n) || n < 0 ? 0 : n;
+  // allowHalf: cho phép bước 0,5 (dùng cho paleta: nửa palet = 0,5).
+  function toQty(v, allowHalf) {
+    var n = allowHalf ? parseFloat(String(v).replace(',', '.')) : parseInt(v, 10);
+    if (isNaN(n) || n < 0) return 0;
+    return allowHalf ? Math.round(n * 2) / 2 : n;
+  }
+
+  // Số hiển thị trong đơn: dấu phẩy thập phân (0,5).
+  function fmtQty(q) {
+    return String(q).replace('.', ',');
   }
 
   function unitOf(product, variant) {
@@ -59,9 +66,9 @@
     return order.items[key];
   }
 
-  function setVariantQty(order, pid, variant, qty) {
+  function setVariantQty(order, pid, variant, qty, allowHalf) {
     var item = getItem(order, pid);
-    var q = toQty(qty);
+    var q = toQty(qty, allowHalf);
     if (q === 0) {
       delete item.variants[variant];
     } else {
@@ -70,9 +77,9 @@
     return order;
   }
 
-  function addVariantQty(order, pid, variant, delta) {
+  function addVariantQty(order, pid, variant, delta, allowHalf) {
     var item = getItem(order, pid);
-    return setVariantQty(order, pid, variant, (item.variants[variant] || 0) + delta);
+    return setVariantQty(order, pid, variant, (item.variants[variant] || 0) + delta, allowHalf);
   }
 
   // Ô chọn: bật = 1, tắt = 0.
@@ -154,7 +161,7 @@
 
       variants.forEach(function (v) {
         var q = item.variants[v];
-        if (q) lines.push('  - ' + v + ': ' + q + ' ' + unitOf(p, v));
+        if (q) lines.push('  - ' + v + ': ' + fmtQty(q) + ' ' + unitOf(p, v));
       });
 
       if (item.extra > 0) {
@@ -213,6 +220,7 @@
     UNIT_SIZE: UNIT_SIZE,
     normalize: normalize,
     toQty: toQty,
+    fmtQty: fmtQty,
     unitOf: unitOf,
     emptyOrder: emptyOrder,
     getItem: getItem,

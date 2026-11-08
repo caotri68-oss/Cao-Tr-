@@ -268,15 +268,17 @@
     // ---- render danh sách sản phẩm ----
     function qtyRow(p, vi, q) {
       var unit = L.unitOf(p, p.variants[vi]);
+      var isPal = unit === 'paleta';
+      var quick = isPal ? [['0.5', 'nửa palet'], ['1', '1 palet']] : [['3', '3'], ['5', '5'], ['10', '10']];
       return '' +
         '<div class="vctrl">' +
-          '<button class="qbtn" data-act="add" data-pid="' + p.id + '" data-v="' + vi + '" data-n="3">3</button>' +
-          '<button class="qbtn" data-act="add" data-pid="' + p.id + '" data-v="' + vi + '" data-n="5">5</button>' +
-          '<button class="qbtn" data-act="add" data-pid="' + p.id + '" data-v="' + vi + '" data-n="10">10</button>' +
+          quick.map(function (qb) {
+            return '<button class="qbtn" data-act="add" data-pid="' + p.id + '" data-v="' + vi + '" data-n="' + qb[0] + '">' + qb[1] + '</button>';
+          }).join('') +
           '<button class="qbtn step" data-act="dec" data-pid="' + p.id + '" data-v="' + vi + '" aria-label="Bớt 1">−</button>' +
-          '<input class="qnum" type="number" inputmode="numeric" min="0" data-act="qty" data-pid="' + p.id + '" data-v="' + vi + '" value="' + q + '">' +
+          '<input class="qnum" type="number" inputmode="' + (isPal ? 'decimal' : 'numeric') + '" min="0" step="' + (isPal ? '0.5' : '1') + '" data-act="qty" data-pid="' + p.id + '" data-v="' + vi + '" value="' + q + '">' +
           '<button class="qbtn step" data-act="inc" data-pid="' + p.id + '" data-v="' + vi + '" aria-label="Thêm 1">+</button>' +
-          '<span class="unit">' + esc(unit) + '</span>' +
+          '<span class="unit">' + (isPal ? 'palet' : 'bịch') + '</span>' +
         '</div>';
     }
 
@@ -399,9 +401,10 @@
         return;
       }
 
-      if (act === 'add') order = L.addVariantQty(order, p.id, v, Number(t.getAttribute('data-n')));
-      else if (act === 'inc') order = L.addVariantQty(order, p.id, v, 1);
-      else if (act === 'dec') order = L.addVariantQty(order, p.id, v, -1);
+      var half = v !== null && L.unitOf(p, v) === 'paleta';
+      if (act === 'add') order = L.addVariantQty(order, p.id, v, Number(t.getAttribute('data-n')), half);
+      else if (act === 'inc') order = L.addVariantQty(order, p.id, v, 1, half);
+      else if (act === 'dec') order = L.addVariantQty(order, p.id, v, -1, half);
       else if (act === 'select') order = L.toggleVariantSelected(order, p.id, v);
       else if (act === 'excl') order = L.toggleExcluded(order, p.id, v);
       else return;
@@ -415,7 +418,8 @@
       var p = findProduct(t.getAttribute('data-pid'));
       if (!p) return;
       if (act === 'qty') {
-        order = L.setVariantQty(order, p.id, variantName(p, t.getAttribute('data-v')), t.value);
+        var vn = variantName(p, t.getAttribute('data-v'));
+        order = L.setVariantQty(order, p.id, vn, t.value, L.unitOf(p, vn) === 'paleta');
       } else if (act === 'extra') {
         order = L.setExtra(order, p.id, t.value);
       } else {
