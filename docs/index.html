@@ -15,12 +15,15 @@
 *{box-sizing:border-box}
 html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;display:flex;flex-direction:column}
-header{background:var(--card);border-bottom:1px solid var(--line);padding:calc(14px + env(safe-area-inset-top)) 16px 10px}
+header{background:var(--card);border-bottom:1px solid var(--line);padding:calc(14px + env(safe-area-inset-top)) 16px 10px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+header .gear{border:0;background:none;color:var(--mute);width:44px;height:44px;margin:-6px -8px 0 0;display:grid;place-items:center;cursor:pointer;border-radius:10px}
+header .gear.on{color:var(--pri)}
+header .gear svg,nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 header h1{margin:0;font-size:20px}
 header .sub{font-size:13px;color:var(--mute)}
 main{flex:1;overflow:auto;padding:14px 16px 24px;max-width:720px;width:100%;margin:0 auto}
-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
-nav button{border:0;background:none;color:var(--mute);padding:14px 0;font:inherit;font-size:12px;min-height:48px;cursor:pointer}
+nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+nav button{border:0;background:none;color:var(--mute);padding:8px 0 6px;font:inherit;font-size:12px;min-height:56px;cursor:pointer;display:grid;justify-items:center;gap:2px}
 nav button.on{color:var(--pri);font-weight:700}
 input,select,textarea,button{font:inherit;color:inherit}
 input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--card)}
@@ -64,7 +67,7 @@ dialog form{padding:16px;display:grid;gap:10px}
 </style>
 </head>
 <body>
-<header><h1 id="ttl">Hôm nay</h1><div class="sub" id="sub"></div></header>
+<header><div><h1 id="ttl">Hôm nay</h1><div class="sub" id="sub"></div></div><button class="gear" id="gear" aria-label="Cài đặt" onclick="go('set')"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"/></svg></button></header>
 <main id="view"></main>
 <nav id="nav"></nav>
 <div id="report"></div>
@@ -113,12 +116,15 @@ const WD=['Chủ nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ 
 const fmtDay=()=>{const d=new Date();return WD[d.getDay()]+', '+d.getDate()+'/'+(d.getMonth()+1)};
 
 /* ---------- Điều hướng ---------- */
-const TABS=[['today','Hôm nay'],['shelf','Tủ TPCN'],['add','+ Thêm'],['know','Kiến thức'],['fam','Cả nhà']];
+const IC={today:'<rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M8 2.5v4M16 2.5v4M3 10h18M9 15.5l2 2 4-4"/>',shelf:'<path d="M10.5 20.5l-7-7a4.9 4.9 0 017-7l7 7a4.9 4.9 0 01-7 7z"/><path d="M8 8l8 8"/>',know:'<path d="M2.5 5h6a3.5 3.5 0 013.5 3.5V20a2.5 2.5 0 00-2.5-2.5h-7z"/><path d="M21.5 5h-6A3.5 3.5 0 0012 8.5V20a2.5 2.5 0 012.5-2.5h7z"/>',fam:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0"/><circle cx="17.5" cy="9" r="2.5"/><path d="M17.5 14.5a5 5 0 014 5"/>'};
+const TABS=[['today','Hôm nay'],['shelf','Tủ thuốc'],['know','Thư viện'],['fam','Gia đình']];
 let tab='today',sub=null,fMember='',draft=null;
 function go(t,s=null){tab=t;sub=s;render();$('#view').scrollTop=0}
 function render(){
-  $('#nav').innerHTML=TABS.map(([k,l])=>`<button class="${k===tab?'on':''}" onclick="go('${k}')">${l}</button>`).join('');
-  ({today:vToday,shelf:vShelf,add:vAdd,know:vKnow,fam:vFam})[tab]();
+  const cur=tab==='add'?'shelf':tab;
+  $('#nav').innerHTML=TABS.map(([k,l])=>`<button class="${k===cur?'on':''}" ${k===cur?'aria-current="page"':''} onclick="go('${k}')"><svg viewBox="0 0 24 24" aria-hidden="true">${IC[k]}</svg>${l}</button>`).join('');
+  $('#gear').classList.toggle('on',tab==='set');
+  ({today:vToday,shelf:vShelf,add:vAdd,know:vKnow,fam:vFam,set:vSet})[tab]();
 }
 function view(title,sub_,html){$('#ttl').textContent=title;$('#sub').textContent=sub_||'';$('#view').innerHTML=html}
 
@@ -327,7 +333,7 @@ function applyFix(id,time){const p=byId(S.plans,id);if(p){p.time=time;save();ren
 function dismissW(mid,key){S.dismissed=[...(S.dismissed||[]),mid+'|'+key];save();render()}
 function todayWarnings(){const W=S.members.filter(m=>!fMember||m.id===fMember).flatMap(m=>warningsFor(m));
   const big=W.filter(w=>w.lv>=2),small=W.length-big.length;
-  return big.map(w=>warnCard(w,!fMember)).join('')+(small?`<div class="mute" style="margin-bottom:8px">Còn ${small} lưu ý nhẹ, xem ở tab <a href="#" onclick="go('fam');return false">Cả nhà</a>.</div>`:'')}
+  return big.map(w=>warnCard(w,!fMember)).join('')+(small?`<div class="mute" style="margin-bottom:8px">Còn ${small} lưu ý nhẹ, xem ở tab <a href="#" onclick="go('fam');return false">Gia đình</a>.</div>`:'')}
 function memberHealth(m){const age=ageOf(m),t=Object.values(totals(m.id,today())),W=warningsFor(m);
   const rows=[];for(const e of t){const L=limitOf(e.key,age);if(!L)continue;
     if(L.amideUl!=null){rows.push([NUTR[e.key].n+' (nicotinic acid)',e.total-(e.amide||0),L.ul,L,e.unknown]);if(e.amide)rows.push(['Nicotinamide',e.amide,L.amideUl,L,false])}
@@ -392,7 +398,7 @@ function vToday(){
       <button class="btn sm" onclick="setIntake('${p.id}','skipped')">${st==='skipped'?'Huỷ bỏ':'Bỏ liều'}</button></div>`;
   }
   html+=sl.length?`<div class="mute" style="text-align:center">Đã uống ${taken}/${sl.length} lượt hôm nay</div>`
-    :`<div class="empty">Chưa có lịch uống hôm nay.<br>${S.members.length&&S.products.length?'Mở một sản phẩm trong Tủ TPCN và bấm “Thêm người uống”.':'Thêm thành viên (tab Cả nhà) và sản phẩm (tab + Thêm) trước.'}</div>`;
+    :`<div class="empty">Chưa có lịch uống hôm nay.<br>${S.members.length&&S.products.length?'Mở một sản phẩm trong tab Tủ thuốc và bấm “Thêm người uống”.':'Thêm thành viên ở tab Gia đình, rồi thêm sản phẩm ở tab Tủ thuốc.'}</div>`;
   view('Hôm nay',fmtDay(),html);
 }
 
@@ -400,7 +406,7 @@ function vToday(){
 function vShelf(){
   if(sub)return vProduct(sub);
   const l=S.products;
-  view('Tủ TPCN',l.length+' sản phẩm',`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="go('add')">+ Thêm sản phẩm</button><button class="btn" onclick="go('fam')">Cập nhật từ file</button></div>`+overlapHtml()+
+  view('Tủ thuốc',l.length+' sản phẩm',`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="go('add')">+ Thêm sản phẩm</button><button class="btn" onclick="go('set')">Cập nhật từ file</button></div>`+overlapHtml()+
     (l.map(p=>{const who=[...new Set(S.plans.filter(x=>x.productId===p.id&&(!x.end||x.end>=today())).map(x=>mname(x.memberId)))];
       return`<div class="card" onclick="go('shelf','${p.id}')" style="cursor:pointer;display:flex;gap:12px;align-items:center">${thumbHtml(p,64)}<div class="grow"><h3>${esc(p.name)}</h3>
       <div class="mute">${esc([p.brand,p.form].filter(Boolean).join(' · '))}</div>
@@ -446,7 +452,7 @@ function vProduct(id){
 function endPlan(id){byId(S.plans,id).end=today();save();render()}
 function delProduct(id){if(!confirm('Xoá sản phẩm và mọi lịch uống của nó?'))return;(byId(S.products,id)?.imageIds||[]).forEach(delImg);S.plans.filter(x=>x.productId===id).forEach(x=>{S.intakes=S.intakes.filter(i=>i.planId!==x.id)});S.plans=S.plans.filter(x=>x.productId!==id);S.products=S.products.filter(x=>x.id!==id);save();go('shelf')}
 function editPlan(productId){
-  if(!S.members.length){alert('Cần thêm thành viên ở tab Cả nhà trước.');return}
+  if(!S.members.length){alert('Cần thêm thành viên ở tab Gia đình trước.');return}
   dialog('Thêm người uống',[{k:'memberId',l:'Ai uống',t:'sel',o:S.members.map(m=>[m.id,m.name])},{k:'qty',l:'Liều mỗi lần (vd: 1 viên)'},{k:'time',l:'Giờ uống',t:'time'},{k:'label',l:'Buổi (vd: Sáng, sau ăn)'},{k:'servings',l:'Bằng mấy liều ghi trên nhãn? (1 = đúng liều nhãn, dùng để cộng tổng)',t:'number'},{k:'start',l:'Bắt đầu',t:'date'}],
    {id:uid(),productId,memberId:S.members[0].id,time:'07:30',label:'Sáng, sau ăn',start:today(),qty:'1 viên',servings:1},o=>{if(!o.qty)return;upsert(S.plans,o)});
 }
@@ -769,12 +775,12 @@ function vSubstance(name){
   const s=substList().find(x=>x.name===name);if(!s){sub=null;return vKnow()}
   const N=s.key?NUTR[s.key]:null,prods=substProducts(s),notes=S.notes.filter(n=>norm(n.substance)===norm(name));
   view(s.name,N?'Có trong bảng cảnh báo của app':'Chưa có mức tối đa trong app',
-   `<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('know')">‹ Kiến thức</button></div>${kbHtml(s)}
+   `<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('know')">‹ Thư viện</button></div>${kbHtml(s)}
    ${N?(()=>{const E=EF[s.key];return`<div class="card"><b>Mức tối đa cho người lớn mỗi ngày</b>
      <div>EFSA (châu Âu): ${E?fmt(E.ul)+' '+N.u+(E.safe?' (mức an toàn, không phải UL chính thức)':'')+(E.amideUl?`; nicotinamide ${fmt(E.amideUl)} mg`:'')+` · <a href="${esc(E.url||EFSA_SUM)}" target="_blank" rel="noopener noreferrer">nguồn</a>`:'chưa đặt'}</div>
      <div>NIH (Mỹ): ${N.ul?fmt(N.ul)+' '+N.u+(N.ul51?`, từ 51 tuổi ${fmt(N.ul51)} ${N.u}`:''):'chưa đặt'} · <a href="${esc(nUrl(N))}" target="_blank" rel="noopener noreferrer">nguồn</a></div>
      ${E?.note?`<div class="mute">EFSA: ${esc(E.note)}</div>`:''}${N.note?`<div class="mute">NIH: ${esc(N.note)}</div>`:''}
-     <div class="mute">App đang dùng chuẩn ${ulStd()==='efsa'?'EFSA':'NIH'} (đổi ở tab Cả nhà).</div></div>`})()
+     <div class="mute">App đang dùng chuẩn ${ulStd()==='efsa'?'EFSA':'NIH'} (đổi ở Cài đặt, nút bánh răng).</div></div>`})()
      :`<div class="note">App chưa có mức tối đa cho chất này. Bạn có thể thêm ghi chú kèm nguồn bên dưới.</div>`}
    <div class="card"><b>Sản phẩm trong tủ có chất này (${prods.length})</b>${prods.map(p=>{const g=(p.ingredients||[]).find(x=>s.key?nutrKey(x)===s.key:norm(x.name)===norm(s.name));
      const who=[...new Set(S.plans.filter(x=>x.productId===p.id&&(!x.end||x.end>=today())).map(x=>mname(x.memberId)))];
@@ -879,7 +885,7 @@ function diaryCard(m){
 function vProfile(mid){
   const m=byId(S.members,mid),P=m&&m.profile;if(!P){sub=null;return vFam()}
   const W=warningsFor(m),age=ageOf(m);
-  const top=`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('fam')">‹ Cả nhà</button></div>`;
+  const top=`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('fam')">‹ Gia đình</button></div>`;
   const live=pArr(S.plans.filter(x=>x.memberId===m.id&&(!x.end||x.end>=today())&&byId(S.products,x.productId)).map(x=>{const p=byId(S.products,x.productId);return`<div style="border-top:1px solid var(--line);padding:8px 0;display:flex;gap:10px;align-items:center">${thumbHtml(p,48)}<div><b style="font-size:17px">${esc(p.name)}</b><div class="mute">${esc(p.brand||'')} · ${esc(x.qty||'')} · ${esc(x.time||'')} ${esc(x.label||'')}</div></div></div>`})).join('');
   view('Hồ sơ sức khỏe',`${m.name}${age?' · '+age+' tuổi':''}${m.weight?' · '+m.weight+' kg':''}`,
    `<div style="font-size:17px;line-height:1.55">${top}
@@ -939,7 +945,7 @@ async function syncDocsSheet(manual){
 function vDocList(){
   const docs=(S.docs||[]).filter(x=>!docQ||docText(x).includes(docQ));
   const groups=[...new Set(docs.map(x=>x.group||'Khác'))];
-  view('Tài liệu',(S.docs||[]).length+' bài',`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('know')">‹ Kiến thức</button><button class="btn" onclick="go('fam')">Cập nhật từ file</button><button class="btn" onclick="exportDocs()">Xuất toàn bộ (.json)</button></div>
+  view('Tài liệu',(S.docs||[]).length+' bài',`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('know')">‹ Thư viện</button><button class="btn" onclick="go('set')">Cập nhật từ file</button><button class="btn" onclick="exportDocs()">Xuất toàn bộ (.json)</button></div>
    <div class="note" style="margin-bottom:10px">Đây là bài chia sẻ của chị Thảo Nguyên trong nhóm, đã được tóm tắt lại và gắn mức tin cậy từng ý. Không phải tài liệu y khoa chính thức và không thay lời bác sĩ.</div>
    <input id="docQ" placeholder="Tìm trong tài liệu (vd: ngủ, B12, mệt)…" value="${esc(docQ)}" oninput="docQ=this.value.toLowerCase();vDocList();const i=document.getElementById('docQ');i.focus();i.setSelectionRange(99,99)" style="margin-bottom:10px">`+
    (()=>{const c={};for(const x of S.docs||[])for(const t of pArr(x.tags))c[t]=(c[t]||0)+1;const ts=Object.keys(c).sort((a,b)=>c[b]-c[a]||a.localeCompare(b,'vi'));
@@ -968,7 +974,7 @@ function vDoc(id){
 function vKnow(){
   if(sub&&String(sub).startsWith('d:'))return vDoc(String(sub).slice(2));
   if(sub)return vSubstance(sub);
-  view('Kiến thức',S.notes.length+' ghi chú · '+substList().length+' hoạt chất',`<div class="card" style="cursor:pointer" onclick="go('know','d:')"><b>Tài liệu của chị Thảo Nguyên</b> <span class="mute">(${(S.docs||[]).length} bài)</span><div class="mute">Bài chia sẻ đã tóm tắt, gắn mức tin cậy và cảnh báo. Bấm để mở.</div></div>`+substGrid()+`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="editNote()">+ Thêm ghi chú</button><button class="btn" onclick="go('fam')">Cập nhật từ file</button></div>
+  view('Thư viện',S.notes.length+' ghi chú · '+substList().length+' hoạt chất',`<div class="card" style="cursor:pointer" onclick="go('know','d:')"><b>Tài liệu của chị Thảo Nguyên</b> <span class="mute">(${(S.docs||[]).length} bài)</span><div class="mute">Bài chia sẻ đã tóm tắt, gắn mức tin cậy và cảnh báo. Bấm để mở.</div></div>`+substGrid()+`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="editNote()">+ Thêm ghi chú</button><button class="btn" onclick="go('set')">Cập nhật từ file</button></div>
    <input id="knowQ" placeholder="Tìm trong ghi chú…" value="${esc(knowQ)}" oninput="knowQ=this.value.toLowerCase();vKnow();const i=document.getElementById('knowQ');i.focus();i.setSelectionRange(99,99)" style="margin-bottom:10px">`+
    (noteList().map(n=>`<div class="card"><h3>${esc(n.title)}</h3>${noteTags(n)}${noteBody(n)}
     <div class="mute">${esc(n.added||'')} · ${safeUrl(n.source)?`<a href="${esc(n.source)}" target="_blank" rel="noopener noreferrer">nguồn</a>`:esc(n.source||'')}</div>
@@ -982,18 +988,19 @@ function delMember(id){if(!confirm('Xoá thành viên này và mọi lịch uố
 function dl(name,data,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 function vFam(){
   if(sub&&String(sub).startsWith('p:'))return vProfile(String(sub).slice(2));
-  view('Cả nhà','Hồ sơ, cập nhật và sao lưu',updateCard()+`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="editMember()">+ Thêm thành viên</button></div>`+
+  view('Gia đình','Mỗi người một hồ sơ',`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="editMember()">+ Thêm thành viên</button></div>`+
    (S.members.map(m=>`<div class="card"><h3>${esc(m.name)} <span class="mute">${m.born?'· sinh '+esc(m.born)+' ('+(new Date().getFullYear()-m.born)+' tuổi)':''}${m.weight?' · '+esc(m.weight)+' kg':''}</span></h3>
     <div class="mute">Bệnh nền: ${esc(m.conditions||'—')}</div><div class="mute">Thuốc kê đơn: ${esc(m.meds||'—')}</div><div class="mute">Dị ứng: ${esc(m.allergies||'—')}</div>${memberHealth(m)}
-    <div class="row">${m.profile?`<button class="btn pri" onclick="go('fam','p:${m.id}')">Xem hồ sơ sức khỏe</button>`:''}<button class="btn sm" onclick="editMember('${m.id}')">Sửa</button><button class="btn sm del" onclick="delMember('${m.id}')">Xoá</button></div></div>`).join('')||`<div class="empty">Chưa có thành viên.</div>`)+
-   `<div class="card"><b>Sao lưu</b><div class="mute">Dữ liệu chỉ nằm trong trình duyệt của máy này. Hãy tải bản sao lưu định kỳ.</div>
+    <div class="row">${m.profile?`<button class="btn pri" onclick="go('fam','p:${m.id}')">Xem hồ sơ sức khỏe</button>`:''}<button class="btn sm" onclick="printReport('${m.id}')">In báo cáo</button><button class="btn sm" onclick="editMember('${m.id}')">Sửa</button><button class="btn sm del" onclick="delMember('${m.id}')">Xoá</button></div></div>`).join('')||`<div class="empty">Chưa có thành viên.</div>`)+
+   `    <div class="note">App chỉ lưu và nhắc theo dữ liệu bạn nhập, không thay lời khuyên của bác sĩ hay dược sĩ.</div>`);
+}
+function vSet(){
+  view('Cài đặt','Cập nhật, đồng bộ và sao lưu',`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('today')">‹ Quay lại</button></div>`+updateCard()+`<div class="card"><b>Sao lưu</b><div class="mute">Dữ liệu chỉ nằm trong trình duyệt của máy này. Hãy tải bản sao lưu định kỳ.</div>
     <div class="row"><button class="btn pri" onclick="exportAll()">Tải JSON</button></div><div class="mute" style="margin-top:6px">Khôi phục: dùng "Cập nhật dữ liệu" ở trên.</div></div>
     <div class="card"><b>Chuẩn mức tối đa dùng để cảnh báo</b><div class="mute">EFSA là chuẩn châu Âu (áp dụng ở Séc), thường chặt hơn. NIH là chuẩn Mỹ.</div>
      <select style="margin-top:8px" onchange="S.settings={...(S.settings||{}),ul:this.value};save();render()"><option value="efsa" ${ulStd()==='efsa'?'selected':''}>EFSA (châu Âu)</option><option value="nih" ${ulStd()==='nih'?'selected':''}>NIH (Mỹ)</option></select></div>
     <div class="card"><b>Xuất bảng tính (CSV, mở bằng Excel hoặc Google Sheets)</b>
      <div class="row"><button class="btn" onclick="exportCsv('p')">Sản phẩm</button><button class="btn" onclick="exportCsv('l')">Lịch uống</button><button class="btn" onclick="exportCsv('i')">Lượt đã uống</button></div></div>
-    <div class="card"><b>Báo cáo in hoặc lưu PDF (mang đi khám, đưa bác sĩ, dược sĩ)</b>
-     <div class="row"><select id="rm" style="width:auto;flex:1">${S.members.map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join('')}</select><button class="btn pri" onclick="printReport($('#rm').value)">In báo cáo</button></div></div>
     <div class="note">App chỉ lưu và nhắc theo dữ liệu bạn nhập, không thay lời khuyên của bác sĩ hay dược sĩ.</div>`);
 }
 const csvCell=v=>{v=String(v??'');if(/^[=+\-@\t\r]/.test(v))v="'"+v;return /[",\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}; // chặn công thức độc khi mở bằng Excel
