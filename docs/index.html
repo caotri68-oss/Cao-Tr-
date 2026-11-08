@@ -83,7 +83,7 @@ dialog form{padding:16px;display:grid;gap:10px}
 'use strict';
 /* ---------- Lưu trữ: IndexedDB ---------- */
 const DB='tpcn-v2',KEY='state';
-const empty=()=>({v:2,members:[],products:[],plans:[],intakes:[],notes:[],diary:[],docs:[],dismissed:[],settings:{ul:'efsa'}});
+const empty=()=>({v:2,members:[],products:[],plans:[],intakes:[],notes:[],diary:[],docs:[],frameworks:[],dismissed:[],settings:{ul:'efsa'}});
 let S=empty();
 const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open(DB,2);
   r.onupgradeneeded=()=>{const d=r.result;if(!d.objectStoreNames.contains('kv'))d.createObjectStore('kv');if(!d.objectStoreNames.contains('img'))d.createObjectStore('img')};
@@ -131,7 +131,7 @@ function render(){
   $('#gear').classList.toggle('on',tab==='set');
   ({today:vToday,shelf:vShelf,add:vAdd,know:vKnow,fam:vFam,set:vSet})[tab]();
 }
-const APP_VER='tpcn-v2-39';
+const APP_VER='tpcn-v2-40';
 let newVer='';
 const updBanner=()=>newVer?`<div class="note" style="margin-bottom:12px;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Có bản mới của app.</b> <button class="btn sm pri" onclick="forceUpdate()">Cập nhật ngay</button></div>`:'';
 function view(title,sub_,html){$('#ttl').textContent=title;$('#sub').textContent=sub_||'';$('#view').innerHTML=updBanner()+html}
@@ -1042,12 +1042,12 @@ function vKnow(){
 
 /* ---------- Cả nhà + sao lưu ---------- */
 function editMember(id){const m=byId(S.members,id)||{id:uid()};
-  dialog(id?'Sửa thành viên':'Thêm thành viên',[{k:'name',l:'Tên / vai trò'},{k:'born',l:'Năm sinh',t:'number'},{k:'weight',l:'Cân nặng (kg)',t:'number'},{k:'conditions',l:'Bệnh nền',t:'area'},{k:'meds',l:'Thuốc kê đơn đang dùng (tên, liều, giờ)',t:'area'},{k:'allergies',l:'Dị ứng',t:'area'}],m,o=>{if(!o.name)return;upsert(S.members,o)})}
+  dialog(id?'Sửa thành viên':'Thêm thành viên',[{k:'name',l:'Tên / vai trò'},{k:'born',l:'Năm sinh',t:'number'},{k:'sex',l:'Giới tính',t:'sel',o:[['','Chưa chọn'],['Nam','Nam'],['Nữ','Nữ']]},{k:'weight',l:'Cân nặng (kg)',t:'number'},{k:'height',l:'Chiều cao (cm)',t:'number'},{k:'conditions',l:'Bệnh nền',t:'area'},{k:'meds',l:'Thuốc kê đơn đang dùng (tên, liều, giờ)',t:'area'},{k:'allergies',l:'Dị ứng',t:'area'}],m,o=>{if(!o.name)return;upsert(S.members,o)})}
 function delMember(id){if(!confirm('Xoá thành viên này và mọi lịch uống của họ?'))return;const ids=S.plans.filter(x=>x.memberId===id).map(x=>x.id);S.intakes=S.intakes.filter(i=>!ids.includes(i.planId));S.plans=S.plans.filter(x=>x.memberId!==id);S.members=S.members.filter(x=>x.id!==id);if(fMember===id)fMember='';save();render()}
 function dl(name,data,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 /* ---------- Trang riêng từng người ---------- */
 let personTab='tq';
-const PTABS=[['tq','Tổng quan'],['lu','Lịch uống'],['nk','Nhật ký'],['hs','Hồ sơ']];
+const PTABS=[['tq','Tổng quan'],['lu','Lịch uống'],['nk','Nhật ký'],['ps','Phác thảo'],['hs','Hồ sơ']];
 function vPerson(mid){
   const m=byId(S.members,mid);if(!m){sub=null;return vFam()}
   const age=ageOf(m),day=today(),P=m.profile;
@@ -1074,6 +1074,8 @@ function vPerson(mid){
       (ended.length?`<div class="mute" style="margin-top:8px">${ended.length} lịch đã kết thúc (xem trong từng sản phẩm).</div>`:'');
   }else if(personTab==='nk'){
     body=diaryCard(m);
+  }else if(personTab==='ps'){
+    body=sketchView(m);
   }else{
     body=`<div class="card"><b>Bệnh nền</b><div>${esc(m.conditions||'—')}</div><b style="display:block;margin-top:8px">Thuốc kê đơn</b><div>${esc(m.meds||'—')}</div><b style="display:block;margin-top:8px">Dị ứng</b><div>${esc(m.allergies||'—')}</div>
       <div class="row"><button class="btn sm" onclick="editMember('${m.id}')">Sửa</button></div></div>`+
@@ -1123,14 +1125,82 @@ async function exportAll(){const images={};for(const id of S.products.flatMap(p=
 async function restore(f){if(!f)return;try{const d=JSON.parse(await f.text());if(!d||!Array.isArray(d.products)||!Array.isArray(d.members)||d.v!==2)throw new Error('Không đúng định dạng sao lưu của bản này');if(!confirm('Khôi phục sẽ GHI ĐÈ toàn bộ dữ liệu hiện tại. Tiếp tục?'))return;const {images,...rest}=d;S={...empty(),...rest};for(const [id,u] of Object.entries(images||{}))if(/^data:image\//.test(u))await putImg(id,u);save();render()}catch(e){alert('Lỗi: '+e.message)}}
 
 /* ---------- Cửa duy nhất: Cập nhật dữ liệu (tự nhận dạng loại file, xếp đúng mục) ---------- */
-const UPDATE_KINDS={'tpcn-products':importProducts,'tpcn-profile':importProfile,'tpcn-knowledge':importKnowledge,'tpcn-docs':importDocs};
+/* ---------- Khung kiến thức riêng tư + Phác thảo ---------- */
+async function importFramework(f){
+  if(!f)return;
+  try{const d=JSON.parse(await f.text());
+    if(!d||d.kind!=='tpcn-framework'||d.v!==1)throw new Error('Không đúng định dạng file khung');
+    const rules=pArr(d.rules).filter(r=>r&&/^[a-z]{2,6}-[a-z0-9-]{1,40}$/.test(r.id||'')&&typeof r.topic==='string').map(r=>cleanDeep(r));
+    if(!rules.length)throw new Error('Khung này chưa có mục nào (cần điền nguồn của bác sĩ trước)');
+    const src=cleanStr(d.source,120)||'Khung';
+    const fid='fw-'+norm(src).normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40);
+    if(!confirm(`Nhập khung "${src}" với ${rules.length} mục. Khung chỉ lưu trên máy này, không đồng bộ lên Sheet. Tiếp tục?`))return;
+    S.frameworks=S.frameworks||[];
+    const o={id:fid,source:src,levels:d.levels&&typeof d.levels==='object'?cleanDeep(d.levels):{},rules};
+    const i=S.frameworks.findIndex(x=>x.id===fid);i<0?S.frameworks.push(o):S.frameworks[i]=o;
+    save();render();alert(`Đã nhập khung "${src}": ${rules.length} mục. Mở một người, tab Phác thảo để xem.`);
+  }catch(e){alert('Lỗi: '+e.message)}
+}
+const SK_CONDS=['Tiểu đường','Tăng huyết áp','Mỡ máu','Gout','Tuyến giáp','Dạ dày','Loãng xương','Sỏi mật','Bệnh thận','Bệnh gan','Tim mạch','Ung thư','Mang thai'];
+const SK_TOPIC={'tn-sat':/sắt|iron|ferr/i,'tn-b12':/b-?12|cobalamin/i,'tn-folate':/folic|folate|folát|b-?9/i,'tn-d3':/vitamin d|cholecalciferol/i,'tn-magie':/magie|magnes/i,'tn-coq10':/coq10|ubiquin/i,'tn-omega3':/omega|\bepa\b|\bdha\b|dầu cá|fish oil/i,'tn-gout':/allulose|quercetin/i,'tn-duong':/allulose|stevia|erythritol|xylitol/i};
+let skMode='basic';
+const skHas=(hay,t)=>{t=norm(t);if(!t)return false;return t.length<=4?new RegExp('(^|[^\\p{L}])'+t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'($|[^\\p{L}])','u').test(hay):hay.includes(t)};
+function skMatch(m,r){
+  const w=r.when||{},hay=norm((m.conditions||'')+' '+(m.meds||'')+' '+(m.allergies||'')),meds=norm(m.meds),age=ageOf(m);
+  if(w.always)return true;
+  if(w.ageMin&&age!=null&&age>=Number(w.ageMin))return true;
+  if(pArr(w.anyCondition).some(t=>skHas(hay,t)))return true;
+  if(pArr(w.anyMed).some(t=>skHas(meds,t)))return true;
+  return false}
+function toggleCond(id,term){
+  const m=byId(S.members,id);if(!m)return;
+  const list=String(m.conditions||'').split(/\s*;\s*/).filter(Boolean);
+  const i=list.findIndex(x=>norm(x)===norm(term));
+  if(i<0)list.push(term);else list.splice(i,1);
+  m.conditions=list.join('; ');save();render()}
+function skMode_(k){skMode=k;render()}
+function sketchView(m){
+  const age=ageOf(m),bmi=m.height&&m.weight?Math.round(Number(m.weight)/Math.pow(Number(m.height)/100,2)*10)/10:null;
+  const have=norm(m.conditions).split(/\s*;\s*/);
+  const chips=SK_CONDS.map(c=>`<button class="${have.some(x=>x&&norm(c).includes(x)||norm(x).includes(norm(c)))?'on':''}" onclick="toggleCond('${m.id}','${c}')">${esc(c)}</button>`).join('');
+  const missing=[];if(!m.sex)missing.push('giới tính');if(!m.height)missing.push('chiều cao');if(!m.weight)missing.push('cân nặng');if(!m.born)missing.push('năm sinh');
+  const plans=activePlans(m.id,today());
+  const fws=pArr(S.frameworks);
+  let out=`<div class="card"><b>Hồ sơ nhập nhanh</b><div class="mute" style="margin-top:4px">${esc(m.name)}${age?' · '+age+' tuổi':''}${m.sex?' · '+esc(m.sex):''}${m.weight?' · '+esc(m.weight)+' kg':''}${m.height?' · '+esc(m.height)+' cm':''}${bmi?' · BMI '+bmi:''}</div>
+    ${missing.length?`<div class="note" style="margin-top:8px">Chưa có: ${missing.join(', ')}. Bấm Sửa để bổ sung.</div>`:''}
+    <div class="mute" style="margin:10px 0 4px">Bệnh nền (bấm để chọn hoặc bỏ):</div><div class="chips" style="flex-wrap:wrap;overflow:visible">${chips}</div>
+    <div class="row"><button class="btn sm" onclick="editMember('${m.id}')">Sửa thông tin, thuốc, dị ứng</button></div></div>`;
+  out+=`<div class="chips" style="margin:10px 0;flex-wrap:wrap;overflow:visible"><button class="${skMode==='basic'?'on':''}" onclick="skMode_('basic')">Phác thảo cơ bản</button><button class="${skMode==='adv'?'on':''}" onclick="skMode_('adv')">Phác thảo nâng cao</button></div>`;
+  out+=`<div class="note">Phác thảo để tham khảo và chuẩn bị câu hỏi cho bác sĩ. Không thay chẩn đoán hay đơn thuốc. Không tự ngưng hoặc đổi thuốc theo phác thảo này.</div>`;
+  if(!fws.length)return out+`<div class="card" style="margin-top:10px"><b>Chưa có khung kiến thức</b><div class="mute">Vào Cài đặt, mục Cập nhật dữ liệu, chọn file khung (ví dụ khung-thao-nguyen.json). Khung chỉ lưu trên máy này.</div><div class="row"><button class="btn pri" onclick="go('set')">Mở Cài đặt</button></div></div>`;
+  for(const fw of fws){
+    const hit=pArr(fw.rules).filter(r=>skMatch(m,r)).sort((a,b)=>(b.level==='trai')-(a.level==='trai'));
+    const lvName=k=>(fw.levels&&fw.levels[k])||k||'';
+    out+=`<h3 style="margin:16px 0 6px">${esc(fw.source)} <span class="mute">· ${hit.length}/${pArr(fw.rules).length} mục liên quan</span></h3>`;
+    if(!hit.length){out+=`<div class="mute">Chưa có mục nào khớp với bệnh nền và thuốc đã nhập.</div>`;continue}
+    for(const r of hit){
+      const re=SK_TOPIC[r.id];
+      const used=re?plans.map(p=>byId(S.products,p.productId)).filter(pr=>pr&&(re.test(pr.name||'')||pArr(pr.ingredients).some(g=>re.test((g.name||'')+' '+(g.form||''))))):[];
+      const names=[...new Set(used.map(x=>x.name))];
+      const red=r.level==='trai';
+      out+=`<div class="card" style="margin-top:8px;${red?'border-color:var(--bad,#c0392b)':''}"><b>${esc(r.topic)}</b> <span class="tag">${esc(lvName(r.level))}</span>
+        ${red?'<div style="margin-top:6px"><b>Có ý trái khuyến cáo chính thức. Đừng làm theo, hãy hỏi bác sĩ.</b></div>':''}
+        ${skMode==='adv'?`<div style="margin-top:6px"><b>Gợi ý của nguồn:</b><ul>${pArr(r.suggest).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`:''}
+        <div style="margin-top:6px"><b>Cần cẩn thận:</b><ul>${pArr(r.caution).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
+        <div style="margin-top:6px"><b>Xét nghiệm nên hỏi:</b> ${esc(pArr(r.tests).join('; '))}</div>
+        ${skMode==='adv'?`<div style="margin-top:6px"><b>Sản phẩm đang dùng liên quan:</b> ${names.length?esc(names.join(', ')):'<span class="mute">chưa thấy sản phẩm nào</span>'}</div>
+        <div class="mute" style="margin-top:6px"><b>Câu hỏi cho bác sĩ:</b> Với ${esc(m.conditions||'tình trạng hiện tại')}${m.meds?' và thuốc đang dùng':''}, "${esc(r.topic)}" có phù hợp không${names.length?`, nhất là ${esc(names[0])}`:''}? Có cần làm ${esc(pArr(r.tests)[0]||'xét nghiệm')} không?</div>`:''}</div>`}}
+  if(skMode==='adv')out+=`<div class="mute" style="margin-top:10px">Cảnh báo cộng liều và tương tác thuốc nằm ở tab Tổng quan.</div>`;
+  return out}
+
+const UPDATE_KINDS={'tpcn-products':importProducts,'tpcn-profile':importProfile,'tpcn-knowledge':importKnowledge,'tpcn-docs':importDocs,'tpcn-framework':importFramework};
 async function updateFiles(files){
   for(const f of [...files]){
     try{
       const d=JSON.parse(await f.text());
       if(d&&!d.kind&&d.v===2&&Array.isArray(d.members)&&Array.isArray(d.products)){await restore(f);continue}
       const fn=d&&UPDATE_KINDS[d.kind];
-      if(!fn){alert(`File "${f.name}" không nhận dạng được loại dữ liệu (cần sản phẩm, hồ sơ sức khỏe, kiến thức, tài liệu hoặc bản sao lưu).`);continue}
+      if(!fn){alert(`File "${f.name}" không nhận dạng được loại dữ liệu (cần sản phẩm, hồ sơ sức khỏe, kiến thức, tài liệu, khung kiến thức hoặc bản sao lưu).`);continue}
       await fn(f);
     }catch(e){alert(`Không đọc được "${f.name}": ${e.message}`)}
   }
