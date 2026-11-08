@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Phiếu hàng</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  /* Giấy phiếu: nền xám lạnh, mực xanh đen, một màu nhấn xanh dương trầm. */
+  :root {
+    --bg: #eceff3;
+    --surface: #fbfcfd;
+    --ink: #1b2431;
+    --muted: #5b6676;
+    --line: #d8dde5;
+    --accent: #2b5bb0;
+    --accent-ink: #ffffff;
+    --accent-soft: #e3ebf8;
+    --ok: #2c7a58;       --ok-soft: #e1f1ea;
+    --warn: #9a5b12;     --warn-soft: #fbefdc;
+    --bad: #aa3c2c;      --bad-soft: #f9e3df;
+    --font-ui: "Instrument Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-code: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    --r-card: 14px; --r-ctl: 10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #11161f; --surface: #1a212d; --ink: #e5e9f0; --muted: #98a3b4; --line: #2b3444;
+      --accent: #86aaee; --accent-ink: #0d1626; --accent-soft: #22304a;
+      --ok: #6cc59b; --ok-soft: #1d3329; --warn: #e5aa62; --warn-soft: #3a2c17; --bad: #f08d7b; --bad-soft: #3d2420;
+      color-scheme: dark;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 400 15px/1.5 var(--font-ui); }
+  main, .actionbar .inner { max-width: 720px; margin: 0 auto; }
+  main { padding-block: 14px 24px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  button, .btn { font: 500 15px/1 var(--font-ui); color: var(--ink); background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-ctl); min-height: 44px; padding: 0 14px; white-space: nowrap; display: inline-flex; align-items: center; justify-content: center;
+    gap: 8px; cursor: pointer; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+  button:focus-visible, .btn:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button.primary, .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+  button:disabled { opacity: .45; cursor: default; }
+  .ic { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .sr { position: absolute; left: -9999px; }
+
+  .top { display: flex; align-items: center; justify-content: space-between; padding: 4px 0 12px; }
+  .brand { font-weight: 700; font-size: 1.2rem; letter-spacing: -.01em; display: flex; align-items: center; gap: 10px; }
+  .brand i { width: 26px; height: 26px; border-radius: 7px; background: var(--ink); display: grid; place-items: center; }
+  .brand i svg { width: 15px; height: 15px; stroke: var(--bg); fill: none; stroke-width: 2; stroke-linecap: round; }
+  .icon-btn { width: 44px; padding: 0; }
+
+  .steps { list-style: none; display: flex; gap: 6px; margin: 0 0 12px; padding: 0; font-size: .8rem; color: var(--muted); }
+  .steps li { flex: 1; display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 9px; border: 1px solid transparent; }
+  .steps b { font: 600 .75rem var(--font-code); width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; border: 1px solid var(--line); }
+  .steps li.now { background: var(--surface); border-color: var(--line); color: var(--ink); font-weight: 600; }
+  .steps li.now b { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .steps li.done b { background: var(--ok-soft); border-color: transparent; color: var(--ok); }
+
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card); padding: 14px; margin-bottom: 12px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .grow { flex: 1 1 200px; min-width: 0; }
+  .cap { display: block; font-size: .7rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  input[type=text], input[type=password], select { font: 400 15px var(--font-ui); color: var(--ink); background: var(--bg); border: 1px solid var(--line);
+    border-radius: 9px; padding: 0 10px; min-height: 44px; width: 100%; }
+  .hint { color: var(--muted); font-size: .8rem; margin: 8px 0 0; }
+
+  .capture .row .btn { flex: 1 1 150px; }
+  .shot { display: none; margin-top: 12px; gap: 12px; align-items: center; }
+  .shot.on { display: flex; }
+  .shot img { width: 72px; height: 72px; object-fit: cover; border-radius: 10px; border: 1px solid var(--line); flex: none; }
+  #status { min-width: 0; font-size: .9rem; color: var(--muted); }
+  #status.err { color: var(--bad); }
+  .bar { height: 3px; border-radius: 3px; background: var(--line); overflow: hidden; margin-top: 12px; }
+  .bar i { display: block; height: 100%; width: 38%; background: var(--accent); border-radius: 3px; animation: slide 1.2s ease-in-out infinite; }
+  @keyframes slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(270%); } }
+  @media (prefers-reduced-motion: reduce) { .bar i { animation: none; width: 100%; opacity: .5; } }
+
+  .res-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 18px 0 8px; }
+  h2 { font-size: 1.05rem; font-weight: 700; margin: 0; letter-spacing: -.005em; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; font: 600 .72rem/1 var(--font-ui); letter-spacing: .02em; padding: 6px 9px;
+    border-radius: 999px; background: var(--bg); color: var(--muted); border: 1px solid var(--line); white-space: nowrap; }
+  .chip.ok { background: var(--ok-soft); color: var(--ok); border-color: transparent; }
+  .chip.warn { background: var(--warn-soft); color: var(--warn); border-color: transparent; }
+  .chip.bad { background: var(--bad-soft); color: var(--bad); border-color: transparent; }
+  button.chip { cursor: pointer; min-height: 0; }
+  button.chip[aria-pressed="true"] { outline: 2px solid var(--warn); outline-offset: 1px; }
+  .tools { display: flex; gap: 6px; }
+  .tools button { min-height: 36px; padding: 0 12px; font-size: .85rem; }
+  button.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+  .list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .item { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: grid; gap: 8px; min-width: 0; }
+  .item.warn { background: color-mix(in srgb, var(--warn-soft) 55%, var(--surface)); }
+  .item.bad { background: color-mix(in srgb, var(--bad-soft) 55%, var(--surface)); }
+  .l1 { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .pol { font: 600 .85rem var(--font-code); min-width: 34px; height: 30px; padding: 0 8px; display: inline-grid; place-items: center; border-radius: 8px;
+    background: var(--bg); color: var(--ink); border: 1px solid var(--line); text-decoration: none; flex: none; }
+  .kod { font: 600 1rem var(--font-code); letter-spacing: .02em; color: var(--ink); text-decoration: none; min-width: 0; overflow-wrap: anywhere; flex: 1; }
+  a.pol, a.kod { cursor: pointer; }
+  a.kod { text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 4px; text-decoration-thickness: 1.5px; }
+  .name { color: var(--ink); font-size: .95rem; line-height: 1.4; overflow-wrap: anywhere; }
+  .item.edit { grid-template-columns: 72px 1fr; align-items: center; }
+  .item.edit .full { grid-column: 1 / -1; }
+  .item.edit input { font-family: var(--font-code); }
+  .item.edit input.nm { font-family: var(--font-ui); }
+  .item .foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .del { min-height: 36px; padding: 0 12px; font-size: .85rem; color: var(--bad); }
+
+  .empty { border: 1.5px dashed var(--line); border-radius: var(--r-card); padding: 26px 18px; text-align: center; color: var(--muted); }
+  .empty strong { display: block; color: var(--ink); font-size: 1rem; margin-bottom: 4px; }
+  .lk-title { font: 600 .95rem var(--font-code); overflow-wrap: anywhere; }
+  .lk .row { margin-top: 10px; }
+
+  .actionbar { position: sticky; bottom: 0; z-index: 5; background: color-mix(in srgb, var(--bg) 92%, transparent); border-top: 1px solid var(--line);
+    padding-block: 10px max(10px, env(safe-area-inset-bottom, 0px));
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .actionbar .inner { display: flex; gap: 8px; }
+  .actionbar .primary { flex: 1 1 auto; }
+  .actionbar button:not(.primary) { padding: 0 12px; }
+</style>
+</head>
+<body>
+<main>
+  <header class="top">
+    <div class="brand">
+      <i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h9"/></svg></i>
+      Phiếu hàng
+    </div>
+    <button id="settingsBtn" type="button" class="icon-btn" aria-label="Cài đặt" title="Cài đặt">
+      <svg class="ic" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg>
+    </button>
+  </header>
+
+  <ol class="steps" id="steps" aria-label="Các bước">
+    <li data-s="1"><b>1</b>Chụp</li>
+    <li data-s="2"><b>2</b>Kiểm tra</li>
+    <li data-s="3"><b>3</b>Sao chép</li>
+  </ol>
+
+  <section class="card capture">
+    <div class="row">
+      <label class="btn primary" for="cam">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M3 8a2 2 0 0 1 2-2h2.5l1.5-2h6l1.5 2H19a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.5"/></svg>
+        Chụp ảnh
+      </label>
+      <label class="btn" for="pick">
+        <svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M21 16l-5-5-8 9"/></svg>
+        Chọn ảnh
+      </label>
+      <input id="cam" class="sr" type="file" accept="image/*" capture="environment">
+      <input id="pick" class="sr" type="file" accept="image/*">
+    </div>
+    <div class="shot" id="shot">
+      <img id="preview" alt="Ảnh vừa chọn">
+      <div id="status" role="status" aria-live="polite"></div>
+    </div>
+    <div class="bar" id="progress" hidden><i></i></div>
+    <p class="hint" id="firstHint">Chụp thẳng, đủ sáng, thấy cả cột Pol., Kód và Název zboží. Phiếu dài thì chụp nhiều ảnh, mỗi ảnh được thêm vào cuối danh sách.</p>
+  </section>
+
+  <section class="card" id="settings" hidden>
+    <div class="row">
+      <div class="grow">
+        <label class="cap" for="provider">Dịch vụ đọc ảnh</label>
+        <select id="provider">
+          <option value="claude">Claude</option>
+          <option value="gemini">Gemini</option>
+        </select>
+      </div>
+      <div class="grow">
+        <label class="cap" for="apikey">API key</label>
+        <input id="apikey" type="password" autocomplete="off" placeholder="Dán API key vào đây">
+      </div>
+    </div>
+    <p class="hint">Key chỉ lưu trong app trên thiết bị này và chỉ gửi tới dịch vụ bạn chọn. Không dùng trên máy dùng chung.</p>
+    <div class="row" style="margin-top:10px">
+      <button id="saveKey" type="button" class="primary">Lưu</button>
+      <button id="clearKey" type="button">Xoá key đã lưu</button>
+    </div>
+  </section>
+
+  <section id="results" aria-label="Kết quả">
+    <div class="res-head">
+      <h2>Kết quả</h2>
+      <div class="tools">
+        <button id="editMode" type="button" aria-pressed="false" disabled>
+          <svg class="ic" viewBox="0 0 24 24"><path d="M4 20l1-4L16 5l3 3L8 19z"/></svg><span id="editLbl">Sửa</span>
+        </button>
+        <button id="clearAll" type="button" disabled>Xoá hết</button>
+      </div>
+    </div>
+    <div class="chips" id="chips" hidden></div>
+    <div id="lookup" class="card lk" hidden></div>
+    <div class="empty" id="empty">
+      <strong>Chưa có dòng nào</strong>
+      Mỗi sản phẩm sẽ hiện thành một thẻ: số thứ tự, mã số và tên hàng.
+    </div>
+    <ul class="list" id="rows"></ul>
+    <p class="hint" id="tip" hidden>Chạm vào số thứ tự hoặc mã để tìm ảnh sản phẩm trên Google Hình ảnh. Muốn chỉnh chữ, bấm Sửa.</p>
+    <p class="hint" id="xl" hidden>Dán vào Excel: đặt cột Kód ở dạng Text trước, nếu không Excel đổi mã 13 số thành 8,59556E+12. File CSV đã xử lý sẵn việc này.</p>
+  </section>
+</main>
+
+<div class="actionbar" id="bar" hidden>
+  <div class="inner">
+    <button id="copyAll" type="button" class="primary">
+      <svg class="ic" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>Sao chép
+    </button>
+    <button id="copyKod" type="button">Kód</button>
+    <button id="copyName" type="button">Tên</button>
+    <button id="csv" type="button" aria-label="Xuất CSV" title="Xuất CSV">
+      <svg class="ic" viewBox="0 0 24 24"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>CSV
+    </button>
+  </div>
+</div>
+
+<script src="parse.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

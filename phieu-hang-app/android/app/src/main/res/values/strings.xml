@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Phiếu hàng</string>
+    <string name="title_activity_main">Phiếu hàng</string>
+    <string name="package_name">com.caotri.phieuhang</string>
+    <string name="custom_url_scheme">com.caotri.phieuhang</string>
+</resources>
