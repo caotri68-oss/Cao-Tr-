@@ -7,6 +7,7 @@
   <title>Tạo Đơn Hàng Nhanh</title>
   <style>
     :root {
+      color-scheme: dark;
       --bg: #121212;
       --panel: #1b1c1f;
       --card: #101010;
@@ -24,11 +25,13 @@
     html, body { margin: 0; background: var(--bg); color: var(--text);
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
     body { padding-bottom: 84px; -webkit-text-size-adjust: 100%; }
+    body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+      z-index: 10; background: var(--panel); }
     button, input { font: inherit; color: inherit; }
     .hidden { display: none !important; }
 
-    header.top { position: sticky; top: 0; z-index: 5; background: var(--panel);
-      padding: 12px 16px 10px; border-bottom: 1px solid var(--line); }
+    header.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--panel);
+      padding: 12px max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px)); border-bottom: 1px solid var(--line); }
     .brand { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
     .row { display: flex; gap: 8px; align-items: center; }
     #search { flex: 1; min-width: 0; height: 42px; border-radius: 10px; border: 1px solid var(--btn-line);
@@ -40,7 +43,7 @@
     .date-row input[type=date] { height: 34px; border-radius: 8px; border: 1px solid var(--btn-line);
       background: var(--card); color: var(--text); padding: 0 8px; }
 
-    main { padding: 12px 16px; display: grid; gap: 12px; }
+    main { padding: 12px max(16px, env(safe-area-inset-right, 0px)) 12px max(16px, env(safe-area-inset-left, 0px)); display: grid; gap: 12px; }
     .empty { color: var(--muted); text-align: center; padding: 32px 0; }
 
     .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
@@ -74,7 +77,7 @@
     .extra .qnum { width: 96px; border-color: #6b4a2f; }
 
     footer.bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--panel); border-top: 1px solid var(--line);
-      padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); display: flex; align-items: center; gap: 12px; z-index: 6; }
+      padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); display: flex; align-items: center; gap: 12px; z-index: 6; }
     .bar-info { flex: 1; font-size: 14px; color: var(--muted); }
     .bar-info b { color: var(--text); font-size: 18px; }
     .btn { height: 44px; padding: 0 18px; border-radius: 10px; border: 1px solid var(--btn-line); background: var(--btn);
@@ -102,9 +105,13 @@
     .addvar input[type=text] { flex: 1; min-width: 0; height: 36px; border-radius: 8px; border: 1px solid var(--btn-line);
       background: var(--panel); padding: 0 10px; outline: none; }
     .addvar input[type=text]:focus { border-color: var(--accent); }
-    .toast { position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%); background: #2b2d33; color: #fff;
+    .toast { position: fixed; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: #2b2d33; color: #fff;
       padding: 10px 16px; border-radius: 10px; font-size: 14px; z-index: 20; opacity: 0; transition: opacity .2s; pointer-events: none; }
     .toast.show { opacity: 1; }
+    .overlay.centered { align-items: center; z-index: 12; padding: 16px; }
+    .dialog { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; width: 100%; max-width: 360px; }
+    .dialog p { margin: 0 0 16px; font-size: 16px; line-height: 1.45; }
+    .dialog-actions { display: flex; gap: 8px; justify-content: flex-end; }
   </style>
 </head>
 <body>
@@ -154,6 +161,16 @@
         <button class="icon-btn" data-close>✕</button>
       </div>
       <div class="sheet-body" id="histBody"></div>
+    </div>
+  </div>
+
+  <div class="overlay centered hidden" id="confirmOverlay">
+    <div class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="confirmText">
+      <p id="confirmText"></p>
+      <div class="dialog-actions">
+        <button class="btn" id="confirmNo">Huỷ</button>
+        <button class="btn danger" id="confirmYes">Xoá</button>
+      </div>
     </div>
   </div>
 
@@ -222,6 +239,24 @@
         return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
       });
     }
+
+    // Hộp xác nhận nằm trong trang (alert/confirm của trình duyệt không dùng được trong khung xem).
+    var confirmYes = null;
+    function askConfirm(message, onYes) {
+      confirmYes = onYes;
+      document.getElementById('confirmText').textContent = message;
+      document.getElementById('confirmOverlay').classList.remove('hidden');
+    }
+    function closeConfirm() {
+      confirmYes = null;
+      document.getElementById('confirmOverlay').classList.add('hidden');
+    }
+    document.getElementById('confirmYes').addEventListener('click', function () {
+      var fn = confirmYes;
+      closeConfirm();
+      if (fn) fn();
+    });
+    document.getElementById('confirmNo').addEventListener('click', closeConfirm);
 
     function toast(msg) {
       els.toast.textContent = msg;
@@ -354,12 +389,13 @@
         return;
       }
       if (act === 'delcustom') {
-        if (!confirm('Xoá loại "' + v + '" khỏi sản phẩm này?')) return;
-        custom[String(p.id)] = (custom[String(p.id)] || []).filter(function (x) { return x !== v; });
-        saveCustom();
-        order = L.removeVariant(order, p.id, v);
-        rebuildCatalog();
-        render();
+        askConfirm('Xoá loại "' + v + '" khỏi sản phẩm này?', function () {
+          custom[String(p.id)] = (custom[String(p.id)] || []).filter(function (x) { return x !== v; });
+          saveCustom();
+          order = L.removeVariant(order, p.id, v);
+          rebuildCatalog();
+          render();
+        });
         return;
       }
 
@@ -450,16 +486,18 @@
       toast('Đã lưu vào lịch sử');
     });
     document.getElementById('btnNew').addEventListener('click', function () {
-      if (!confirm('Bắt đầu đơn mới? Đơn hiện tại sẽ bị xoá (nếu chưa lưu).')) return;
-      order = L.emptyOrder(L.todayDMY());
-      render();
-      closeOverlays();
-      toast('Đã tạo đơn mới');
+      askConfirm('Bắt đầu đơn mới? Đơn hiện tại sẽ bị xoá (nếu chưa lưu).', function () {
+        order = L.emptyOrder(L.todayDMY());
+        render();
+        closeOverlays();
+        toast('Đã tạo đơn mới');
+      });
     });
     document.getElementById('btnReset').addEventListener('click', function () {
-      if (!confirm('Xoá toàn bộ số lượng đang nhập?')) return;
-      order = L.emptyOrder(order.date);
-      render();
+      askConfirm('Xoá toàn bộ số lượng đang nhập?', function () {
+        order = L.emptyOrder(order.date);
+        render();
+      });
     });
 
     document.getElementById('btnHistory').addEventListener('click', function () {
@@ -492,10 +530,12 @@
       if (c.hasAttribute('data-hcopy')) {
         copyText(hist[Number(c.getAttribute('data-hcopy'))].text);
       } else {
-        if (!confirm('Xoá đơn đã lưu này?')) return;
-        hist.splice(Number(c.getAttribute('data-hdel')), 1);
-        storageSet(HIST_KEY, hist);
-        renderHistory();
+        askConfirm('Xoá đơn đã lưu này?', function () {
+          var h2 = getHistory();
+          h2.splice(Number(c.getAttribute('data-hdel')), 1);
+          storageSet(HIST_KEY, h2);
+          renderHistory();
+        });
       }
     });
 
