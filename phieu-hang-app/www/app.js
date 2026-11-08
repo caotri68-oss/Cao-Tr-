@@ -130,18 +130,35 @@
         langPath: 'tessdata/',
         gzip: true,
         logger: function (m) {
-          if (m.status === 'recognizing text') setStatus('Đang đọc trên máy… ' + Math.round((m.progress || 0) * 100) + '%');
+          if (m.status === 'recognizing text') setStatus('Đang nhận dạng chữ trên máy… ' + Math.round((m.progress || 0) * 100) + '%');
         }
-      }).then(function (w) { ocrWorker = w; return w; }, function (e) { ocrPromise = null; throw e; });
+      }).then(function (w) { ocrWorker = w; return w; }, function (e) {
+        ocrPromise = null;
+        throw new Error('Không tải được bộ đọc trên máy: ' + ((e && e.message) || e));
+      });
     }
     return ocrPromise;
   }
   function ocrImage(img) {
-    // Phóng to ảnh cho Tesseract đọc chữ nhỏ tốt hơn; ảnh quá lớn thì thu về 2600px.
-    var w = img.naturalWidth, h = img.naturalHeight, k = Math.min(2600 / Math.max(w, h), 2);
+    // Thu ảnh về tối đa 1600px, xám và tăng tương phản: ít điểm ảnh hơn nên nhanh hơn nhiều trên điện thoại.
+    var w = img.naturalWidth, h = img.naturalHeight, k = Math.min(1600 / Math.max(w, h), 1);
     var c = document.createElement('canvas'); c.width = Math.round(w * k); c.height = Math.round(h * k);
-    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-    return getOcrWorker().then(function (wk) { return wk.recognize(c); }).then(function (res) { return res.data.text || ''; });
+    var ctx = c.getContext('2d');
+    try { ctx.filter = 'grayscale(1) contrast(1.25)'; } catch (e) {}
+    ctx.drawImage(img, 0, 0, c.width, c.height);
+    setStatus('Đang tải bộ đọc tiếng Séc…');
+    var work = getOcrWorker().then(function (wk) {
+      setStatus('Đang nhận dạng chữ trên máy…');
+      return wk.recognize(c);
+    }).then(function (res) { return res.data.text || ''; });
+    // Nếu quá 3 phút vẫn chưa xong thì dừng và báo, thay vì chờ mãi.
+    var timeout = new Promise(function (_, reject) {
+      setTimeout(function () { reject(new Error('Đọc trên máy quá lâu (hơn 3 phút). Thử chụp ảnh gần hơn, hoặc dùng Gemini/Claude có key.')); }, 180000);
+    });
+    return Promise.race([work, timeout]).catch(function (e) {
+      if (/quá lâu/.test(e.message)) { ocrPromise = null; ocrWorker = null; }
+      throw e;
+    });
   }
 
   var busy = false;
