@@ -115,7 +115,11 @@
   .item .foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   .del { min-height: 36px; padding: 0 12px; font-size: .85rem; color: var(--bad); }
 
-  .empty { border: 1.5px dashed var(--line); border-radius: var(--r-card); padding: 26px 18px; text-align: center; color: var(--muted); }
+  .empty { border: 1.5px dashed var(--line); border-radius: var(--r-card); padding: 22px 18px; text-align: center; color: var(--muted); }
+  .mascot { width: 116px; height: auto; display: block; margin: 0 auto 6px; }
+  .mood { display: flex; align-items: center; gap: 10px; margin: 0 0 10px; font-size: .9rem; color: var(--muted); }
+  .mood img { width: 56px; height: auto; flex: none; }
+  .mood b { color: var(--ink); font-weight: 600; }
   .empty strong { display: block; color: var(--ink); font-size: 1rem; margin-bottom: 4px; }
   .lk-title { font: 600 .95rem var(--font-code); overflow-wrap: anywhere; }
   .lk .row { margin-top: 10px; }
@@ -198,9 +202,11 @@
         <button id="clearAll" type="button" disabled>Xoá hết</button>
       </div>
     </div>
+    <div class="mood" id="mood" hidden><img id="moodImg" alt=""><span id="moodTxt"></span></div>
     <div class="chips" id="chips" hidden></div>
     <div id="lookup" class="card lk" hidden></div>
     <div class="empty" id="empty">
+      <img class="mascot" src="img/meo-2.png" alt="">
       <strong>Chưa có dòng nào</strong>
       Mỗi sản phẩm sẽ hiện thành một thẻ: số thứ tự, mã số và tên hàng.
     </div>

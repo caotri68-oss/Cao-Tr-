@@ -212,6 +212,14 @@
         b.onclick = function () { onlyWarn = !onlyWarn; render(); }; chips.appendChild(b);
       }
     }
+    // Linh vật mèo: vui khi mọi mã khớp EAN, buồn khi có mã cần kiểm tra.
+    $('mood').hidden = !any;
+    if (any) {
+      $('moodImg').src = warnN ? 'img/meo-3.png' : 'img/meo-1.png';
+      $('moodTxt').innerHTML = warnN
+        ? '<b>Cần kiểm tra ' + warnN + ' mã.</b> Chạm Sửa để chỉnh lại số.'
+        : '<b>Tất cả mã khớp EAN.</b> Có thể sao chép hoặc xuất CSV.';
+    }
     $('empty').hidden = any; $('bar').hidden = !any; $('tip').hidden = !any || editMode; $('xl').hidden = !any;
     $('firstHint').hidden = any;
     $('editMode').disabled = !any; $('clearAll').disabled = !any;
