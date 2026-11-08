@@ -14,40 +14,43 @@
 @media (prefers-color-scheme:dark){:root{--bg:#10151b;--card:#18202a;--ink:#e6ebf1;--mute:#9aa7b8;--line:#2a3441;--pri:#2dd4bf;--pri2:#123a38;--warn:#fbbf24;--warnbg:#2b2210;--bad:#f87171}}
 *{box-sizing:border-box}
 html,body{height:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;display:flex;flex-direction:column}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;display:flex;flex-direction:column}
 header{background:var(--card);border-bottom:1px solid var(--line);padding:calc(14px + env(safe-area-inset-top)) 16px 10px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
 header .gear{border:0;background:none;color:var(--mute);width:44px;height:44px;margin:-6px -8px 0 0;display:grid;place-items:center;cursor:pointer;border-radius:10px}
 header .gear.on{color:var(--pri)}
 header .gear svg,nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-header h1{margin:0;font-size:20px}
-header .sub{font-size:13px;color:var(--mute)}
-main{flex:1;overflow:auto;padding:14px 16px 24px;max-width:720px;width:100%;margin:0 auto}
+header h1{margin:0;font-size:22px;font-weight:700;letter-spacing:-.01em}
+header .sub{font-size:14px;color:var(--mute)}
+main{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:16px 16px 28px;max-width:720px;width:100%;margin:0 auto}
 nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
-nav button{border:0;background:none;color:var(--mute);padding:8px 0 6px;font:inherit;font-size:12px;min-height:56px;cursor:pointer;display:grid;justify-items:center;gap:2px}
+nav button{border:0;background:none;color:var(--mute);padding:8px 0 6px;font:inherit;font-size:12px;font-weight:500;min-height:58px;cursor:pointer;display:grid;justify-items:center;gap:2px}
 nav button.on{color:var(--pri);font-weight:700}
+@media (prefers-reduced-motion:reduce){.btn:active{transform:none}}
 input,select,textarea,button{font:inherit;color:inherit}
-input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+input,select,textarea{width:100%;padding:11px 12px;min-height:44px;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--pri);outline-offset:2px}
 textarea{min-height:90px;resize:vertical}
-label{display:grid;gap:3px;font-size:13px;color:var(--mute)}
-.btn{border:1px solid var(--line);background:var(--card);padding:8px 14px;border-radius:10px;cursor:pointer;min-height:44px}
+label{display:grid;gap:4px;font-size:14px;color:var(--mute)}
+.btn{border:1px solid var(--line);background:var(--card);padding:9px 16px;border-radius:12px;cursor:pointer;min-height:44px;font-weight:500}
+.btn:active{transform:scale(.98)}
 .btn.pri{background:var(--pri);border-color:var(--pri);color:#fff}
 @media (prefers-color-scheme:dark){.btn.pri{color:#06201d}}
-.btn.sm{padding:4px 10px;font-size:13px}
+.btn.sm{padding:6px 12px;font-size:14px;min-height:38px;border-radius:10px}
 .btn.del{color:var(--bad)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px}
-.card h3{margin:0 0 2px;font-size:16px}
-.mute{color:var(--mute);font-size:13px}
-.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px}
-.chips button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;min-height:44px;white-space:nowrap;cursor:pointer}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.card h3{margin:0 0 3px;font-size:17px}
+.mute{color:var(--mute);font-size:14px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px}
+.chips button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 16px;min-height:42px;white-space:nowrap;cursor:pointer}
 .chips button.on{background:var(--pri);border-color:var(--pri);color:#fff}
 @media (prefers-color-scheme:dark){.chips button.on{color:#06201d}}
-.slot{font-size:13px;font-weight:600;color:var(--mute);margin:14px 0 6px;text-transform:uppercase}
+.slot{font-size:15px;font-weight:700;color:var(--pri);margin:18px 0 8px}
 .dose{display:flex;align-items:center;gap:12px}
-.dose input[type=checkbox]{width:26px;height:26px;accent-color:var(--pri);flex:none}
+.dose input[type=checkbox]{width:30px;height:30px;min-height:0;accent-color:var(--pri);flex:none}
 .dose.done .t{text-decoration:line-through;color:var(--mute)}
 .grow{flex:1;min-width:0}
 .row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-.tag{display:inline-block;background:var(--pri2);color:var(--pri);border-radius:999px;padding:1px 9px;font-size:12px;margin:2px 4px 2px 0}
+.tag{display:inline-block;background:var(--pri2);color:var(--pri);border-radius:999px;padding:2px 10px;font-size:13px;margin:2px 4px 2px 0}
 .empty{text-align:center;color:var(--mute);padding:36px 8px}
 .ing{display:grid;grid-template-columns:1fr 70px 70px 28px;gap:6px;margin-bottom:6px}
 table.ing2{width:100%;border-collapse:collapse;font-size:14px}
@@ -59,15 +62,15 @@ dialog form{padding:16px;display:grid;gap:10px}
 .ing input.chk{border:2px solid var(--warn);background:var(--warnbg)}
 #report{display:none}
 @media print{header,main,nav,dialog{display:none!important}#report{display:block;font:12pt/1.4 system-ui,sans-serif;color:#000}body{display:block;background:#fff}#report table{width:100%;border-collapse:collapse}#report th,#report td{border:1px solid #444;padding:4px;text-align:left;vertical-align:top;font-size:10.5pt}}
-.w{border:1px solid var(--line);border-radius:10px;padding:10px;font-size:14px;margin-bottom:8px}
+.w{border:1px solid var(--line);border-radius:12px;padding:12px;font-size:15px;margin-bottom:10px}
 .w3{background:#fef2f2;border-color:#f5b5b5;color:#7f1d1d}.w2{background:var(--warnbg);border-color:var(--warn)}.w1{background:var(--bg)}
 @media (prefers-color-scheme:dark){.w3{background:#3b1414;border-color:#7f1d1d;color:#fecaca}}
 .bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden}.bar i{display:block;height:8px}
-.note{background:var(--warnbg);border:1px solid var(--warn);color:var(--warn);border-radius:10px;padding:8px 10px;font-size:13px}
+.note{background:var(--warnbg);border:1px solid var(--warn);color:var(--warn);border-radius:12px;padding:10px 12px;font-size:14px}
 </style>
 </head>
 <body>
-<header><div><h1 id="ttl">Hôm nay</h1><div class="sub" id="sub"></div></div><button class="gear" id="gear" aria-label="Cài đặt" onclick="go('set')"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"/></svg></button></header>
+<header><div><h1 id="ttl">Hôm nay</h1><div class="sub" id="sub"></div></div><button class="gear" id="gear" aria-label="Cài đặt" onclick="go('set')"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></header>
 <main id="view"></main>
 <nav id="nav"></nav>
 <div id="report"></div>
@@ -386,7 +389,7 @@ function vToday(){
   const day=today(),sl=slotsFor(day),taken=sl.filter(s=>s.intake?.status==='taken').length;
   const due=dueNow(),dueIds=new Set(due.map(s=>s.plan.id));
   const perm='Notification' in window?Notification.permission:'unsupported';
-  let html=chipRow()+todayWarnings();
+  let html=chipRow()+(sl.length?`<div class="card" style="padding:12px 14px"><div style="display:flex;justify-content:space-between"><b>Hôm nay</b><span class="mute">${taken}/${sl.length} lượt đã uống</span></div><div class="bar" style="margin-top:8px"><i style="width:${Math.round(taken/sl.length*100)}%;background:var(--pri)"></i></div></div>`:'')+todayWarnings();
   if(due.length)html+=`<div class="note" style="margin-bottom:10px;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Đến giờ uống:</b> ${due.map(s=>esc(mname(s.plan.memberId))+' · '+esc(pname(s.plan.productId))).join(', ')}</div>`;
   if(perm==='default')html+=`<div class="row" style="margin:0 0 10px"><button class="btn sm" onclick="askReminders()">Bật thông báo giờ uống</button></div>`;
   let last=null;
@@ -397,8 +400,8 @@ function vToday(){
       <div class="grow"><div class="t"><b>${esc(pname(p.productId))}</b></div><div class="mute">${esc(mname(p.memberId))} · ${esc(p.qty||'')}${st==='skipped'?' · đã bỏ liều':''}</div></div>
       <button class="btn sm" onclick="setIntake('${p.id}','skipped')">${st==='skipped'?'Huỷ bỏ':'Bỏ liều'}</button></div>`;
   }
-  html+=sl.length?`<div class="mute" style="text-align:center">Đã uống ${taken}/${sl.length} lượt hôm nay</div>`
-    :`<div class="empty">Chưa có lịch uống hôm nay.<br>${S.members.length&&S.products.length?'Mở một sản phẩm trong tab Tủ thuốc và bấm “Thêm người uống”.':'Thêm thành viên ở tab Gia đình, rồi thêm sản phẩm ở tab Tủ thuốc.'}</div>`;
+  html+=sl.length?'':`<div class="empty"><b style="display:block;font-size:18px;color:var(--ink);margin-bottom:6px">Chưa có lịch uống hôm nay</b>${S.members.length&&S.products.length?'Mở một sản phẩm trong tab Tủ thuốc và bấm “Thêm người uống”.':'Bắt đầu bằng hai bước: thêm thành viên, rồi thêm sản phẩm.'}
+      <div class="row" style="justify-content:center;margin-top:14px">${S.members.length?'':`<button class="btn pri" onclick="go('fam')">+ Thêm thành viên</button>`}${S.products.length?'':`<button class="btn ${S.members.length?'pri':''}" onclick="go('add')">+ Thêm sản phẩm</button>`}${S.members.length&&S.products.length?`<button class="btn pri" onclick="go('shelf')">Mở Tủ thuốc</button>`:''}</div></div>`;
   view('Hôm nay',fmtDay(),html);
 }
 
