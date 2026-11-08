@@ -214,6 +214,16 @@ body{background:radial-gradient(520px 320px at 100% 0,rgba(125,211,252,.35),tran
 .brand .bt{padding-right:104px}
 .brand .deco{width:92px;right:12px}
 .brand .deco .d1{width:38px}.brand .deco .d2{width:44px}.brand .deco .d3{left:34px;width:24px}
+
+/* ---------- thanh dưới dùng hình; nút cài đặt không chồng lên hình khiên ---------- */
+nav button img.ni{width:32px;height:32px;object-fit:contain;filter:grayscale(.6) opacity(.72);transition:filter .15s,transform .15s}
+nav button.on img.ni{filter:none;transform:translateY(-1px) scale(1.1)}
+nav button{gap:3px}
+.brand{min-height:114px}
+.brand .gearb{width:38px;height:38px;top:calc(10px + env(safe-area-inset-top));right:14px}
+.brand .gearb svg{width:20px;height:20px}
+.brand .deco{right:12px;top:calc(54px + env(safe-area-inset-top));width:92px;height:52px}
+.brand .deco .d1{width:34px}.brand .deco .d2{width:40px;top:0}.brand .deco .d3{left:30px;width:22px;bottom:0}
 </style>
 </head>
 <body>
@@ -272,12 +282,12 @@ let tab='today',sub=null,fMember='',draft=null;
 function go(t,s=null){tab=t;sub=s;render();$('#view').scrollTop=0}
 function render(){
   const cur=tab==='add'?'shelf':tab;
-  $('#nav').innerHTML=TABS.map(([k,l])=>`<button class="${k===cur?'on':''}" ${k===cur?'aria-current="page"':''} onclick="go('${k}')"><svg viewBox="0 0 24 24" aria-hidden="true">${IC[k]}</svg>${l}</button>`).join('');
+  $('#nav').innerHTML=TABS.map(([k,l])=>`<button class="${k===cur?'on':''}" ${k===cur?'aria-current="page"':''} onclick="go('${k}')"><img class="ni" src="img/n-${k}.webp" alt="">${l}</button>`).join('');
   $('#gear').classList.toggle('on',tab==='set');
   document.querySelector('header').style.display=tab==='today'?'none':'';
   ({today:vToday,shelf:vShelf,add:vAdd,know:vKnow,fam:vFam,set:vSet})[tab]();
 }
-const APP_VER='tpcn-v2-44';
+const APP_VER='tpcn-v2-45';
 let newVer='';
 const updBanner=()=>newVer?`<div class="note" style="margin-bottom:12px;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Có bản mới của app.</b> <button class="btn sm pri" onclick="forceUpdate()">Cập nhật ngay</button></div>`:'';
 function view(title,sub_,html){$('#ttl').textContent=title;$('#sub').textContent=sub_||'';$('#view').innerHTML=updBanner()+html}
