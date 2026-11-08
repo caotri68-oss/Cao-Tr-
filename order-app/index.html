@@ -97,6 +97,11 @@
     .hist-item .acts { display: flex; gap: 8px; margin-top: 8px; }
     .hist-item details summary { cursor: pointer; font-size: 14px; }
 
+    .xdel { margin-left: auto; min-width: 34px; padding: 0 8px; color: #ff6b6b; }
+    .addvar { display: flex; gap: 8px; padding: 12px 16px; background: var(--card); }
+    .addvar input[type=text] { flex: 1; min-width: 0; height: 36px; border-radius: 8px; border: 1px solid var(--btn-line);
+      background: var(--panel); padding: 0 10px; outline: none; }
+    .addvar input[type=text]:focus { border-color: var(--accent); }
     .toast { position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%); background: #2b2d33; color: #fff;
       padding: 10px 16px; border-radius: 10px; font-size: 14px; z-index: 20; opacity: 0; transition: opacity .2s; pointer-events: none; }
     .toast.show { opacity: 1; }
@@ -160,9 +165,11 @@
   (function () {
     'use strict';
     var L = window.OrderLogic;
-    var CATALOG = window.CATALOG;
+    var BASE_CATALOG = window.CATALOG;
     var DRAFT_KEY = 'orderDraft.v1';
     var HIST_KEY = 'orderHistory.v1';
+    var CUSTOM_KEY = 'customVariants.v1';
+    var CATALOG = [];
 
     var els = {
       list: document.getElementById('list'),
@@ -193,6 +200,23 @@
 
     function saveDraft() { storageSet(DRAFT_KEY, order); }
 
+    // Loại tự thêm trên máy: { "<id sản phẩm>": ["Loại A", ...] }
+    var custom = storageGet(CUSTOM_KEY, {});
+    function saveCustom() { storageSet(CUSTOM_KEY, custom); }
+    function rebuildCatalog() {
+      CATALOG = BASE_CATALOG.map(function (p) {
+        var extra = (custom[String(p.id)] || []).filter(function (v) {
+          return (p.variants || []).indexOf(v) < 0;
+        });
+        var copy = {};
+        Object.keys(p).forEach(function (k) { copy[k] = p[k]; });
+        copy.variants = (p.variants || []).concat(extra);
+        copy.customVariants = extra;
+        return copy;
+      });
+    }
+    rebuildCatalog();
+
     function esc(s) {
       return String(s).replace(/[&<>"']/g, function (c) {
         return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
@@ -208,6 +232,7 @@
 
     // ---- render danh sách sản phẩm ----
     function qtyRow(p, vi, q) {
+      var unit = L.unitOf(p, p.variants[vi]);
       return '' +
         '<div class="vctrl">' +
           '<button class="qbtn" data-act="add" data-pid="' + p.id + '" data-v="' + vi + '" data-n="3">3</button>' +
@@ -216,7 +241,7 @@
           '<button class="qbtn step" data-act="dec" data-pid="' + p.id + '" data-v="' + vi + '" aria-label="Bớt 1">−</button>' +
           '<input class="qnum" type="number" inputmode="numeric" min="0" data-act="qty" data-pid="' + p.id + '" data-v="' + vi + '" value="' + q + '">' +
           '<button class="qbtn step" data-act="inc" data-pid="' + p.id + '" data-v="' + vi + '" aria-label="Thêm 1">+</button>' +
-          '<span class="unit">bịch</span>' +
+          '<span class="unit">' + esc(unit) + '</span>' +
         '</div>';
     }
 
@@ -245,6 +270,9 @@
           '<div class="vtop">' +
             '<input type="checkbox" data-act="select" data-pid="' + p.id + '" data-v="' + vi + '"' + (q > 0 ? ' checked' : '') + ' aria-label="Chọn ' + esc(v) + '">' +
             '<span class="vname">' + esc(v) + '</span>' +
+            (p.customVariants && p.customVariants.indexOf(v) >= 0
+              ? '<button class="qbtn xdel" data-act="delcustom" data-pid="' + p.id + '" data-v="' + vi + '" title="Xoá loại này">×</button>'
+              : '') +
           '</div>' +
           qtyRow(p, vi, q) +
         '</div>';
@@ -261,6 +289,11 @@
       } else {
         html += extraRow(p, item.extra, 'số lượng (chưa có danh sách loại):');
       }
+
+      html += '<div class="addvar">' +
+        '<input type="text" data-addfor="' + p.id + '" placeholder="Loại khác chưa có trong danh sách..." maxlength="60">' +
+        '<button class="qbtn" data-act="addcustom" data-pid="' + p.id + '">+ Thêm loại</button>' +
+        '</div>';
 
       html += '</section>';
       return html;
@@ -283,6 +316,27 @@
       for (var i = 0; i < CATALOG.length; i++) if (String(CATALOG[i].id) === String(pid)) return CATALOG[i];
       return null;
     }
+
+    function addCustomVariant(p, raw) {
+      var name = String(raw || '').replace(/\s+/g, ' ').trim();
+      if (!name) { toast('Nhập tên loại trước'); return; }
+      var exists = (p.variants || []).some(function (v) {
+        return L.normalize(v) === L.normalize(name);
+      });
+      if (exists) { toast('Loại này đã có'); return; }
+      var key = String(p.id);
+      custom[key] = (custom[key] || []).concat([name]);
+      saveCustom();
+      rebuildCatalog();
+      render();
+      toast('Đã thêm loại: ' + name);
+    }
+
+    els.list.addEventListener('keydown', function (ev) {
+      if (ev.key !== 'Enter' || !ev.target.matches('input[data-addfor]')) return;
+      var p = findProduct(ev.target.getAttribute('data-addfor'));
+      if (p) addCustomVariant(p, ev.target.value);
+    });
     function variantName(p, vi) { return (p.variants || [])[Number(vi)]; }
 
     els.list.addEventListener('click', function (ev) {
@@ -293,6 +347,21 @@
       var p = findProduct(t.getAttribute('data-pid'));
       if (!p) return;
       var v = t.getAttribute('data-v') !== null ? variantName(p, t.getAttribute('data-v')) : null;
+
+      if (act === 'addcustom') {
+        var box = els.list.querySelector('input[data-addfor="' + p.id + '"]');
+        addCustomVariant(p, box ? box.value : '');
+        return;
+      }
+      if (act === 'delcustom') {
+        if (!confirm('Xoá loại "' + v + '" khỏi sản phẩm này?')) return;
+        custom[String(p.id)] = (custom[String(p.id)] || []).filter(function (x) { return x !== v; });
+        saveCustom();
+        order = L.removeVariant(order, p.id, v);
+        rebuildCatalog();
+        render();
+        return;
+      }
 
       if (act === 'add') order = L.addVariantQty(order, p.id, v, Number(t.getAttribute('data-n')));
       else if (act === 'inc') order = L.addVariantQty(order, p.id, v, 1);

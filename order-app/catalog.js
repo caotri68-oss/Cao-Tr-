@@ -3,18 +3,22 @@
  * - id: số thứ tự sản phẩm trong đơn (dùng trong dòng "* id. tên *").
  * - variants: danh sách loại (mã) của sản phẩm. [] = không có loại, chỉ nhập "các loại khác".
  *
- * Lưu ý: các mục 2, 6, 7 chưa có trong ảnh chụp nên chưa có ở đây.
- * Sửa / thêm sản phẩm trực tiếp trong file này.
+ * Các loại của mục 1, 6, 7 mới có một phần (theo đơn mẫu). Trong app có thể bấm
+ * "+ Thêm loại" để thêm loại còn thiếu, không cần sửa file này.
+ * units: đơn vị khác 'balení' cho từng loại (ví dụ paleta).
  */
 window.CATALOG = [
-  { id: 1, name: 'Pleťový a tělový krém 250ml', variants: [] },
+  { id: 1, name: 'Pleťový a tělový krém 250ml', variants: ['Aloe'] },
+  { id: 2, name: 'Krem na ruce 100ml', variants: [] },
   { id: 3, name: 'Sul do koupele 600g', variants: [] },
-  { id: 4, name: 'Trim prací prášek', variants: ['4,5kg'] },
+  { id: 4, name: 'Trim prací prášek', variants: ['2kg', '4,5kg', '9kg'], units: { '9kg': 'paleta' } },
   {
     id: 5,
     name: 'Lazen Chopa 1,5l',
-    variants: ['Bylinný elixír', 'Kouzlo lesa', 'Vodni svet', 'Vanikove nebe', 'Morska terapie']
+    variants: ['Bylinný elixír', 'Kouzlo lesa', 'Vodni svet', 'Vanikove nebe', 'Kvetinova romance', 'Morska terapie']
   },
+  { id: 6, name: 'Kremova koupel chopa 1,5l', variants: ['Mineraly', 'Pro jemnou pokozku'] },
+  { id: 7, name: 'Tekute mydlo chopa 1,5l', variants: ['Frezie', 'Grep a caj', 'Venice', 'Aloe', 'Discovery'] },
   { id: 8, name: 'Devore chopa 1.5l', variants: ['Luxe', 'Broskev', 'Atractive', 'Vanilka'] },
   { id: 9, name: 'Trim s rozprašovačem 500ml', variants: ['Okna zrcadla', 'Kuchyne', 'Rez vodni kamen', 'Wc koupelna'] },
   {

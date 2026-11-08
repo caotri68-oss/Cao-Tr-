@@ -6,15 +6,24 @@
  *     date: "01.11.2026",            // dd.mm.yyyy
  *     items: {
  *       "<id sản phẩm>": {
- *         variants: { "<tên loại>": <số bịch> },  // chỉ lưu loại có số > 0
- *         excluded: ["<tên loại>", ...],         // "Trừ loại"
- *         extra: <số bịch "các loại khác lấy thêm">
+ *         variants: { "<tên loại>": <số lượng> },  // chỉ lưu loại có số > 0
+ *         excluded: ["<tên loại>", ...],           // "Trừ loại"
+ *         extra: <số lượng "các loại khác lấy thêm">
  *       }
  *     }
  *   }
+ *
+ * Sản phẩm trong danh mục có thể có:
+ *   units: { "<tên loại>": "paleta" }  // đơn vị khác "balení" (mặc định)
+ *
+ * Quy đổi khi cộng tổng: 1 paleta = UNIT_SIZE.paleta balení.
  */
 (function (root) {
   'use strict';
+
+  var UNIT_DEFAULT = 'balení';
+  // Suy ra từ đơn mẫu 11.10.2026: 395 balení + 1 paleta = 435 balení.
+  var UNIT_SIZE = { 'paleta': 40 };
 
   function normalize(s) {
     return String(s)
@@ -26,6 +35,16 @@
   function toQty(v) {
     var n = parseInt(v, 10);
     return isNaN(n) || n < 0 ? 0 : n;
+  }
+
+  function unitOf(product, variant) {
+    return (product && product.units && product.units[variant]) || UNIT_DEFAULT;
+  }
+
+  // Số balení tương đương của một dòng (paleta = UNIT_SIZE balení).
+  function weightOf(product, variant, qty) {
+    var u = unitOf(product, variant);
+    return qty * (UNIT_SIZE[u] || 1);
   }
 
   function emptyOrder(dateDMY) {
@@ -56,7 +75,7 @@
     return setVariantQty(order, pid, variant, (item.variants[variant] || 0) + delta);
   }
 
-  // Ô chọn: bật = 1 bịch, tắt = 0 bịch.
+  // Ô chọn: bật = 1, tắt = 0.
   function toggleVariantSelected(order, pid, variant) {
     var item = getItem(order, pid);
     return setVariantQty(order, pid, variant, item.variants[variant] ? 0 : 1);
@@ -78,6 +97,16 @@
     return order;
   }
 
+  // Xoá một loại khỏi đơn (khi loại bị xoá khỏi danh mục).
+  function removeVariant(order, pid, variant) {
+    var item = getItem(order, pid);
+    delete item.variants[variant];
+    var i = item.excluded.indexOf(variant);
+    if (i >= 0) item.excluded.splice(i, 1);
+    return order;
+  }
+
+  // Tổng số lượng của sản phẩm (đơn vị gốc, không quy đổi).
   function productTotal(item) {
     var sum = item.extra || 0;
     Object.keys(item.variants).forEach(function (k) {
@@ -86,11 +115,20 @@
     return sum;
   }
 
+  // Tổng quy đổi ra balení.
+  function productWeight(item, product) {
+    var sum = item.extra || 0;
+    Object.keys(item.variants).forEach(function (k) {
+      sum += weightOf(product, k, item.variants[k]);
+    });
+    return sum;
+  }
+
   function orderTotal(catalog, order) {
     var total = 0;
     catalog.forEach(function (p) {
       var item = order.items[String(p.id)];
-      if (item) total += productTotal(item);
+      if (item) total += productWeight(item, p);
     });
     return total;
   }
@@ -116,7 +154,7 @@
 
       variants.forEach(function (v) {
         var q = item.variants[v];
-        if (q) lines.push('  - ' + v + ': ' + q + ' balení');
+        if (q) lines.push('  - ' + v + ': ' + q + ' ' + unitOf(p, v));
       });
 
       if (item.extra > 0) {
@@ -124,18 +162,18 @@
           return item.excluded.indexOf(v) >= 0;
         });
         if (excl.length === 0) {
-          lines.push('  => Všechny druhy navíc: ' + item.extra + ' balení');
+          lines.push('  => Všechny druhy navíc: ' + item.extra + ' ' + UNIT_DEFAULT);
         } else {
           lines.push(
             '  => Kromě druhů ' +
               excl.map(function (v) { return '"' + v + '"'; }).join(', ') +
-              ', ostatní druhy navíc: ' + item.extra + ' balení'
+              ', ostatní druhy navíc: ' + item.extra + ' ' + UNIT_DEFAULT
           );
         }
       }
     });
 
-    var header = order.date + ' - Celkové množství: ' + total + ' balení';
+    var header = order.date + ' - Celkové množství: ' + total + ' ' + UNIT_DEFAULT;
     var text = header + '\n-----------------\n' + (lines.length ? '\n' + lines.join('\n') : '');
     return { text: text, total: total, productCount: productsSelected(catalog, order) };
   }
@@ -171,8 +209,11 @@
   }
 
   var api = {
+    UNIT_DEFAULT: UNIT_DEFAULT,
+    UNIT_SIZE: UNIT_SIZE,
     normalize: normalize,
     toQty: toQty,
+    unitOf: unitOf,
     emptyOrder: emptyOrder,
     getItem: getItem,
     setVariantQty: setVariantQty,
@@ -180,7 +221,9 @@
     toggleVariantSelected: toggleVariantSelected,
     setExtra: setExtra,
     toggleExcluded: toggleExcluded,
+    removeVariant: removeVariant,
     productTotal: productTotal,
+    productWeight: productWeight,
     orderTotal: orderTotal,
     productsSelected: productsSelected,
     buildSummary: buildSummary,
