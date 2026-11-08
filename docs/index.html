@@ -320,7 +320,7 @@ function render(){
   document.querySelector('header').style.display=tab==='today'?'none':'';
   ({today:vToday,shelf:vShelf,add:vAdd,know:vKnow,fam:vFam,set:vSet})[tab]();
 }
-const APP_VER='tpcn-v2-46';
+const APP_VER='tpcn-v2-47';
 let newVer='';
 const updBanner=()=>newVer?`<div class="note" style="margin-bottom:12px;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Có bản mới của app.</b> <button class="btn sm pri" onclick="forceUpdate()">Cập nhật ngay</button></div>`:'';
 function view(title,sub_,html){$('#ttl').textContent=title;$('#sub').textContent=sub_||'';$('#view').innerHTML=updBanner()+html}
@@ -654,7 +654,7 @@ function vToday(){
   const tiles=`<div class="tiles">${[['pill','Tủ thuốc',"go('shelf')"],['book','Thư viện',"go('know')"],['sketch','Phác thảo',"goSketch()"],['home','Gia đình',"go('fam')"]].map(([ic,l,fn])=>`<button class="tile" onclick="${fn}"><span>${ART[ic]}</span>${l}</button>`).join('')}</div>`;
   const hero=`<div class="hero2"><div class="tx"><h2>${ART.spark}Lịch uống hôm nay</h2>${sl.length?`<p><b>${taken}/${sl.length}</b> lượt đã uống<span class="pct">${pct}%</span><br>${left?`Còn ${left} lượt chưa uống`:'Đã xong tất cả. Giỏi lắm!'}</p><div class="bar"><i style="width:${pct}%;background:var(--pri)"></i></div><button class="pill" onclick="document.getElementById('lich').scrollIntoView({behavior:'smooth'})">Xem lịch hôm nay →</button>`
     :`<p>${S.members.length&&S.products.length?'Chưa có lịch. Mở Tủ thuốc và thêm người uống cho sản phẩm.':'Thêm thành viên và sản phẩm để bắt đầu.'}</p><button class="pill" onclick="go('${S.members.length?(S.products.length?'shelf':'add'):'fam'}')">${S.members.length?(S.products.length?'Mở Tủ thuốc':'+ Thêm sản phẩm'):'+ Thêm thành viên'} →</button>`}</div>${ART.doctor}</div>`;
-  let html=brand+search+tiles+hero+todayWarnings();
+  let html=brand+search+tiles+hero+todayWarnings()+(backupDue()?backupCard():'');
   if(due.length)html+=`<div class="note" style="margin:10px 0;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Đến giờ uống:</b> ${due.map(s=>esc(mname(s.plan.memberId))+' · '+esc(pname(s.plan.productId))).join(', ')}</div>`;
   if(perm==='default')html+=`<div class="row" style="margin:10px 0"><button class="btn sm" onclick="askReminders()">Bật thông báo giờ uống</button></div>`;
   html+=`<div class="sec" id="lich"><h2>Lịch uống hôm nay</h2><span class="mute">${sl.length?sl.length+' lượt':''}</span></div>`+chipRow();
@@ -1366,7 +1366,7 @@ function vFam(){
    `    <div class="note">App chỉ lưu và nhắc theo dữ liệu bạn nhập, không thay lời khuyên của bác sĩ hay dược sĩ.</div>`);
 }
 function vSet(){
-  view('Cài đặt','Cập nhật, đồng bộ và sao lưu',`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('today')">‹ Quay lại</button></div>`+updateCard()+`<div class="card"><b>Sao lưu</b><div class="mute">Dữ liệu chỉ nằm trong trình duyệt của máy này. Hãy tải bản sao lưu định kỳ.</div>
+  view('Cài đặt','Cập nhật, đồng bộ và sao lưu',`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('today')">‹ Quay lại</button></div>`+updateCard()+`<div class="card"><b>Sao lưu</b><div class="mute">Dữ liệu chỉ nằm trong trình duyệt của máy này. Hãy tải bản sao lưu định kỳ.</div><div class="mute" style="margin-top:6px"><b>${backupText()}</b></div>
     <div class="row"><button class="btn pri" onclick="exportAll()">Tải JSON</button></div><div class="mute" style="margin-top:6px">Khôi phục: dùng "Cập nhật dữ liệu" ở trên.</div></div>
     <div class="card"><b>Chuẩn mức tối đa dùng để cảnh báo</b><div class="mute">EFSA là chuẩn châu Âu (áp dụng ở Séc), thường chặt hơn. NIH là chuẩn Mỹ.</div>
      <select style="margin-top:8px" onchange="S.settings={...(S.settings||{}),ul:this.value};save();render()"><option value="efsa" ${ulStd()==='efsa'?'selected':''}>EFSA (châu Âu)</option><option value="nih" ${ulStd()==='nih'?'selected':''}>NIH (Mỹ)</option></select></div>
@@ -1393,7 +1393,14 @@ function reportHtml(m){
   ${plans.length?`<table><tr><th>Sản phẩm</th><th>Hãng</th><th>Thành phần mỗi liều nhãn</th><th>Liều</th><th>Giờ</th><th>Từ ngày</th></tr>${plans.map(p=>{const pr=byId(S.products,p.productId);return`<tr><td>${esc(pr.name)}</td><td>${esc(pr.brand)}</td><td>${esc(ingText(pr))}</td><td>${esc(p.qty)}${p.servings&&p.servings!=1?' ('+esc(p.servings)+' liều nhãn)':''}</td><td>${esc(p.time)} ${esc(p.label)}</td><td>${esc(p.start)}</td></tr>`}).join('')}</table>`:'<p>Không có sản phẩm nào đang dùng.</p>'}
   <h3>Lưu ý do ứng dụng tính</h3>${W.length?`<ul>${W.map(w=>`<li><b>${LV[w.lv]}:</b> ${esc(w.title)}. ${esc(w.text)}</li>`).join('')}</ul>`:'<p>Không có.</p>'}`}
 function printReport(mid){const m=byId(S.members,mid);if(!m){alert('Chưa có thành viên.');return}$('#report').innerHTML=reportHtml(m);print()}
-async function exportAll(){const images={};for(const id of S.products.flatMap(p=>p.imageIds||[])){const u=await getImg(id).catch(()=>null);if(u)images[id]=u}dl('tpcn-backup-'+today()+'.json',JSON.stringify({...S,images}),'application/json')}
+async function exportAll(){const images={};for(const id of S.products.flatMap(p=>p.imageIds||[])){const u=await getImg(id).catch(()=>null);if(u)images[id]=u}S.settings={...(S.settings||{}),lastBackup:new Date().toISOString()};delete S.settings.backupSnooze;save();dl('tpcn-backup-'+today()+'.json',JSON.stringify({...S,images}),'application/json');render()}
+/* Nhắc sao lưu: mốc lần cuối nằm trong S.settings.lastBackup, "Để sau" ẩn thẻ nhắc 2 ngày */
+const BK_DAYS=7;
+function daysSinceBackup(){const t=Date.parse((S.settings||{}).lastBackup||'');return isNaN(t)?null:Math.floor((Date.now()-t)/864e5)}
+function backupDue(){if(!S.members.length&&!S.products.length)return false;const sn=Date.parse((S.settings||{}).backupSnooze||'');if(!isNaN(sn)&&sn>Date.now())return false;const d=daysSinceBackup();return d===null||d>=BK_DAYS}
+function snoozeBackup(){S.settings={...(S.settings||{}),backupSnooze:new Date(Date.now()+2*864e5).toISOString()};save();render()}
+function backupText(){const d=daysSinceBackup();if(d===null)return'Sao lưu lần cuối: chưa từng sao lưu';const t=new Date((S.settings||{}).lastBackup).toLocaleDateString('vi-VN');return'Sao lưu lần cuối: '+t+(d>0?' ('+d+' ngày trước)':' (hôm nay)')}
+function backupCard(){const d=daysSinceBackup();return`<div class="note" style="margin:10px 0"><b>Nhắc sao lưu</b><br>${d===null?'Bạn chưa từng tải bản sao lưu.':'Đã '+d+' ngày chưa sao lưu.'} Dữ liệu chỉ nằm trong máy này, mất máy là mất hết.<div class="row" style="margin-top:8px"><button class="btn pri sm" onclick="exportAll()">Sao lưu ngay</button><button class="btn sm" onclick="snoozeBackup()">Để sau</button></div></div>`}
 async function restore(f){if(!f)return;try{const d=JSON.parse(await f.text());if(!d||!Array.isArray(d.products)||!Array.isArray(d.members)||d.v!==2)throw new Error('Không đúng định dạng sao lưu của bản này');if(!confirm('Khôi phục sẽ GHI ĐÈ toàn bộ dữ liệu hiện tại. Tiếp tục?'))return;const {images,...rest}=d;S={...empty(),...rest};for(const [id,u] of Object.entries(images||{}))if(/^data:image\//.test(u))await putImg(id,u);save();render()}catch(e){alert('Lỗi: '+e.message)}}
 
 /* ---------- Cửa duy nhất: Cập nhật dữ liệu (tự nhận dạng loại file, xếp đúng mục) ---------- */
