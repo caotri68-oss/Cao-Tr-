@@ -1,6 +1,6 @@
 // Đổi số phiên bản mỗi khi sửa file của app (và đổi APP_VER trong index.html cho khớp).
-const VER='tpcn-v2-43';
-const SHELL=['./','index.html','kb.js','manifest.webmanifest','icon-192.png','icon-512.png','img/logo.jpg','img/decor.jpg','img/shield.jpg','img/doctor.webp','img/pill.jpg','img/book.jpg','img/clip.jpg','img/home.jpg','img/cal.jpg','img/jar.jpg','img/leaf.jpg'];
+const VER='tpcn-v2-44';
+const SHELL=['./','index.html','kb.js','manifest.webmanifest','icon-192.png','icon-512.png','img/logo.webp','img/steth.webp','img/shield.webp','img/leaf.webp','img/pill.webp','img/book.webp','img/clip.webp','img/family.webp','img/nurse.webp','img/jar.webp','img/cal.webp','img/chart.webp','img/bell.webp','img/safe.webp'];
 
 self.addEventListener('install',e=>{
   e.waitUntil(caches.open(VER).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()));

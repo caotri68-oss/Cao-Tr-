@@ -192,6 +192,28 @@ body{background:radial-gradient(520px 320px at 100% 0,rgba(125,211,252,.35),tran
 .cta b{color:#15306b}.cta .s{color:#5a6a8c}
 .cta .art{width:68px;height:auto;aspect-ratio:284/250}
 .hscroll{scrollbar-width:none;-ms-overflow-style:none}.hscroll::-webkit-scrollbar{display:none}
+
+/* ---------- hình nền trong suốt (bản 4) ---------- */
+.tile .art,.dcard .art,.cta .art{-webkit-mask-image:none;mask-image:none;background:none;border-radius:0}
+@media (prefers-color-scheme:dark){.tile .art,.dcard .art{background:none}}
+.brand .lg{width:60px;height:auto;border-radius:0;mix-blend-mode:normal;filter:drop-shadow(0 4px 8px rgba(20,60,140,.25))}
+.brand .deco{position:absolute;right:14px;top:36px;width:118px;height:60px;-webkit-mask-image:none;mask-image:none}
+.brand .deco img{position:absolute;display:block;filter:drop-shadow(0 4px 6px rgba(20,60,140,.22))}
+.brand .deco .d1{left:0;top:0;width:44px;height:auto}
+.brand .deco .d2{right:0;top:-4px;width:52px;height:auto}
+.brand .deco .d3{left:40px;bottom:-4px;width:26px;height:auto}
+.brand .bt{padding-right:136px}
+.tile .art{width:56px;height:56px;object-fit:contain;filter:drop-shadow(0 4px 6px rgba(20,60,140,.18))}
+.dcard .art{width:60px;height:60px;object-fit:contain;filter:drop-shadow(0 4px 6px rgba(20,60,140,.18))}
+.cta .art{width:62px;height:auto;filter:drop-shadow(0 4px 6px rgba(20,60,140,.2))}
+.tool .ti{background:none!important;width:48px;height:48px}
+.tool .ti img{width:42px;height:42px;object-fit:contain;filter:drop-shadow(0 3px 5px rgba(20,60,140,.18))}
+.hero2 .doc{filter:drop-shadow(0 6px 10px rgba(20,80,100,.22))}
+@media (max-width:370px){.brand .deco{display:none}.brand .bt{padding-right:52px}}
+.brand h1{font-size:19px}
+.brand .bt{padding-right:104px}
+.brand .deco{width:92px;right:12px}
+.brand .deco .d1{width:38px}.brand .deco .d2{width:44px}.brand .deco .d3{left:34px;width:24px}
 </style>
 </head>
 <body>
@@ -255,7 +277,7 @@ function render(){
   document.querySelector('header').style.display=tab==='today'?'none':'';
   ({today:vToday,shelf:vShelf,add:vAdd,know:vKnow,fam:vFam,set:vSet})[tab]();
 }
-const APP_VER='tpcn-v2-43';
+const APP_VER='tpcn-v2-44';
 let newVer='';
 const updBanner=()=>newVer?`<div class="note" style="margin-bottom:12px;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Có bản mới của app.</b> <button class="btn sm pri" onclick="forceUpdate()">Cập nhật ngay</button></div>`:'';
 function view(title,sub_,html){$('#ttl').textContent=title;$('#sub').textContent=sub_||'';$('#view').innerHTML=updBanner()+html}
@@ -562,17 +584,20 @@ const ART={
  spark:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.2 6.3L21 10l-6.8 1.7L12 18l-2.2-6.3L3 10l6.8-1.7z" fill="url(#gGreen)"/><path d="M19 15l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z" fill="#38bdf8"/></svg>'};
 
 Object.assign(ART,{
- logo:'<img class="lg" src="img/logo.jpg" alt="">',
- deco:'<img class="deco" src="img/decor.jpg" alt="">',
- shield:'<img class="art" src="img/shield.jpg" alt="">',
- doctor:'<img class="doc" src="img/doctor.webp" alt="">',
- pill:'<img class="art" src="img/pill.jpg" alt="">',
- book:'<img class="art" src="img/book.jpg" alt="">',
- sketch:'<img class="art" src="img/clip.jpg" alt="">',
- home:'<img class="art" src="img/home.jpg" alt="">',
- cal:'<img class="art" src="img/cal.jpg" alt="">',
- jar:'<img class="art" src="img/jar.jpg" alt="">',
- leaf:'<img class="art" src="img/leaf.jpg" alt="">'});
+ logo:'<img class="lg" src="img/logo.webp" alt="">',
+ deco:'<div class="deco" aria-hidden="true"><img class="d1" src="img/steth.webp" alt=""><img class="d2" src="img/shield.webp" alt=""><img class="d3" src="img/leaf.webp" alt=""></div>',
+ shield:'<img class="art" src="img/shield.webp" alt="">',
+ doctor:'<img class="doc" src="img/nurse.webp" alt="">',
+ pill:'<img class="art" src="img/pill.webp" alt="">',
+ book:'<img class="art" src="img/book.webp" alt="">',
+ sketch:'<img class="art" src="img/clip.webp" alt="">',
+ home:'<img class="art" src="img/family.webp" alt="">',
+ cal:'<img class="art" src="img/cal.webp" alt="">',
+ jar:'<img class="art" src="img/jar.webp" alt="">',
+ leaf:'<img class="art" src="img/leaf.webp" alt="">',
+ chart:'<img class="art" src="img/chart.webp" alt="">',
+ bell:'<img class="art" src="img/bell.webp" alt="">',
+ safe:'<img class="art" src="img/safe.webp" alt="">'});
 const goFirst=t=>{if(S.members.length===1){personTab=t;go('fam','m:'+S.members[0].id)}else go('fam')};
 function vToday(){
   if(!document.getElementById('artdefs')){const d=document.createElement('div');d.id='artdefs';d.innerHTML=ART.defs;document.body.appendChild(d)}
@@ -615,10 +640,10 @@ function vToday(){
     <button class="dcard" onclick="goSketch()">${ART.sketch}<b>Hồ sơ và Phác thảo</b><span class="s">Bệnh nền, xét nghiệm nên hỏi</span><span class="go">›</span></button>
     <button class="dcard" onclick="goFirst('nk')">${ART.cal}<b>Nhật ký theo dõi</b><span class="s">Cân nặng, huyết áp, triệu chứng</span><span class="go">›</span></button></div>`}
   html+=`<div class="sec"><h2>Công cụ hữu ích</h2></div><div class="tools">
-    <button class="tool t1" onclick="bmiAll()"><span class="ti">${hico('bmi')}</span><span><b>Chỉ số BMI</b><span class="s">Từ cân nặng, chiều cao</span></span></button>
-    <button class="tool t3" onclick="goSketch()"><span class="ti">${hico('sketch')}</span><span><b>Phác thảo</b><span class="s">Mục liên quan, xét nghiệm</span></span></button>
-    <button class="tool t4" onclick="go('set')"><span class="ti">${hico('backup')}</span><span><b>Sao lưu</b><span class="s">Lưu và khôi phục dữ liệu</span></span></button>
-    <button class="tool t6" onclick="go('set')"><span class="ti">${hico('bell')}</span><span><b>Thông báo</b><span class="s">Nhắc giờ uống</span></span></button></div>`;
+    <button class="tool t1" onclick="bmiAll()"><span class="ti">${ART.chart}</span><span><b>Chỉ số BMI</b><span class="s">Từ cân nặng, chiều cao</span></span></button>
+    <button class="tool t3" onclick="goSketch()"><span class="ti">${ART.sketch}</span><span><b>Phác thảo</b><span class="s">Mục liên quan, xét nghiệm</span></span></button>
+    <button class="tool t4" onclick="go('set')"><span class="ti">${ART.safe}</span><span><b>Sao lưu</b><span class="s">Lưu và khôi phục dữ liệu</span></span></button>
+    <button class="tool t6" onclick="go('set')"><span class="ti">${ART.bell}</span><span><b>Thông báo</b><span class="s">Nhắc giờ uống</span></span></button></div>`;
   const kb=dayKb();
   if(kb)html+=`<div class="sec"><h2>Kiến thức hôm nay</h2></div><button class="daily" onclick="libQ=${JSON.stringify(kb.name).replace(/"/g,'&quot;')};libF='all';go('know')"><div class="k">Gợi ý đọc</div><b>${esc(kb.name)}</b><span class="s">${esc(String(kb.what||'').slice(0,110))}${String(kb.what||'').length>110?'…':''}</span></button>`;
   html+=`<div class="cta">${ART.shield}<div><b>Chăm sóc sức khỏe chủ động</b><span class="s">Hiểu đúng, dùng đúng, hỏi bác sĩ khi cần.</span></div><button class="pill navy" onclick="go('know')">Tìm hiểu ›</button></div>`;
