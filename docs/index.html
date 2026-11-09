@@ -257,6 +257,24 @@ nav button{gap:3px}
  .brand .gearb{background:rgba(255,255,255,.12);color:#e6ebf1;box-shadow:none;border:1px solid rgba(255,255,255,.2)}
 }
 @media (max-width:370px){.brand .deco{display:none}.brand .bt{padding-right:52px}}
+
+/* ---------- Thư viện bản mới: chủ đề, gom dạng muối ---------- */
+.sec2{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:14px 0 8px;font-size:15px}
+.sec2 .mute{font-size:12px}
+.tpgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 6px}
+.tpc{display:flex;align-items:center;gap:10px;text-align:left;padding:11px 12px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;cursor:pointer;min-height:56px}
+.tpc .te{font-size:25px;line-height:1;flex:none}
+.tpc b{display:block;font-size:13.5px;line-height:1.25;font-weight:600}
+.tpc .mute{display:block;font-size:12px;margin-top:2px}
+.tpc:active{transform:scale(.98)}
+.kinds{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.kinds button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 6px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;cursor:pointer}
+.kinds button>span:first-child{font-size:24px;line-height:1.1}
+.kinds button b{font-size:13.5px;font-weight:600}
+.kinds .mute{font-size:12px}
+.fam{margin:6px 0 4px}
+.fam summary{cursor:pointer;font-size:13px;color:var(--pri);padding:4px 0}
+@media (max-width:340px){.tpgrid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -320,7 +338,7 @@ function render(){
   document.querySelector('header').style.display=tab==='today'?'none':'';
   ({today:vToday,shelf:vShelf,add:vAdd,know:vKnow,fam:vFam,set:vSet})[tab]();
 }
-const APP_VER='tpcn-v2-48';
+const APP_VER='tpcn-v2-49';
 let newVer='';
 const updBanner=()=>newVer?`<div class="note" style="margin-bottom:12px;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Có bản mới của app.</b> <button class="btn sm pri" onclick="forceUpdate()">Cập nhật ngay</button></div>`:'';
 function view(title,sub_,html){$('#ttl').textContent=title;$('#sub').textContent=sub_||'';$('#view').innerHTML=updBanner()+html}
@@ -1042,7 +1060,7 @@ function substGrid(){
   return `<div class="card"><b>Hoạt chất</b><div class="mute">${Object.keys(window.KB||{}).length} chất có bài đầy đủ, xếp theo nhóm. Bấm một nhóm để mở, hoặc gõ tên để tìm.</div>
    <input id="substQ" placeholder="Tìm hoạt chất…" value="${esc(substQ)}" oninput="substQ=this.value;vKnow();const i=document.getElementById('substQ');i.focus();i.setSelectionRange(99,99)" style="margin:8px 0">
    ${mine.length?`<div style="margin-bottom:8px"><b style="font-size:14px">Có trong tủ của bạn</b><div class="chips" style="flex-wrap:wrap;overflow:visible;margin-top:6px">${mine.map(chipOf).join('')}</div></div>`:''}
-   ${groups.map(([n,l])=>`<details ${q?'open':''} style="margin-top:6px"><summary style="cursor:pointer"><b style="font-size:14px">${esc(n)}</b> <span class="mute">(${l.length})</span></summary><div class="chips" style="flex-wrap:wrap;overflow:visible;margin-top:6px">${l.map(chipOf).join('')}</div></details>`).join('')||'<div class="mute" style="margin-top:6px">Không tìm thấy.</div>'}</div>`;
+   ${groups.map(([n,l])=>`<details ${q?'open':''} style="margin-top:6px"><summary style="cursor:pointer"><b style="font-size:14px">${esc(n)}</b> <span class="mute">(${l.length})</span></summary>${catChips(l)}</details>`).join('')||'<div class="mute" style="margin-top:6px">Không tìm thấy.</div>'}</div>`;
 }
 /* Bài kiến thức chung của một chất (dữ liệu trong kb.js) */
 const KB_LV={chac:['Chắc chắn','#0f766e'],cothe:['Có thể','#1d4ed8'],chuaro:['Chưa rõ','#6b7280'],khong:['Không có tác dụng','#9a3412']};
@@ -1066,7 +1084,7 @@ function vSubstance(name){
   const s=substList().find(x=>x.name===name);if(!s){sub=null;return vKnow()}
   const N=s.key?NUTR[s.key]:null,prods=substProducts(s),notes=S.notes.filter(n=>norm(n.substance)===norm(name));
   view(s.name,N?'Có trong bảng cảnh báo của app':'Chưa có mức tối đa trong app',
-   `<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('know')">‹ Thư viện</button></div>${kbHtml(s)}
+   `<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('know')">‹ Thư viện</button></div>${kbHtml(s)}${famBlock(s)?`<div class="card">${famBlock(s).replace('<details class="fam">','<details class="fam" open>')}</div>`:''}
    ${N?(()=>{const E=EF[s.key];return`<div class="card"><b>Mức tối đa cho người lớn mỗi ngày</b>
      <div>EFSA (châu Âu): ${E?fmt(E.ul)+' '+N.u+(E.safe?' (mức an toàn, không phải UL chính thức)':'')+(E.amideUl?`; nicotinamide ${fmt(E.amideUl)} mg`:'')+` · <a href="${esc(E.url||EFSA_SUM)}" target="_blank" rel="noopener noreferrer">nguồn</a>`:'chưa đặt'}</div>
      <div>NIH (Mỹ): ${N.ul?fmt(N.ul)+' '+N.u+(N.ul51?`, từ 51 tuổi ${fmt(N.ul51)} ${N.u}`:''):'chưa đặt'} · <a href="${esc(nUrl(N))}" target="_blank" rel="noopener noreferrer">nguồn</a></div>
@@ -1270,41 +1288,86 @@ function libNoteCard(n){return`<div class="card"><h3>${esc(n.title)}</h3>${noteT
   <div class="row"><button class="btn sm" onclick="editNote('${n.id}')">Sửa</button><button class="btn sm del" onclick="remove(S.notes,'${n.id}')">Xoá</button></div></div>`}
 function libSubRow(s){const k=kbOf(s);return`<div class="card" style="cursor:pointer;padding:10px 12px" data-n="${esc(s.name)}" onclick="go('know',this.dataset.n)"><b>${esc(s.name)}</b> <span class="tag">Hoạt chất</span>${s.count?'<span class="tag" style="background:var(--pri);color:#fff">trong tủ</span>':''}<div class="mute">${esc(k&&k.aka?k.aka:catNameOf(s))}</div></div>`}
 function libDocRow(x){return`<div class="card" style="cursor:pointer;padding:10px 12px" data-i="${esc(x.id)}" onclick="go('know','d:'+this.dataset.i)"><b>${esc(x.title)}</b> <span class="tag">Tài liệu</span>${pArr(x.claims).some(c=>c.lv==='trai')?'<span class="tag" style="background:none;color:#9a3412;border:1px solid #9a3412">có ý trái khuyến cáo</span>':''}<div class="mute">${esc(x.group||'')}${pArr(x.tldr)[0]?' · '+esc(pArr(x.tldr)[0].slice(0,110)):''}</div></div>`}
+/* ---------- Chủ đề sức khoẻ (KB_TOPICS) và gom dạng muối (KB_FAMILY), dữ liệu trong kb.js ---------- */
+let libTopic='';
+const TOPIC_LV=[['chac','✅','Đã chứng minh'],['cothe','🔸','Có thể có lợi'],['chuaro','❓','Chưa rõ'],['khong','❌','Đã thử nghiệm, không thấy tác dụng']];
+const LV_RANK={chac:0,cothe:1,khong:2,chuaro:3}; // kết luận rõ ràng (kể cả "không tác dụng") xếp trên "chưa rõ"
+const topicOf=id=>(window.KB_TOPICS||[]).find(t=>t.id===id);
+const famOf=()=>window.KB_FAMILY||{};
+const isForm=s=>{const k=kbKeyOf(s);return !!k&&Object.values(famOf()).some(f=>f.forms.includes(k))};
+const substByKey=()=>{const m=new Map();for(const s of substList()){const k=kbKeyOf(s);if(k&&!m.has(k))m.set(k,s)}return m};
+const openTopic=id=>{libTopic=id;libF='topic';libQ='';vKnow();$('#view').scrollTop=0};
+/* Câu bằng chứng của một chất cho một chủ đề, lấy từ chính bài kiến thức (không viết thêm) */
+function topicWhy(key,t){
+  const k=(window.KB||{})[key];if(!k||!t.re)return '';
+  let re;try{re=new RegExp(t.re,'i')}catch(e){return ''}
+  let best=null;for(const b of k.benefits||[])if(re.test(b[1])&&(best===null||LV_RANK[b[0]]<LV_RANK[best[0]]))best=b;
+  return best?best[1]:''}
+/* Khối "các dạng" của một chất mẹ (magie, canxi, men vi sinh), gập sẵn */
+function famBlock(s,by){
+  const k=kbKeyOf(s),f=famOf()[k];if(!f)return '';
+  by=by||substByKey();
+  const list=f.forms.map(x=>by.get(x)).filter(Boolean);if(!list.length)return '';
+  return `<details class="fam"><summary>Các dạng của ${esc(f.n)} · ${list.length}</summary><div class="chips" style="flex-wrap:wrap;overflow:visible;margin-top:6px">${list.map(chipOf).join('')}</div></details>`}
+/* Chip của một nhóm hoạt chất: ẩn các dạng muối, gắn chúng dưới chất mẹ */
+function catChips(l){const by=substByKey();return `<div class="chips" style="flex-wrap:wrap;overflow:visible;margin-top:6px">${l.filter(s=>!isForm(s)).map(chipOf).join('')}</div>`+l.filter(s=>!isForm(s)).map(s=>famBlock(s,by)).join('')}
+function topicRow(x,t,by){
+  const s=x.s,why=topicWhy(x.k,t),f=famOf()[x.k];
+  return `<div class="card" style="cursor:pointer;padding:10px 12px" data-n="${esc(s.name)}" onclick="go('know',this.dataset.n)"><b>${esc(s.name)}</b>${s.count?' <span class="tag" style="background:var(--pri);color:#fff">trong tủ</span>':''}${f?` <span class="tag">${f.forms.length} dạng</span>`:''}${why?`<div class="mute" style="margin-top:3px">${esc(why.length>150?why.slice(0,148).trimEnd()+'…':why)}</div>`:''}</div>`}
+function libTopicView(){
+  const t=topicOf(libTopic);if(!t){libF='all';return vLib()}
+  const by=substByKey(),rows=t.subs.map(([k,lv])=>({k,lv,s:by.get(k)})).filter(x=>x.s);
+  const secs=TOPIC_LV.map(([lv,ic,label])=>{const l=rows.filter(x=>x.lv===lv);return l.length?`<div style="margin:14px 0 6px"><b>${ic} ${label}</b> <span class="mute">(${l.length})</span></div>`+l.map(x=>topicRow(x,t,by)).join(''):''}).join('');
+  const mine=rows.filter(x=>x.s.count).length;
+  view('Thư viện','Chủ đề sức khoẻ',
+   `<div class="row" style="margin:0 0 10px"><button class="btn" onclick="libF='all';libTopic='';vKnow()">‹ Thư viện</button></div>
+    <h2 style="margin:0 0 2px;font-size:20px;line-height:1.3">${t.e} ${esc(t.n)}</h2><div class="mute" style="margin-bottom:10px">${rows.length} chất${mine?` · ${mine} có trong tủ của bạn`:''}</div>
+    <div class="note" style="margin-bottom:6px">Xếp theo mức bằng chứng, chất chắc chắn nhất ở trên. Câu dưới mỗi tên là ý liên quan chủ đề này trong bài của chất đó. Bấm vào để đọc bài đầy đủ. Không thay lời bác sĩ.</div>`+(secs||'<div class="empty">Chưa có chất nào cho chủ đề này.</div>'));
+}
 function vLib(){
+  if(libF==='topic')return libTopicView();
   const q=norm(libQ),subs=substList(),docs=S.docs||[],notes=S.notes;
   const kbText=s=>{const k=kbOf(s);return k?norm([k.what,...(k.benefits||[]).map(b=>b[1])].join(' ')):''};
   const nameHit=s=>norm(s.name+' '+((kbOf(s)||{}).aka||'')).includes(q);
-  const rs=q?subs.filter(s=>nameHit(s)||kbText(s).includes(q)).sort((a,b)=>nameHit(b)-nameHit(a)):subs;
+  let rs=q?subs.filter(s=>nameHit(s)||kbText(s).includes(q)).sort((a,b)=>nameHit(b)-nameHit(a)):subs;
+  // gom dạng muối về chất mẹ nếu chất mẹ có trong kết quả
+  const have=new Set(rs.map(kbKeyOf));
+  rs=rs.filter(s=>{const k=kbKeyOf(s);return !Object.entries(famOf()).some(([p,f])=>f.forms.includes(k)&&have.has(p))});
   const rd=docs.filter(x=>!q||docText(x).includes(q));
   const rn=notes.filter(n=>!q||(n.title+' '+n.substance+' '+n.kind+' '+n.content).toLowerCase().includes(q));
+  const topics=window.KB_TOPICS||[];
+  const rt=q?topics.filter(t=>norm(t.n).includes(q)||(()=>{try{return new RegExp(t.re,'i').test(q)}catch(e){return false}})()):[];
+  const tile=t=>`<button class="tpc" onclick="openTopic('${t.id}')"><span class="te">${t.e}</span><span><b>${esc(t.n)}</b><span class="mute">${t.subs.length} chất</span></span></button>`;
+  const home=!q&&libF==='all';
+  const box=`<input id="libQ" placeholder="Tìm: mất ngủ, magie, B12, gout…" value="${esc(libQ)}" oninput="libQ=this.value;vKnow();const i=document.getElementById('libQ');i.focus();i.setSelectionRange(99,99)" style="margin-bottom:10px">`;
   const chips=[['all','Tất cả',rs.length+rd.length+rn.length],['sub','Hoạt chất',rs.length],['doc','Tài liệu',rd.length],['note','Ghi chú',rn.length]];
-  const head=`<input id="libQ" placeholder="Tìm: mất ngủ, magie, B12, gout…" value="${esc(libQ)}" oninput="libQ=this.value;vKnow();const i=document.getElementById('libQ');i.focus();i.setSelectionRange(99,99)" style="margin-bottom:10px">
-    <div class="chips" style="flex-wrap:wrap;overflow:visible;margin-bottom:10px">${chips.map(([k,l,n])=>`<button class="${libF===k?'on':''}" onclick="libSet('${k}')">${l} · ${n}</button>`).join('')}</div>`;
+  const head=box+(home?'':`<div class="chips" style="flex-wrap:wrap;overflow:visible;margin-bottom:10px">${chips.map(([k,l,n])=>`<button class="${libF===k?'on':''}" onclick="libSet('${k}')">${l} · ${n}</button>`).join('')}</div>`);
   const sec=(t,n,body,more)=>body?`<div style="margin:14px 0 6px"><b>${t}</b> <span class="mute">(${n})</span></div>${body}${more||''}`:'';
   const moreBtn=(k,n,cap)=>n>cap?`<div class="row"><button class="btn sm" onclick="libSet('${k}')">Xem cả ${n}</button></div>`:'';
+  const by=substByKey();
+  const subRow=s=>libSubRow(s)+famBlock(s,by);
   let body='';
-  if(!q&&libF==='all'){
-    const mine=rs.filter(s=>s.count>0),tags={};
-    for(const x of docs)for(const t of pArr(x.tags))tags[t]=(tags[t]||0)+1;
-    const tl=Object.keys(tags).sort((a,b)=>tags[b]-tags[a]||a.localeCompare(b,'vi')).slice(0,14);
-    body=(mine.length?`<div class="card"><b>Có trong tủ của bạn</b><div class="chips" style="flex-wrap:wrap;overflow:visible;margin-top:6px">${mine.map(chipOf).join('')}</div></div>`:'')+
-      (tl.length?`<div class="card"><b>Tìm theo chủ đề</b><div class="chips" style="flex-wrap:wrap;overflow:visible;margin-top:6px">${tl.map(t=>`<button data-t="${esc(t)}" onclick="libSet('doc',this.dataset.t)">${esc(t)} · ${tags[t]}</button>`).join('')}</div></div>`:'')+
-      `<div class="card" style="cursor:pointer" onclick="libSet('sub')"><b>Hoạt chất</b> <span class="mute">(${Object.keys(window.KB||{}).length} chất có bài đầy đủ)</span><div class="mute">Vitamin, khoáng chất, các dạng muối magie và canxi, thảo dược…</div></div>
-       <div class="card" style="cursor:pointer" onclick="libSet('doc')"><b>Tài liệu</b> <span class="mute">(${docs.length} bài)</span><div class="mute">${docs.length?'Bài chia sẻ đã tóm tắt, gắn mức tin cậy và cảnh báo.':'Chưa có. Nhập file ở Cài đặt, mục Cập nhật dữ liệu.'}</div></div>
-       <div class="card" style="cursor:pointer" onclick="libSet('note')"><b>Ghi chú của bạn</b> <span class="mute">(${notes.length})</span><div class="mute">Ghi chú tự viết và ghi chú nhập từ Obsidian.</div></div>`;
+  if(home){
+    const mine=rs.filter(s=>s.count>0);
+    body=(mine.length?`<div class="sec2"><b>💊 Có trong tủ của bạn</b></div><div class="chips" style="flex-wrap:wrap;overflow:visible;margin-bottom:12px">${mine.map(chipOf).join('')}</div>`:'')+
+      `<div class="sec2"><b>🔎 Tìm theo chủ đề</b><span class="mute">bấm để xem chất nào hợp</span></div><div class="tpgrid">${topics.map(tile).join('')}</div>
+       <div class="sec2"><b>📚 Duyệt theo loại</b></div>
+       <div class="kinds"><button onclick="libSet('sub')"><span>🧬</span><b>Hoạt chất</b><span class="mute">${rs.length}</span></button><button onclick="libSet('doc')"><span>📄</span><b>Tài liệu</b><span class="mute">${docs.length}</span></button><button onclick="libSet('note')"><span>📝</span><b>Ghi chú</b><span class="mute">${notes.length}</span></button></div>
+       ${docs.length?'':'<div class="mute" style="margin-top:6px">Chưa có tài liệu. Nhập file ở Cài đặt, mục Cập nhật dữ liệu.</div>'}`;
   }else if(libF==='sub'&&!q){
     const order=[...(window.KB_CATS||[]).map(c=>c.n),'Khác (chưa có bài)'];
-    const groups=order.map(n=>[n,subs.filter(s=>catNameOf(s)===n)]).filter(([,l])=>l.length);
-    body=groups.map(([n,l])=>`<details style="margin-top:6px"><summary style="cursor:pointer"><b style="font-size:14px">${esc(n)}</b> <span class="mute">(${l.length})</span></summary><div class="chips" style="flex-wrap:wrap;overflow:visible;margin-top:6px">${l.map(chipOf).join('')}</div></details>`).join('');
+    const groups=order.map(n=>[n,subs.filter(s=>catNameOf(s)===n&&!isForm(s)),subs.filter(s=>catNameOf(s)===n)]).filter(([,l])=>l.length);
+    body=groups.map(([n,l,all])=>`<details style="margin-top:6px"><summary style="cursor:pointer"><b style="font-size:14px">${esc(n)}</b> <span class="mute">(${l.length})</span></summary>${catChips(all)}</details>`).join('');
   }else{
     const capS=libF==='all'?6:200,capD=libF==='all'?6:200,capN=libF==='all'?4:200;
-    if(libF==='all'||libF==='sub')body+=sec('Hoạt chất',rs.length,rs.slice(0,capS).map(libSubRow).join(''),libF==='all'?moreBtn('sub',rs.length,capS):'');
+    if(libF==='all'&&rt.length)body+=sec('Chủ đề',rt.length,`<div class="tpgrid">${rt.map(tile).join('')}</div>`);
+    if(libF==='all'||libF==='sub')body+=sec('Hoạt chất',rs.length,rs.slice(0,capS).map(subRow).join(''),libF==='all'?moreBtn('sub',rs.length,capS):'');
     if(libF==='all'||libF==='doc')body+=sec('Tài liệu',rd.length,rd.slice(0,capD).map(libDocRow).join(''),libF==='all'?moreBtn('doc',rd.length,capD):'');
     if(libF==='all'||libF==='note')body+=sec('Ghi chú',rn.length,rn.slice(0,capN).map(libNoteCard).join(''),libF==='all'?moreBtn('note',rn.length,capN):'');
     if(!body)body=`<div class="empty">Không tìm thấy “${esc(libQ)}”. Thử từ khác, hoặc bỏ bộ lọc loại.</div>`;
   }
-  const actions=`<div class="row" style="margin-top:12px"><button class="btn pri" onclick="editNote()">+ Thêm ghi chú</button><button class="btn" onclick="go('set')">Cập nhật từ file</button>${(q||libF!=='all')?`<button class="btn" onclick="libQ='';libF='all';vKnow()">Xoá tìm kiếm</button>`:''}</div>`;
-  view('Thư viện',`${Object.keys(window.KB||{}).length} hoạt chất · ${docs.length} tài liệu · ${notes.length} ghi chú`,head+body+actions);
+  const actions=`<div class="row" style="margin-top:14px"><button class="btn pri" onclick="editNote()">+ Thêm ghi chú</button><button class="btn" onclick="go('set')">Cập nhật từ file</button>${(q||libF!=='all')?`<button class="btn" onclick="libQ='';libF='all';vKnow()">Xoá tìm kiếm</button>`:''}</div>`;
+  view('Thư viện',`${(window.KB_TOPICS||[]).length} chủ đề · ${Object.keys(window.KB||{}).length-Object.values(famOf()).reduce((a,f)=>a+f.forms.length,0)} hoạt chất · ${docs.length} tài liệu`,head+body+actions);
 }
 function vKnow(){
   if(sub&&String(sub).startsWith('d:'))return vDoc(String(sub).slice(2));

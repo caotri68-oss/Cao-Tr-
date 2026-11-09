@@ -1504,3 +1504,34 @@ window.KB_CATS=[
   {n:'Tiêu hoá và men vi sinh',keys:['probiotic','probstrain','kefir']},
   {n:'Thảo dược và thực phẩm tự nhiên',keys:['blackgarlic','honey','algae','ginger','greentea','ginseng','ginkgo','stjohn','ashwagandha','echinacea','valerian']}
 ];
+
+/* Bản đồ chủ đề sức khoẻ. Sinh ra từ chính mục benefits trong KB ở trên và đã soát tay từng liên kết.
+   Mức: chac = đã chứng minh, cothe = có thể có lợi, chuaro = chưa rõ, khong = đã thử, không thấy tác dụng.
+   Mỗi chất lấy mức bằng chứng TỐT NHẤT mà nó có cho chủ đề đó. Không tự thêm công dụng nào ngoài KB. */
+window.KB_TOPICS=[
+  {id:'xuong',e:'🦴',n:'Xương và răng',re:"xương|răng|còi xương|nhuyễn xương|loãng xương",subs:[['ca','chac'],['mg','chac'],['vitD','chac'],['vitK','chac'],['boron','chuaro'],['mn','chuaro']]},
+  {id:'mau',e:'🩸',n:'Máu và thiếu máu',re:"thiếu máu|hồng cầu|huyết sắc tố|đông máu|hemoglobin",subs:[['ca','chac'],['cu','chac'],['fe','chac'],['b12','chac'],['vitK','chac']]},
+  {id:'mien',e:'🛡️',n:'Miễn dịch và đề kháng',re:"miễn dịch|đề kháng|cảm lạnh|nhiễm trùng|nhiễm khuẩn",subs:[['zn','chac'],['echinacea','cothe'],['vitC','cothe'],['algae','chuaro'],['blackgarlic','chuaro']]},
+  {id:'tim',e:'❤️',n:'Tim mạch và huyết áp',re:"tim mạch|huyết áp|triglycerid|cholesterol|mạch máu|tuần hoàn",subs:[['om3','chac'],['mg','cothe'],['blackgarlic','cothe'],['greentea','cothe'],['probiotic','khong'],['se','khong'],['b12','khong'],['vitC','khong'],['vitD','khong'],['folic','chuaro'],['choline','chuaro'],['cu','chuaro'],['lycopene','chuaro'],['ginseng','chuaro'],['b5','chuaro'],['b6','chuaro'],['vitE','chuaro']]},
+  {id:'nao',e:'🧠',n:'Não, trí nhớ, thần kinh',re:"não|nhận thức|trí nhớ|thần kinh|tập trung|sa sút trí tuệ",subs:[['folic','chac'],['biotin','chac'],['ca','chac'],['zn','chac'],['mg','chac'],['om3','chac'],['b12','chac'],['ala','cothe'],['ginkgo','khong'],['ashwagandha','chuaro'],['astaxanthin','chuaro'],['boron','chuaro'],['creatine','chuaro'],['ginseng','chuaro'],['pqq','chuaro'],['se','chuaro'],['b6','chuaro'],['vitE','chuaro']]},
+  {id:'ngu',e:'😴',n:'Giấc ngủ và căng thẳng',re:"giấc ngủ|mất ngủ|dễ ngủ|lo âu|căng thẳng|thư giãn|stress",subs:[['ashwagandha','cothe'],['valerian','khong'],['creatine','chuaro'],['ginkgo','chuaro'],['nmn','chuaro']]},
+  {id:'tieuhoa',e:'🍽️',n:'Tiêu hoá và đường ruột',re:"tiêu hoá|tiêu hóa|đường ruột|hệ vi sinh|táo bón|tiêu chảy|dạ dày|ruột",subs:[['ca','chac'],['niacin','chac'],['zn','cothe'],['probiotic','cothe'],['boswellia','chuaro'],['stjohn','chuaro'],['gsh','chuaro'],['mg','chuaro']]},
+  {id:'co',e:'💪',n:'Cơ bắp và vận động',re:"khối lượng cơ|chức năng cơ|khối cơ|sức mạnh|gắng sức|tập kháng lực|thể lực|vận động|đau cơ",subs:[['ca','chac'],['creatine','chac'],['protein','chac'],['mg','chac'],['astaxanthin','cothe'],['greentea','cothe'],['coq10','khong'],['nmn','khong'],['boswellia','chuaro'],['quercetin','chuaro']]},
+  {id:'khop',e:'🦵',n:'Khớp và sụn',re:"khớp|sụn|thoái hoá khớp|viêm khớp",subs:[['collagen','cothe'],['curc','cothe'],['om3','cothe'],['gluco','khong'],['boswellia','chuaro'],['boron','chuaro'],['ginger','chuaro']]},
+  {id:'mat',e:'👁️',n:'Mắt và thị lực',re:"thị lực|thị giác|võng mạc|điểm vàng|mắt",subs:[['zn','chac'],['om3','chac'],['vitA','chac'],['lutein','cothe'],['vitC','cothe'],['vitE','cothe']]},
+  {id:'da',e:'✨',n:'Da, tóc và móng',re:"\\bda\\b|tóc|móng|nếp nhăn|biểu mô",subs:[['biotin','chac'],['zn','chac'],['vitA','chac'],['astaxanthin','cothe'],['collagen','cothe'],['gsh','chuaro']]},
+  {id:'thai',e:'🤰',n:'Thai kỳ và sinh sản',re:"thai|mang thai|ống thần kinh|sinh sản|bà bầu",subs:[['folic','chac'],['io','chac'],['zn','chac'],['fe','chac'],['ca','cothe'],['ginger','cothe'],['inositol','chuaro'],['se','chuaro'],['b6','chuaro']]},
+  {id:'giap',e:'🦋',n:'Tuyến giáp',re:"tuyến giáp|i-ốt|iod",subs:[['io','chac'],['se','chac']]},
+  {id:'metmoi',e:'⚡',n:'Mệt mỏi và năng lượng',re:"mệt mỏi|uể oải|năng lượng|chuyển hoá năng lượng",subs:[['mg','chac'],['ginseng','cothe'],['bcomplex','khong'],['b12','khong']]},
+  {id:'thieu',e:'🧪',n:'Bù thiếu hụt vi chất',re:"phòng và chữa thiếu|thiếu hụt|bệnh pellagra|beriberi|scorbut|còi xương",subs:[['biotin','chac'],['niacin','chac'],['fe','chac'],['bcomplex','chac'],['b1','chac'],['b2','chac'],['vitD','chac'],['vitE','chac']]},
+  {id:'tamtrang',e:'🙂',n:'Tâm trạng và lo âu',re:"trầm cảm|lo âu|tâm trạng|tiền kinh nguyệt",subs:[['stjohn','cothe'],['b6','cothe'],['vitD','khong'],['ashwagandha','chuaro'],['folic','chuaro'],['ginkgo','chuaro'],['om3','chuaro'],['valerian','chuaro']]},
+  {id:'gan',e:'🫀',n:'Gan',re:"gan nhiễm mỡ|chức năng gan|\\bgan\\b",subs:[['choline','chuaro'],['curc','chuaro'],['blackgarlic','chuaro']]},
+  {id:'duong',e:'🍬',n:'Đường huyết và tiểu đường',re:"đường huyết|tiểu đường|insulin|chuyển hoá đường",subs:[['ala','cothe'],['vitD','khong'],['ashwagandha','chuaro'],['inositol','chuaro'],['zn','chuaro'],['mg','chuaro'],['mn','chuaro'],['ginseng','chuaro'],['nmn','chuaro'],['b1','chuaro']]},
+  {id:'ho',e:'🤧',n:'Ho, họng và cảm lạnh',re:"ho cấp|cơn ho|trị ho|viêm họng|đau họng|cảm lạnh",subs:[['echinacea','cothe'],['zn','cothe'],['honey','cothe'],['vitC','cothe']]},
+];
+/* Các dạng muối gom về chất mẹ, để Thư viện không đổ 13 chip magie ra màn hình. */
+window.KB_FAMILY={
+  mg:{n:'Magie',forms:['mgcitrat','mglactat','mgclorua','mgaspartat','mgoxit','mgsunfat','mgglycinat','mgmalat','mgtaurat','mgthreonat','mgorotat','mgcarbonat','mghydroxit']},
+  ca:{n:'Canxi',forms:['cacarbonat','cacitrat','calactat','cagluconat','caphosphat','casunfat','caascorbat','cahydroxyapatit','cabisglycinat','cacitratmalat']},
+  probiotic:{n:'Men vi sinh',forms:['probstrain','kefir']},
+};
