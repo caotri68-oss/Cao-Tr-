@@ -1535,3 +1535,49 @@ window.KB_FAMILY={
   ca:{n:'Canxi',forms:['cacarbonat','cacitrat','calactat','cagluconat','caphosphat','casunfat','caascorbat','cahydroxyapatit','cabisglycinat','cacitratmalat']},
   probiotic:{n:'Men vi sinh',forms:['probstrain','kefir']},
 };
+
+/* Tên gọi khác trên nhãn sản phẩm -> khoá chất trong KB, cho các chất chưa có trong bảng cảnh báo (NUTR).
+   Mỗi mẫu là biểu thức chính quy (không phân biệt hoa thường). Chỉ dùng khi NUTR không khớp.
+   Cố ý KHÔNG gộp những tên mơ hồ: "ALA" trơn (vừa là alpha-lipoic vừa là alpha-linolenic), "med", "sâm" trơn, "lecithin" (phụ liệu). */
+window.KB_ALIAS={
+  b1:'vitamin\\s*b-?1\\b|thiamin|benfotiamin',
+  b2:'vitamin\\s*b-?2\\b|riboflavin',
+  b5:'vitamin\\s*b-?5\\b|pantothen|pantethin',
+  b12:'vitamin\\s*b-?12\\b|cobalamin',
+  biotin:'biotin|vitamin\\s*b-?7\\b|vitamin\\s*h\\b',
+  bcomplex:'b-?complex|vitamin\\s*b\\s*complex',
+  choline:'cholin(?!esterase)|phosphatidylcholin',
+  creatine:'creatin|creapure',
+  astaxanthin:'astaxanthin|haematococcus',
+  lutein:'lutein|zeaxanthin|marigold|tagetes',
+  lycopene:'lycopen',
+  nmn:'\\bnmn\\b|nicotinamide mononucleotide',
+  pqq:'\\bpqq\\b|pyrroloquinoline',
+  coq10:'coenzyme\\s*q-?10|ubiquino[nl]|\\bcoq-?10\\b',
+  ala:'alpha[\\s-]*lipoic|lipoic acid|α-?lipoic',
+  gsh:'glutathion|\\bgsh\\b',
+  quercetin:'quercetin',
+  inositol:'inositol',
+  protein:'\\bprotein\\b|\\bwhey\\b|bílkovin',
+  collagen:'collagen|\\buc-?ii\\b',
+  gluco:'glucosamin|chondroitin',
+  boswellia:'boswellia|\\bakba\\b|nhũ hương',
+  blackgarlic:'black garlic|aged garlic|tỏi đen|s-allyl',
+  probiotic:'probiotic|lactobacill|bifidobacter|saccharomyces|men vi sinh',
+  algae:'spirulin|chlorell|\\balgae\\b|tảo',
+  honey:'\\bhoney\\b|mật ong',
+  ginger:'ginger|zingiber|zázvor|gừng',
+  greentea:'green tea|camellia sinensis|egcg|catechin|trà xanh',
+  ginseng:'ginseng|panax|nhân sâm',
+  ginkgo:'ginkgo|bạch quả',
+  stjohn:'st\\.? john|hypericum|cỏ st',
+  ashwagandha:'ashwagandha|withania',
+  echinacea:'echinacea|cúc nhím',
+  valerian:'valerian|nữ lang'
+};
+/* Bổ sung cho các chất ĐÃ có trong NUTR nhưng tên đầy đủ trên nhãn không khớp mẫu hiện tại.
+   Áp dụng thẳng vào mẫu của NUTR để tổng liều và cảnh báo cũng tính đúng. */
+window.NUTR_EXTRA={
+  om3:'docosahexaen|eicosapentaen',
+  cu:'(^|[^a-zà-ỹ])đồng($|[^a-zà-ỹ])'
+};
