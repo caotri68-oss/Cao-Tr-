@@ -330,7 +330,18 @@ const fmtDay=()=>{const d=new Date();return WD[d.getDay()]+', '+d.getDate()+'/'+
 const IC={today:'<rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M8 2.5v4M16 2.5v4M3 10h18M9 15.5l2 2 4-4"/>',shelf:'<path d="M10.5 20.5l-7-7a4.9 4.9 0 017-7l7 7a4.9 4.9 0 01-7 7z"/><path d="M8 8l8 8"/>',know:'<path d="M2.5 5h6a3.5 3.5 0 013.5 3.5V20a2.5 2.5 0 00-2.5-2.5h-7z"/><path d="M21.5 5h-6A3.5 3.5 0 0012 8.5V20a2.5 2.5 0 012.5-2.5h7z"/>',fam:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0"/><circle cx="17.5" cy="9" r="2.5"/><path d="M17.5 14.5a5 5 0 014 5"/>'};
 const TABS=[['today','Hôm nay'],['shelf','Tủ thuốc'],['know','Thư viện'],['fam','Gia đình']];
 let tab='today',sub=null,fMember='',draft=null;
-function go(t,s=null){tab=t;sub=s;render();$('#view').scrollTop=0}
+/* Lịch sử điều hướng: mỗi lần đổi màn hình ghi một mục vào lịch sử trình duyệt,
+   nên nút Back của điện thoại lùi đúng một cấp. Chỉ ở trang Hôm nay (mục đầu tiên) thì Back mới thoát app. */
+let navLock=false;
+const navKey=()=>[tab,sub,fMember,libF,libTopic,personTab].join('|');
+function navSnap(){return {k:navKey(),d:(history.state&&history.state.d)||0,tab,sub,fMember,libF,libTopic,libQ,personTab}}
+function nav(){if(navLock)return;try{const cur=history.state;if(cur&&cur.k===navKey())return;const n=navSnap();n.d=(cur&&cur.d||0)+1;history.pushState(n,'')}catch(e){}}
+/* Nút "‹ Quay lại" trong app: lùi một mục lịch sử nếu có, không thì chạy việc dự phòng */
+function goBack(fallback){if(history.state&&history.state.d>0)history.back();else fallback()}
+const setPT=k=>{personTab=k;render();nav()};
+addEventListener('popstate',e=>{const st=e.state;if(!st||!st.k)return;navLock=true;
+  try{tab=st.tab;sub=st.sub;fMember=st.fMember;libF=st.libF;libTopic=st.libTopic;libQ=st.libQ||'';personTab=st.personTab;render();$('#view').scrollTop=0}finally{navLock=false}});
+function go(t,s=null){tab=t;sub=s;render();$('#view').scrollTop=0;nav()}
 function render(){
   const cur=tab==='add'?'shelf':tab;
   $('#nav').innerHTML=TABS.map(([k,l])=>`<button class="${k===cur?'on':''}" ${k===cur?'aria-current="page"':''} onclick="go('${k}')"><img class="ni" src="img/n-${k}.webp" alt="">${l}</button>`).join('');
@@ -338,7 +349,7 @@ function render(){
   document.querySelector('header').style.display=tab==='today'?'none':'';
   ({today:vToday,shelf:vShelf,add:vAdd,know:vKnow,fam:vFam,set:vSet})[tab]();
 }
-const APP_VER='tpcn-v2-49';
+const APP_VER='tpcn-v2-50';
 let newVer='';
 const updBanner=()=>newVer?`<div class="note" style="margin-bottom:12px;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Có bản mới của app.</b> <button class="btn sm pri" onclick="forceUpdate()">Cập nhật ngay</button></div>`:'';
 function view(title,sub_,html){$('#ttl').textContent=title;$('#sub').textContent=sub_||'';$('#view').innerHTML=updBanner()+html}
@@ -669,13 +680,13 @@ function vToday(){
   const pct=sl.length?Math.round(taken/sl.length*100):0;
   const brand=`<div class="brand">${ART.logo}<div class="bt"><h1>Sổ TPCN Gia Đình</h1><div class="tg"><span class="dt">${esc(fmtDay())}</span><button class="verb" onclick="go('set')" aria-label="Phiên bản app, mở Cài đặt">${esc(APP_VER.replace('tpcn-',''))}</button></div></div>${ART.deco}<button class="gearb" onclick="go('set')" aria-label="Cài đặt">${document.getElementById('gear').innerHTML}</button></div>`;
   const search=`<form class="hsearch" onsubmit="homeSearch(event)" role="search"><span class="hs-i">${hico('search')}</span><input id="hq" type="search" placeholder="Tìm: mất ngủ, magie, B12, gout…" aria-label="Tìm kiếm trong Thư viện" enterkeyhint="search"><button class="hs-go" aria-label="Tìm" type="submit">→</button></form>`;
-  const tiles=`<div class="tiles">${[['pill','Tủ thuốc',"go('shelf')"],['book','Thư viện',"go('know')"],['sketch','Phác thảo',"goSketch()"],['home','Gia đình',"go('fam')"]].map(([ic,l,fn])=>`<button class="tile" onclick="${fn}"><span>${ART[ic]}</span>${l}</button>`).join('')}</div>`;
+  const tiles=`<div class="tiles">${[['sketch','Phác thảo',"goSketch()"],['cal','Nhật ký',"goFirst('nk')"],['chart','Chỉ số BMI',"bmiAll()"],['safe','Sao lưu',"go('set')"]].map(([ic,l,fn])=>`<button class="tile" onclick="${fn}"><span>${ART[ic]}</span>${l}</button>`).join('')}</div>`;
   const hero=`<div class="hero2"><div class="tx"><h2>${ART.spark}Lịch uống hôm nay</h2>${sl.length?`<p><b>${taken}/${sl.length}</b> lượt đã uống<span class="pct">${pct}%</span><br>${left?`Còn ${left} lượt chưa uống`:'Đã xong tất cả. Giỏi lắm!'}</p><div class="bar"><i style="width:${pct}%;background:var(--pri)"></i></div><button class="pill" onclick="document.getElementById('lich').scrollIntoView({behavior:'smooth'})">Xem lịch hôm nay →</button>`
     :`<p>${S.members.length&&S.products.length?'Chưa có lịch. Mở Tủ thuốc và thêm người uống cho sản phẩm.':'Thêm thành viên và sản phẩm để bắt đầu.'}</p><button class="pill" onclick="go('${S.members.length?(S.products.length?'shelf':'add'):'fam'}')">${S.members.length?(S.products.length?'Mở Tủ thuốc':'+ Thêm sản phẩm'):'+ Thêm thành viên'} →</button>`}</div>${ART.doctor}</div>`;
   let html=brand+search+tiles+hero+todayWarnings()+(backupDue()?backupCard():'');
   if(due.length)html+=`<div class="note" style="margin:10px 0;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Đến giờ uống:</b> ${due.map(s=>esc(mname(s.plan.memberId))+' · '+esc(pname(s.plan.productId))).join(', ')}</div>`;
   if(perm==='default')html+=`<div class="row" style="margin:10px 0"><button class="btn sm" onclick="askReminders()">Bật thông báo giờ uống</button></div>`;
-  html+=`<div class="sec" id="lich"><h2>Lịch uống hôm nay</h2><span class="mute">${sl.length?sl.length+' lượt':''}</span></div>`+chipRow();
+  html+=`<div class="sec" id="lich"><h2>⏰ Các lượt uống</h2><span class="mute">${sl.length?sl.length+' lượt':''}</span></div>`+chipRow();
   let last=null;
   for(const s of sl){
     const p=s.plan,st=s.intake?.status,key=(p.time||'')+(p.label||'');
@@ -685,28 +696,16 @@ function vToday(){
       <button class="btn sm" onclick="setIntake('${p.id}','skipped')">${st==='skipped'?'Huỷ bỏ':'Bỏ liều'}</button></div>`;
   }
   if(!sl.length)html+=`<div class="empty"><b style="display:block;font-size:18px;color:var(--ink);margin-bottom:6px">Chưa có lịch uống hôm nay</b>Mở một sản phẩm trong tab Tủ thuốc và bấm “Thêm người uống”.</div>`;
-  const nDocs=(S.docs||[]).length+Object.keys(window.KB||{}).length;
-  html+=`<div class="sec"><h2>Kho kiến thức</h2><a onclick="go('know')">Xem tất cả ›</a></div><div class="duo">
-    <button class="dcard" onclick="go('shelf')">${ART.jar}<b>Tủ thuốc</b><span class="s">${S.products.length} sản phẩm đang quản lý</span><span class="go">›</span></button>
-    <button class="dcard" onclick="go('know')">${ART.leaf}<b>Thư viện</b><span class="s">${nDocs} bài kiến thức, tài liệu</span><span class="go">›</span></button></div>`;
   if(S.members.length){
     const st=memStats(day);
-    html+=`<div class="sec"><h2>Sức khỏe gia đình</h2><a onclick="go('fam')">Xem tất cả ›</a></div><div class="hscroll">${S.members.map((m,i)=>{
+    html+=`<div class="sec"><h2>🩺 Sức khỏe gia đình</h2><a onclick="go('fam')">Xem tất cả ›</a></div><div class="hscroll">${S.members.map((m,i)=>{
       const a=ageOf(m),r=st[m.id]||{t:0,d:0},w=warningsFor(m).length,ini=String(m.name||'?').trim().charAt(0).toUpperCase(),c=AVC[i%AVC.length];
       return `<div class="mem" role="button" tabindex="0" onclick="go('fam','m:${m.id}')"><div class="av" style="background:var(--${c});color:var(--${c}i)">${esc(ini)}</div>
         <b>${esc(m.name)}</b><div class="mute">${a?a+' tuổi':''}${m.weight?(a?' · ':'')+esc(m.weight)+' kg':''}</div>
         <div class="bar"><i style="width:${r.t?Math.round(r.d/r.t*100):0}%;background:var(--pri)"></i></div><div class="mute" style="margin-top:4px">${r.t?r.d+'/'+r.t+' lượt hôm nay':'Chưa có lịch'}</div>
-        ${w?`<span class="tag2">${w} cảnh báo</span>`:''}</div>`}).join('')}</div>
-    <div class="duo" style="margin-top:6px">
-    <button class="dcard" onclick="goSketch()">${ART.sketch}<b>Hồ sơ và Phác thảo</b><span class="s">Bệnh nền, xét nghiệm nên hỏi</span><span class="go">›</span></button>
-    <button class="dcard" onclick="goFirst('nk')">${ART.cal}<b>Nhật ký theo dõi</b><span class="s">Cân nặng, huyết áp, triệu chứng</span><span class="go">›</span></button></div>`}
-  html+=`<div class="sec"><h2>Công cụ hữu ích</h2></div><div class="tools">
-    <button class="tool t1" onclick="bmiAll()"><span class="ti">${ART.chart}</span><span><b>Chỉ số BMI</b><span class="s">Từ cân nặng, chiều cao</span></span></button>
-    <button class="tool t3" onclick="goSketch()"><span class="ti">${ART.sketch}</span><span><b>Phác thảo</b><span class="s">Mục liên quan, xét nghiệm</span></span></button>
-    <button class="tool t4" onclick="go('set')"><span class="ti">${ART.safe}</span><span><b>Sao lưu</b><span class="s">Lưu và khôi phục dữ liệu</span></span></button>
-    <button class="tool t6" onclick="go('set')"><span class="ti">${ART.bell}</span><span><b>Thông báo</b><span class="s">Nhắc giờ uống</span></span></button></div>`;
+        ${w?`<span class="tag2">${w} cảnh báo</span>`:''}</div>`}).join('')}</div>`}
   const kb=dayKb();
-  if(kb)html+=`<div class="sec"><h2>Kiến thức hôm nay</h2></div><button class="daily" onclick="libQ=${JSON.stringify(kb.name).replace(/"/g,'&quot;')};libF='all';go('know')"><div class="k">Gợi ý đọc</div><b>${esc(kb.name)}</b><span class="s">${esc(String(kb.what||'').slice(0,110))}${String(kb.what||'').length>110?'…':''}</span></button>`;
+  if(kb)html+=`<div class="sec"><h2>💡 Kiến thức hôm nay</h2></div><button class="daily" onclick="libQ=${JSON.stringify(kb.name).replace(/"/g,'&quot;')};libF='all';go('know')"><div class="k">Gợi ý đọc</div><b>${esc(kb.name)}</b><span class="s">${esc(String(kb.what||'').slice(0,110))}${String(kb.what||'').length>110?'…':''}</span></button>`;
   html+=`<div class="cta">${ART.shield}<div><b>Chăm sóc sức khỏe chủ động</b><span class="s">Hiểu đúng, dùng đúng, hỏi bác sĩ khi cần.</span></div><button class="pill navy" onclick="go('know')">Tìm hiểu ›</button></div>`;
   view('Hôm nay',fmtDay(),html);
 }
@@ -743,7 +742,7 @@ function vProduct(id){
   const p=byId(S.products,id);if(!p){sub=null;return vShelf()}
   const plans=S.plans.filter(x=>x.productId===id);
   view(p.name,[p.brand,p.form].filter(Boolean).join(' · '),
-   `<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('shelf')">‹ Tủ TPCN</button></div>
+   `<div class="row" style="margin:0 0 10px"><button class="btn" onclick="goBack(()=>{go('shelf')})">‹ Tủ TPCN</button></div>
    ${p.thumb?`<div style="text-align:center;margin-bottom:10px">${thumbHtml(p,160)}</div>`:''}
    <div class="card"><b>Thành phần mỗi liều</b>${(p.ingredients||[]).length?`<table class="ing2"><tr><th>Hoạt chất</th><th>Lượng</th><th>Dạng</th></tr>${p.ingredients.map(ingRow).join('')}</table>`:'<div class="mute">Chưa nhập.</div>'}
     <div class="mute" style="margin-top:6px">Liều trên nhãn: ${esc(p.dosageLabel||'—')}</div></div>
@@ -1084,7 +1083,7 @@ function vSubstance(name){
   const s=substList().find(x=>x.name===name);if(!s){sub=null;return vKnow()}
   const N=s.key?NUTR[s.key]:null,prods=substProducts(s),notes=S.notes.filter(n=>norm(n.substance)===norm(name));
   view(s.name,N?'Có trong bảng cảnh báo của app':'Chưa có mức tối đa trong app',
-   `<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('know')">‹ Thư viện</button></div>${kbHtml(s)}${famBlock(s)?`<div class="card">${famBlock(s).replace('<details class="fam">','<details class="fam" open>')}</div>`:''}
+   `<div class="row" style="margin:0 0 10px"><button class="btn" onclick="goBack(()=>{go('know')})">‹ Thư viện</button></div>${kbHtml(s)}${famBlock(s)?`<div class="card">${famBlock(s).replace('<details class="fam">','<details class="fam" open>')}</div>`:''}
    ${N?(()=>{const E=EF[s.key];return`<div class="card"><b>Mức tối đa cho người lớn mỗi ngày</b>
      <div>EFSA (châu Âu): ${E?fmt(E.ul)+' '+N.u+(E.safe?' (mức an toàn, không phải UL chính thức)':'')+(E.amideUl?`; nicotinamide ${fmt(E.amideUl)} mg`:'')+` · <a href="${esc(E.url||EFSA_SUM)}" target="_blank" rel="noopener noreferrer">nguồn</a>`:'chưa đặt'}</div>
      <div>NIH (Mỹ): ${N.ul?fmt(N.ul)+' '+N.u+(N.ul51?`, từ 51 tuổi ${fmt(N.ul51)} ${N.u}`:''):'chưa đặt'} · <a href="${esc(nUrl(N))}" target="_blank" rel="noopener noreferrer">nguồn</a></div>
@@ -1194,7 +1193,7 @@ function diaryCard(m){
 function vProfile(mid){
   const m=byId(S.members,mid),P=m&&m.profile;if(!P){sub=null;return vFam()}
   const W=warningsFor(m),age=ageOf(m);
-  const top=`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('fam','m:${m.id}')">‹ ${esc(m.name)}</button></div>`;
+  const top=`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="goBack(()=>{go('fam','m:${m.id}')})">‹ ${esc(m.name)}</button></div>`;
   const live=pArr(S.plans.filter(x=>x.memberId===m.id&&(!x.end||x.end>=today())&&byId(S.products,x.productId)).map(x=>{const p=byId(S.products,x.productId);return`<div style="border-top:1px solid var(--line);padding:8px 0;display:flex;gap:10px;align-items:center">${thumbHtml(p,48)}<div><b style="font-size:17px">${esc(p.name)}</b><div class="mute">${esc(p.brand||'')} · ${esc(x.qty||'')} · ${esc(x.time||'')} ${esc(x.label||'')}</div></div></div>`})).join('');
   view('Hồ sơ sức khỏe',`${m.name}${age?' · '+age+' tuổi':''}${m.weight?' · '+m.weight+' kg':''}`,
    `<div style="font-size:17px;line-height:1.55">${top}
@@ -1254,7 +1253,7 @@ async function syncDocsSheet(manual){
 function vDocList(){
   const docs=(S.docs||[]).filter(x=>!docQ||docText(x).includes(docQ));
   const groups=[...new Set(docs.map(x=>x.group||'Khác'))];
-  view('Tài liệu',(S.docs||[]).length+' bài',`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('know')">‹ Thư viện</button><button class="btn" onclick="go('set')">Cập nhật từ file</button><button class="btn" onclick="exportDocs()">Xuất toàn bộ (.json)</button></div>
+  view('Tài liệu',(S.docs||[]).length+' bài',`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="goBack(()=>{go('know')})">‹ Thư viện</button><button class="btn" onclick="go('set')">Cập nhật từ file</button><button class="btn" onclick="exportDocs()">Xuất toàn bộ (.json)</button></div>
    <div class="note" style="margin-bottom:10px">Đây là bài chia sẻ của chị Thảo Nguyên trong nhóm, đã được tóm tắt lại và gắn mức tin cậy từng ý. Không phải tài liệu y khoa chính thức và không thay lời bác sĩ.</div>
    <input id="docQ" placeholder="Tìm trong tài liệu (vd: ngủ, B12, mệt)…" value="${esc(docQ)}" oninput="docQ=this.value.toLowerCase();vDocList();const i=document.getElementById('docQ');i.focus();i.setSelectionRange(99,99)" style="margin-bottom:10px">`+
    (()=>{const c={};for(const x of S.docs||[])for(const t of pArr(x.tags))c[t]=(c[t]||0)+1;const ts=Object.keys(c).sort((a,b)=>c[b]-c[a]||a.localeCompare(b,'vi'));
@@ -1268,7 +1267,7 @@ function vDoc(id){
   const ul=a=>pArr(a).length?`<ul style="margin:0;padding-left:18px">${pArr(a).map(i=>`<li style="margin-bottom:6px">${esc(i)}</li>`).join('')}</ul>`:'';
   const kbName=l=>{const k=Object.values(window.KB||{}).find(k=>norm(k.name)===norm(l));return k?k.name:''};
   const links=pArr(x.links).map(kbName).filter(Boolean);
-  view(x.title,x.group||'',`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('know','d:')">‹ Tài liệu</button></div>
+  view(x.title,x.group||'',`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="goBack(()=>{go('know','d:')})">‹ Tài liệu</button></div>
    <div class="mute" style="margin:0 0 8px">${esc(x.source||'Bài chia sẻ')} · cập nhật ${esc(x.updated||'')}. Không phải tài liệu y khoa chính thức.</div>`+
    sec('Tóm tắt trong 30 giây',ul(x.tldr),true)+
    sec('Mức tin cậy từng ý',pArr(x.claims).map(c=>{const L=DOC_LV[c.lv]||DOC_LV.chuakc;return`<div style="margin-bottom:10px"><span class="tag" style="background:none;border:1px solid ${L[1]};color:${L[1]}">${L[0]}</span> ${esc(c.text)}${c.note?` <span class="mute">(${esc(c.note)})</span>`:''}</div>`}).join(''),true)+
@@ -1282,7 +1281,7 @@ function vDoc(id){
 }
 /* ---------- Thư viện: một ô tìm chung cho hoạt chất, tài liệu và ghi chú ---------- */
 let libQ='',libF='all';
-const libSet=(f,q)=>{libF=f;if(q!=null)libQ=q;vKnow();const i=document.getElementById('libQ');if(i&&q!=null&&q!=='')i.setSelectionRange(99,99)};
+const libSet=(f,q)=>{libF=f;if(q!=null)libQ=q;vKnow();nav();const i=document.getElementById('libQ');if(i&&q!=null&&q!=='')i.setSelectionRange(99,99)};
 function libNoteCard(n){return`<div class="card"><h3>${esc(n.title)}</h3>${noteTags(n)}${noteBody(n)}
   <div class="mute">${esc(n.added||'')} · ${safeUrl(n.source)?`<a href="${esc(n.source)}" target="_blank" rel="noopener noreferrer">nguồn</a>`:esc(n.source||'')}</div>
   <div class="row"><button class="btn sm" onclick="editNote('${n.id}')">Sửa</button><button class="btn sm del" onclick="remove(S.notes,'${n.id}')">Xoá</button></div></div>`}
@@ -1296,7 +1295,7 @@ const topicOf=id=>(window.KB_TOPICS||[]).find(t=>t.id===id);
 const famOf=()=>window.KB_FAMILY||{};
 const isForm=s=>{const k=kbKeyOf(s);return !!k&&Object.values(famOf()).some(f=>f.forms.includes(k))};
 const substByKey=()=>{const m=new Map();for(const s of substList()){const k=kbKeyOf(s);if(k&&!m.has(k))m.set(k,s)}return m};
-const openTopic=id=>{libTopic=id;libF='topic';libQ='';vKnow();$('#view').scrollTop=0};
+const openTopic=id=>{libTopic=id;libF='topic';libQ='';vKnow();$('#view').scrollTop=0;nav()};
 /* Câu bằng chứng của một chất cho một chủ đề, lấy từ chính bài kiến thức (không viết thêm) */
 function topicWhy(key,t){
   const k=(window.KB||{})[key];if(!k||!t.re)return '';
@@ -1320,7 +1319,7 @@ function libTopicView(){
   const secs=TOPIC_LV.map(([lv,ic,label])=>{const l=rows.filter(x=>x.lv===lv);return l.length?`<div style="margin:14px 0 6px"><b>${ic} ${label}</b> <span class="mute">(${l.length})</span></div>`+l.map(x=>topicRow(x,t,by)).join(''):''}).join('');
   const mine=rows.filter(x=>x.s.count).length;
   view('Thư viện','Chủ đề sức khoẻ',
-   `<div class="row" style="margin:0 0 10px"><button class="btn" onclick="libF='all';libTopic='';vKnow()">‹ Thư viện</button></div>
+   `<div class="row" style="margin:0 0 10px"><button class="btn" onclick="goBack(()=>{libF='all';libTopic='';vKnow()})">‹ Thư viện</button></div>
     <h2 style="margin:0 0 2px;font-size:20px;line-height:1.3">${t.e} ${esc(t.n)}</h2><div class="mute" style="margin-bottom:10px">${rows.length} chất${mine?` · ${mine} có trong tủ của bạn`:''}</div>
     <div class="note" style="margin-bottom:6px">Xếp theo mức bằng chứng, chất chắc chắn nhất ở trên. Câu dưới mỗi tên là ý liên quan chủ đề này trong bài của chất đó. Bấm vào để đọc bài đầy đủ. Không thay lời bác sĩ.</div>`+(secs||'<div class="empty">Chưa có chất nào cho chủ đề này.</div>'));
 }
@@ -1388,7 +1387,7 @@ function vPerson(mid){
   const age=ageOf(m),day=today(),P=m.profile;
   const plans=activePlans(m.id,day).sort((a,b)=>(a.time||'99').localeCompare(b.time||'99'));
   const W=warningsFor(m);
-  const chips=`<div class="chips" style="margin-bottom:10px;flex-wrap:wrap;overflow:visible">${PTABS.map(([k,l])=>`<button class="${k===personTab?'on':''}" onclick="personTab='${k}';render()">${l}${k==='lu'?' · '+plans.length:''}</button>`).join('')}</div>`;
+  const chips=`<div class="chips" style="margin-bottom:10px;flex-wrap:wrap;overflow:visible">${PTABS.map(([k,l])=>`<button class="${k===personTab?'on':''}" onclick="setPT('${k}')">${l}${k==='lu'?' · '+plans.length:''}</button>`).join('')}</div>`;
   let body='';
   if(personTab==='tq'){
     const dr=(S.diary||[]).filter(x=>x.memberId===m.id).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,3);
@@ -1396,10 +1395,10 @@ function vPerson(mid){
     body=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
       <div class="card" style="margin:0"><div class="mute">Đang uống</div><b style="font-size:22px">${plans.length}</b></div>
       <div class="card" style="margin:0"><div class="mute">Lưu ý</div><b style="font-size:22px;color:${W.length?'var(--warn)':'var(--pri)'}">${W.length}</b></div></div>`+
-      (P&&pArr(P.urgent).length?`<div class="w w3"><b>Khi nào đi khám ngay</b>${pUl(pArr(P.urgent).slice(0,3))}<div class="row"><button class="btn sm" onclick="personTab='hs';render()">Xem đủ ở tab Hồ sơ</button></div></div>`:'')+
+      (P&&pArr(P.urgent).length?`<div class="w w3"><b>Khi nào đi khám ngay</b>${pUl(pArr(P.urgent).slice(0,3))}<div class="row"><button class="btn sm" onclick="setPT('hs')">Xem đủ ở tab Hồ sơ</button></div></div>`:'')+
       memberHealth(m)+
       `<div class="card" style="margin-top:10px"><b>Nhật ký gần nhất</b>${dr.map(x=>`<div style="border-top:1px solid var(--line);padding:8px 0"><b>${esc(x.date.split('-').reverse().join('/'))}</b> ${tag(x.weight,' kg')}${tag(x.hr,'/phút')}${tag(x.bp,'')}${x.symptom?`<div class="mute">${esc(x.symptom)}</div>`:''}</div>`).join('')||'<div class="mute">Chưa có dòng nào.</div>'}
-        <div class="row"><button class="btn pri sm" onclick="editDiary('${m.id}')">+ Ghi nhật ký</button><button class="btn sm" onclick="personTab='nk';render()">Xem tất cả</button></div></div>
+        <div class="row"><button class="btn pri sm" onclick="editDiary('${m.id}')">+ Ghi nhật ký</button><button class="btn sm" onclick="setPT('nk')">Xem tất cả</button></div></div>
        <div class="row"><button class="btn" onclick="printReport('${m.id}')">In báo cáo</button><button class="btn" onclick="editMember('${m.id}')">Sửa thông tin</button></div>`;
   }else if(personTab==='lu'){
     const ended=S.plans.filter(x=>x.memberId===m.id&&x.end&&x.end<day&&byId(S.products,x.productId));
@@ -1417,7 +1416,7 @@ function vPerson(mid){
       (P?`<div class="card"><b>Hồ sơ sức khỏe chi tiết</b><div class="mute">Thuốc, điều cần tránh, xét nghiệm, câu hỏi cho bác sĩ. Viết bằng chữ lớn, dễ đọc.</div><div class="row"><button class="btn pri" onclick="go('fam','p:${m.id}')">Mở hồ sơ chi tiết</button></div></div>`
         :`<div class="note">Chưa có hồ sơ chi tiết. Nhập file hồ sơ ở Cài đặt, mục Cập nhật dữ liệu.</div>`);
   }
-  view(m.name,`${age?age+' tuổi':''}${m.weight?(age?' · ':'')+m.weight+' kg':''}`||'Thành viên',`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('fam')">‹ Gia đình</button></div>`+chips+body);
+  view(m.name,`${age?age+' tuổi':''}${m.weight?(age?' · ':'')+m.weight+' kg':''}`||'Thành viên',`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="goBack(()=>{go('fam')})">‹ Gia đình</button></div>`+chips+body);
 }
 function vFam(){
   if(sub&&String(sub).startsWith('p:'))return vProfile(String(sub).slice(2));
@@ -1429,7 +1428,7 @@ function vFam(){
    `    <div class="note">App chỉ lưu và nhắc theo dữ liệu bạn nhập, không thay lời khuyên của bác sĩ hay dược sĩ.</div>`);
 }
 function vSet(){
-  view('Cài đặt','Cập nhật, đồng bộ và sao lưu',`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="go('today')">‹ Quay lại</button></div>`+updateCard()+`<div class="card"><b>Sao lưu</b><div class="mute">Dữ liệu chỉ nằm trong trình duyệt của máy này. Hãy tải bản sao lưu định kỳ.</div><div class="mute" style="margin-top:6px"><b>${backupText()}</b></div>
+  view('Cài đặt','Cập nhật, đồng bộ và sao lưu',`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="goBack(()=>{go('today')})">‹ Quay lại</button></div>`+updateCard()+`<div class="card"><b>Sao lưu</b><div class="mute">Dữ liệu chỉ nằm trong trình duyệt của máy này. Hãy tải bản sao lưu định kỳ.</div><div class="mute" style="margin-top:6px"><b>${backupText()}</b></div>
     <div class="row"><button class="btn pri" onclick="exportAll()">Tải JSON</button></div><div class="mute" style="margin-top:6px">Khôi phục: dùng "Cập nhật dữ liệu" ở trên.</div></div>
     <div class="card"><b>Chuẩn mức tối đa dùng để cảnh báo</b><div class="mute">EFSA là chuẩn châu Âu (áp dụng ở Séc), thường chặt hơn. NIH là chuẩn Mỹ.</div>
      <select style="margin-top:8px" onchange="S.settings={...(S.settings||{}),ul:this.value};save();render()"><option value="efsa" ${ulStd()==='efsa'?'selected':''}>EFSA (châu Âu)</option><option value="nih" ${ulStd()==='nih'?'selected':''}>NIH (Mỹ)</option></select></div>
@@ -1748,6 +1747,7 @@ async function driveSync(){
 
 /* ---------- Khởi động ---------- */
 document.getElementById('appver').textContent=APP_VER.replace('tpcn-','');
+try{history.replaceState(Object.assign(navSnap(),{d:0}),'')}catch(e){}
 load().then(()=>{render();checkUpdate()});
 setInterval(checkUpdate,30*60*1000);
 if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
