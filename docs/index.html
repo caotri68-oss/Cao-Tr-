@@ -352,14 +352,16 @@ const setPT=k=>{personTab=k;render();nav()};
 addEventListener('popstate',e=>{const st=e.state;if(!st||!st.k)return;navLock=true;
   try{tab=st.tab;sub=st.sub;fMember=st.fMember;libF=st.libF;libTopic=st.libTopic;libQ=st.libQ||'';personTab=st.personTab;render();$('#view').scrollTop=0}finally{navLock=false}});
 function go(t,s=null){tab=t;sub=s;render();$('#view').scrollTop=0;nav()}
+/* Bấm tab ở thanh dưới: về đầu tab đó (Thư viện về trang chủ đề, Gia đình về danh sách), không giữ trang con đang mở */
+function goTab(t){if(t==='know'){libF='all';libTopic='';libQ=''}if(t==='fam')personTab='tq';go(t)}
 function render(){
   const cur=tab==='add'?'shelf':tab;
-  $('#nav').innerHTML=TABS.map(([k,l])=>`<button class="${k===cur?'on':''}" ${k===cur?'aria-current="page"':''} onclick="go('${k}')"><img class="ni" src="img/n-${k}.webp" alt="">${l}</button>`).join('');
+  $('#nav').innerHTML=TABS.map(([k,l])=>`<button class="${k===cur?'on':''}" ${k===cur?'aria-current="page"':''} onclick="goTab('${k}')"><img class="ni" src="img/n-${k}.webp" alt="">${l}</button>`).join('');
   $('#gear').classList.toggle('on',tab==='set');
   document.querySelector('header').style.display=tab==='today'?'none':'';
   ({today:vToday,shelf:vShelf,add:vAdd,know:vKnow,fam:vFam,set:vSet})[tab]();
 }
-const APP_VER='tpcn-v2-51';
+const APP_VER='tpcn-v2-52';
 let newVer='';
 const updBanner=()=>newVer?`<div class="note" style="margin-bottom:12px;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Có bản mới của app.</b> <button class="btn sm pri" onclick="forceUpdate()">Cập nhật ngay</button></div>`:'';
 function view(title,sub_,html){$('#ttl').textContent=title;$('#sub').textContent=sub_||'';$('#view').innerHTML=updBanner()+html}
@@ -533,7 +535,8 @@ const hhmm=x=>pad(Math.floor(x/60))+':'+pad(x%60);
 /* Bổ sung mẫu cho các chất đã có trong NUTR mà tên đầy đủ trên nhãn chưa khớp (dữ liệu NUTR_EXTRA trong kb.js).
    Áp dụng thẳng vào NUTR nên tổng liều và cảnh báo cũng tính đúng (vd. DHA và EPA ghi đầy đủ cùng tính vào Omega-3). */
 for(const k in (window.NUTR_EXTRA||{}))if(NUTR[k])try{NUTR[k].re=new RegExp(NUTR[k].re.source+'|'+window.NUTR_EXTRA[k],'i')}catch(e){}
-const nutrKey=g=>{for(const k in NUTR)if(NUTR[k].re.test(g.name||''))return k;return null};
+const nutrKey=g=>{if(/pantothen/i.test(g.name||''))return null; // canxi pantothenat là vitamin B5, không tính vào canxi
+  for(const k in NUTR)if(NUTR[k].re.test(g.name||''))return k;return null};
 /* Tên gọi khác trên nhãn -> khoá chất trong KB (KB_ALIAS), cho chất chưa có trong NUTR */
 let _AL=null;
 const aliasList=()=>_AL||(_AL=Object.entries(window.KB_ALIAS||{}).map(([k,x])=>{try{return[k,new RegExp(x,'i')]}catch(e){return null}}).filter(Boolean));
