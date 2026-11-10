@@ -299,7 +299,7 @@ nav button{gap:3px}
 'use strict';
 /* ---------- Lưu trữ: IndexedDB ---------- */
 const DB='tpcn-v2',KEY='state';
-const empty=()=>({v:2,members:[],products:[],plans:[],intakes:[],notes:[],diary:[],docs:[],frameworks:[],dismissed:[],settings:{ul:'efsa'}});
+const empty=()=>({v:2,members:[],products:[],plans:[],intakes:[],notes:[],diary:[],docs:[],frameworks:[],dismissed:[],shopping:[],settings:{ul:'efsa'}});
 let S=empty();
 const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open(DB,2);
   r.onupgradeneeded=()=>{const d=r.result;if(!d.objectStoreNames.contains('kv'))d.createObjectStore('kv');if(!d.objectStoreNames.contains('img'))d.createObjectStore('img')};
@@ -361,7 +361,7 @@ function render(){
   document.querySelector('header').style.display=tab==='today'?'none':'';
   ({today:vToday,shelf:vShelf,add:vAdd,know:vKnow,fam:vFam,set:vSet})[tab]();
 }
-const APP_VER='tpcn-v2-52';
+const APP_VER='tpcn-v2-53';
 let newVer='';
 const updBanner=()=>newVer?`<div class="note" style="margin-bottom:12px;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Có bản mới của app.</b> <button class="btn sm pri" onclick="forceUpdate()">Cập nhật ngay</button></div>`:'';
 function view(title,sub_,html){$('#ttl').textContent=title;$('#sub').textContent=sub_||'';$('#view').innerHTML=updBanner()+html}
@@ -733,10 +733,63 @@ function vToday(){
 }
 
 /* ---------- Tủ TPCN ---------- */
+/* ---------- Danh mục mua (chuẩn bị mua tiếp). Chỉ lưu trên máy, có trong file sao lưu, không đưa lên Sheet hay Drive. ---------- */
+const SHOP_ST=['Chưa mua','Đã mua'];
+const shopList=()=>S.shopping||[];
+const shopTotal=()=>shopList().filter(x=>x.status!=='Đã mua').reduce((a,x)=>a+(Number(x.price)||0),0);
+function shopEdit(id){const o=id?byId(shopList(),id):null;const d=o||{id:uid(),name:'',shop:'',price:'',link:'',dose:'',status:'Chưa mua',check:'',notes:''};
+  dialog(o?'Sửa mục cần mua':'Thêm vào danh mục mua',[
+    {k:'name',l:'Tên sản phẩm'},
+    {k:'shop',l:'Nơi bán'},
+    {k:'price',l:'Giá (Kč)',t:'number'},
+    {k:'dose',l:'Liều dùng'},
+    {k:'link',l:'Đường dẫn'},
+    {k:'status',l:'Trạng thái',t:'sel',o:SHOP_ST.map(x=>[x,x])},
+    {k:'check',l:'Cần kiểm tra trước khi mua (để trống nếu đã rõ)',t:'area'},
+    {k:'notes',l:'Ghi chú',t:'area'}],d,v=>{if(!v.name)return;upsert(S.shopping=shopList(),v)})}
+function shopToggle(id){const o=byId(shopList(),id);if(!o)return;o.status=o.status==='Đã mua'?'Chưa mua':'Đã mua';save();render()}
+function shopDel(id){remove(shopList(),id,'Xoá mục này khỏi danh mục mua?')}
+function shopCsv(){
+  const rows=[['Tên sản phẩm','Nơi bán','Giá (Kč)','Liều dùng','Trạng thái','Đường dẫn','Cần kiểm tra','Ghi chú']];
+  for(const x of shopList())rows.push([x.name,x.shop,x.price,x.dose,x.status,x.link,x.check,x.notes].map(v=>v==null?'':String(v)));
+  const q=v=>'"'+v.replace(/"/g,'""')+'"';
+  const csv='\uFEFF'+rows.map(r=>r.map(q).join(',')).join('\r\n')+'\r\n';
+  dl('danh-muc-mua-'+today()+'.csv',csv,'text/csv;charset=utf-8')}
+/* Dữ liệu ban đầu lấy từ trang Notion "Thực phẩm chức năng: danh sách mua hàng" (10/11/2026).
+   Chỉ nhập MỘT lần khi danh mục còn trống. Sau đó bạn sửa trực tiếp trong app, không sửa lại Notion. */
+const SHOP_SEED=[
+ {name:'Coenzyme Q10 Ubiquinone 200 mg XL, 120 viên',shop:'sunday.de (Đức)',price:460,dose:'1 viên mỗi ngày',link:'https://www.sunday.de/en/coenzyme-q10/',check:'Giá là quy đổi tạm từ € (18,90 €). Xác nhận giá thật và phí vận chuyển khi thanh toán.',notes:'Dạng ubiquinone, lên men, thuần chay. Trên sunday-natural.cz chỉ có bản 200 mg 90 viên, 429 Kč.'},
+ {name:'Clinical Magnesium chelát + B6, 2 × 100 viên',shop:'Dr.Max',price:275,dose:'1 viên 3 lần mỗi ngày (theo nhãn)',link:'https://www.drmax.cz/clinical-magnesium-chelat-b6-darkove-baleni-2x100-kapsli',check:'Phải xác nhận 375 mg là khối lượng hợp chất hay magie nguyên tố. Nếu là magie nguyên tố, 3 viên mỗi ngày vượt giới hạn 250 mg của EFSA. Hỏi Dr.Max hoặc đọc nhãn trước khi mua.',notes:'Bisglycinát, B6 1,4 mg mỗi viên. Giá gốc 309 Kč, giảm 11%.'},
+ {name:'Vitamin D3 1000 IU + K2 20 µg, dạng giọt 25 ml',shop:'sunday.de (Đức)',price:265,dose:'1 giọt mỗi ngày',link:'https://www.sunday.de/en/vitamin-d3-1000iu-k2-all-trans-mk7-20mcg.html',check:'',notes:'10,90 € (đã gồm VAT), chưa gồm ship. DHL 2,90 € đến Séc, miễn phí từ 59 €. Đủ khoảng 1000 ngày.'},
+ {name:'Vitamin D3 2500 IU + K2 100 µg, dạng giọt 7,8 ml',shop:'sunday.de (Đức)',price:363,dose:'1 giọt mỗi 3 ngày',link:'https://www.sunday.de/en/vitamin-d3-k2-mk7-2500iu-100mcg-all-trans-300-drops.html',check:'Liều cao hơn. Nếu chưa có xét nghiệm 25(OH)D hoặc chưa hỏi bác sĩ, nên chọn loại 1000 IU.',notes:'14,90 € (đã gồm VAT), chưa gồm ship.'},
+ {name:'Mollers Omega-3 Daily Health, 112 viên',shop:'Lékárna.cz',price:292,dose:'2 viên mỗi ngày',link:'https://www.lekarna.cz/mollers-omega-3-double-112-kapsli/',check:'Nhập mã MOLLERS10 trước khi thanh toán (mã có thể hết hạn). Con 12 tuổi cần hỏi bác sĩ trước.',notes:'EPA 278 mg + DHA 250 mg mỗi 2 viên. Dr.Max và Alza giá 299 Kč.'},
+ {name:'Mollers Omega-3 vị táo, 250 ml',shop:'Allegro (người bán bên thứ ba)',price:224,dose:'5 ml mỗi ngày',link:'https://allegro.cz/produkt/moller-s-norsky-rybi-olej-s-jablecnou-prichuti-250-ml-2ec1d1e1-8f64-4ddf-a92f-b7725fc3549e?offerId=17930224664',check:'Kiểm tra đánh giá người bán, mã lô và hạn dùng khi nhận hàng. Thanh toán qua Allegro để được bảo vệ người mua. Con 12 tuổi cần hỏi bác sĩ trước.',notes:'Gói 6 chai 768 Kč chưa xác minh: thêm 6 chai vào giỏ và xem tổng tiền trước khi thanh toán. Vị chanh: 296 Kč trên Lékárna.cz.'},
+ {name:'Clinical Magnesium malát + B6 XXL, 200 viên',shop:'Dr.Max',price:293,dose:'1 viên mỗi ngày',link:'https://www.drmax.cz/magnesium-malat-b6-cps-200',check:'Đợt giảm giá 22% có thể kết thúc sớm. Kiểm tra lại giá trước khi mua.',notes:'850 mg malát, tương đương 120 mg magie nguyên tố. Cách kháng sinh tetracycline, quinolone và bisphosphonate ít nhất 2 giờ. Phương án thay: 100 viên, 183 Kč.'},
+ {name:'Cemio RED3, 90 viên',shop:'Lékárna Bella',price:371,dose:'1 viên mỗi ngày',link:'https://lekarna-bella.cz/cemio-red3-cps-90-novy',check:'Dành cho bố (trên 65 tuổi). Cần hỏi bác sĩ và đối chiếu đơn thuốc hiện tại trước khi dùng. Chưa có kiểm nghiệm độc lập. Chưa tự kiểm tra được trên SÚKL.',notes:'Còn hàng khi kiểm tra ngày 10/11/2026. Miễn phí ship trên 2 500 Kč. Magistr Marek 362 Kč (chưa xác minh IČO).'},
+ {name:'Line Extension Two-Per-Day Multivitamin, 120 viên',shop:'iHerb CZ',price:530,dose:'2 viên mỗi ngày',link:'https://cz.iherb.com/pr/life-extension-two-per-day-multivitamin-120-tablets/86454',check:'Kiểm tra lại tên và nhãn trước khi mua. Kẽm 25 mg đã đủ, không nên uống thêm kẽm riêng. Không dùng cho con 12 tuổi khi chưa hỏi bác sĩ. Bố trên 65 tuổi cần đối chiếu đơn thuốc.',notes:'529,85 Kč, còn hàng. Stále mladí 584 Kč (60 viên, giao 10–14 ngày). Các trang khác ghi số liệu nhãn khác nhau.'}
+];
+function shopSeedOnce(){
+  if(S.settings&&S.settings.shopSeeded)return;
+  S.settings=S.settings||{};S.settings.shopSeeded=true;
+  if(!shopList().length){S.shopping=SHOP_SEED.map((x,i)=>({id:'n'+(i+1),status:'Chưa mua',...x}))}
+  save()}
+function shopBlock(){
+  shopSeedOnce();
+  const L=shopList(),tot=shopTotal();
+  const cards=L.map(x=>{const done=x.status==='Đã mua';
+    return `<div class="card" style="${done?'opacity:.6':''}"><div style="display:flex;gap:8px;align-items:flex-start"><div class="grow"><b>${esc(x.name)}</b>${done?' <span class="tag">đã mua</span>':''}${x.check?` <span class="tag" style="background:none;color:var(--bad);border:1px solid var(--bad)">cần kiểm tra</span>`:''}
+      <div class="mute">${esc(x.shop||'')}${x.price!==''&&x.price!=null?' · '+esc(x.price)+' Kč':''}${x.dose?' · '+esc(x.dose):''}</div>
+      ${x.check?`<div class="note" style="margin-top:6px">${esc(x.check)}</div>`:''}
+      ${x.notes?`<div class="mute" style="margin-top:4px">${esc(x.notes)}</div>`:''}
+      ${safeUrl(x.link)?`<div style="margin-top:4px"><a href="${esc(x.link)}" target="_blank" rel="noopener noreferrer">mở trang bán</a></div>`:''}</div></div>
+      <div class="row" style="margin-top:8px"><button class="btn sm" onclick="shopToggle('${x.id}')">${done?'Chưa mua':'Đã mua'}</button><button class="btn sm" onclick="shopEdit('${x.id}')">Sửa</button><button class="btn sm del" onclick="shopDel('${x.id}')">Xoá</button></div></div>`}).join('');
+  return `<div class="sec2"><b>🛒 Danh mục mua</b><span class="mute">${L.length} mục · cần mua khoảng ${fmt(tot)} Kč</span></div>
+    <div class="row" style="margin:0 0 8px"><button class="btn pri sm" onclick="shopEdit()">+ Thêm mục</button><button class="btn sm" onclick="shopCsv()" ${L.length?'':'disabled'}>Xuất CSV</button></div>
+    ${cards||'<div class="empty">Chưa có mục nào. Bấm “+ Thêm mục” để ghi sản phẩm định mua.</div>'}`}
 function vShelf(){
   if(sub)return vProduct(sub);
   const l=S.products;
-  view('Tủ thuốc',l.length+' sản phẩm',`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="go('add')">+ Thêm sản phẩm</button><button class="btn" onclick="go('set')">Cập nhật từ file</button></div>`+overlapHtml()+
+  view('Tủ thuốc',l.length+' sản phẩm',`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="go('add')">+ Thêm sản phẩm</button><button class="btn" onclick="go('set')">Cập nhật từ file</button></div>`+overlapHtml()+shopBlock()+
     (l.map(p=>{const who=[...new Set(S.plans.filter(x=>x.productId===p.id&&(!x.end||x.end>=today())).map(x=>mname(x.memberId)))];
       return`<div class="card" onclick="go('shelf','${p.id}')" style="cursor:pointer;display:flex;gap:12px;align-items:center">${thumbHtml(p,64)}<div class="grow"><h3>${esc(p.name)}</h3>
       <div class="mute">${esc([p.brand,p.form].filter(Boolean).join(' · '))}</div>

@@ -1,5 +1,5 @@
 // Đổi số phiên bản mỗi khi sửa file của app (và đổi APP_VER trong index.html cho khớp).
-const VER='tpcn-v2-52';
+const VER='tpcn-v2-53';
 const SHELL=['./','index.html','kb.js','manifest.webmanifest','icon-192.png','icon-512.png','img/logo.webp','img/steth.webp','img/shield.webp','img/leaf.webp','img/pill.webp','img/book.webp','img/clip.webp','img/family.webp','img/nurse.webp','img/jar.webp','img/cal.webp','img/chart.webp','img/bell.webp','img/safe.webp','img/n-today.webp','img/n-shelf.webp','img/n-know.webp','img/n-fam.webp'];
 
 self.addEventListener('install',e=>{
