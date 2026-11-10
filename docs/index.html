@@ -399,7 +399,7 @@ function render(){
   document.querySelector('header').style.display=tab==='today'?'none':'';
   ({today:vToday,shelf:vShelf,add:vAdd,know:vKnow,fam:vFam,set:vSet})[tab]();
 }
-const APP_VER='tpcn-v2-56';
+const APP_VER='tpcn-v2-57';
 let newVer='';
 const updBanner=()=>newVer?`<div class="note" style="margin-bottom:12px;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Có bản mới của app.</b> <button class="btn sm pri" onclick="forceUpdate()">Cập nhật ngay</button></div>`:'';
 function view(title,sub_,html){$('#ttl').textContent=title;$('#sub').textContent=sub_||'';$('#view').innerHTML=updBanner()+html}
@@ -942,6 +942,45 @@ function handleShare(){
     go('shelf');
     shopQuickAdd({link,name:(t||x.replace(/https?:\/\/\S+/g,'')).trim().slice(0,160),shop:shopFromLink(link)});
   }catch(e){}}
+/* ---------- Nối mục mua với sản phẩm trong Tủ thuốc ---------- */
+let pendingShop=null;
+const otherList=t=>String(t||'').split(/[,;\n]+/).map(x=>x.trim().replace(/\.$/,'')).filter(Boolean);
+function shopProdBtn(x){
+  const p=x.productId?byId(S.products,x.productId):null;
+  if(p)return `<button class="btn sm" onclick="go('shelf','${p.id}')">Xem thông tin sản phẩm</button>`;
+  return `<button class="btn sm" onclick="shopProductInfo('${x.id}')">Lấy thông tin sản phẩm</button>`+(S.products.length?`<button class="btn sm" onclick="shopLinkExisting('${x.id}')">Gắn với sản phẩm có sẵn</button>`:'')}
+function shopProductInfo(id){const x=byId(shopList(),id);if(!x)return;
+  pendingShop=id;stage={title:x.name,source:safeUrl(x.link)?x.link:'',text:'',images:[],autoTitle:false};draft=null;addMsg='Điền từ mục “'+x.name.slice(0,40)+'” trong danh mục mua. Dán link rồi bấm “Lấy và phân tích”, hoặc chọn ảnh nhãn, hoặc dán chữ.';go('add')}
+function applyPendingShop(d){const x=byId(shopList(),pendingShop);if(!x){pendingShop=null;return}
+  if(d.shopId)return;d.shopId=x.id;
+  if(!d.name)d.name=x.name;
+  if((d.price===''||d.price==null)&&x.price!==''&&x.price!=null)d.price=x.price;
+  if(!d.store)d.store=x.shop||'';
+  if(!d.url&&safeUrl(x.link))d.url=x.link;
+  if((d.units===''||d.units==null)&&x.units)d.units=x.units;
+  if(!d.unitLabel&&x.unitLabel)d.unitLabel=x.unitLabel}
+function linkShopProduct(d){const id=pendingShop||d.shopId;if(!id)return;const x=byId(shopList(),id);
+  if(!x){pendingShop=null;return}
+  x.productId=d.id;d.shopId=id;
+  if((x.units==null||x.units==='')&&d.units)x.units=d.units;
+  if(!x.unitLabel&&d.unitLabel)x.unitLabel=d.unitLabel;
+  pendingShop=null}
+function shopLinkExisting(id){const x=byId(shopList(),id);if(!x||!S.products.length)return;
+  dialog('Gắn với sản phẩm trong Tủ thuốc',[{k:'productId',l:'Chọn sản phẩm',t:'sel',o:S.products.map(p=>[p.id,p.name])}],{productId:S.products[0].id},v=>{
+    const p=byId(S.products,v.productId);if(!p)return;
+    x.productId=p.id;p.shopId=x.id;
+    if((x.units==null||x.units==='')&&p.units)x.units=p.units;
+    if(!x.unitLabel&&p.unitLabel)x.unitLabel=p.unitLabel;
+    save();render()})}
+function shopFocus(id){SHOP_OPEN.add(id);S.settings=S.settings||{};S.settings.shopView='group';go('shelf')}
+/* Sản phẩm cũ: tách "Thành phần khác" ra khỏi Ghi chú một lần */
+function migrateProducts(){
+  let ch=false;
+  for(const p of S.products){
+    if(p.other==null){const m=/Thành phần khác:\s*([^\n]*)/i.exec(p.notes||'');p.other=m?m[1].trim():'';if(m)p.notes=String(p.notes).replace(m[0],'').replace(/^\s+|\s+$/g,'');ch=true}
+    if(p.cert==null){p.cert='';ch=true}
+    if(p.units==null){p.units='';p.unitLabel=p.unitLabel||'';ch=true}}
+  if(ch)save()}
 function shopRow(x){
   const q=shopQtyOf(x),pr=Number(x.price)||0,done=x.status==='Đã mua',seen=x.status==='Đã xem',on=x.buy!==false&&!done&&!seen;
   const hasPrice=x.price!==''&&x.price!=null;
@@ -958,7 +997,7 @@ function shopRow(x){
     ${x.check?`<div class="note" style="margin-top:6px"><b>Cần kiểm tra:</b> ${esc(x.check)}</div>`:''}
     ${x.notes?`<div class="mute" style="margin-top:6px">${esc(x.notes)}</div>`:''}
     ${shopLog(x).length?`<div class="lh"><div class="mute" style="margin-top:8px">Lịch sử giá</div>${shopEntries(x,3)}${shopLog(x).length>3?`<div class="mute" style="font-size:12px">Còn ${shopLog(x).length-3} dòng cũ hơn, xem ở “Lịch sử mua”.</div>`:''}</div>`:''}
-    <div class="row" style="margin-top:8px">${done?`<button class="btn sm" onclick="shopRebuy('${x.id}')">Mua lại</button>`:seen?`<button class="btn sm pri" onclick="shopBuy('${x.id}')">Định mua</button>`:`<button class="btn sm pri" onclick="shopBuyDialog('${x.id}')">Đã mua…</button>`}<button class="btn sm" onclick="shopSeenDialog('${x.id}')">Ghi giá đã xem</button><button class="btn sm" onclick="shopEdit('${x.id}')">Sửa</button><button class="btn sm del" onclick="shopDel('${x.id}')">Xoá</button></div>
+    <div class="row" style="margin-top:8px">${done?`<button class="btn sm" onclick="shopRebuy('${x.id}')">Mua lại</button>`:seen?`<button class="btn sm pri" onclick="shopBuy('${x.id}')">Định mua</button>`:`<button class="btn sm pri" onclick="shopBuyDialog('${x.id}')">Đã mua…</button>`}<button class="btn sm" onclick="shopSeenDialog('${x.id}')">Ghi giá đã xem</button>${shopProdBtn(x)}<button class="btn sm" onclick="shopEdit('${x.id}')">Sửa</button><button class="btn sm del" onclick="shopDel('${x.id}')">Xoá</button></div>
    </div></details>`}
 /* ---------- Theo cửa hàng: gom đơn để miễn phí ship (chỉ gợi ý, không tự đặt hàng) ----------
    Số liệu tra ngày 10/11/2026, ghi trong design/mua-hang-phi-van-chuyen-2026-11-10.md. Chưa số nào đọc được từ trang chính thức của cửa hàng,
@@ -1079,6 +1118,10 @@ function vProduct(id){
     <div class="mute" style="margin-top:6px">Liều trên nhãn: ${esc(p.dosageLabel||'—')}</div></div>
    <div class="card"><b>Mua</b><div class="mute">${p.price!==''&&p.price!=null?esc(p.price)+' CZK · ':''}${esc(p.store||'')} ${safeUrl(p.url)?`<a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">liên kết</a>`:''}</div></div>
    ${p.warnings?`<div class="note"><b>⚠ Cảnh báo trên nhãn</b><br>${esc(p.warnings)}</div>`:''}
+   ${p.units?`<div class="card"><b>Quy cách</b><div class="mute">${esc(p.units)} ${esc(p.unitLabel||'đv')} mỗi sản phẩm${p.price!==''&&p.price!=null&&Number(p.units)>0?` · khoảng ${fmt2(Number(p.price)/Number(p.units))} ${'CZK'}/${esc(p.unitLabel||'đv')}`:''}</div></div>`:''}
+   ${p.other?`<div class="card"><b>Chất độn (thành phần khác)</b><div class="chips" style="flex-wrap:wrap;overflow:visible;margin-top:6px">${otherList(p.other).map(o=>`<span class="tag">${esc(o)}</span>`).join('')}</div></div>`:''}
+   ${p.cert?`<div class="card"><b>Kiểm nghiệm, chứng nhận</b><div class="mute">${esc(p.cert)}</div></div>`:''}
+   ${p.shopId&&byId(shopList(),p.shopId)?`<div class="row" style="margin:0 0 10px"><button class="btn sm" onclick="shopFocus('${p.shopId}')">🛒 Xem trong danh mục mua và lịch sử giá</button></div>`:''}
    ${p.notes?`<div class="card"><b>Ghi chú</b><div class="mute">${esc(p.notes)}</div></div>`:''}
    ${(p.imageIds||[]).length?`<div class="card"><b>Ảnh nhãn</b><div id="pimgs" class="imgs" style="margin-top:6px"></div></div>`:''}
    ${p.text?`<details class="card"><summary><b>Văn bản gốc</b></summary><pre style="white-space:pre-wrap;font:13px/1.45 inherit;margin:8px 0 0">${esc(p.text)}</pre></details>`:''}
@@ -1102,6 +1145,7 @@ function editProduct(id){addMsg='';draft=JSON.parse(JSON.stringify(byId(S.produc
 const UNITS=['mg','mcg','g','IU','ml','CFU','%'];
 function vAdd(){
   if(!draft)return vImport();
+  if(pendingShop&&!draft.shopId)applyPendingShop(draft);
   const d=draft,isNew=!byId(S.products,d.id);
   view(isNew?'Thêm sản phẩm':'Sửa sản phẩm',addMsg||'Kiểm tra từng dòng trước khi lưu.',
    `<div class="card" style="display:grid;gap:10px">
@@ -1119,11 +1163,14 @@ function vAdd(){
        <button class="btn sm del" aria-label="Xoá dòng" onclick="ingDel(${i})">×</button></div>`).join('')}
      <button class="btn sm" onclick="ingAdd()">+ Thêm dòng</button></div>
     <label>Liều ghi trên nhãn<input id="a_dosageLabel" value="${esc(d.dosageLabel)}"></label>
+    <div class="ing" style="grid-template-columns:1fr 1fr"><label>Số viên (hoặc ml, giọt) trong hộp<input id="a_units" type="number" step="any" value="${esc(d.units)}"></label><label>Đơn vị<input id="a_unitLabel" placeholder="viên, ml, giọt" value="${esc(d.unitLabel)}"></label></div>
+    <label>Chất độn (thành phần khác), cách nhau bằng dấu phẩy<textarea id="a_other" placeholder="Ví dụ: gelatin (vỏ nang), cellulose vi tinh thể, magnesium stearate">${esc(d.other)}</textarea></label>
+    <label>Kiểm nghiệm, chứng nhận (GMP, ISO, báo cáo theo lô...)<input id="a_cert" value="${esc(d.cert)}"></label>
     <div class="ing" style="grid-template-columns:1fr 1fr"><label>Giá (CZK)<input id="a_price" type="number" step="any" value="${esc(d.price)}"></label><label>Nơi mua<input id="a_store" value="${esc(d.store)}"></label></div>
     <label>Link<input id="a_url" value="${esc(d.url)}"></label>
     <label>Cảnh báo trên nhãn<textarea id="a_warnings">${esc(d.warnings)}</textarea></label>
     <label>Ghi chú<textarea id="a_notes">${esc(d.notes)}</textarea></label>
-    <div class="row"><button class="btn pri" onclick="saveProduct()">Lưu sản phẩm</button><button class="btn" onclick="draft=null;go('shelf')">Huỷ</button></div></div>`);
+    <div class="row"><button class="btn pri" onclick="saveProduct()">Lưu sản phẩm</button><button class="btn" onclick="draft=null;pendingShop=null;go('shelf')">Huỷ</button></div></div>`);
   loadImgs(d.imageIds,'#imgs');
   $('#view').oninput=e=>{const t=e.target;
     if(t.dataset.f!==undefined){const g=d.ingredients[t.dataset.i];g[t.dataset.f]=t.value;if(t.dataset.f==='amount'){g.check=false;t.classList.remove('chk')}}
@@ -1133,16 +1180,18 @@ function ingAdd(){draft.ingredients.push({name:'',amount:'',unit:'mg',form:''});
 function ingDel(i){draft.ingredients.splice(i,1);if(!draft.ingredients.length)ingAdd();else vAdd()}
 function saveProduct(){
   const d=draft;if(!d.name.trim()){alert('Cần nhập tên sản phẩm.');return}
-  d.name=d.name.trim();delete d.nih;d.price=d.price===''?'':Number(d.price);
+  d.name=d.name.trim();delete d.nih;d.price=d.price===''?'':Number(d.price);d.units=(d.units===''||d.units==null)?'':Number(d.units);
+  if(d.units!==''&&!(d.units>0)){alert('Số viên phải là số lớn hơn 0.');return}
   d.ingredients=d.ingredients.filter(g=>g.name.trim()).map(g=>({...g,name:g.name.trim(),amount:g.amount===''?'':Number(String(g.amount).replace(',','.'))})).map(({check,...g})=>g);
   if(d.ingredients.some(g=>g.amount!==''&&Number.isNaN(g.amount))){alert('Có lượng hoạt chất không phải số. Hãy sửa lại.');return}
   const id=d.id;draft=null;addMsg='';
+  linkShopProduct(d);
   const i=S.products.findIndex(x=>x.id===id);i<0?S.products.push(d):S.products[i]=d;save();go('shelf',id);
 }
 
 /* ---------- Nhập từ ảnh / link / chữ ---------- */
 let stage={title:'',source:'',text:'',images:[]},addMsg='';
-const blank=()=>({id:uid(),name:'',brand:'',form:'',dosageLabel:'',price:'',store:'',url:'',warnings:'',notes:'',text:'',imageIds:[],ingredients:[{name:'',amount:'',unit:'mg',form:''}]});
+const blank=()=>({id:uid(),name:'',brand:'',form:'',dosageLabel:'',price:'',store:'',url:'',warnings:'',notes:'',other:'',cert:'',units:'',unitLabel:'',shopId:'',text:'',imageIds:[],ingredients:[{name:'',amount:'',unit:'mg',form:''}]});
 function shrink(file){return new Promise((res,rej)=>{const r=new FileReader();r.onerror=rej;r.onload=()=>{const im=new Image();im.onerror=()=>rej(new Error('Không đọc được ảnh'));im.onload=()=>{const k=Math.min(1,1400/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.85))};im.src=r.result};r.readAsDataURL(file)})}
 function loadScript(src){return new Promise((res,rej)=>{if(window.Tesseract)return res();const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=()=>rej(new Error('Không tải được thư viện đọc chữ (cần internet lần đầu)'));document.head.appendChild(s)})}
 async function ocr(urls,log){
@@ -1213,7 +1262,7 @@ async function createFromStage(){
   const f=parseFacts(raw),d=blank();
   d.name=stage.autoTitle?cleanTitle(stage.title):stage.title.trim();d.text=raw;d.url=safeUrl(stage.source)?stage.source:'';
   d.dosageLabel=(f.directions||f.serving).trim();d.warnings=f.warnings.trim();
-  d.notes=f.other?'Thành phần khác: '+f.other.trim():'';
+  d.other=f.other?f.other.trim():'';d.notes='';
   if(d.url){try{d.store=new URL(d.url).hostname.replace(/^www\./,'')}catch{}
     const pr=findPrice(raw);if(pr){if(pr.czk!=null)d.price=pr.czk;d.notes=(d.notes?d.notes+'\n':'')+'Giá lấy tự động từ trang: '+pr.text+' (hãy kiểm tra lại).'}}
   if(f.ingredients.length)d.ingredients=f.ingredients;
@@ -1289,7 +1338,7 @@ async function addPhotosToDraft(files){
     for(const g of f.ingredients){if(!d.ingredients.some(x=>x.name.trim()&&ingKey(x)===ingKey(g))){if(d.ingredients.length===1&&!d.ingredients[0].name.trim())d.ingredients=[];d.ingredients.push(g);added++}}
     if(!d.dosageLabel)d.dosageLabel=(f.directions||f.serving).trim();
     if(!d.warnings)d.warnings=f.warnings.trim();
-    if(f.other&&!/Thành phần khác/.test(d.notes||''))d.notes=(d.notes?d.notes+'\n':'')+'Thành phần khác: '+f.other.trim();
+    if(f.other&&!d.other)d.other=f.other.trim();
     d.text=((d.text||'')+'\n\n'+t).trim();
     addMsg=`Đã thêm ${urls.length} ảnh, bổ sung ${added} hoạt chất mới.`;vAdd();
   }catch(e){st('Lỗi: '+e.message)}}
@@ -1355,7 +1404,7 @@ async function dsldDraft(id){
   d.dosageLabel=[ss?`1 liều nhãn = ${rng(ss.minQuantity,ss.maxQuantity)} ${ss.unit}${ss.minDailyServings||ss.maxDailyServings?`, ${rng(ss.minDailyServings,ss.maxDailyServings)} lần/ngày`:''}`:'',dir?.notes||''].filter(Boolean).join('. ');
   d.warnings=(L.statements||[]).filter(s=>/^Precaution/i.test(s.type)).map(s=>s.notes).filter(Boolean).join('\n');
   const oi=L.otheringredients,oit=typeof oi==='string'?oi:(oi?.text||'');
-  d.notes=`Nguồn: NIH DSLD #${L.id}, nhãn Mỹ nhập ${L.entryDate||'?'}.`+(oit?'\nThành phần khác: '+oit:'');
+  d.other=oit?String(oit).trim():'';d.notes=`Nguồn: NIH DSLD #${L.id}, nhãn Mỹ nhập ${L.entryDate||'?'}.`;
   d.nihId=L.id;
   return d;
 }
@@ -1466,6 +1515,9 @@ function mergeProducts(ok){
   const s=cleanStr,U=['mg','mcg','g','IU','ml','CFU'];
   for(const p of ok){const old=byId(S.products,p.id)||{};
     const o={...blank(),...old,id:p.id,name:s(p.name),brand:s(p.brand),form:s(p.form),dosageLabel:s(p.dosageLabel),url:safeUrl(p.url).slice(0,500),thumb:/^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(p.thumb||'')&&p.thumb.length<60000?p.thumb:(old.thumb||''),notes:s(p.notes,1000),
+      warnings:s(p.warnings!=null?p.warnings:old.warnings,1000),other:s(p.other!=null?p.other:old.other,1500),cert:s(p.cert!=null?p.cert:old.cert,600),
+      units:typeof p.units==='number'&&p.units>0?p.units:(old.units||''),unitLabel:s(p.unitLabel!=null?p.unitLabel:old.unitLabel,12),store:s(p.store!=null?p.store:old.store,60),
+      price:typeof p.price==='number'&&p.price>=0?p.price:(old.price??''),
       ingredients:p.ingredients.slice(0,80).filter(g=>g&&typeof g.name==='string').map(g=>({name:s(g.name),amount:typeof g.amount==='number'&&g.amount>=0?g.amount:'',unit:U.includes(g.unit)?g.unit:'mg',form:s(g.form)}))};
     const i=S.products.findIndex(x=>x.id===o.id);i<0?S.products.push(o):S.products[i]=o}}
 // Hồ sơ sức khỏe: chỉ giữ chuỗi, số, mảng và đối tượng lồng nhau, cắt độ dài, bỏ mọi thứ khác
@@ -2093,7 +2145,7 @@ async function driveSync(){
 /* ---------- Khởi động ---------- */
 document.getElementById('appver').textContent=APP_VER.replace('tpcn-','');
 try{history.replaceState(Object.assign(navSnap(),{d:0}),'')}catch(e){}
-load().then(()=>{render();checkUpdate();handleShare()});
+load().then(()=>{migrateProducts();render();checkUpdate();handleShare()});
 setInterval(checkUpdate,30*60*1000);
 if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 </script>
