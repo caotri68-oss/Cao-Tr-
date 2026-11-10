@@ -399,7 +399,7 @@ function render(){
   document.querySelector('header').style.display=tab==='today'?'none':'';
   ({today:vToday,shelf:vShelf,add:vAdd,know:vKnow,fam:vFam,set:vSet})[tab]();
 }
-const APP_VER='tpcn-v2-55';
+const APP_VER='tpcn-v2-56';
 let newVer='';
 const updBanner=()=>newVer?`<div class="note" style="margin-bottom:12px;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Có bản mới của app.</b> <button class="btn sm pri" onclick="forceUpdate()">Cập nhật ngay</button></div>`:'';
 function view(title,sub_,html){$('#ttl').textContent=title;$('#sub').textContent=sub_||'';$('#view').innerHTML=updBanner()+html}
@@ -776,7 +776,7 @@ const SHOP_ST=['Chưa mua','Đã mua'];
 const shopList=()=>S.shopping||[];
 const shopQtyOf=x=>Math.max(1,Number(x.qty)||1);
 const shopSum=l=>l.reduce((a,x)=>a+(Number(x.price)||0)*shopQtyOf(x),0);
-const shopWant=()=>shopList().filter(x=>x.buy!==false&&x.status!=='Đã mua');
+const shopWant=()=>shopList().filter(x=>x.buy!==false&&x.status!=='Đã mua'&&x.status!=='Đã xem');
 const shopTotal=()=>shopSum(shopWant());
 let SHOP_OPEN=new Set();
 const shopOpenSet=(id,o)=>{o?SHOP_OPEN.add(id):SHOP_OPEN.delete(id)};
@@ -791,12 +791,12 @@ function shopEdit(id){const o=id?byId(shopList(),id):null;const d=o||{id:uid(),n
     {k:'unitLabel',l:'Đơn vị (viên, ml, giọt...)'},
     {k:'dose',l:'Liều dùng'},
     {k:'link',l:'Đường dẫn trang bán'},
-    {k:'status',l:'Trạng thái',t:'sel',o:SHOP_ST.map(x=>[x,x])},
+    {k:'status',l:'Trạng thái',t:'sel',o:[['Đã xem','Đã xem (chưa quyết định)'],['Chưa mua','Định mua (chưa mua)'],['Đã mua','Đã mua']]},
     {k:'checkShort',l:'Cần kiểm tra, ghi ngắn một dòng (để trống nếu đã rõ)'},
     {k:'check',l:'Chi tiết cần kiểm tra',t:'area'},
     {k:'notes',l:'Ghi chú',t:'area'}],d,v=>{if(!v.name)return;v.qty=Math.max(1,Number(v.qty)||1);if(v.buy===undefined)v.buy=true;upsert(S.shopping=shopList(),v)})}
 function shopToggle(id){const o=byId(shopList(),id);if(!o)return;o.status=o.status==='Đã mua'?'Chưa mua':'Đã mua';save();render()}
-function shopBuy(id){const o=byId(shopList(),id);if(!o)return;o.buy=o.buy===false;save();render()}
+function shopBuy(id){const o=byId(shopList(),id);if(!o)return;if(o.status==='Đã xem'){o.status='Chưa mua';o.buy=true}else o.buy=o.buy===false;save();render()}
 function shopQty(id,d){const o=byId(shopList(),id);if(!o)return;o.qty=Math.max(1,shopQtyOf(o)+d);save();render()}
 function shopDel(id){remove(shopList(),id,'Xoá mục này khỏi danh mục mua?')}
 function shopCsv(){
@@ -893,11 +893,11 @@ function shopHistory(){
   const L=shopList().filter(x=>shopLog(x).length);
   if(!L.length)return '<div class="empty">Chưa có lần mua hay lần xem nào. Mở một sản phẩm rồi bấm “Đã mua…” để ghi giá thật, nơi mua và link. Lần sau mua lại, app sẽ so giá với các lần trước.</div>';
   const buys=L.flatMap(x=>shopBuys(x).map(e=>({x,e}))),spent=buys.reduce((a,{e})=>a+(Number(e.price)||0)*(Number(e.qty)||1),0);
-  const cards=L.map(x=>{const b=shopBuys(x),last=b[b.length-1],t=trendOf(x,b),prices=b.map(e=>unitPrice(x,e)??Number(e.price)).filter(n=>n>0);
+  const cards=L.map(x=>{const b=shopBuys(x),seenL=shopLog(x).filter(e=>e.kind==='xem').sort((p,q)=>String(p.date).localeCompare(String(q.date))),base=b.length?b:seenL,last=b[b.length-1],lastSeen=seenL[seenL.length-1],t=trendOf(x,base),prices=base.map(e=>unitPrice(x,e)??Number(e.price)).filter(n=>n>0);
     const mn=prices.length?Math.min(...prices):null,av=prices.length?prices.reduce((a,n)=>a+n,0)/prices.length:null,lab=unitPrice(x,{price:1})!=null?' Kč/'+(x.unitLabel||'đv'):' Kč';
     return `<details class="card hc"><summary><span class="si"><b>${esc(x.name)}</b>
-      <span class="mute">${last?`Mua gần nhất ${fmtD(last.date)} · ${esc(last.shop||'')} · ${fmt(last.price)} Kč`:'Chưa mua, mới có giá đã xem'}</span>
-      ${b.length>1?`<span class="mute">${b.length} lần mua · thấp nhất ${fmt2(mn)}${lab} · trung bình ${fmt2(av)}${lab}</span>`:''}</span><span class="sp">${trendHtml(t)}</span></summary>
+      <span class="mute">${last?`Mua gần nhất ${fmtD(last.date)} · ${esc(last.shop||'')} · ${fmt(last.price)} Kč`:`Chưa mua · đã xem ${seenL.length} lần, gần nhất ${fmtD(lastSeen.date)} · ${fmt(lastSeen.price)} Kč`}</span>
+      ${base.length>1?`<span class="mute">${base.length} lần ${b.length?'mua':'xem'} · thấp nhất ${fmt2(mn)}${lab} · trung bình ${fmt2(av)}${lab}</span>`:''}</span><span class="sp">${trendHtml(t)}</span></summary>
       <div class="sd">${shopEntries(x)}<div class="row" style="margin-top:6px"><button class="btn sm" onclick="shopRebuy('${x.id}');shopMode('group')">Mua lại</button><button class="btn sm" onclick="shopSeenDialog('${x.id}')">Ghi giá đã xem</button></div></div></details>`}).join('');
   return `<div class="card shsum" style="grid-template-columns:repeat(3,1fr)"><div><b>${buys.length}</b><span class="mute">lần mua đã ghi</span></div><div><b>${fmt(spent)} Kč</b><span class="mute">tổng đã chi</span></div><div><b>${L.length}</b><span class="mute">sản phẩm có lịch sử</span></div></div>
    ${cards}<div class="row" style="margin-top:8px"><button class="btn sm" onclick="shopHistCsv()">Xuất lịch sử (CSV)</button></div>
@@ -907,8 +907,43 @@ function shopHistCsv(){
   for(const x of shopList())for(const e of shopLog(x))rows.push([x.name,e.kind==='mua'?'Đã mua':'Đã xem',e.date,e.shop,e.price,e.qty,(Number(e.price)||0)*(Number(e.qty)||1),unitPrice(x,e)!=null?fmt2(unitPrice(x,e)):'',e.link,e.note].map(v=>v==null?'':String(v)));
   const q=v=>'"'+v.replace(/"/g,'""')+'"';
   dl('lich-su-gia-'+today()+'.csv','\uFEFF'+rows.map(r=>r.map(q).join(',')).join('\r\n')+'\r\n','text/csv;charset=utf-8')}
+/* ---------- Lưu nhanh sản phẩm đã xem (từ link, hoặc nút Chia sẻ trên điện thoại) ---------- */
+const SHOP_DOMAINS=[[/sunday\.de/,'sunday.de (Đức)'],[/sunday-natural\.cz/,'sunday-natural.cz'],[/drmax\.cz/,'Dr.Max'],[/lekarna\.cz/,'Lékárna.cz'],[/lekarna-bella\.cz/,'Lékárna Bella'],[/iherb\.com/,'iHerb CZ'],[/allegro\.cz/,'Allegro'],[/alza\.cz/,'Alza']];
+const shopFromLink=u=>{try{const h=new URL(u).hostname.replace(/^www\./,'');const m=SHOP_DOMAINS.find(([re])=>re.test(h));return m?m[1]:h}catch(e){return ''}};
+const linkKey=u=>String(u||'').trim().toLowerCase().replace(/[?#].*$/,'').replace(/\/+$/,'');
+function shopQuickAdd(pre){pre=pre||{};
+  dialog('Lưu sản phẩm đã xem',[
+    {k:'link',l:'Đường dẫn trang sản phẩm'},
+    {k:'name',l:'Tên sản phẩm'},
+    {k:'shop',l:'Nơi bán (để trống thì lấy theo link)'},
+    {k:'price',l:'Giá đang thấy (Kč)',t:'number'},
+    {k:'note',l:'Ghi chú',t:'area'}],
+    {link:pre.link||'',name:pre.name||'',shop:pre.shop||'',price:pre.price??'',note:''},v=>{
+      const link=String(v.link||'').trim();
+      if(link&&!safeUrl(link)){alert('Đường dẫn phải bắt đầu bằng http hoặc https.');return}
+      const shop=v.shop||shopFromLink(link),price=v.price===''?'':Number(v.price);
+      const ex=link?shopList().find(x=>linkKey(x.link)===linkKey(link)):null;
+      if(ex){ // cùng link đã lưu: ghi thêm một lần xem để theo dõi giá, không tạo mục mới
+        if(price===''){alert('Link này đã lưu: “'+ex.name+'”. Nhập giá đang thấy để ghi thêm lần xem.');return}
+        ex.log=[...shopLog(ex),{id:uid(),kind:'xem',date:today(),shop:shop||ex.shop||'',price,qty:1,link,note:v.note||''}];
+        save();render();alert('Link này đã có trong danh mục: “'+ex.name+'”. Mình ghi thêm một lần xem với giá '+price+' Kč.');return}
+      if(!v.name){alert('Hãy nhập tên sản phẩm.');return}
+      const sk=substKeyOf({name:v.name}),group=sk?canonName({name:v.name},sk):'';
+      const it={id:uid(),name:v.name,group,shop,price,qty:1,units:'',unitLabel:'',link,dose:'',status:'Đã xem',buy:false,checkShort:'',check:'',notes:v.note||'',log:[]};
+      if(price!=='')it.log.push({id:uid(),kind:'xem',date:today(),shop,price,qty:1,link,note:v.note||''});
+      S.shopping=[...shopList(),it];save();render()})}
+/* Nhận link từ nút Chia sẻ của trình duyệt (app đã cài lên màn hình chính) */
+function handleShare(){
+  try{
+    const q=new URLSearchParams(location.search),t=q.get('title')||'',x=q.get('text')||'',u=q.get('url')||'';
+    if(!(t||x||u))return;
+    const m=(u+' '+x).match(/https?:\/\/[^\s]+/),link=m?m[0]:'';
+    history.replaceState(history.state,'',location.pathname);
+    go('shelf');
+    shopQuickAdd({link,name:(t||x.replace(/https?:\/\/\S+/g,'')).trim().slice(0,160),shop:shopFromLink(link)});
+  }catch(e){}}
 function shopRow(x){
-  const q=shopQtyOf(x),pr=Number(x.price)||0,done=x.status==='Đã mua',on=x.buy!==false&&!done;
+  const q=shopQtyOf(x),pr=Number(x.price)||0,done=x.status==='Đã mua',seen=x.status==='Đã xem',on=x.buy!==false&&!done&&!seen;
   const hasPrice=x.price!==''&&x.price!=null;
   const pt=hasPrice?(q>1?`${q} × ${fmt(pr)}<br><b>${fmt(pr*q)} Kč</b>`:`<b>${fmt(pr)} Kč</b>`):'<span class="mute">chưa có giá</span>';
   const warn=x.checkShort||(x.check?'Cần kiểm tra, mở ra xem':'');
@@ -923,7 +958,7 @@ function shopRow(x){
     ${x.check?`<div class="note" style="margin-top:6px"><b>Cần kiểm tra:</b> ${esc(x.check)}</div>`:''}
     ${x.notes?`<div class="mute" style="margin-top:6px">${esc(x.notes)}</div>`:''}
     ${shopLog(x).length?`<div class="lh"><div class="mute" style="margin-top:8px">Lịch sử giá</div>${shopEntries(x,3)}${shopLog(x).length>3?`<div class="mute" style="font-size:12px">Còn ${shopLog(x).length-3} dòng cũ hơn, xem ở “Lịch sử mua”.</div>`:''}</div>`:''}
-    <div class="row" style="margin-top:8px">${done?`<button class="btn sm" onclick="shopRebuy('${x.id}')">Mua lại</button>`:`<button class="btn sm pri" onclick="shopBuyDialog('${x.id}')">Đã mua…</button>`}<button class="btn sm" onclick="shopSeenDialog('${x.id}')">Ghi giá đã xem</button><button class="btn sm" onclick="shopEdit('${x.id}')">Sửa</button><button class="btn sm del" onclick="shopDel('${x.id}')">Xoá</button></div>
+    <div class="row" style="margin-top:8px">${done?`<button class="btn sm" onclick="shopRebuy('${x.id}')">Mua lại</button>`:seen?`<button class="btn sm pri" onclick="shopBuy('${x.id}')">Định mua</button>`:`<button class="btn sm pri" onclick="shopBuyDialog('${x.id}')">Đã mua…</button>`}<button class="btn sm" onclick="shopSeenDialog('${x.id}')">Ghi giá đã xem</button><button class="btn sm" onclick="shopEdit('${x.id}')">Sửa</button><button class="btn sm del" onclick="shopDel('${x.id}')">Xoá</button></div>
    </div></details>`}
 /* ---------- Theo cửa hàng: gom đơn để miễn phí ship (chỉ gợi ý, không tự đặt hàng) ----------
    Số liệu tra ngày 10/11/2026, ghi trong design/mua-hang-phi-van-chuyen-2026-11-10.md. Chưa số nào đọc được từ trang chính thức của cửa hàng,
@@ -938,14 +973,14 @@ const SHOP_INFO={
  allegro:{name:'Allegro',freeFrom:299,feeLo:49,feeHi:99,conf:'thap',src:'skrblik.cz, dữ liệu 2023 đến 2024.',promo:'Cần Allegro Smart. Mỗi người bán tính riêng, giao tận nơi cần từ 499 Kč.',perItem:true}
 };
 const SHOP_CONF={tb:'Độ chắc chắn: trung bình',thap:'Độ chắc chắn: thấp, chưa xác minh'};
-const shopKeyOf=x=>{const t=String(x.shop||'').toLowerCase();for(const[k,re]of[['sunday',/sunday/],['drmax',/dr\.?\s?max/],['lekarnacz',/l[eé]k[aá]rna\.cz/],['bella',/bella/],['iherb',/iherb/],['allegro',/allegro/]])if(re.test(t))return k;return null};
+const shopKeyOf=x=>{const t=String(x.shop||'').toLowerCase();for(const[k,re]of[['sunday',/sunday\.de|sunday natural \(de|sunday de/],['drmax',/dr\.?\s?max/],['lekarnacz',/l[eé]k[aá]rna\.cz/],['bella',/bella/],['iherb',/iherb/],['allegro',/allegro/]])if(re.test(t))return k;return null};
 function shopInfoOf(k){const b=SHOP_INFO[k]||{name:'Cửa hàng khác',freeFrom:null,feeLo:null,feeHi:null,conf:'thap',src:'',promo:''};const ov=((S.settings||{}).shopInfo||{})[k]||{};return {...b,...ov}}
 function shopThr(k,i){if(k==='drmax'&&(S.settings||{}).drmaxCard&&i.alt)return i.alt.freeFrom;return i.freeFrom}
 function shopShipments(){
   const want=shopWant(),by={};
   for(const x of want){const k=shopKeyOf(x)||'khac',info=shopInfoOf(k),id=info.perItem?k+':'+x.id:k;(by[id]=by[id]||{key:k,id,items:[]}).items.push(x)}
   return Object.values(by).map(g=>{const info=shopInfoOf(g.key),thr=shopThr(g.key,info),sub=shopSum(g.items),free=thr!=null&&sub>=thr,gap=thr!=null&&!free?Math.round(thr-sub):0;
-    const pool=shopList().filter(c=>c.buy===false&&c.status!=='Đã mua'&&(shopKeyOf(c)||'khac')===g.key);
+    const pool=shopList().filter(c=>(c.buy===false||c.status==='Đã xem')&&c.status!=='Đã mua'&&(shopKeyOf(c)||'khac')===g.key);
     return {...g,info,thr,sub,free,gap,pool}})}
 function shopAdvice(g){
   const {info,thr,sub,free,gap,pool}=g;
@@ -953,7 +988,7 @@ function shopAdvice(g){
   if(free)return 'Đủ điều kiện miễn phí ship theo số liệu đang có.';
   const fee=info.feeHi!=null?(info.feeLo===info.feeHi?info.feeLo:info.feeLo+'–'+info.feeHi):null;
   const fit=pool.find(c=>sub+(Number(c.price)||0)*shopQtyOf(c)>=thr);
-  if(fit)return `Tích thêm “${fit.name}” (${fmt((Number(fit.price)||0)*shopQtyOf(fit))} Kč) sẽ đủ miễn phí ship${fee?`, bỏ được phí ship khoảng ${fee} Kč`:''}.`;
+  if(fit)return `${fit.status==='Đã xem'?'Thêm':'Tích thêm'} “${fit.name}” (${fmt((Number(fit.price)||0)*shopQtyOf(fit))} Kč) sẽ đủ miễn phí ship${fee?`, bỏ được phí ship khoảng ${fee} Kč`:''}.`;
   if(gap<=thr*0.35)return `Còn thiếu ${fmt(gap)} Kč. Thêm một sản phẩm cùng ${info.perItem?'người bán':'cửa hàng'} khoảng ${fmt(gap)} Kč sẽ được miễn phí ship${fee?` (đỡ ${fee} Kč phí ship)`:''}.`;
   return `Còn thiếu ${fmt(gap)} Kč mới đủ miễn phí ship, khá xa. Có thể gom với đợt mua sau.`}
 function shopInfoEdit(k){const i=shopInfoOf(k);const d={freeFrom:i.freeFrom??'',feeLo:i.feeLo??'',feeHi:i.feeHi??'',verified:i.verified||'Chưa xác minh'};
@@ -996,13 +1031,15 @@ function shopByShop(){
 function shopBlock(){
   shopSeedOnce();
   const L=shopList(),want=shopWant(),tot=shopSum(want),chk=want.filter(x=>x.checkShort||x.check).length,mode=(S.settings&&S.settings.shopView)||'group';
-  const groups=[];for(const x of L){const g=x.group||'Khác';if(!groups.includes(g))groups.push(g)}
-  const body=groups.map(g=>{const items=L.filter(x=>(x.group||'Khác')===g),sel=items.filter(x=>x.buy!==false&&x.status!=='Đã mua');
-    return `<div class="sg"><b>${esc(g)}</b><span class="mute">${items.length} sản phẩm${sel.length!==items.length?` · chọn mua ${sel.length}`:''} · ${fmt(shopSum(sel))} Kč</span></div>`+items.map(shopRow).join('')}).join('');
-  return `<div class="sec2"><b>🛒 Danh mục mua</b><span class="mute">${L.length} sản phẩm · ${groups.length} nhóm</span></div>
+  const SEEN_G='👀 Đã xem, chưa quyết định',gOf=x=>x.status==='Đã xem'?SEEN_G:(x.group||'Khác');
+  const groups=[];for(const x of L){const g=gOf(x);if(!groups.includes(g))groups.push(g)}
+  if(groups.includes(SEEN_G)){groups.splice(groups.indexOf(SEEN_G),1);groups.push(SEEN_G)}
+  const body=groups.map(g=>{const items=L.filter(x=>gOf(x)===g),sel=items.filter(x=>x.buy!==false&&x.status!=='Đã mua'&&x.status!=='Đã xem');
+    return `<div class="sg"><b>${esc(g)}</b><span class="mute">${g===SEEN_G?`${items.length} sản phẩm · bấm “Định mua” khi bạn muốn mua`:`${items.length} sản phẩm${sel.length!==items.length?` · chọn mua ${sel.length}`:''} · ${fmt(shopSum(sel))} Kč`}</span></div>`+items.map(shopRow).join('')}).join('');
+  return `<div class="sec2"><b>🛒 Danh mục mua</b><span class="mute">${L.filter(x=>x.status!=='Đã xem').length} sản phẩm · ${groups.filter(g=>g!==SEEN_G).length} nhóm${L.some(x=>x.status==='Đã xem')?` · ${L.filter(x=>x.status==='Đã xem').length} đã xem`:''}</span></div>
     <div class="card shsum"><div><b>${want.length}</b><span class="mute">sản phẩm sẽ mua</span></div><div><b>${fmt(tot)} Kč</b><span class="mute">tạm tính, chưa gồm ship</span></div><div><b>${chk}</b><span class="mute">mục cần kiểm tra</span></div></div>
     <details class="fam" style="margin:0 0 8px"><summary>“Cần kiểm tra” là gì?</summary><div class="mute" style="margin-top:4px">Là việc nên xác nhận <b>trước khi trả tiền</b>: giá có thể đã đổi hoặc chưa gồm phí ship, hàm lượng trên nhãn cần đối chiếu, mã giảm giá có thể hết hạn, hoặc cần hỏi bác sĩ vì liên quan thuốc đang dùng. Bấm vào từng sản phẩm để đọc chi tiết.</div></details>
-    <div class="row" style="margin:0 0 8px"><button class="btn pri sm" onclick="shopEdit()">+ Thêm mục</button><button class="btn sm" onclick="shopCsv()" ${L.length?'':'disabled'}>Xuất CSV</button></div>
+    <div class="row" style="margin:0 0 8px"><button class="btn pri sm" onclick="shopEdit()">+ Thêm mục</button><button class="btn sm" onclick="shopQuickAdd()">👀 Lưu sản phẩm đã xem</button><button class="btn sm" onclick="shopCsv()" ${L.length?'':'disabled'}>Xuất CSV</button></div>
     <div class="seg" role="tablist"><button class="${mode==='group'?'on':''}" onclick="shopMode('group')">Theo nhóm</button><button class="${mode==='shop'?'on':''}" onclick="shopMode('shop')">Theo cửa hàng</button><button class="${mode==='hist'?'on':''}" onclick="shopMode('hist')">Lịch sử mua</button></div>
     ${mode==='hist'?shopHistory():mode==='shop'?shopByShop():(body||'<div class="empty">Chưa có mục nào. Bấm “+ Thêm mục” để ghi sản phẩm định mua.</div>')}`}
 function vShelf(){
@@ -2056,7 +2093,7 @@ async function driveSync(){
 /* ---------- Khởi động ---------- */
 document.getElementById('appver').textContent=APP_VER.replace('tpcn-','');
 try{history.replaceState(Object.assign(navSnap(),{d:0}),'')}catch(e){}
-load().then(()=>{render();checkUpdate()});
+load().then(()=>{render();checkUpdate();handleShare()});
 setInterval(checkUpdate,30*60*1000);
 if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 </script>
