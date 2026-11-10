@@ -305,13 +305,24 @@ nav button{gap:3px}
 .shi .qty{display:flex;align-items:center;gap:10px;margin-top:2px}.shi .qty b{min-width:20px;text-align:center}
 
 /* ---------- Theo cửa hàng ---------- */
-.seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border-radius:12px;background:var(--line);margin:0 0 8px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:12px;background:var(--line);margin:0 0 8px}
 .seg button{padding:8px 6px;border:0;border-radius:9px;background:transparent;color:var(--mute);font:inherit;font-size:14px;font-weight:600;cursor:pointer}
 .seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
 .shc .shh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}.shc .shh b{font-size:15px}
 .shc .shl{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:3px 0;border-top:1px solid var(--line)}
 .shc .shl span:first-child{flex:1;min-width:0}.shc .shl span:last-child{flex:none;white-space:nowrap}
 .shc .shadv{margin-top:6px;padding:8px 10px;border-radius:10px;background:var(--pri2);color:var(--ink);font-size:13px;line-height:1.4}
+
+/* ---------- Sổ giá ---------- */
+.tr{font-size:12px;font-weight:700;padding:2px 7px;border-radius:999px;white-space:nowrap;background:var(--line);color:var(--mute)}
+.tr.up{background:#fee2e2;color:#991b1b}.tr.dn{background:#dcfce7;color:#166534}
+@media (prefers-color-scheme:dark){.tr.up{background:#3b1d1d;color:#fca5a5}.tr.dn{background:#14301f;color:#86efac}}
+.le{padding:6px 0;border-top:1px solid var(--line);font-size:13px;display:flex;flex-direction:column;gap:2px}
+.le .lek{display:flex;gap:12px;align-items:center;font-size:12.5px}
+.le .lx{border:0;background:none;color:var(--mute);font:inherit;font-size:12.5px;padding:0;text-decoration:underline;cursor:pointer}
+.hc>summary{list-style:none;display:flex;align-items:flex-start;gap:10px;cursor:pointer}.hc>summary::-webkit-details-marker{display:none}
+.hc .si{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.hc .si b{font-size:14px;line-height:1.3}.hc .sp{flex:none}
+.hc .sd{margin-top:8px}
 </style>
 </head>
 <body>
@@ -388,7 +399,7 @@ function render(){
   document.querySelector('header').style.display=tab==='today'?'none':'';
   ({today:vToday,shelf:vShelf,add:vAdd,know:vKnow,fam:vFam,set:vSet})[tab]();
 }
-const APP_VER='tpcn-v2-54';
+const APP_VER='tpcn-v2-55';
 let newVer='';
 const updBanner=()=>newVer?`<div class="note" style="margin-bottom:12px;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Có bản mới của app.</b> <button class="btn sm pri" onclick="forceUpdate()">Cập nhật ngay</button></div>`:'';
 function view(title,sub_,html){$('#ttl').textContent=title;$('#sub').textContent=sub_||'';$('#view').innerHTML=updBanner()+html}
@@ -776,6 +787,8 @@ function shopEdit(id){const o=id?byId(shopList(),id):null;const d=o||{id:uid(),n
     {k:'shop',l:'Nơi bán'},
     {k:'price',l:'Giá một đơn vị (Kč)',t:'number'},
     {k:'qty',l:'Số lượng mua',t:'number'},
+    {k:'units',l:'Số viên (hoặc ml, giọt) trong một sản phẩm',t:'number'},
+    {k:'unitLabel',l:'Đơn vị (viên, ml, giọt...)'},
     {k:'dose',l:'Liều dùng'},
     {k:'link',l:'Đường dẫn trang bán'},
     {k:'status',l:'Trạng thái',t:'sel',o:SHOP_ST.map(x=>[x,x])},
@@ -805,18 +818,95 @@ const SHOP_SEED=[
  {name:'Cemio RED3, 90 viên',group:'Red 3 (cho bố)',shop:'Lékárna Bella',price:371,qty:1,buy:true,dose:'1 viên mỗi ngày',link:'https://lekarna-bella.cz/cemio-red3-cps-90-novy',checkShort:'Bố trên 65 tuổi, hỏi bác sĩ trước khi dùng',check:'Dành cho bố (trên 65 tuổi). Cần hỏi bác sĩ và đối chiếu đơn thuốc hiện tại trước khi dùng. Chưa có kiểm nghiệm độc lập. Chưa tự kiểm tra được trên SÚKL.',notes:'Còn hàng khi kiểm tra ngày 10/11/2026. Miễn phí ship trên 2 500 Kč. Magistr Marek 362 Kč (chưa xác minh IČO).'},
  {name:'Line Extension Two-Per-Day Multivitamin, 120 viên',group:'Multivitamin',shop:'iHerb CZ',price:530,qty:1,buy:true,dose:'2 viên mỗi ngày',link:'https://cz.iherb.com/pr/life-extension-two-per-day-multivitamin-120-tablets/86454',checkShort:'Đối chiếu nhãn, đã có 25 mg kẽm',check:'Kiểm tra lại tên và nhãn trước khi mua. Kẽm 25 mg đã đủ, không nên uống thêm kẽm riêng. Không dùng cho con 12 tuổi khi chưa hỏi bác sĩ. Bố trên 65 tuổi cần đối chiếu đơn thuốc.',notes:'529,85 Kč, còn hàng. Stále mladí 584 Kč (60 viên, giao 10–14 ngày). Các trang khác ghi số liệu nhãn khác nhau.'}
 ];
+const SHOP_UNITS=[[120,'viên'],[200,'viên'],[1000,'giọt'],[300,'giọt'],[112,'viên'],[250,'ml'],[200,'viên'],[90,'viên'],[120,'viên']];
 function shopSeedOnce(){
   S.settings=S.settings||{};
   if(!S.settings.shopSeeded){
     S.settings.shopSeeded=true;
-    if(!shopList().length)S.shopping=SHOP_SEED.map((x,i)=>({id:'n'+(i+1),status:'Chưa mua',...x}));
-    S.settings.shopV2=true;save();return}
+    if(!shopList().length)S.shopping=SHOP_SEED.map((x,i)=>({id:'n'+(i+1),status:'Chưa mua',units:SHOP_UNITS[i][0],unitLabel:SHOP_UNITS[i][1],...x}));
+    S.settings.shopV2=true;S.settings.shopV3=true;save();return}
   // Bản cũ đã nhập 9 mục trước khi có nhóm, số lượng và ô chọn: bổ sung phần còn thiếu, không đụng vào chỗ bạn đã sửa
   if(!S.settings.shopV2){
     S.settings.shopV2=true;
     shopList().forEach(x=>{const m=/^n(\d+)$/.test(x.id)?SHOP_SEED[Number(x.id.slice(1))-1]:null;if(!m)return;
       if(x.group==null)x.group=m.group;if(x.qty==null)x.qty=m.qty;if(x.buy==null)x.buy=m.buy;if(x.checkShort==null)x.checkShort=m.checkShort});
+    save()}
+  // Bản đã có từ v2-54 chưa có số viên/giọt/ml: bổ sung cho 9 mục gốc, không đụng vào mục bạn tự thêm
+  if(!S.settings.shopV3){
+    S.settings.shopV3=true;
+    shopList().forEach(x=>{const m=/^n(\d+)$/.test(x.id)?SHOP_UNITS[Number(x.id.slice(1))-1]:null;if(!m)return;if(x.units==null)x.units=m[0];if(x.unitLabel==null)x.unitLabel=m[1]});
     save()}}
+/* ---------- Sổ giá: lịch sử xem và mua, so sánh giá giữa các lần ---------- */
+const shopLog=x=>x.log||[];
+const shopBuys=x=>shopLog(x).filter(e=>e.kind==='mua').sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+const fmtD=d=>String(d||'').split('-').reverse().join('/');
+const fmt2=n=>String(Math.round(n*100)/100);
+const unitPrice=(x,e)=>x.units&&Number(x.units)>0&&e.price!==''&&e.price!=null?Number(e.price)/Number(x.units):null;
+/* So giá lần cuối với lần liền trước (theo giá một đơn vị nếu biết số viên, không thì theo giá cả sản phẩm) */
+function trendOf(x,list){
+  if(list.length<2)return null;
+  const a=list[list.length-2],b=list[list.length-1];
+  const pa=unitPrice(x,a)??Number(a.price),pb=unitPrice(x,b)??Number(b.price);
+  if(!(pa>0)||!(pb>0))return null;
+  const d=pb-pa;return {up:d>1e-9,down:d<-1e-9,pct:Math.round(d/pa*1000)/10,box:Number(b.price)-Number(a.price)}}
+const trendHtml=t=>!t?'':(t.up?`<span class="tr up">▲ +${fmt2(t.pct)}%</span>`:t.down?`<span class="tr dn">▼ ${fmt2(Math.abs(t.pct))}%</span>`:`<span class="tr">= không đổi</span>`);
+function shopLogSave(id,kind,v){
+  const x=byId(shopList(),id);if(!x)return;
+  if(v.price===''||v.price==null||!(Number(v.price)>=0)){alert('Hãy nhập giá.');return}
+  const e={id:uid(),kind,date:v.date||today(),shop:v.shop||x.shop||'',price:Number(v.price),qty:Math.max(1,Number(v.qty)||1),link:v.link||x.link||'',note:v.note||''};
+  if(kind==='mua'&&x.price!==''&&x.price!=null)e.planned=Number(x.price);
+  x.log=[...shopLog(x),e];
+  if(kind==='mua'){x.status='Đã mua';x.buy=true}
+  save();render()}
+function shopBuyDialog(id){const x=byId(shopList(),id);if(!x)return;
+  dialog('Ghi lần mua',[
+    {k:'date',l:'Ngày mua',t:'date'},
+    {k:'shop',l:'Nơi mua'},
+    {k:'price',l:'Giá thực tế một sản phẩm (Kč)',t:'number'},
+    {k:'qty',l:'Số lượng',t:'number'},
+    {k:'link',l:'Đường dẫn trang đã mua'},
+    {k:'note',l:'Ghi chú (mã giảm giá, phí ship, lý do...)',t:'area'}],
+    {date:today(),shop:x.shop||'',price:x.price,qty:shopQtyOf(x),link:x.link||'',note:''},v=>shopLogSave(id,'mua',v))}
+function shopSeenDialog(id){const x=byId(shopList(),id);if(!x)return;
+  dialog('Ghi giá đã xem (chưa mua)',[
+    {k:'date',l:'Ngày xem',t:'date'},
+    {k:'shop',l:'Nơi bán'},
+    {k:'price',l:'Giá đang thấy (Kč)',t:'number'},
+    {k:'link',l:'Đường dẫn'},
+    {k:'note',l:'Ghi chú',t:'area'}],
+    {date:today(),shop:x.shop||'',price:x.price,link:x.link||'',note:''},v=>shopLogSave(id,'xem',v))}
+function shopRebuy(id){const x=byId(shopList(),id);if(!x)return;
+  x.status='Chưa mua';x.buy=true;const last=shopBuys(x).pop();if(last&&last.price!=null)x.price=last.price;save();render()}
+function shopLogDel(id,eid){const x=byId(shopList(),id);if(!x)return;if(!confirm('Xoá dòng này khỏi lịch sử giá?'))return;x.log=shopLog(x).filter(e=>e.id!==eid);save();render()}
+function shopEntry(x,e,prevSame){
+  const up=unitPrice(x,e),t=prevSame?trendOf(x,[prevSame,e]):null;
+  return `<div class="le"><div><b>${e.kind==='mua'?'Đã mua':'Đã xem'}</b> ${fmtD(e.date)}${e.shop?' · '+esc(e.shop):''}</div>
+   <div>${fmt(e.price)} Kč${e.qty>1?` × ${e.qty}`:''}${up!=null?` <span class="mute">(${fmt2(up)} Kč/${esc(x.unitLabel||'đv')})</span>`:''} ${trendHtml(t)}</div>
+   ${e.planned!=null&&e.kind==='mua'&&Number(e.planned)!==Number(e.price)?`<div class="mute">Dự kiến ${fmt(e.planned)} Kč, thực tế ${Number(e.price)>Number(e.planned)?'cao hơn':'thấp hơn'} ${fmt(Math.abs(Number(e.price)-Number(e.planned)))} Kč</div>`:''}
+   ${e.note?`<div class="mute">${esc(e.note)}</div>`:''}
+   <div class="lek">${safeUrl(e.link)?`<a href="${esc(e.link)}" target="_blank" rel="noopener noreferrer">mở trang</a>`:''}<button class="lx" onclick="shopLogDel('${x.id}','${e.id}')" aria-label="Xoá dòng">xoá</button></div></div>`}
+function shopEntries(x,max){
+  const all=[...shopLog(x)].sort((a,b)=>String(b.date).localeCompare(String(a.date))||0);
+  const prevOf=e=>{const same=[...shopLog(x)].filter(z=>z.kind===e.kind&&String(z.date)<String(e.date)).sort((a,b)=>String(b.date).localeCompare(String(a.date)));return same[0]};
+  return (max?all.slice(0,max):all).map(e=>shopEntry(x,e,prevOf(e))).join('')}
+function shopHistory(){
+  const L=shopList().filter(x=>shopLog(x).length);
+  if(!L.length)return '<div class="empty">Chưa có lần mua hay lần xem nào. Mở một sản phẩm rồi bấm “Đã mua…” để ghi giá thật, nơi mua và link. Lần sau mua lại, app sẽ so giá với các lần trước.</div>';
+  const buys=L.flatMap(x=>shopBuys(x).map(e=>({x,e}))),spent=buys.reduce((a,{e})=>a+(Number(e.price)||0)*(Number(e.qty)||1),0);
+  const cards=L.map(x=>{const b=shopBuys(x),last=b[b.length-1],t=trendOf(x,b),prices=b.map(e=>unitPrice(x,e)??Number(e.price)).filter(n=>n>0);
+    const mn=prices.length?Math.min(...prices):null,av=prices.length?prices.reduce((a,n)=>a+n,0)/prices.length:null,lab=unitPrice(x,{price:1})!=null?' Kč/'+(x.unitLabel||'đv'):' Kč';
+    return `<details class="card hc"><summary><span class="si"><b>${esc(x.name)}</b>
+      <span class="mute">${last?`Mua gần nhất ${fmtD(last.date)} · ${esc(last.shop||'')} · ${fmt(last.price)} Kč`:'Chưa mua, mới có giá đã xem'}</span>
+      ${b.length>1?`<span class="mute">${b.length} lần mua · thấp nhất ${fmt2(mn)}${lab} · trung bình ${fmt2(av)}${lab}</span>`:''}</span><span class="sp">${trendHtml(t)}</span></summary>
+      <div class="sd">${shopEntries(x)}<div class="row" style="margin-top:6px"><button class="btn sm" onclick="shopRebuy('${x.id}');shopMode('group')">Mua lại</button><button class="btn sm" onclick="shopSeenDialog('${x.id}')">Ghi giá đã xem</button></div></div></details>`}).join('');
+  return `<div class="card shsum" style="grid-template-columns:repeat(3,1fr)"><div><b>${buys.length}</b><span class="mute">lần mua đã ghi</span></div><div><b>${fmt(spent)} Kč</b><span class="mute">tổng đã chi</span></div><div><b>${L.length}</b><span class="mute">sản phẩm có lịch sử</span></div></div>
+   ${cards}<div class="row" style="margin-top:8px"><button class="btn sm" onclick="shopHistCsv()">Xuất lịch sử (CSV)</button></div>
+   <div class="mute" style="font-size:12px;margin-top:6px">Mũi tên so với lần liền trước, tính theo giá mỗi viên (hoặc ml, giọt) khi biết số lượng trong hộp, không thì theo giá cả sản phẩm.</div>`}
+function shopHistCsv(){
+  const rows=[['Sản phẩm','Loại','Ngày','Nơi','Giá một sản phẩm (Kč)','Số lượng','Thành tiền (Kč)','Giá một đơn vị (Kč)','Đường dẫn','Ghi chú']];
+  for(const x of shopList())for(const e of shopLog(x))rows.push([x.name,e.kind==='mua'?'Đã mua':'Đã xem',e.date,e.shop,e.price,e.qty,(Number(e.price)||0)*(Number(e.qty)||1),unitPrice(x,e)!=null?fmt2(unitPrice(x,e)):'',e.link,e.note].map(v=>v==null?'':String(v)));
+  const q=v=>'"'+v.replace(/"/g,'""')+'"';
+  dl('lich-su-gia-'+today()+'.csv','\uFEFF'+rows.map(r=>r.map(q).join(',')).join('\r\n')+'\r\n','text/csv;charset=utf-8')}
 function shopRow(x){
   const q=shopQtyOf(x),pr=Number(x.price)||0,done=x.status==='Đã mua',on=x.buy!==false&&!done;
   const hasPrice=x.price!==''&&x.price!=null;
@@ -832,7 +922,8 @@ function shopRow(x){
     <div class="qty"><span class="mute">Số lượng mua:</span><button class="btn sm" onclick="shopQty('${x.id}',-1)" aria-label="Giảm">−</button><b>${q}</b><button class="btn sm" onclick="shopQty('${x.id}',1)" aria-label="Tăng">+</button></div>
     ${x.check?`<div class="note" style="margin-top:6px"><b>Cần kiểm tra:</b> ${esc(x.check)}</div>`:''}
     ${x.notes?`<div class="mute" style="margin-top:6px">${esc(x.notes)}</div>`:''}
-    <div class="row" style="margin-top:8px"><button class="btn sm" onclick="shopToggle('${x.id}')">${done?'Chưa mua':'Đã mua'}</button><button class="btn sm" onclick="shopEdit('${x.id}')">Sửa</button><button class="btn sm del" onclick="shopDel('${x.id}')">Xoá</button></div>
+    ${shopLog(x).length?`<div class="lh"><div class="mute" style="margin-top:8px">Lịch sử giá</div>${shopEntries(x,3)}${shopLog(x).length>3?`<div class="mute" style="font-size:12px">Còn ${shopLog(x).length-3} dòng cũ hơn, xem ở “Lịch sử mua”.</div>`:''}</div>`:''}
+    <div class="row" style="margin-top:8px">${done?`<button class="btn sm" onclick="shopRebuy('${x.id}')">Mua lại</button>`:`<button class="btn sm pri" onclick="shopBuyDialog('${x.id}')">Đã mua…</button>`}<button class="btn sm" onclick="shopSeenDialog('${x.id}')">Ghi giá đã xem</button><button class="btn sm" onclick="shopEdit('${x.id}')">Sửa</button><button class="btn sm del" onclick="shopDel('${x.id}')">Xoá</button></div>
    </div></details>`}
 /* ---------- Theo cửa hàng: gom đơn để miễn phí ship (chỉ gợi ý, không tự đặt hàng) ----------
    Số liệu tra ngày 10/11/2026, ghi trong design/mua-hang-phi-van-chuyen-2026-11-10.md. Chưa số nào đọc được từ trang chính thức của cửa hàng,
@@ -912,8 +1003,8 @@ function shopBlock(){
     <div class="card shsum"><div><b>${want.length}</b><span class="mute">sản phẩm sẽ mua</span></div><div><b>${fmt(tot)} Kč</b><span class="mute">tạm tính, chưa gồm ship</span></div><div><b>${chk}</b><span class="mute">mục cần kiểm tra</span></div></div>
     <details class="fam" style="margin:0 0 8px"><summary>“Cần kiểm tra” là gì?</summary><div class="mute" style="margin-top:4px">Là việc nên xác nhận <b>trước khi trả tiền</b>: giá có thể đã đổi hoặc chưa gồm phí ship, hàm lượng trên nhãn cần đối chiếu, mã giảm giá có thể hết hạn, hoặc cần hỏi bác sĩ vì liên quan thuốc đang dùng. Bấm vào từng sản phẩm để đọc chi tiết.</div></details>
     <div class="row" style="margin:0 0 8px"><button class="btn pri sm" onclick="shopEdit()">+ Thêm mục</button><button class="btn sm" onclick="shopCsv()" ${L.length?'':'disabled'}>Xuất CSV</button></div>
-    <div class="seg" role="tablist"><button class="${mode==='group'?'on':''}" onclick="shopMode('group')">Theo nhóm</button><button class="${mode==='shop'?'on':''}" onclick="shopMode('shop')">Theo cửa hàng</button></div>
-    ${mode==='shop'?shopByShop():(body||'<div class="empty">Chưa có mục nào. Bấm “+ Thêm mục” để ghi sản phẩm định mua.</div>')}`}
+    <div class="seg" role="tablist"><button class="${mode==='group'?'on':''}" onclick="shopMode('group')">Theo nhóm</button><button class="${mode==='shop'?'on':''}" onclick="shopMode('shop')">Theo cửa hàng</button><button class="${mode==='hist'?'on':''}" onclick="shopMode('hist')">Lịch sử mua</button></div>
+    ${mode==='hist'?shopHistory():mode==='shop'?shopByShop():(body||'<div class="empty">Chưa có mục nào. Bấm “+ Thêm mục” để ghi sản phẩm định mua.</div>')}`}
 function vShelf(){
   if(sub)return vProduct(sub);
   const l=S.products;
