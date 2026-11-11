@@ -382,21 +382,21 @@ const fmtDay=()=>{const d=new Date();return WD[d.getDay()]+', '+d.getDate()+'/'+
 /* ---------- Điều hướng ---------- */
 const IC={today:'<rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M8 2.5v4M16 2.5v4M3 10h18M9 15.5l2 2 4-4"/>',shelf:'<path d="M10.5 20.5l-7-7a4.9 4.9 0 017-7l7 7a4.9 4.9 0 01-7 7z"/><path d="M8 8l8 8"/>',know:'<path d="M2.5 5h6a3.5 3.5 0 013.5 3.5V20a2.5 2.5 0 00-2.5-2.5h-7z"/><path d="M21.5 5h-6A3.5 3.5 0 0012 8.5V20a2.5 2.5 0 012.5-2.5h7z"/>',fam:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0"/><circle cx="17.5" cy="9" r="2.5"/><path d="M17.5 14.5a5 5 0 014 5"/>'};
 const TABS=[['today','Hôm nay'],['shelf','Tủ thuốc'],['know','Thư viện'],['fam','Gia đình']];
-let tab='today',sub=null,fMember='',draft=null;
+let tab='today',sub=null,fMember='',draft=null,docSrc='';
 /* Lịch sử điều hướng: mỗi lần đổi màn hình ghi một mục vào lịch sử trình duyệt,
    nên nút Back của điện thoại lùi đúng một cấp. Chỉ ở trang Hôm nay (mục đầu tiên) thì Back mới thoát app. */
 let navLock=false;
-const navKey=()=>[tab,sub,fMember,libF,libTopic,personTab].join('|');
-function navSnap(){return {k:navKey(),d:(history.state&&history.state.d)||0,tab,sub,fMember,libF,libTopic,libQ,personTab}}
+const navKey=()=>[tab,sub,fMember,libF,libTopic,personTab,docSrc].join('|');
+function navSnap(){return {k:navKey(),d:(history.state&&history.state.d)||0,tab,sub,fMember,libF,libTopic,libQ,personTab,docSrc}}
 function nav(){if(navLock)return;try{const cur=history.state;if(cur&&cur.k===navKey())return;const n=navSnap();n.d=(cur&&cur.d||0)+1;history.pushState(n,'')}catch(e){}}
 /* Nút "‹ Quay lại" trong app: lùi một mục lịch sử nếu có, không thì chạy việc dự phòng */
 function goBack(fallback){if(history.state&&history.state.d>0)history.back();else fallback()}
 const setPT=k=>{personTab=k;render();nav()};
 addEventListener('popstate',e=>{const st=e.state;if(!st||!st.k)return;navLock=true;
-  try{tab=st.tab;sub=st.sub;fMember=st.fMember;libF=st.libF;libTopic=st.libTopic;libQ=st.libQ||'';personTab=st.personTab;render();$('#view').scrollTop=0}finally{navLock=false}});
+  try{tab=st.tab;sub=st.sub;fMember=st.fMember;libF=st.libF;libTopic=st.libTopic;libQ=st.libQ||'';personTab=st.personTab;docSrc=st.docSrc||'';render();$('#view').scrollTop=0}finally{navLock=false}});
 function go(t,s=null){tab=t;sub=s;render();$('#view').scrollTop=0;nav()}
 /* Bấm tab ở thanh dưới: về đầu tab đó (Thư viện về trang chủ đề, Gia đình về danh sách), không giữ trang con đang mở */
-function goTab(t){if(t==='know'){libF='all';libTopic='';libQ=''}if(t==='fam')personTab='tq';go(t)}
+function goTab(t){if(t==='know'){libF='all';libTopic='';libQ='';docSrc='';docQ=''}if(t==='fam')personTab='tq';go(t)}
 function render(){
   const cur=tab==='add'?'shelf':tab;
   $('#nav').innerHTML=TABS.map(([k,l])=>`<button class="${k===cur?'on':''}" ${k===cur?'aria-current="page"':''} onclick="goTab('${k}')"><img class="ni" src="img/n-${k}.webp" alt="">${l}</button>`).join('');
@@ -404,7 +404,7 @@ function render(){
   document.querySelector('header').style.display=tab==='today'?'none':'';
   ({today:vToday,shelf:vShelf,add:vAdd,know:vKnow,fam:vFam,set:vSet})[tab]();
 }
-const APP_VER='tpcn-v2-61';
+const APP_VER='tpcn-v2-62';
 let newVer='';
 const updBanner=()=>newVer?`<div class="note" style="margin-bottom:12px;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Có bản mới của app.</b> <button class="btn sm pri" onclick="forceUpdate()">Cập nhật ngay</button></div>`:'';
 function view(title,sub_,html){$('#ttl').textContent=title;$('#sub').textContent=sub_||'';$('#view').innerHTML=updBanner()+html}
@@ -1657,8 +1657,14 @@ function editNote(id,pre){const n=byId(S.notes,id)||{id:uid(),added:today(),...(
   dialog(id?'Sửa ghi chú':'Thêm ghi chú',[{k:'title',l:'Tiêu đề'},{k:'substance',l:'Hoạt chất liên quan (vd: Kẽm, giống tên trong danh sách)'},{k:'source',l:'Nguồn (link hoặc tên tài liệu)'},{k:'content',l:'Nội dung',t:'area'}],n,o=>{if(!o.title)return;upsert(S.notes,o)})}
 /* ---------- Tài liệu (bài chia sẻ đã được sắp xếp: tóm tắt, mức tin cậy, cảnh báo). Nhập từ file riêng, không nằm trong mã nguồn công khai ---------- */
 const DOC_LV={khop:['Khớp bài trong app','#0f766e'],ykien:['Ý kiến tác giả','#1d4ed8'],chuakc:['Chưa kiểm chứng','#6b7280'],trai:['Trái khuyến cáo chính thức','#9a3412']};
-let docQ='',docOwn='';
-function docOwner(x){return /Phúc/i.test((x.source||'')+' '+(x.group||''))?'phuc':'thao'}
+let docQ='';
+/* Nhóm tài liệu theo nguồn: ưu tiên trường "collection" trong file; nếu không có thì rút tên từ "source" (vd "Bác sĩ Trần Văn Phúc, qua bản tóm tắt…" thành "Bác sĩ Trần Văn Phúc"). Nguồn mới tự thành nhóm mới. */
+function docSrcName(x){
+  let c=String((x&&x.collection)||'').trim();
+  if(!c)c=String((x&&x.source)||'').split(/[,;(]| qua /)[0].trim().replace(/^Bài (chia sẻ )?của\s+/i,'').replace(/\s+trong nhóm.*$/i,'').trim();
+  if(!c)return 'Tài liệu khác';
+  return c.charAt(0).toUpperCase()+c.slice(1)}
+const openDocSrc=n=>{docSrc=n;docQ='';libF='doc';vDocList();$('#view').scrollTop=0;nav()};
 async function importDocs(f){
   if(!f)return;
   try{const d=JSON.parse(await f.text());
@@ -1668,7 +1674,7 @@ async function importDocs(f){
     S.docs=S.docs||[];
     const upd=ok.filter(x=>byId(S.docs,x.id)).length;
     if(!confirm(`Nhập ${ok.length} tài liệu (${upd} bài đã có sẽ được cập nhật). Tiếp tục?`))return;
-    for(const x of ok){const o=cleanDeep(x);o.original=typeof x.original==='string'?x.original.slice(0,200000):'';o.originalSource=cleanStr(x.original_source||x.originalSource,160);o.source=cleanStr(d.source,120);const i=S.docs.findIndex(y=>y.id===o.id);i<0?S.docs.push(o):S.docs[i]=o}
+    for(const x of ok){const o=cleanDeep(x);o.original=typeof x.original==='string'?x.original.slice(0,200000):'';o.originalSource=cleanStr(x.original_source||x.originalSource,160);o.source=cleanStr(x.source||d.source,120);const i=S.docs.findIndex(y=>y.id===o.id);i<0?S.docs.push(o):S.docs[i]=o}
     save();syncDocsSheet(false);go('know','d:');alert(`Đã nhập ${ok.length} tài liệu.`);
   }catch(e){alert('Lỗi: '+e.message)}
 }
@@ -1700,8 +1706,9 @@ function mdLite(t){
 }
 function downloadOriginal(id){const x=byId(S.docs||[],id);if(x&&x.original)dl(docFileName(x),x.original,'text/plain;charset=utf-8')}
 function exportDocs(){
-  const d={kind:'tpcn-docs',v:1,source:'Bài chia sẻ của chị Thảo Nguyên trong nhóm',exported:today(),docs:S.docs||[]};
-  dl('tai-lieu-thao-nguyen-'+today()+'.json',JSON.stringify(d,null,1),'application/json');
+  const docs=(S.docs||[]).filter(x=>!docSrc||docSrcName(x)===docSrc);
+  const d={kind:'tpcn-docs',v:1,source:docs[0]?String(docs[0].source||''):'',exported:today(),docs};
+  dl('tai-lieu-'+(docSrc?docSrc.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''):'toan-bo')+'-'+today()+'.json',JSON.stringify(d,null,1),'application/json');
 }
 // Đồng bộ mục lục tài liệu lên Google Sheet (chỉ tiêu đề, nhóm, chủ đề, trạng thái; không gửi nội dung bài hay hồ sơ sức khỏe)
 const GSYNC={clientId:'889192815010-jf7pl02vf6rivd43mj1g316rgjl40vk6.apps.googleusercontent.com',sheetId:'1jkpWUTir3hB5Uhdb1RdJ_7F7Yg-Kx3lWnEo5yaODTRU',token:null,exp:0};
@@ -1710,23 +1717,34 @@ async function gLogin(){await loadGis();return new Promise((res,rej)=>{const c=g
 async function gSheet(path,opt={}){const r=await fetch('https://sheets.googleapis.com/v4/spreadsheets/'+GSYNC.sheetId+path,{...opt,headers:{Authorization:'Bearer '+GSYNC.token,'Content-Type':'application/json'}});if(!r.ok)throw new Error('Google Sheet trả lỗi '+r.status);return r.json()}
 async function syncDocsSheet(manual){
   if(!GSYNC.token||Date.now()>GSYNC.exp){if(manual)alert('Bấm "Đăng nhập Google và đồng bộ" trước.');return}
-  const head=['Mã','Tiêu đề','Nhóm','Cập nhật','Chủ đề','Số cảnh báo','Trạng thái rà soát','Tên file'];
-  const rows=[head].concat((S.docs||[]).map(x=>[x.id,x.title,x.group||'',x.updated||'',pArr(x.tags).join(', '),pArr(x.claims).filter(c=>c.lv==='trai').length,x.reviewed||'Chưa rà lần 2','tai-lieu-thao-nguyen.json']));
+  const head=['Mã','Tiêu đề','Nhóm','Cập nhật','Chủ đề','Số cảnh báo','Trạng thái rà soát','Nguồn'];
+  const rows=[head].concat((S.docs||[]).map(x=>[x.id,x.title,x.group||'',x.updated||'',pArr(x.tags).join(', '),pArr(x.claims).filter(c=>c.lv==='trai').length,x.reviewed||'Chưa rà lần 2',docSrcName(x)]));
   try{await gSheet('/values/A1:H500:clear',{method:'POST'});await gSheet('/values/A1?valueInputOption=RAW',{method:'PUT',body:JSON.stringify({values:rows})});if(manual)alert('Đã đồng bộ '+(rows.length-1)+' tài liệu lên Google Sheet.')}
   catch(e){alert('Đồng bộ lỗi: '+e.message)}
 }
 function vDocList(){
-  const own=(S.docs||[]).filter(x=>!docOwn||docOwner(x)===docOwn);
-  const nT=(S.docs||[]).filter(x=>docOwner(x)==='thao').length,nP=(S.docs||[]).filter(x=>docOwner(x)==='phuc').length;
+  const all=S.docs||[];
+  const names=[...new Set(all.map(docSrcName))].sort((x,y)=>(x==='Tài liệu khác')-(y==='Tài liệu khác')||all.filter(d=>docSrcName(d)===y).length-all.filter(d=>docSrcName(d)===x).length||x.localeCompare(y,'vi'));
+  if(docSrc&&!names.includes(docSrc))docSrc='';
+  const own=docSrc?all.filter(x=>docSrcName(x)===docSrc):all;
   const docs=own.filter(x=>!docQ||docText(x).includes(docQ));
+  const tools=`<div class="row" style="margin:0 0 10px">${docSrc?`<button class="btn" onclick="goBack(()=>{docSrc='';docQ='';vDocList()})">‹ Tài liệu</button>`:`<button class="btn" onclick="goBack(()=>{go('know')})">‹ Thư viện</button>`}<button class="btn" onclick="go('set')">Cập nhật từ file</button><button class="btn" onclick="exportDocs()">${docSrc?'Xuất nhóm này (.json)':'Xuất toàn bộ (.json)'}</button></div>`;
+  const search=`<input id="docQ" placeholder="${docSrc?'Tìm trong nhóm này':'Tìm trong mọi tài liệu'} (vd: ngủ, B12, mệt)…" value="${esc(docQ)}" oninput="docQ=this.value.toLowerCase();vDocList();const i=document.getElementById('docQ');i.focus();i.setSelectionRange(99,99)" style="margin-bottom:10px">`;
+  const trai=x=>pArr(x.claims).some(c=>c.lv==='trai')?' <span class="tag" style="background:none;color:#9a3412;border:1px solid #9a3412">có ý trái khuyến cáo</span>':'';
+  const row=(x,showSrc)=>`<div class="card" style="cursor:pointer" data-i="${esc(x.id)}" onclick="go('know','d:'+this.dataset.i)"><b>${esc(x.title)}</b>${showSrc?` <span class="tag">${esc(docSrcName(x))}</span>`:''}${trai(x)}<div class="mute" style="margin-top:4px">${esc(pArr(x.tldr)[0]||'')}</div></div>`;
+  const note=`<div class="note" style="margin-bottom:10px">Các bài đã được tóm tắt lại và gắn mức tin cậy từng ý. Không phải tài liệu y khoa chính thức và không thay lời bác sĩ.</div>`;
+  const empty=`<div class="empty">${all.length?'Không tìm thấy.':'Chưa có tài liệu. Vào Cài đặt, mục Cập nhật dữ liệu, rồi chọn file tài liệu.'}</div>`;
+  if(!docSrc&&!docQ){
+    const cards=names.map(n=>{const l=all.filter(x=>docSrcName(x)===n);const gs=[...new Set(l.map(x=>x.group).filter(g=>g&&g!==n))];const up=l.map(x=>x.updated||'').sort().pop();
+      return`<div class="card" style="cursor:pointer" data-n="${esc(n)}" onclick="openDocSrc(this.dataset.n)"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:22px">📁</span><div style="flex:1"><b style="font-size:16px">${esc(n)}</b> <span class="tag">${l.length} bài</span><div class="mute" style="margin-top:2px">${esc(gs.slice(0,4).join(' · '))}${gs.length>4?' …':''}</div>${up?`<div class="mute">cập nhật ${esc(up)}</div>`:''}</div><span class="mute" style="font-size:20px">›</span></div></div>`}).join('');
+    return view('Tài liệu',names.length+' nhóm · '+all.length+' bài',tools+search+(cards?`<div class="mute" style="margin-bottom:8px">Bấm một nhóm để xem các bài của nguồn đó:</div>`+cards+`<div style="margin-top:10px">${note}</div>`:empty))}
+  if(!docSrc){return view('Tài liệu',docs.length+' bài khớp',tools+search+(docs.map(x=>row(x,true)).join('')||empty))}
   const groups=[...new Set(docs.map(x=>x.group||'Khác'))];
-  view('Tài liệu',own.length+' bài',`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="goBack(()=>{go('know')})">‹ Thư viện</button><button class="btn" onclick="go('set')">Cập nhật từ file</button><button class="btn" onclick="exportDocs()">Xuất toàn bộ (.json)</button></div>
-   <div class="chips" style="flex-wrap:wrap;overflow:visible;margin-bottom:10px"><button class="${!docOwn?'on':''}" onclick="docOwn='';vDocList()">Tất cả · ${nT+nP}</button><button class="${docOwn==='thao'?'on':''}" onclick="docOwn='thao';vDocList()">Chị Thảo Nguyên · ${nT}</button><button class="${docOwn==='phuc'?'on':''}" onclick="docOwn='phuc';vDocList()">Bác sĩ Trần Văn Phúc · ${nP}</button></div>
-   <div class="note" style="margin-bottom:10px">${(()=>{const src=[...new Set(own.map(x=>x.source).filter(Boolean))];return src.length?`Nguồn: ${esc(src.join("; "))}.`:"Bài chia sẻ."})()} Các bài đã được tóm tắt lại và gắn mức tin cậy từng ý. Không phải tài liệu y khoa chính thức và không thay lời bác sĩ.</div>
-   <input id="docQ" placeholder="Tìm trong tài liệu (vd: ngủ, B12, mệt)…" value="${esc(docQ)}" oninput="docQ=this.value.toLowerCase();vDocList();const i=document.getElementById('docQ');i.focus();i.setSelectionRange(99,99)" style="margin-bottom:10px">`+
-   (()=>{const c={};for(const x of own)for(const t of pArr(x.tags))c[t]=(c[t]||0)+1;const ts=Object.keys(c).sort((a,b)=>c[b]-c[a]||a.localeCompare(b,'vi'));
-     return ts.length?`<div class="mute" style="margin-bottom:4px">Chủ đề (bấm để lọc):</div><div class="chips" style="flex-wrap:wrap;overflow:visible;margin-bottom:10px">${ts.map(t=>`<button class="${docQ===t.toLowerCase()?'on':''}" data-t="${esc(t)}" onclick="docQ=docQ===this.dataset.t.toLowerCase()?'':this.dataset.t.toLowerCase();vDocList()">${esc(t)} · ${c[t]}</button>`).join('')}</div>`:''})()+
-   (groups.map(g=>`<div style="margin:12px 0 6px"><b>${esc(g)}</b></div>`+docs.filter(x=>(x.group||'Khác')===g).map(x=>`<div class="card" style="cursor:pointer" data-i="${esc(x.id)}" onclick="go('know','d:'+this.dataset.i)"><b>${esc(x.title)}</b>${pArr(x.claims).some(c=>c.lv==='trai')?' <span class="tag" style="background:none;color:#9a3412;border:1px solid #9a3412">có ý trái khuyến cáo</span>':''}<div class="mute" style="margin-top:4px">${esc(pArr(x.tldr)[0]||'')}</div></div>`).join('')).join('')||`<div class="empty">${(S.docs||[]).length?'Không tìm thấy.':'Chưa có tài liệu. Bấm "Nhập file tài liệu" và chọn file tai-lieu-thao-nguyen.json.'}</div>`));
+  const c={};for(const x of own)for(const t of pArr(x.tags))c[t]=(c[t]||0)+1;
+  const ts=Object.keys(c).sort((a,b)=>c[b]-c[a]||a.localeCompare(b,'vi'));
+  const chips=ts.length?`<div class="mute" style="margin-bottom:4px">Chủ đề (bấm để lọc):</div><div class="chips" style="flex-wrap:wrap;overflow:visible;margin-bottom:10px">${ts.map(t=>`<button class="${docQ===t.toLowerCase()?'on':''}" data-t="${esc(t)}" onclick="docQ=docQ===this.dataset.t.toLowerCase()?'':this.dataset.t.toLowerCase();vDocList()">${esc(t)} · ${c[t]}</button>`).join('')}</div>`:'';
+  const srcs=[...new Set(own.map(x=>x.source).filter(Boolean))];
+  view(docSrc,own.length+' bài',tools+(srcs.length?`<div class="mute" style="margin-bottom:8px">Nguồn: ${esc(srcs.join('; '))}.</div>`:'')+search+chips+(groups.map(g=>(g===docSrc&&groups.length===1?'':`<div style="margin:12px 0 6px"><b>${esc(g)}</b></div>`)+docs.filter(x=>(x.group||'Khác')===g).map(x=>row(x,false)).join('')).join('')||empty)+`<div style="margin-top:10px">${note}</div>`)
 }
 function vDoc(id){
   if(!id)return vDocList();
@@ -1754,7 +1772,7 @@ function libNoteCard(n){return`<div class="card"><h3>${esc(n.title)}</h3>${noteT
   <div class="mute">${esc(n.added||'')} · ${safeUrl(n.source)?`<a href="${esc(n.source)}" target="_blank" rel="noopener noreferrer">nguồn</a>`:esc(n.source||'')}</div>
   <div class="row"><button class="btn sm" onclick="editNote('${n.id}')">Sửa</button><button class="btn sm del" onclick="remove(S.notes,'${n.id}')">Xoá</button></div></div>`}
 function libSubRow(s){const k=kbOf(s);return`<div class="card" style="cursor:pointer;padding:10px 12px" data-n="${esc(s.name)}" onclick="go('know',this.dataset.n)"><b>${esc(s.name)}</b> <span class="tag">Hoạt chất</span>${s.count?'<span class="tag" style="background:var(--pri);color:#fff">trong tủ</span>':''}<div class="mute">${esc(k&&k.aka?k.aka:catNameOf(s))}</div></div>`}
-function libDocRow(x){return`<div class="card" style="cursor:pointer;padding:10px 12px" data-i="${esc(x.id)}" onclick="go('know','d:'+this.dataset.i)"><b>${esc(x.title)}</b> <span class="tag">Tài liệu</span>${pArr(x.claims).some(c=>c.lv==='trai')?'<span class="tag" style="background:none;color:#9a3412;border:1px solid #9a3412">có ý trái khuyến cáo</span>':''}<div class="mute">${esc(x.group||'')}${pArr(x.tldr)[0]?' · '+esc(pArr(x.tldr)[0].slice(0,110)):''}</div></div>`}
+function libDocRow(x){return`<div class="card" style="cursor:pointer;padding:10px 12px" data-i="${esc(x.id)}" onclick="go('know','d:'+this.dataset.i)"><b>${esc(x.title)}</b> <span class="tag">Tài liệu</span>${pArr(x.claims).some(c=>c.lv==='trai')?'<span class="tag" style="background:none;color:#9a3412;border:1px solid #9a3412">có ý trái khuyến cáo</span>':''}<div class="mute">${esc(docSrcName(x))}${x.group?' · '+esc(x.group):''}${pArr(x.tldr)[0]?' · '+esc(pArr(x.tldr)[0].slice(0,110)):''}</div></div>`}
 /* ---------- Chủ đề sức khoẻ (KB_TOPICS) và gom dạng muối (KB_FAMILY), dữ liệu trong kb.js ---------- */
 let libTopic='';
 const TOPIC_LV=[['chac','✅','Đã chứng minh'],['cothe','🔸','Có thể có lợi'],['chuaro','❓','Chưa rõ'],['khong','❌','Đã thử nghiệm, không thấy tác dụng']];
@@ -1808,6 +1826,7 @@ function cabinetBlock(allSubs){
     ${other.length?`<details class="fam" style="margin-top:8px"><summary>Thành phần khác trên nhãn · ${other.length}</summary><div class="chips" style="flex-wrap:wrap;overflow:visible;margin-top:6px">${other.map(chipSoft).join('')}</div><div class="mute" style="margin-top:4px">Chưa có bài kiến thức trong app cho các thành phần này.</div></details>`:''}`}
 function vLib(){
   if(libF==='topic')return libTopicView();
+  if(libF==='doc'&&!libQ)return vDocList();
   const q=norm(libQ),subs=substList(),docs=S.docs||[],notes=S.notes;
   const kbText=s=>{const k=kbOf(s);return k?norm([k.what,...(k.benefits||[]).map(b=>b[1])].join(' ')):''};
   const nameHit=s=>norm(s.name+' '+((kbOf(s)||{}).aka||'')).includes(q);
@@ -1830,10 +1849,8 @@ function vLib(){
   const subRow=s=>libSubRow(s)+famBlock(s,by);
   let body='';
   if(home){
-    body=cabinetBlock(rs)+
+    body=`<div class="kinds"><button onclick="libSet('sub')"><span>🧬</span><b>Hoạt chất</b><span class="mute">${rs.length}</span></button><button onclick="libSet('doc')"><span>📄</span><b>Tài liệu</b><span class="mute">${docs.length}</span></button><button onclick="libSet('note')"><span>📝</span><b>Ghi chú</b><span class="mute">${notes.length}</span></button></div>`+cabinetBlock(rs)+
       `<div class="sec2"><b>🔎 Tìm theo chủ đề</b><span class="mute">bấm để xem chất nào hợp</span></div><div class="tpgrid">${topics.map(tile).join('')}</div>
-       <div class="sec2"><b>📚 Duyệt theo loại</b></div>
-       <div class="kinds"><button onclick="libSet('sub')"><span>🧬</span><b>Hoạt chất</b><span class="mute">${rs.length}</span></button><button onclick="libSet('doc')"><span>📄</span><b>Tài liệu</b><span class="mute">${docs.length}</span></button><button onclick="libSet('note')"><span>📝</span><b>Ghi chú</b><span class="mute">${notes.length}</span></button></div>
        ${docs.length?'':'<div class="mute" style="margin-top:6px">Chưa có tài liệu. Nhập file ở Cài đặt, mục Cập nhật dữ liệu.</div>'}`;
   }else if(libF==='sub'&&!q){
     const order=[...(window.KB_CATS||[]).map(c=>c.n),'Khác (chưa có bài)'];
