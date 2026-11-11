@@ -399,7 +399,7 @@ function render(){
   document.querySelector('header').style.display=tab==='today'?'none':'';
   ({today:vToday,shelf:vShelf,add:vAdd,know:vKnow,fam:vFam,set:vSet})[tab]();
 }
-const APP_VER='tpcn-v2-57';
+const APP_VER='tpcn-v2-58';
 let newVer='';
 const updBanner=()=>newVer?`<div class="note" style="margin-bottom:12px;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Có bản mới của app.</b> <button class="btn sm pri" onclick="forceUpdate()">Cập nhật ngay</button></div>`:'';
 function view(title,sub_,html){$('#ttl').textContent=title;$('#sub').textContent=sub_||'';$('#view').innerHTML=updBanner()+html}
@@ -595,6 +595,52 @@ function totals(mid,day){const t={};
       const e=t[k]=t[k]||{key:k,total:0,unknown:false,products:new Set()};
       const v=toUnit(g.amount,g.unit,NUTR[k].u,k);if(v==null)e.unknown=true;else{e.total+=v*x;if(k==='niacin'&&isAmide(g))e.amide=(e.amide||0)+v*x}e.products.add(pr.id)}}
   return t}
+/* ---------- Đối chiếu dị ứng: so ô "Dị ứng" của từng người với chữ trên nhãn đã nhập ----------
+   Chỉ là nhắc dựa trên chữ đã nhập, không phải kết luận y khoa. Nhãn có thể ghi tên khác hoặc thiếu thành phần.
+   "chac": nhãn có nhắc thẳng tới nhóm đó. "cothe": thành phần thường làm từ nhóm đó nhưng nhãn không ghi nguồn. */
+const VB='(^|[^a-zà-ỹ])',VE='([^a-zà-ỹ]|$)';
+const ALG=[
+ {id:'soy',n:'Đậu nành',a:new RegExp('đậu nành|dau nanh|soy|soja|sója'),h:/soy|soja|sója|đậu nành/,
+  m:{re:/lecithin/,un:/sunflower|hướng dương|slunečnic|rapeseed|cải dầu/,why:'lecithin không ghi nguồn, thường làm từ đậu nành'}},
+ {id:'milk',n:'Sữa',a:/sữa(?! ong)|lactose|lactoza|milk|mléko|mléčn|casein|whey|laktóz/,h:/milk|lactose|whey|casein|mléko|mléčn|laktóz|sữa(?! ong)/},
+ {id:'egg',n:'Trứng',a:/trứng|\begg|vejce|vaječ/,h:/\begg|vaječ|vejce|trứng|ovalbumin|lysozym/},
+ {id:'fish',n:'Cá',a:new RegExp(VB+'cá'+VE+'|fish|ryb'),h:new RegExp('fish|rybí|ryb[aiy]|anchov|sardin|mackerel|salmon|tuna|cod liver|dầu cá|'+VB+'cá'+VE),
+  m:{re:/omega-?3|\bepa\b|\bdha\b/,un:/alga|tảo|řas|vegan/,why:'omega-3 không ghi nguồn, thường lấy từ dầu cá'}},
+ {id:'shell',n:'Giáp xác, hải sản có vỏ',a:/tôm|cua|ghẹ|giáp xác|hải sản|shellfish|crustacean|korýš|měkkýš|shrimp|krill/,h:/krill|shrimp|crab|lobster|shellfish|crustacean|korýš|tôm|cua/,
+  m:{re:/glucosamin|chitosan|chondroitin/,un:/vegan|corn|ngô|kukuřic|ferment|lên men|bovine|bò/,why:'glucosamine, chitosan thường làm từ vỏ tôm, cua'}},
+ {id:'gluten',n:'Gluten, lúa mì',a:/gluten|lúa mì|lúa mạch|wheat|celiac|celiak|lepek|lepku/,h:/wheat|gluten|barley|\brye\b|pšeni|ječm|žit|lúa mì|lúa mạch|lepek/},
+ {id:'peanut',n:'Đậu phộng',a:new RegExp('đậu phộng|peanut|arašíd|'+VB+'lạc'+VE),h:/peanut|arašíd|đậu phộng/},
+ {id:'nut',n:'Các loại hạt',a:/hạt điều|hạnh nhân|óc chó|hạt phỉ|hồ đào|hạt dẻ|macca|tree ?nut|\bnuts?\b|ořech|mandl/,h:/almond|walnut|cashew|hazelnut|pecan|pistachio|macadamia|brazil nut|mandl|ořech|hạnh nhân|óc chó|hạt điều/},
+ {id:'sesame',n:'Mè (vừng)',a:new RegExp('vừng|sesame|sezam|'+VB+'mè'+VE),h:/sesame|sezam|vừng/},
+ {id:'animal',n:'Nguồn động vật (ăn chay, kiêng bò, heo)',a:new RegExp('gelatin|želatin|ăn chay|vegan|vegetarian|halal|kosher|'+VB+'(chay|bò|heo|lợn)'+VE),h:/gelatin|želatin|bovine|porcine|carmine|\be ?120\b|shellac|\be ?904\b|lanolin/},
+ {id:'corn',n:'Ngô (bắp)',a:new RegExp('corn|maize|kukuřic|'+VB+'(ngô|bắp)'+VE),h:new RegExp('\\bcorn|maize|kukuřic|'+VB+'(ngô|bắp)'+VE),
+  m:{re:/maltodextrin|dextros|sorbitol/,un:/tapioca|sắn|potato|khoai|wheat/,why:'maltodextrin, dextrose thường làm từ ngô'}},
+ {id:'dye',n:'Phẩm màu, sulfit',a:/phẩm màu|màu nhân tạo|tartrazin|\be ?102\b|sulfit|sunfit|sulphit|siřičit/,h:/tartrazin|\be ?1(02|10|22|24|29)\b|sunset yellow|allura|sulfite|sulphite|siřičit|metabisulfit|\be ?22[0-8]\b/},
+ {id:'yeast',n:'Nấm men',a:/nấm men|yeast|kvasnic|kvasink/,h:/yeast|kvasnic|kvasink|nấm men|saccharomyces/},
+ {id:'iod',n:'I-ốt',a:/i-?ốt|\biod|jód|jod/,h:/iodine|iodide|jód|jodid|i-?ốt|kelp|tảo bẹ/},
+ {id:'bee',n:'Sản phẩm từ ong',a:/mật ong|keo ong|sữa ong|phấn ong|propolis|royal jelly|\bbee|včel/,h:/propolis|royal jelly|bee pollen|honey|včel|mateří kašičk|mật ong|keo ong|sữa ong|phấn ong/}
+];
+const lowNFC=t=>String(t||'').normalize('NFC').toLowerCase();
+/* Bỏ các câu phủ định trên nhãn ("gluten free", "không chứa sữa", "bez lepku") trước khi dò */
+const stripNeg=t=>lowNFC(t).replace(/(free\s+(from|of)|không\s+chứa|không\s+có|without|neobsahuje|\bbez)\s+[^.;\n]*/g,' ').replace(/[a-zà-ỹ]+[\s-]free\b/g,' ');
+/* Bỏ "không dị ứng X" trong ô dị ứng, dừng ở dấu phẩy, chấm hoặc chữ "nhưng" */
+const stripNegA=t=>lowNFC(t).replace(/không\s+(bị\s+)?(dị\s+ứng|có)\s*[^,.;\n]*?(?=,|\.|;|\n|\snhưng\s|$)/g,' ');
+const prodFields=p=>[['hoạt chất',(p.ingredients||[]).map(g=>g.name+' '+(g.form||'')).join(', ')],['chất độn',p.other],['tên sản phẩm',p.name],['cảnh báo',p.warnings],['văn bản nhãn',p.text]];
+function allergyHits(p,mems){
+  const out=[],F=prodFields(p).map(([w,t])=>[w,stripNeg(t)]);
+  for(const m of (mems||S.members)){const at=stripNegA(m.allergies);if(!at.trim())continue;
+    for(const f of ALG){if(!f.a.test(at))continue;
+      const where=F.filter(([,t])=>t&&f.h.test(t)).map(([w])=>w);
+      if(where.length){out.push({m,f,tier:'chac',where,why:''});continue}
+      if(f.m){const mw=F.filter(([,t])=>t&&f.m.re.test(t)&&!(f.m.un&&f.m.un.test(t))).map(([w])=>w);
+        if(mw.length)out.push({m,f,tier:'cothe',where:mw,why:f.m.why})}}}
+  return out}
+function allergyCard(p){
+  const withA=S.members.filter(m=>stripNegA(m.allergies).trim());
+  if(!withA.length)return '';
+  const H=allergyHits(p);
+  if(!H.length)return `<div class="card"><b>Đối chiếu dị ứng</b><div class="mute">Không thấy chữ nào trên nhãn đã nhập trùng với dị ứng đã ghi của ${withA.map(m=>esc(m.name)).join(', ')}. App chỉ dựa trên chữ đã nhập: nếu nhãn thiếu thành phần hoặc chất độn thì app không biết.</div></div>`;
+  return `<div class="note" style="margin-bottom:10px"><b>⚠ Đối chiếu dị ứng</b>${H.map(h=>`<div style="margin-top:4px"><b>${esc(h.m.name)}</b> ghi dị ứng ${esc(h.f.n.toLowerCase())}: ${h.tier==='chac'?'nhãn có nhắc tới':'có thể liên quan'} (ở ${esc(h.where.join(', '))})${h.why?'. '+esc(h.why):''}.</div>`).join('')}<div class="mute" style="margin-top:6px">So chữ trên nhãn với ô Dị ứng, không phải kết luận. Hỏi dược sĩ hoặc bác sĩ trước khi dùng.</div></div>`}
 function warningsFor(m,day=today()){
   const W=[],age=ageOf(m),t=totals(m.id,day),plans=activePlans(m.id,day);
   const add=(lv,key,title,text,src,fix,vault)=>{if(lv<3&&(S.dismissed||[]).includes(m.id+'|'+key))return;W.push({lv,key,title,text,src,fix,vault,mid:m.id})};
@@ -615,6 +661,8 @@ function warningsFor(m,day=today()){
   for(const r of DRUG){if(!r.re.test(m.meds||''))continue;const hit=plans.filter(p=>r.n.some(k=>hasN(p,k)));
     if(hit.length)add(r.lv||3,'drug-'+r.id,r.title,`${r.text} Liên quan: ${[...new Set(hit.map(p=>pname(p.productId)))].join(', ')}. Hỏi bác sĩ hoặc dược sĩ.`,r.src?odsUrl(r.src):null,null,r.vault&&(kbHasName(r.vault)||S.notes.some(x=>norm(x.substance)===norm(r.vault)))?r.vault:null)}
   herbWarnings(m,plans,add);
+  for(const pid of new Set(plans.map(p=>p.productId))){const pr=byId(S.products,pid);if(!pr)continue;
+    for(const h of allergyHits(pr,[m]))add(h.tier==='chac'?3:2,'alg-'+pid+'-'+h.f.id,`${h.tier==='chac'?'Nhãn có nhắc':'Có thể liên quan'} chất dị ứng: ${h.f.n}`,`${pname(pid)}: ${h.tier==='chac'?'nhãn có nhắc tới':'nghi ngờ'} ${h.f.n.toLowerCase()} (ở ${h.where.join(', ')})${h.why?'. '+h.why:''}. Hồ sơ ghi dị ứng ${h.f.n.toLowerCase()}. Hỏi dược sĩ hoặc bác sĩ trước khi dùng tiếp.`)}
   if(plans.length){
     if(!adult)add(2,'child','Chưa có mức cho trẻ em','Mức tối đa trong app là của người lớn. Trẻ em có mức thấp hơn nhiều, hãy hỏi bác sĩ nhi.');
     if(age==null)add(1,'noage','Chưa có năm sinh','App đang dùng mức tối đa của người lớn. Nhập năm sinh để tính đúng hơn.');
@@ -841,19 +889,21 @@ const shopLog=x=>x.log||[];
 const shopBuys=x=>shopLog(x).filter(e=>e.kind==='mua').sort((a,b)=>String(a.date).localeCompare(String(b.date)));
 const fmtD=d=>String(d||'').split('-').reverse().join('/');
 const fmt2=n=>String(Math.round(n*100)/100);
-const unitPrice=(x,e)=>x.units&&Number(x.units)>0&&e.price!==''&&e.price!=null?Number(e.price)/Number(x.units):null;
+const unitsOf=(x,e)=>{const u=Number(e&&e.units)>0?Number(e.units):Number(x.units);return u>0?u:null};
+const unitPrice=(x,e)=>{const u=unitsOf(x,e);return u&&e.price!==''&&e.price!=null?Number(e.price)/u:null};
 /* So giá lần cuối với lần liền trước (theo giá một đơn vị nếu biết số viên, không thì theo giá cả sản phẩm) */
 function trendOf(x,list){
   if(list.length<2)return null;
-  const a=list[list.length-2],b=list[list.length-1];
-  const pa=unitPrice(x,a)??Number(a.price),pb=unitPrice(x,b)??Number(b.price);
+  const a=list[list.length-2],b=list[list.length-1],ua=unitPrice(x,a),ub=unitPrice(x,b),both=ua!=null&&ub!=null;
+  const pa=both?ua:Number(a.price),pb=both?ub:Number(b.price);
   if(!(pa>0)||!(pb>0))return null;
   const d=pb-pa;return {up:d>1e-9,down:d<-1e-9,pct:Math.round(d/pa*1000)/10,box:Number(b.price)-Number(a.price)}}
 const trendHtml=t=>!t?'':(t.up?`<span class="tr up">▲ +${fmt2(t.pct)}%</span>`:t.down?`<span class="tr dn">▼ ${fmt2(Math.abs(t.pct))}%</span>`:`<span class="tr">= không đổi</span>`);
 function shopLogSave(id,kind,v){
   const x=byId(shopList(),id);if(!x)return;
   if(v.price===''||v.price==null||!(Number(v.price)>=0)){alert('Hãy nhập giá.');return}
-  const e={id:uid(),kind,date:v.date||today(),shop:v.shop||x.shop||'',price:Number(v.price),qty:Math.max(1,Number(v.qty)||1),link:v.link||x.link||'',note:v.note||''};
+  const e={id:uid(),kind,date:v.date||today(),shop:v.shop||x.shop||'',price:Number(v.price),qty:Math.max(1,Number(v.qty)||1),units:Number(v.units)>0?Number(v.units):(Number(x.units)>0?Number(x.units):''),link:v.link||x.link||'',note:v.note||''};
+  if(!(Number(x.units)>0)&&Number(v.units)>0)x.units=Number(v.units);
   if(kind==='mua'&&x.price!==''&&x.price!=null)e.planned=Number(x.price);
   x.log=[...shopLog(x),e];
   if(kind==='mua'){x.status='Đã mua';x.buy=true}
@@ -864,17 +914,19 @@ function shopBuyDialog(id){const x=byId(shopList(),id);if(!x)return;
     {k:'shop',l:'Nơi mua'},
     {k:'price',l:'Giá thực tế một sản phẩm (Kč)',t:'number'},
     {k:'qty',l:'Số lượng',t:'number'},
+    {k:'units',l:'Số viên (hoặc ml, giọt) trong hộp lần này',t:'number'},
     {k:'link',l:'Đường dẫn trang đã mua'},
     {k:'note',l:'Ghi chú (mã giảm giá, phí ship, lý do...)',t:'area'}],
-    {date:today(),shop:x.shop||'',price:x.price,qty:shopQtyOf(x),link:x.link||'',note:''},v=>shopLogSave(id,'mua',v))}
+    {date:today(),shop:x.shop||'',price:x.price,qty:shopQtyOf(x),units:x.units||'',link:x.link||'',note:''},v=>shopLogSave(id,'mua',v))}
 function shopSeenDialog(id){const x=byId(shopList(),id);if(!x)return;
   dialog('Ghi giá đã xem (chưa mua)',[
     {k:'date',l:'Ngày xem',t:'date'},
     {k:'shop',l:'Nơi bán'},
     {k:'price',l:'Giá đang thấy (Kč)',t:'number'},
+    {k:'units',l:'Số viên (hoặc ml, giọt) trong hộp',t:'number'},
     {k:'link',l:'Đường dẫn'},
     {k:'note',l:'Ghi chú',t:'area'}],
-    {date:today(),shop:x.shop||'',price:x.price,link:x.link||'',note:''},v=>shopLogSave(id,'xem',v))}
+    {date:today(),shop:x.shop||'',price:x.price,units:x.units||'',link:x.link||'',note:''},v=>shopLogSave(id,'xem',v))}
 function shopRebuy(id){const x=byId(shopList(),id);if(!x)return;
   x.status='Chưa mua';x.buy=true;const last=shopBuys(x).pop();if(last&&last.price!=null)x.price=last.price;save();render()}
 function shopLogDel(id,eid){const x=byId(shopList(),id);if(!x)return;if(!confirm('Xoá dòng này khỏi lịch sử giá?'))return;x.log=shopLog(x).filter(e=>e.id!==eid);save();render()}
@@ -893,15 +945,15 @@ function shopHistory(){
   const L=shopList().filter(x=>shopLog(x).length);
   if(!L.length)return '<div class="empty">Chưa có lần mua hay lần xem nào. Mở một sản phẩm rồi bấm “Đã mua…” để ghi giá thật, nơi mua và link. Lần sau mua lại, app sẽ so giá với các lần trước.</div>';
   const buys=L.flatMap(x=>shopBuys(x).map(e=>({x,e}))),spent=buys.reduce((a,{e})=>a+(Number(e.price)||0)*(Number(e.qty)||1),0);
-  const cards=L.map(x=>{const b=shopBuys(x),seenL=shopLog(x).filter(e=>e.kind==='xem').sort((p,q)=>String(p.date).localeCompare(String(q.date))),base=b.length?b:seenL,last=b[b.length-1],lastSeen=seenL[seenL.length-1],t=trendOf(x,base),prices=base.map(e=>unitPrice(x,e)??Number(e.price)).filter(n=>n>0);
-    const mn=prices.length?Math.min(...prices):null,av=prices.length?prices.reduce((a,n)=>a+n,0)/prices.length:null,lab=unitPrice(x,{price:1})!=null?' Kč/'+(x.unitLabel||'đv'):' Kč';
+  const cards=L.map(x=>{const b=shopBuys(x),seenL=shopLog(x).filter(e=>e.kind==='xem').sort((p,q)=>String(p.date).localeCompare(String(q.date))),base=b.length?b:seenL,last=b[b.length-1],lastSeen=seenL[seenL.length-1],t=trendOf(x,base),allU=base.length>0&&base.every(e=>unitPrice(x,e)!=null),prices=base.map(e=>allU?unitPrice(x,e):Number(e.price)).filter(n=>n>0);
+    const mn=prices.length?Math.min(...prices):null,av=prices.length?prices.reduce((a,n)=>a+n,0)/prices.length:null,lab=allU?' Kč/'+(x.unitLabel||'đv'):' Kč';
     return `<details class="card hc"><summary><span class="si"><b>${esc(x.name)}</b>
       <span class="mute">${last?`Mua gần nhất ${fmtD(last.date)} · ${esc(last.shop||'')} · ${fmt(last.price)} Kč`:`Chưa mua · đã xem ${seenL.length} lần, gần nhất ${fmtD(lastSeen.date)} · ${fmt(lastSeen.price)} Kč`}</span>
       ${base.length>1?`<span class="mute">${base.length} lần ${b.length?'mua':'xem'} · thấp nhất ${fmt2(mn)}${lab} · trung bình ${fmt2(av)}${lab}</span>`:''}</span><span class="sp">${trendHtml(t)}</span></summary>
       <div class="sd">${shopEntries(x)}<div class="row" style="margin-top:6px"><button class="btn sm" onclick="shopRebuy('${x.id}');shopMode('group')">Mua lại</button><button class="btn sm" onclick="shopSeenDialog('${x.id}')">Ghi giá đã xem</button></div></div></details>`}).join('');
   return `<div class="card shsum" style="grid-template-columns:repeat(3,1fr)"><div><b>${buys.length}</b><span class="mute">lần mua đã ghi</span></div><div><b>${fmt(spent)} Kč</b><span class="mute">tổng đã chi</span></div><div><b>${L.length}</b><span class="mute">sản phẩm có lịch sử</span></div></div>
    ${cards}<div class="row" style="margin-top:8px"><button class="btn sm" onclick="shopHistCsv()">Xuất lịch sử (CSV)</button></div>
-   <div class="mute" style="font-size:12px;margin-top:6px">Mũi tên so với lần liền trước, tính theo giá mỗi viên (hoặc ml, giọt) khi biết số lượng trong hộp, không thì theo giá cả sản phẩm.</div>`}
+   <div class="mute" style="font-size:12px;margin-top:6px">Mũi tên so với lần liền trước. App so theo giá mỗi viên (hoặc ml, giọt) khi cả hai lần đều biết số viên trong hộp; nếu có lần thiếu, app so theo giá cả hộp để không lẫn đơn vị. App chưa tính giá trên mỗi mg hoạt chất, vì nhãn ghi hàm lượng theo liều (một liều có thể là 2 viên) nên tính tự động dễ sai.</div>`}
 function shopHistCsv(){
   const rows=[['Sản phẩm','Loại','Ngày','Nơi','Giá một sản phẩm (Kč)','Số lượng','Thành tiền (Kč)','Giá một đơn vị (Kč)','Đường dẫn','Ghi chú']];
   for(const x of shopList())for(const e of shopLog(x))rows.push([x.name,e.kind==='mua'?'Đã mua':'Đã xem',e.date,e.shop,e.price,e.qty,(Number(e.price)||0)*(Number(e.qty)||1),unitPrice(x,e)!=null?fmt2(unitPrice(x,e)):'',e.link,e.note].map(v=>v==null?'':String(v)));
@@ -985,10 +1037,11 @@ function shopRow(x){
   const q=shopQtyOf(x),pr=Number(x.price)||0,done=x.status==='Đã mua',seen=x.status==='Đã xem',on=x.buy!==false&&!done&&!seen;
   const hasPrice=x.price!==''&&x.price!=null;
   const pt=hasPrice?(q>1?`${q} × ${fmt(pr)}<br><b>${fmt(pr*q)} Kč</b>`:`<b>${fmt(pr)} Kč</b>`):'<span class="mute">chưa có giá</span>';
-  const warn=x.checkShort||(x.check?'Cần kiểm tra, mở ra xem':'');
+  const warn=x.checkShort||(x.check?'Cần kiểm tra, mở ra xem':''),ap=x.productId?byId(S.products,x.productId):null,ah=ap?allergyHits(ap):[];
+  const alg=ah.length?[...new Set(ah.map(h=>h.m.name+' ('+h.f.n.toLowerCase()+(h.tier==='chac'?'':', có thể')+')'))].join('; '):'';
   return `<details class="shi${on?'':' off'}" ${SHOP_OPEN.has(x.id)?'open':''} ontoggle="shopOpenSet('${x.id}',this.open)">
    <summary><button class="chk${on?' on':''}" aria-label="Sẽ mua" aria-pressed="${on}" onclick="event.stopPropagation();shopBuy('${x.id}')">${on?'✓':''}</button>
-   <span class="si"><b>${esc(x.name)}</b>${done?' <span class="tag">đã mua</span>':''}${warn?`<span class="sw">⚠ ${esc(warn)}</span>`:''}${safeUrl(x.link)?`<a class="sl" href="${esc(x.link)}" target="_blank" rel="noopener noreferrer">Mở trang bán ›</a>`:''}</span>
+   <span class="si"><b>${esc(x.name)}</b>${done?' <span class="tag">đã mua</span>':''}${alg?`<span class="sw" style="color:var(--bad);font-weight:600">⚠ Dị ứng: ${esc(alg)}</span>`:''}${warn?`<span class="sw">⚠ ${esc(warn)}</span>`:''}${safeUrl(x.link)?`<a class="sl" href="${esc(x.link)}" target="_blank" rel="noopener noreferrer">Mở trang bán ›</a>`:''}</span>
    <span class="sp">${pt}</span></summary>
    <div class="sd">
     ${x.shop?`<div><span class="mute">Nơi bán:</span> ${esc(x.shop)}</div>`:''}
@@ -1117,6 +1170,7 @@ function vProduct(id){
    <div class="card"><b>Thành phần mỗi liều</b>${(p.ingredients||[]).length?`<table class="ing2"><tr><th>Hoạt chất</th><th>Lượng</th><th>Dạng</th></tr>${p.ingredients.map(ingRow).join('')}</table>`:'<div class="mute">Chưa nhập.</div>'}
     <div class="mute" style="margin-top:6px">Liều trên nhãn: ${esc(p.dosageLabel||'—')}</div></div>
    <div class="card"><b>Mua</b><div class="mute">${p.price!==''&&p.price!=null?esc(p.price)+' CZK · ':''}${esc(p.store||'')} ${safeUrl(p.url)?`<a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">liên kết</a>`:''}</div></div>
+   ${allergyCard(p)}
    ${p.warnings?`<div class="note"><b>⚠ Cảnh báo trên nhãn</b><br>${esc(p.warnings)}</div>`:''}
    ${p.units?`<div class="card"><b>Quy cách</b><div class="mute">${esc(p.units)} ${esc(p.unitLabel||'đv')} mỗi sản phẩm${p.price!==''&&p.price!=null&&Number(p.units)>0?` · khoảng ${fmt2(Number(p.price)/Number(p.units))} ${'CZK'}/${esc(p.unitLabel||'đv')}`:''}</div></div>`:''}
    ${p.other?`<div class="card"><b>Chất độn (thành phần khác)</b><div class="chips" style="flex-wrap:wrap;overflow:visible;margin-top:6px">${otherList(p.other).map(o=>`<span class="tag">${esc(o)}</span>`).join('')}</div></div>`:''}
