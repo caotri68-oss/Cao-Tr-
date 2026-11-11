@@ -399,7 +399,7 @@ function render(){
   document.querySelector('header').style.display=tab==='today'?'none':'';
   ({today:vToday,shelf:vShelf,add:vAdd,know:vKnow,fam:vFam,set:vSet})[tab]();
 }
-const APP_VER='tpcn-v2-58';
+const APP_VER='tpcn-v2-59';
 let newVer='';
 const updBanner=()=>newVer?`<div class="note" style="margin-bottom:12px;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Có bản mới của app.</b> <button class="btn sm pri" onclick="forceUpdate()">Cập nhật ngay</button></div>`:'';
 function view(title,sub_,html){$('#ttl').textContent=title;$('#sub').textContent=sub_||'';$('#view').innerHTML=updBanner()+html}
@@ -1691,7 +1691,7 @@ function vDocList(){
   const docs=(S.docs||[]).filter(x=>!docQ||docText(x).includes(docQ));
   const groups=[...new Set(docs.map(x=>x.group||'Khác'))];
   view('Tài liệu',(S.docs||[]).length+' bài',`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="goBack(()=>{go('know')})">‹ Thư viện</button><button class="btn" onclick="go('set')">Cập nhật từ file</button><button class="btn" onclick="exportDocs()">Xuất toàn bộ (.json)</button></div>
-   <div class="note" style="margin-bottom:10px">Đây là bài chia sẻ của chị Thảo Nguyên trong nhóm, đã được tóm tắt lại và gắn mức tin cậy từng ý. Không phải tài liệu y khoa chính thức và không thay lời bác sĩ.</div>
+   <div class="note" style="margin-bottom:10px">${(()=>{const src=[...new Set((S.docs||[]).map(x=>x.source).filter(Boolean))];return src.length?`Nguồn: ${esc(src.join("; "))}.`:"Bài chia sẻ."})()} Các bài đã được tóm tắt lại và gắn mức tin cậy từng ý. Không phải tài liệu y khoa chính thức và không thay lời bác sĩ.</div>
    <input id="docQ" placeholder="Tìm trong tài liệu (vd: ngủ, B12, mệt)…" value="${esc(docQ)}" oninput="docQ=this.value.toLowerCase();vDocList();const i=document.getElementById('docQ');i.focus();i.setSelectionRange(99,99)" style="margin-bottom:10px">`+
    (()=>{const c={};for(const x of S.docs||[])for(const t of pArr(x.tags))c[t]=(c[t]||0)+1;const ts=Object.keys(c).sort((a,b)=>c[b]-c[a]||a.localeCompare(b,'vi'));
      return ts.length?`<div class="mute" style="margin-bottom:4px">Chủ đề (bấm để lọc):</div><div class="chips" style="flex-wrap:wrap;overflow:visible;margin-bottom:10px">${ts.map(t=>`<button class="${docQ===t.toLowerCase()?'on':''}" data-t="${esc(t)}" onclick="docQ=docQ===this.dataset.t.toLowerCase()?'':this.dataset.t.toLowerCase();vDocList()">${esc(t)} · ${c[t]}</button>`).join('')}</div>`:''})()+
@@ -1934,7 +1934,8 @@ async function importFramework(f){
   }catch(e){alert('Lỗi: '+e.message)}
 }
 const SK_CONDS=['Tiểu đường','Tăng huyết áp','Mỡ máu','Gout','Tuyến giáp','Dạ dày','Loãng xương','Sỏi mật','Bệnh thận','Bệnh gan','Tim mạch','Ung thư','Mang thai'];
-const SK_TOPIC={'tn-sat':/sắt|iron|ferr/i,'tn-b12':/b-?12|cobalamin/i,'tn-folate':/folic|folate|folát|b-?9/i,'tn-d3':/vitamin d|cholecalciferol/i,'tn-magie':/magie|magnes/i,'tn-coq10':/coq10|ubiquin/i,'tn-omega3':/omega|\bepa\b|\bdha\b|dầu cá|fish oil/i,'tn-gout':/allulose|quercetin/i,'tn-duong':/allulose|stevia|erythritol|xylitol/i};
+const SK_TOPIC={'tn-sat':/sắt|iron|ferr/i,'tn-b12':/b-?12|cobalamin/i,'tn-folate':/folic|folate|folát|b-?9/i,'tn-d3':/vitamin d|cholecalciferol/i,'tn-magie':/magie|magnes/i,'tn-coq10':/coq10|ubiquin/i,'tn-omega3':/omega|\bepa\b|\bdha\b|dầu cá|fish oil/i,'tn-gout':/allulose|quercetin/i,'tn-duong':/allulose|stevia|erythritol|xylitol/i,
+ 'bsp-vitd':/vitamin d|cholecalciferol/i,'bsp-vitd-lieucao':/vitamin d|cholecalciferol/i,'bsp-magie-dang':/magie|magnes/i,'bsp-magie-lieu':/magie|magnes/i,'bsp-creatine':/creatin/i,'bsp-creatine-duong':/creatin/i,'bsp-coq10':/coq10|ubiquin|coenzym/i,'bsp-coq10-statin':/coq10|ubiquin|coenzym/i,'bsp-glutathione':/glutathion|acetyl.?cystein|\bnac\b/i,'bsp-nac-phoi':/acetyl.?cystein|\bnac\b/i,'bsp-selen':/selen/i,'bsp-sat':/sắt|iron|ferr|železo/i,'bsp-omega3':/omega|\bepa\b|\bdha\b|dầu cá|fish oil/i,'bsp-vitb-dang':/b-?12|cobalamin|folic|folate|folát|b-?9|b-?6|pyridox/i,'bsp-canxi':/calci|canxi|vápník/i,'bsp-carnitine':/carnitin/i,'bsp-than':/creatin|magie|magnes/i};
 let skMode='basic';
 const skHas=(hay,t)=>{t=norm(t);if(!t)return false;return t.length<=4?new RegExp('(^|[^\\p{L}])'+t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'($|[^\\p{L}])','u').test(hay):hay.includes(t)};
 function skMatch(m,r){
