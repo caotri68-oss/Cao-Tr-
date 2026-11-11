@@ -55,6 +55,11 @@ label{display:grid;gap:4px;font-size:14px;color:var(--mute)}
 .row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .tag{display:inline-block;background:var(--pri2);color:var(--pri);border-radius:999px;padding:2px 10px;font-size:13px;margin:2px 4px 2px 0}
 .empty{text-align:center;color:var(--mute);padding:36px 8px}
+.md{font-size:15px;line-height:1.55;overflow-wrap:anywhere}
+.md h2{font-size:17px;margin:18px 0 6px}.md h3{font-size:16px;margin:14px 0 4px}.md h4{font-size:15px;margin:12px 0 4px}
+.md p{margin:6px 0}.md ul,.md ol{margin:6px 0;padding-left:22px}.md li{margin:3px 0}
+.md .tw{overflow-x:auto;margin:8px 0}.md table{border-collapse:collapse;font-size:13.5px;min-width:100%}
+.md th,.md td{border:1px solid var(--line,#d9d9d9);padding:5px 7px;vertical-align:top;text-align:left}.md th{font-weight:700;background:rgba(127,127,127,.12)}
 .ing{display:grid;grid-template-columns:1fr 70px 70px 28px;gap:6px;margin-bottom:6px}
 table.ing2{width:100%;border-collapse:collapse;font-size:14px}
 table.ing2 td,table.ing2 th{text-align:left;padding:4px 6px 4px 0;border-bottom:1px solid var(--line)}
@@ -399,7 +404,7 @@ function render(){
   document.querySelector('header').style.display=tab==='today'?'none':'';
   ({today:vToday,shelf:vShelf,add:vAdd,know:vKnow,fam:vFam,set:vSet})[tab]();
 }
-const APP_VER='tpcn-v2-60';
+const APP_VER='tpcn-v2-61';
 let newVer='';
 const updBanner=()=>newVer?`<div class="note" style="margin-bottom:12px;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Có bản mới của app.</b> <button class="btn sm pri" onclick="forceUpdate()">Cập nhật ngay</button></div>`:'';
 function view(title,sub_,html){$('#ttl').textContent=title;$('#sub').textContent=sub_||'';$('#view').innerHTML=updBanner()+html}
@@ -1663,7 +1668,7 @@ async function importDocs(f){
     S.docs=S.docs||[];
     const upd=ok.filter(x=>byId(S.docs,x.id)).length;
     if(!confirm(`Nhập ${ok.length} tài liệu (${upd} bài đã có sẽ được cập nhật). Tiếp tục?`))return;
-    for(const x of ok){const o=cleanDeep(x);o.original=typeof x.original==='string'?x.original.slice(0,200000):'';o.source=cleanStr(d.source,120);const i=S.docs.findIndex(y=>y.id===o.id);i<0?S.docs.push(o):S.docs[i]=o}
+    for(const x of ok){const o=cleanDeep(x);o.original=typeof x.original==='string'?x.original.slice(0,200000):'';o.originalSource=cleanStr(x.original_source||x.originalSource,160);o.source=cleanStr(d.source,120);const i=S.docs.findIndex(y=>y.id===o.id);i<0?S.docs.push(o):S.docs[i]=o}
     save();syncDocsSheet(false);go('know','d:');alert(`Đã nhập ${ok.length} tài liệu.`);
   }catch(e){alert('Lỗi: '+e.message)}
 }
@@ -1671,6 +1676,28 @@ const docText=x=>[x.title,x.group,...pArr(x.tags),...pArr(x.tldr),...pArr(x.poin
 // Tên file tải về: đọc được, không dấu, không ký tự lạ
 const docFileName=x=>(x.title||x.id).normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').replace(/[^A-Za-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,80)+'.txt';
 // Xuất toàn bộ tài liệu (kể cả bản gốc) thành một file JSON để lưu trữ hoặc nạp lại
+function mdLite(t){
+  const L=String(t||'').replace(/\r/g,'').split('\n'),out=[];let i=0;
+  const inl=s=>esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');
+  const isTab=s=>/^\s*\|.*\|\s*$/.test(s),isLi=s=>/^\s*([-*•]|\d+[.)])\s+/.test(s),isH=s=>/^#{1,4}\s+/.test(s);
+  while(i<L.length){
+    const s=L[i];
+    if(/^\s*$/.test(s)){i++;continue}
+    const h=s.match(/^(#{1,4})\s+(.*)$/);
+    if(h){const n=Math.min(h[1].length+1,4);out.push(`<h${n}>${inl(h[2])}</h${n}>`);i++;continue}
+    if(isTab(s)){
+      const rows=[];while(i<L.length&&isTab(L[i])){if(!/^\s*\|[\s:|-]+\|\s*$/.test(L[i]))rows.push(L[i].trim().replace(/^\||\|$/g,'').split('|').map(c=>c.trim()));i++}
+      if(rows.length){const hd=rows.shift();out.push(`<div class="tw"><table><thead><tr>${hd.map(c=>`<th>${inl(c)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${inl(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`)}
+      continue}
+    if(isLi(s)){
+      const ord=/^\s*\d+[.)]\s+/.test(s),items=[];
+      while(i<L.length&&isLi(L[i])&&/^\s*\d+[.)]\s+/.test(L[i])===ord){items.push(L[i].replace(/^\s*([-*•]|\d+[.)])\s+/,''));i++}
+      out.push(`<${ord?'ol':'ul'}>${items.map(x=>`<li>${inl(x)}</li>`).join('')}</${ord?'ol':'ul'}>`);continue}
+    const p=[];while(i<L.length&&!/^\s*$/.test(L[i])&&!isTab(L[i])&&!isLi(L[i])&&!isH(L[i])){p.push(inl(L[i]));i++}
+    out.push(`<p>${p.join('<br>')}</p>`)
+  }
+  return out.join('')
+}
 function downloadOriginal(id){const x=byId(S.docs||[],id);if(x&&x.original)dl(docFileName(x),x.original,'text/plain;charset=utf-8')}
 function exportDocs(){
   const d={kind:'tpcn-docs',v:1,source:'Bài chia sẻ của chị Thảo Nguyên trong nhóm',exported:today(),docs:S.docs||[]};
@@ -1716,7 +1743,7 @@ function vDoc(id){
    (pArr(x.family).length?`<div class="card"><b>Với gia đình mình</b>${ul(x.family)}</div>`:'')+
    pArr(x.points).map(p=>sec(esc(p.h),ul(p.items))).join('')+
    sec('Xét nghiệm có thể hỏi bác sĩ',ul(x.tests))+
-   (x.original?`<details class="card"><summary style="cursor:pointer"><b>Bản gốc (nguyên văn)</b></summary><div style="margin-top:8px"><button class="btn sm" onclick="downloadOriginal('${esc(x.id)}')">Tải bản gốc (.txt)</button><div style="white-space:pre-wrap;margin-top:10px;font-size:15px">${esc(x.original)}</div></div></details>`:'')+
+   (x.original?`<details class="card"><summary style="cursor:pointer"><b>Bản gốc (nguyên văn)</b></summary><div style="margin-top:8px"><button class="btn sm" onclick="downloadOriginal('${esc(x.id)}')">Tải bản gốc (.txt)</button>${x.originalSource?`<div class="mute" style="margin-top:8px">${esc(x.originalSource)}</div>`:''}<div class="md" style="margin-top:10px">${mdLite(x.original)}</div></div></details>`:'')+
    (links.length?`<div class="card"><b>Bài kiến thức liên quan</b><div class="chips" style="flex-wrap:wrap;overflow:visible;margin-top:6px">${links.map(n=>`<button data-n="${esc(n)}" onclick="go('know',this.dataset.n)">${esc(n)}</button>`).join('')}</div></div>`:'')+
    `<div class="mute" style="margin-top:8px">Nội dung được tóm tắt lại bằng lời của app. Hãy hỏi bác sĩ hoặc dược sĩ trước khi thay đổi thuốc hay thực phẩm bổ sung.</div>`);
 }
