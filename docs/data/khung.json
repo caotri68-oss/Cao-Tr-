@@ -1,5 +1,5 @@
 {
-  "phien_ban": "tpcn-v2-63",
+  "phien_ban": "tpcn-v2-64",
   "ngay_xuat": "2026-11-15",
   "muc_tieu": [
     {"ma":"xuong","ten":"Xương và răng","can_kham_truoc":["25(OH)D","canxi máu","creatinin/eGFR","đo mật độ xương (DXA)","hỏi bác sĩ nếu đã có vấn đề thận"],"ghi_chu_an_toan":["Không tự dùng canxi và vitamin D liều cao: quá mức gây tăng canxi máu và canxi niệu, lắng đọng canxi ở thận","canxi bổ sung (không phải từ thức ăn) liên quan tới sỏi thận"]},
