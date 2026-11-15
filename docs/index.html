@@ -283,6 +283,27 @@ nav button{gap:3px}
 .fam summary{cursor:pointer;font-size:13px;color:var(--pri);padding:4px 0}
 @media (max-width:340px){.tpgrid{grid-template-columns:1fr}}
 
+/* ---------- Trang Mục tiêu (từ Bảng Ý) ---------- */
+.gsw{display:flex;align-items:flex-start;gap:12px;font-size:15px;color:var(--ink);margin:0 0 12px;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--card);cursor:pointer}
+.gsw input{width:28px;height:28px;min-height:0;flex:none;accent-color:var(--pri);margin:0}
+.gsw .mute{display:block;font-size:13px;margin-top:2px}
+.gh{margin:18px 0 6px;font-size:16px}
+.gh .mute{font-size:13px;font-weight:400}
+.tb{display:inline-block;font-weight:800;border-radius:8px;padding:1px 9px;font-size:13px;color:#fff;margin-right:6px;vertical-align:1px}
+.tb-A{background:#0f766e}.tb-B{background:#1d4ed8}.tb-C{background:#a16207}.tb-D{background:#6b7280}.tb-X{background:#b91c1c}.tb-K{background:#7c2d12}
+.tag.pend{background:var(--warnbg);color:var(--warn);border:1px dashed var(--warn)}
+.tag.kit{background:var(--pri);color:#fff}
+@media (prefers-color-scheme:dark){.tag.kit{color:#06201d}}
+.glink{border:0;background:none;padding:0;color:var(--ink);font:inherit;font-weight:700;font-size:16px;text-align:left;cursor:pointer;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
+.ys{margin-top:8px}
+.ys summary{list-style:none;display:inline-block;cursor:pointer}
+.ys summary::-webkit-details-marker{display:none}
+.yrow{border-top:1px solid var(--line);padding:9px 0;font-size:15px;overflow-wrap:anywhere}
+.yrow:first-of-type{margin-top:8px}
+.gside{border-left:3px solid var(--line);padding-left:10px;margin-top:8px}
+.gul{margin:6px 0 0;padding-left:20px}.gul li{margin-bottom:6px}
+.gfoot{margin:18px 0 6px;font-size:14px;color:var(--mute);text-align:center}
+
 /* ---------- Khối "Tủ của bạn" ---------- */
 .pcs{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 8px;margin:0 -2px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
 .pc{flex:none;width:112px;display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:8px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;text-align:left;cursor:pointer;scroll-snap-align:start}
@@ -407,7 +428,7 @@ function render(){
   document.querySelector('header').style.display=tab==='today'?'none':'';
   ({today:vToday,shelf:vShelf,add:vAdd,know:vKnow,fam:vFam,set:vSet})[tab]();
 }
-const APP_VER='tpcn-v2-63';
+const APP_VER='tpcn-v2-64';
 let newVer='';
 const updBanner=()=>newVer?`<div class="note" style="margin-bottom:12px;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Có bản mới của app.</b> <button class="btn sm pri" onclick="forceUpdate()">Cập nhật ngay</button></div>`:'';
 function view(title,sub_,html){$('#ttl').textContent=title;$('#sub').textContent=sub_||'';$('#sub').className='sub';$('#view').innerHTML=updBanner()+html}
@@ -1828,6 +1849,97 @@ function libTopicView(){
     <h2 style="margin:0 0 2px;font-size:20px;line-height:1.3">${t.e} ${esc(t.n)}</h2><div class="mute" style="margin-bottom:10px">${rows.length} chất${mine?` · ${mine} có trong tủ của bạn`:''}</div>
     <div class="note" style="margin-bottom:6px">Xếp theo mức bằng chứng, chất chắc chắn nhất ở trên. Câu dưới mỗi tên là ý liên quan chủ đề này trong bài của chất đó. Bấm vào để đọc bài đầy đủ. Không thay lời bác sĩ.</div>`+(secs||'<div class="empty">Chưa có chất nào cho chủ đề này.</div>'));
 }
+/* ---------- Trang Mục tiêu: đọc docs/data/khung.json (sinh từ Bảng Ý bằng ke-hoach/scripts/xuat-app.js) ---------- */
+let KH=null,KH_ERR='',KH_BUSY=false,_KHI=null;
+async function loadKhung(){
+  if(KH_BUSY)return;KH_BUSY=true;KH_ERR='';
+  try{const r=await fetch('data/khung.json');if(!r.ok)throw new Error('mã '+r.status);const j=await r.json();
+    if(!j||!Array.isArray(j.y)||!j.tang)throw new Error('sai dạng dữ liệu');KH=j;_KHI=null}
+  catch(e){KH=null;KH_ERR=String((e&&e.message)||e)}
+  finally{KH_BUSY=false}
+  if(tab==='know')render();
+}
+/* Công tắc "Xem cả ý chưa duyệt": nhớ bằng localStorage (có thể bị chặn nên bọc try/catch) */
+let showPending=false;try{showPending=localStorage.getItem('tpcn_xem_chua_duyet')==='1'}catch(e){}
+const setPending=on=>{showPending=!!on;try{localStorage.setItem('tpcn_xem_chua_duyet',on?'1':'0')}catch(e){}vKnow()};
+/* 19 chủ đề có sẵn (KB_TOPICS) cộng các mục tiêu mới chưa có ô: thận, dinh dưỡng, mỡ máu */
+const GOAL_EXTRA={than:{e:'🫘',n:'Thận và sỏi thận',re:'thận|sỏi thận|canxi niệu|oxalat'},dinhduong:{e:'🥣',n:'Dinh dưỡng, sụt cân',re:'dinh dưỡng|suy dinh dưỡng|sụt cân|thiếu đạm|ăn kém'},mo:{e:'🧈',n:'Mỡ máu',re:'mỡ máu|cholesterol|lipid|triglycerid'}};
+function goalList(){
+  const a=(window.KB_TOPICS||[]).map(t=>({id:t.id,e:t.e,n:t.n,re:t.re,cnt:t.subs.length}));
+  const have=new Set(a.map(x=>x.id));
+  for(const[id,g]of Object.entries(GOAL_EXTRA))if(!have.has(id))a.push({id,e:g.e,n:g.n,re:g.re,extra:true,
+    cnt:KH?new Set(KH.tang.xem_truoc.filter(x=>x.muc_tieu===id).map(x=>x.chat)).size:null});
+  return a}
+const openGoal=id=>{libTopic=id;libF='goal';libQ='';vKnow();$('#view').scrollTop=0;nav()};
+const TANG_INFO={A:'Bằng chứng mạnh',B:'Có bằng chứng, mức vừa',C:'Bằng chứng yếu, hoặc nhiều nguồn cùng nói',D:'Chỉ một nguồn, chưa có nghiên cứu',X:'Các nguồn mâu thuẫn',K:'Không thấy tác dụng'};
+const R_INFO={R1:'R1 · tổng quan hệ thống hoặc nguồn chính thức',R2:'R2 · có thử nghiệm trên người, còn nhỏ hoặc chưa nhất quán',R3:'R3 · chủ yếu cơ chế, quan sát hoặc động vật',R0:'R0 · chưa có nghiên cứu','−':'R− · đã thử nghiệm, không thấy tác dụng'};
+const rLabel=m=>{m=String(m||'').trim();if(m==='-'||m==='R-'||m==='R−')m='−';return R_INFO[m]||(m?m:'chưa chấm mức nghiên cứu')};
+const HUONG_INFO={loi:['Có lợi','var(--pri)'],khong:['Không tác dụng','var(--warn)'],hai:['Cần tránh, có hại','var(--bad)']};
+const pendTag=r=>r.trang_thai!=='da_duyet'?' <span class="tag pend">chưa duyệt</span>':'';
+const khY=()=>{if(!_KHI)_KHI=new Map(KH.y.map(r=>[r.ma_y,r]));return _KHI};
+const pairRows=x=>x.ma_y_lien_quan.map(m=>khY().get(m)).filter(Boolean);
+const chatName=k=>((window.KB||{})[k]||{}).name||(KH&&KH.chat&&KH.chat[k])||k;
+/* Chất của Bảng Ý có trong sản phẩm nào ở Tủ thuốc. Chỉ ghép khi chắc: khoá chất của app (NUTR, bảng tên gọi khác, tên đúng như trong bài); dạng muối tính về chất mẹ. */
+function cabinetMap(){
+  const m=new Map();
+  for(const p of S.products)for(const g of p.ingredients||[]){
+    const k=substKeyOf(g)||kbKeyOf({name:g.name});if(!k)continue;
+    for(const x of new Set([k,parentKey(k)])){if(!m.has(x))m.set(x,new Set());m.get(x).add(p.name)}}
+  return m}
+function yRow(r){
+  const ng=(KH.nguon[r.nguon]||{}).ten||r.nguon,H=HUONG_INFO[r.huong]||HUONG_INFO.loi,u=safeUrl(r.link_goc);
+  return `<div class="yrow"><span class="tag" style="background:none;border:1px solid ${H[1]};color:${H[1]}">${H[0]}</span>${pendTag(r)} ${esc(r.noi_dung)}
+   <div class="mute">Nguồn: ${esc(ng)} · ${esc(rLabel(r.muc_ncuu))}${r.lieu?' · Liều: '+esc(r.lieu):''}</div>
+   ${r.trich_dan?`<div class="mute" style="font-style:italic">“${esc(r.trich_dan)}”</div>`:''}
+   ${u?`<div class="mute"><a href="${esc(u)}" target="_blank" rel="noopener noreferrer">Đọc nguồn gốc</a></div>`:(r.link_goc?`<div class="mute">${esc(r.link_goc)}</div>`:'')}</div>`}
+function chatLink(k,by){const s=by.get(k);return s?`<button class="glink" data-n="${esc(s.name)}" onclick="go('know',this.dataset.n)">${esc(chatName(k))}</button>`:`<b>${esc(chatName(k))}</b>`}
+function goalCard(x,by,kit){
+  const rows=pairRows(x),pend=rows.some(r=>r.trang_thai!=='da_duyet'),inKit=kit.has(x.chat);
+  return `<div class="card" style="padding:12px"><div><span class="tb tb-${x.tang}" title="${esc(TANG_INFO[x.tang])}">${x.tang}</span>${chatLink(x.chat,by)}</div>
+   <div style="margin-top:4px">${inKit?'<span class="tag kit">đang có trong tủ</span>':''}${pend?'<span class="tag pend">có ý chưa duyệt</span>':''}${x.canh_bao?'<span class="tag" style="background:var(--warnbg);color:var(--bad)">có cảnh báo</span>':''}${x.so_nguon_doc_lap?`<span class="mute">${x.so_nguon_doc_lap} nguồn độc lập</span>`:''}</div>
+   <div class="mute" style="margin-top:4px">${esc(x.giai_thich)}</div>
+   <details class="ys"><summary class="btn sm">Xem các ý (${rows.length})</summary>${rows.map(yRow).join('')}</details></div>`}
+function goalSide(x,by){
+  const rows=pairRows(x),a=rows.filter(r=>r.huong==='loi'),b=rows.filter(r=>r.huong==='khong');
+  return `<div class="card" style="padding:12px"><div><span class="tb tb-X">X</span>${chatLink(x.chat,by)}</div><div class="mute" style="margin-top:4px">${esc(x.giai_thich)}</div>
+   <div class="gside"><b style="font-size:14px">Bên nói có lợi</b>${a.map(yRow).join('')||'<div class="mute">Không có.</div>'}</div>
+   <div class="gside"><b style="font-size:14px">Bên nói không tác dụng</b>${b.map(yRow).join('')||'<div class="mute">Không có.</div>'}</div></div>`}
+function goalView(){
+  const id=libTopic,g=goalList().find(x=>x.id===id);
+  const back=`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="goBack(()=>{libF='all';libTopic='';vKnow()})">‹ Thư viện</button></div>`;
+  if(!g){libF='all';libTopic='';return vLib()}
+  const head=`<h2 style="margin:0 0 8px;font-size:20px;line-height:1.3">${g.e} ${esc(g.n)}</h2>`;
+  const oldBtn=topicOf(id)?`<div class="row"><button class="btn" onclick="libF='topic';vKnow();nav()">Xem các chất theo bài kiến thức</button></div>`:'';
+  if(!KH){
+    return view('Thư viện','Mục tiêu sức khoẻ',back+head+(KH_BUSY||!KH_ERR?`<div class="empty">Đang tải dữ liệu…</div>`:
+      `<div class="note">Chưa tải được dữ liệu mục tiêu (${esc(KH_ERR)}). Lần đầu mở cần có mạng. <div class="row"><button class="btn sm" onclick="loadKhung()">Thử lại</button></div></div>`)+oldBtn)}
+  const mt=KH.muc_tieu.find(x=>x.ma===id)||{can_kham_truoc:[],ghi_chu_an_toan:[]};
+  const by=substByKey(),kit=cabinetMap();
+  const all=KH.tang.xem_truoc.filter(x=>x.muc_tieu===id);
+  const shown=showPending?all:KH.tang.da_duyet.filter(x=>x.muc_tieu===id);
+  const hidden=showPending?0:all.filter(x=>!shown.some(y=>y.chat===x.chat)).length;
+  const up=t=>t.charAt(0).toLocaleUpperCase('vi')+t.slice(1),ul=a=>`<ul class="gul">${a.map(t=>`<li>${esc(up(t))}</li>`).join('')}</ul>`;
+  const sec=(t,hint)=>`<h3 class="gh">${t}${hint?` <span class="mute">${hint}</span>`:''}</h3>`;
+  // 2. Cảnh báo an toàn: luôn hiện, kể cả khi công tắc tắt (ý chưa duyệt vẫn hiện, có nhãn)
+  const hai=KH.y.filter(r=>r.muc_tieu===id&&r.huong==='hai').sort((a,b)=>a.chat.localeCompare(b.chat)||a.ma_y.localeCompare(b.ma_y));
+  const safe=(mt.ghi_chu_an_toan.length?ul(mt.ghi_chu_an_toan):'')+hai.map(r=>`<div class="w w3" style="margin:8px 0 0"><b>${esc(chatName(r.chat))}</b>${pendTag(r)}<div>${esc(r.noi_dung)}</div><div style="font-size:13px;opacity:.85">Nguồn: ${esc((KH.nguon[r.nguon]||{}).ten||r.nguon)}</div></div>`).join('');
+  const tiers=['A','B','C','D'].map(t=>{const l=shown.filter(x=>x.tang===t);return l.length?`<div style="margin:12px 0 6px"><span class="tb tb-${t}">${t}</span><b>${TANG_INFO[t]}</b> <span class="mute">(${l.length})</span></div>`+l.map(x=>goalCard(x,by,kit)).join(''):''}).join('');
+  const xs=shown.filter(x=>x.tang==='X'),ks=shown.filter(x=>x.tang==='K');
+  const mainL=shown.filter(x=>'ABCD'.includes(x.tang)),kitL=mainL.filter(x=>kit.has(x.chat));
+  view('Thư viện','Mục tiêu sức khoẻ',back+head+
+   `<label class="gsw"><input type="checkbox" ${showPending?'checked':''} onchange="setPending(this.checked)"><span><b>Xem cả ý chưa duyệt</b><span class="mute">${showPending?'Đang hiện cả ý chưa duyệt, mỗi chỗ có nhãn “chưa duyệt”.':'Đang chỉ dùng ý đã duyệt. Bật để xem cả ý còn chờ duyệt.'}</span></span></label>`+
+   sec('Cần khám trước')+(mt.can_kham_truoc.length?ul(mt.can_kham_truoc):'<div class="mute">Chưa có mục nào được ghi cho mục tiêu này.</div>')+
+   sec('Chất nên thận trọng')+(safe||'<div class="mute">Chưa có cảnh báo riêng cho mục tiêu này.</div>')+
+   `<h3 class="gh" id="gtang">TPCN theo tầng</h3>`+
+   `<details class="fam"><summary>Tầng và mức nghiên cứu nghĩa là gì</summary><div class="mute">Tầng A đến D xếp theo độ chắc của bằng chứng, A mạnh nhất. Số nguồn độc lập đếm các nguồn không dẫn lại nhau. Mức R1 đến R3 là mức nghiên cứu của từng ý: R1 tổng quan hệ thống hoặc nguồn chính thức, R2 có thử nghiệm trên người còn nhỏ hoặc chưa nhất quán, R3 chủ yếu cơ chế, quan sát hoặc động vật. Ghi chú của tác giả hay cá nhân không được tính cao hơn tầng C.</div></details>`+
+   (tiers||'<div class="mute" style="margin-top:6px">Chưa có chất nào ở tầng A đến D cho mục tiêu này.</div>')+
+   (hidden?`<div class="note" style="margin-top:8px">Còn ${hidden} chất mới chỉ có ý chưa duyệt. Bật “Xem cả ý chưa duyệt” ở trên để xem.</div>`:'')+
+   (xs.length?sec('Mâu thuẫn giữa các nguồn','có nguồn nói có lợi, có nguồn nói không tác dụng')+xs.map(x=>goalSide(x,by)).join(''):'')+
+   (ks.length?sec('Đã thử, không thấy tác dụng')+ks.map(x=>goalCard(x,by,kit)).join(''):'')+
+   (S.products.length&&mainL.length?sec('Trong tủ thuốc')+(kitL.length?`<div class="card" style="padding:12px">${kitL.map(x=>`<div style="margin:2px 0">${chatLink(x.chat,by)} <span class="mute">trong ${esc([...kit.get(x.chat)].join(', '))}</span></div>`).join('')}</div>`:'<div class="mute">Chưa thấy sản phẩm nào trong tủ chứa các chất ở trên.</div>'):'')+
+   oldBtn+
+   `<div class="gfoot">Thông tin để tham khảo và hỏi bác sĩ, dược sĩ. Không thay chẩn đoán hay đơn thuốc.</div>`);
+}
 /* ---------- Khối "Tủ của bạn" ở đầu Thư viện: thẻ sản phẩm, hoạt chất chính, thành phần khác ---------- */
 const MAIN_CAP=8;
 const chipSoft=s=>`<button class="cs" data-n="${esc(s.name)}" onclick="go('know',this.dataset.n)">${esc(s.name)}${s.count>1?`<i title="${s.count} sản phẩm có chất này">${s.count}</i>`:''}</button>`;
@@ -1844,6 +1956,7 @@ function cabinetBlock(allSubs){
     ${main.length?`<div class="mute" style="margin:8px 0 6px">Hoạt chất chính, bấm để đọc bài${mine.some(s=>s.count>1)?' (số nhỏ là số sản phẩm có chất đó)':''}</div><div class="chips" style="flex-wrap:wrap;overflow:visible">${main.slice(0,MAIN_CAP).map(chipSoft).join('')}</div>${more(main,'Xem thêm hoạt chất:')}`:''}
     ${other.length?`<details class="fam" style="margin-top:8px"><summary>Thành phần khác trên nhãn · ${other.length}</summary><div class="chips" style="flex-wrap:wrap;overflow:visible;margin-top:6px">${other.map(chipSoft).join('')}</div><div class="mute" style="margin-top:4px">Chưa có bài kiến thức trong app cho các thành phần này.</div></details>`:''}`}
 function vLib(){
+  if(libF==='goal')return goalView();
   if(libF==='topic')return libTopicView();
   if(libF==='doc'&&!libQ)return vDocList();
   const q=norm(libQ),subs=substList(),docs=S.docs||[],notes=S.notes;
@@ -1856,9 +1969,9 @@ function vLib(){
   rs=rollup(rs);
   const rd=docs.filter(x=>!q||docText(x).includes(q));
   const rn=notes.filter(n=>!q||(n.title+' '+n.substance+' '+n.kind+' '+n.content).toLowerCase().includes(q));
-  const topics=window.KB_TOPICS||[];
+  const topics=goalList();
   const rt=q?topics.filter(t=>norm(t.n).includes(q)||(()=>{try{return new RegExp(t.re,'i').test(q)}catch(e){return false}})()):[];
-  const tile=t=>`<button class="tpc" onclick="openTopic('${t.id}')"><span class="te">${t.e}</span><span><b>${esc(t.n)}</b><span class="mute">${t.subs.length} chất</span></span></button>`;
+  const tile=t=>`<button class="tpc" onclick="openGoal('${t.id}')"><span class="te">${t.e}</span><span><b>${esc(t.n)}</b><span class="mute">${t.cnt==null?'bệnh và mục tiêu':t.cnt+' chất'}</span></span></button>`;
   const home=!q&&libF==='all';
   const box=`<input id="libQ" placeholder="Tìm: mất ngủ, magie, B12, gout…" value="${esc(libQ)}" oninput="libQ=this.value;vKnow();const i=document.getElementById('libQ');i.focus();i.setSelectionRange(99,99)" style="margin-bottom:10px">`;
   const chips=[['all','Tất cả',rs.length+rd.length+rn.length],['sub','Hoạt chất',rs.length],['doc','Tài liệu',rd.length],['note','Ghi chú',rn.length]];
@@ -2271,6 +2384,7 @@ async function driveSync(){
 document.getElementById('appver').textContent=APP_VER.replace('tpcn-','');
 try{history.replaceState(Object.assign(navSnap(),{d:0}),'')}catch(e){}
 load().then(()=>{migrateProducts();render();checkUpdate();handleShare()});
+loadKhung();
 setInterval(checkUpdate,30*60*1000);
 if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 </script>
