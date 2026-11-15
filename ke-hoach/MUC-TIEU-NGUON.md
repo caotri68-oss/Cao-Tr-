@@ -11,7 +11,7 @@ Quy tắc: mỗi ý an toàn trong cột `ghi_chu_an_toan` có ít nhất 2 ngu�
 | `than` | Thận, sỏi và lắng đọng canxi ở thận là chỗ nhiều TPCN (canxi, vitamin D, vitamin C, magie, creatine) có thể gây hại. Cần một mục riêng để app cảnh báo. |
 | `dinhduong` | Ăn kém, sụt cân, thiếu đạm là mục tiêu khác với `thieu` (vi chất) và `co` (cơ bắp). |
 | `mo` | Tách mỡ máu khỏi `tim`. `tim` giữ phần huyết áp và tim mạch chung, `mo` dành cho mỡ máu. Lý do: men gạo đỏ và các sản phẩm "hạ mỡ máu" có tương tác riêng với statin. |
-| `gout` | **Chưa thêm.** Bối cảnh hiện tại chưa cần, và các ý về niacin hay vitamin C với acid uric chưa đủ 2 nguồn uy tín (xem mục "Cần kiểm chứng"). |
+| `gout` | Gout và acid uric. Thêm ngày 2026-11-16 với 3 ý an toàn đủ 2 nguồn; vitamin C và anh đào chưa đủ nguồn (xem "Cần kiểm chứng"). |
 
 ## Ý an toàn theo từng mục tiêu
 
@@ -56,6 +56,25 @@ Quy tắc: mỗi ý an toàn trong cột `ghi_chu_an_toan` có ít nhất 2 ngu�
    - Ca bệnh, BMJ Case Reports 2014: https://casereports.bmj.com/content/2014/bcr-2014-204754.full
    - *How we estimate GFR: a pitfall of using a serum creatinine-based formula*, Clin Nephrol 2007: https://pubmed.ncbi.nlm.nih.gov/17969491/
    - Ý 5 dùng lại cho `co`.
+
+### gout (Gout và acid uric)
+Cần khám trước: acid uric máu; creatinin/eGFR; mục tiêu acid uric thường dưới 6 mg/dL (360 µmol/L).
+   - NICE NG219 *Gout: diagnosis and management* (2022), mục khuyến nghị: https://www.nice.org.uk/guidance/NG219/chapter/recommendations (mục tiêu dưới 360 µmol/L; bệnh thận mạn giai đoạn 3–5 là lý do bắt đầu thuốc hạ acid uric)
+   - EULAR 2016, Richette et al., Ann Rheum Dis 2017;76:29–42: https://pubmed.ncbi.nlm.nih.gov/27457514/ (acid uric dưới 6 mg/dL; chỉnh liều allopurinol theo độ thanh thải creatinin)
+   - MedlinePlus (NLM), *Uric acid - blood*: https://medlineplus.gov/ency/article/003476.htm
+1. **Không tự dùng TPCN hay chế độ ăn thay thuốc hạ acid uric bác sĩ đã kê.**
+   - NICE NG219 (như trên): không đủ bằng chứng một chế độ ăn cụ thể nào làm giảm acid uric hay ngừa cơn gout.
+   - ACR 2020 Guideline for the Management of Gout, qua tóm tắt AAFP: https://www.aafp.org/pubs/afp/issues/2021/0800/p209.html (thuốc hạ acid uric là điều trị chính; khuyến nghị không bổ sung vitamin C)
+   - EULAR 2016 (như trên): điều trị hạ acid uric bằng thuốc với mục tiêu acid uric.
+   - Lưu ý: đây là ý suy ra từ việc các hướng dẫn đặt thuốc làm điều trị chính; không nguồn nào viết đúng câu "TPCN không thay thuốc". Cần quản lý duyệt.
+2. **Hạn chế rượu (nhất là bia) và đồ uống ngọt nhiều fructose vì làm tăng acid uric.**
+   - ACR 2020 (qua AAFP như trên): khuyến nghị có điều kiện hạn chế rượu và siro ngô giàu fructose.
+   - EULAR 2016 (như trên): tránh rượu (nhất là bia, rượu mạnh) và đồ uống có đường.
+   - MedlinePlus, *Uric acid - blood* (như trên): uống rượu và ăn nhiều fructose là nguyên nhân tăng acid uric.
+3. **Niacin liều cao (liều hạ mỡ máu) làm tăng acid uric, thận trọng khi có gout.**
+   - Nhãn FDA niacin phóng thích kéo dài: https://fda.report/FDA-Labels/d100729c-fa82-481e-e053-2995a90afc46 (đọc qua bản lưu nhãn trên fda.report, chưa mở DailyMed)
+   - Memorial Sloan Kettering, tài liệu bệnh nhân về niacin: https://www.mskcc.org/pdf/cancer-care/patient-education/niacin-01 (chưa đọc toàn văn, chỉ qua kết quả tìm kiếm)
+   - Đề xuất thành 2 dòng Ý trong `du-lieu/y-bo-sung.csv` (niacin, gout, hai; nguồn FDA và MSKCC).
 
 ### xuong (Xương)
 - Dùng lại ý 1 và 2 của `than`, cùng nguồn.
@@ -102,7 +121,8 @@ Quy tắc: mỗi ý an toàn trong cột `ghi_chu_an_toan` có ít nhất 2 ngu�
 | xuong / giap | Magie và canxi làm giảm hấp thu levothyroxine và bisphosphonat, cần uống cách vài giờ | Chỉ tìm được trang web cho người dùng. Cần nhãn thuốc EMA/FDA. |
 | tim | Kali bổ sung và chất thay muối chứa kali có thể gây tăng kali máu khi dùng thuốc ức chế men chuyển hoặc chẹn thụ thể angiotensin | Chưa tìm được 2 nguồn trong phiên này. |
 | duong | Berberin cộng tác dụng hạ đường huyết với thuốc tiểu đường, có thể tương tác qua CYP | Chỉ có nguồn thương mại. |
-| gout | Niacin liều cao làm tăng acid uric. Vitamin C có thể giảm nhẹ acid uric | Nguồn thứ cấp hoặc kết quả trái chiều. |
+| gout | Vitamin C bổ sung: ACR 2020 khuyến nghị có điều kiện KHÔNG bổ sung vitamin C cho người gout (hạ acid uric không đáng kể) | Chỉ có ACR (AAFP chỉ tóm tắt ACR, không độc lập). Cần nguồn thứ hai (ví dụ Cochrane, EULAR). |
+| gout | Anh đào (cherry) giảm cơn gout | Chỉ có tổng quan hệ thống nhỏ (PMC6914931) với nghiên cứu quan sát; không tìm được hướng dẫn hay Cochrane. Không đưa vào. |
 | giap | Thảo dược độc gan dùng cùng thuốc kháng giáp, vốn hiếm khi gây tổn thương gan | LiverTox chỉ nói về thuốc kháng giáp, không nói về phối hợp với thảo dược. |
 | ngu | Valerian không được khuyến nghị cho mất ngủ mạn tính (AASM 2017) | Đây là ý về hiệu quả, không phải an toàn, và chỉ có 1 nguồn gốc. |
 | dinhduong | Ngưỡng cụ thể: BMI < 18,5 hoặc sụt hơn 10% cân nặng trong 3 đến 6 tháng | Chỉ có NICE CG32, cần nguồn thứ hai như ESPEN. |
@@ -126,3 +146,4 @@ Trạng thái đề xuất là `cho_duyet`. Mỗi đề xuất dùng nguồn đ�
 | valerian | ngu | hai | Valerian cộng tác dụng với thuốc an thần và rượu | NCCIH; MSD Manual |
 | mg | ngu | (chưa) | Magie với giấc ngủ: bang-y.csv chưa có dòng này. **Chưa đủ nguồn trong phiên này**, cần tìm thêm (NIH ODS Magnesium, Cochrane) trước khi thêm | — |
 | redyeast (mã chất mới) | mo | hai | Men gạo đỏ chứa monacolin K giống lovastatin. Không dùng cùng statin | NCCIH; EFSA 2018 |
+| niacin | gout | hai | Niacin liều cao (liều hạ mỡ máu) có thể làm tăng acid uric; thận trọng khi có gout. **Đã đặt trong `du-lieu/y-bo-sung.csv`**, script nối vào bang-y.csv | Nhãn FDA niacin ER; MSKCC |

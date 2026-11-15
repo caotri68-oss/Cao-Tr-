@@ -40,6 +40,9 @@ const MINUS = '−'; // R−, đúng ký tự trong BANG-Y.md
 const BO_TU = {
   co: ['vận động'],       // "cải thiện vận động" của thoái hoá khớp, "mức vận động" của cân nặng không phải cơ bắp
   giap: ['i-ốt', 'iod'],  // chất là i-ốt thì câu nào cũng nhắc i-ốt, không có nghĩa là về tuyến giáp
+  // "lo âu" thuộc tamtrang (Tâm trạng và lo âu). Giữ ở ngu làm câu chỉ nói lo âu (ginkgo, ashwagandha)
+  // bị gán thêm vào Giấc ngủ. Câu có "stress", "căng thẳng", "mất ngủ" vẫn vào ngu.
+  ngu: ['lo âu'],
 };
 const THEM_TU = {
   ngu: ['ngủ'],
@@ -115,6 +118,11 @@ const NGOAI_LE = {
   },
 };
 
+// Chữ "chữa" trong noi_dung đổi thành "điều trị" (giữ nghĩa y khoa, tránh hứa hẹn chữa khỏi).
+// Không sửa docs/kb.js; mã ma_y và khoá NGOAI_LE vẫn băm trên câu gốc nên không đổi.
+const doiChua = (s) => NFC(s).replace(/(^|[^\p{L}])([Cc])hữa(?![\p{L}])/gu, (m, p, c) => p + (c === 'C' ? 'Điều trị' : 'điều trị'));
+const cauDoiChua = [];
+
 // ---------- 2. Nguồn: chuẩn hoá mã ----------
 const OFFICIAL = [
   ['NIH', /NIH/],
@@ -184,6 +192,7 @@ for (const chat of chatKeys) {
     const targets = topics.length ? topics : [''];
     if (!topics.length) notes.unshift('chưa gán');
 
+    if (doiChua(text) !== NFC(text)) cauDoiChua.push(NFC(text) + '  =>  ' + doiChua(text));
     const chatRow = (exc && exc.chat) || chat;
     const huongRow = (exc && exc.huong) || huong;
     for (const muc of targets) {
@@ -203,7 +212,7 @@ for (const chat of chatKeys) {
         chat: chatRow,
         muc_tieu: muc,
         huong: huongRow,
-        noi_dung: NFC(text),
+        noi_dung: doiChua(text),
         lieu: '',
         nguon: src.code,
         muc_ncuu: ncuu,
@@ -219,6 +228,40 @@ for (const chat of chatKeys) {
   });
 }
 
+// ---------- 4b. Ý bổ sung (y-bo-sung.csv) ----------
+// Dòng Ý không có trong kb.js (ví dụ ý an toàn của mục tiêu gout), viết tay trong y-bo-sung.csv,
+// cùng cột với bang-y.csv. Nối vào cuối. ma_y để trống thì băm ổn định từ chat|noi_dung|muc_tieu|nguon.
+function parseCsvSimple(text) {
+  const t = text.replace(/^\uFEFF/, '');
+  const out = []; let row = []; let cell = ''; let q = false;
+  for (let i = 0; i < t.length; i++) {
+    const c = t[i];
+    if (q) {
+      if (c === '"') { if (t[i + 1] === '"') { cell += '"'; i++; } else q = false; }
+      else cell += c;
+    } else if (c === '"') q = true;
+    else if (c === ',') { row.push(cell); cell = ''; }
+    else if (c === '\n' || c === '\r') {
+      if (c === '\r' && t[i + 1] === '\n') i++;
+      row.push(cell); cell = '';
+      if (row.some((x) => x !== '')) out.push(row);
+      row = [];
+    } else cell += c;
+  }
+  if (cell !== '' || row.length) { row.push(cell); if (row.some((x) => x !== '')) out.push(row); }
+  const [h, ...data] = out;
+  return data.map((r) => Object.fromEntries(h.map((k, i) => [k, NFC(r[i] || '')])));
+}
+const readOut = (name) => {
+  const f = path.join(OUT, name);
+  return fs.existsSync(f) ? parseCsvSimple(fs.readFileSync(f, 'utf8')) : [];
+};
+const boSung = readOut('y-bo-sung.csv');
+for (const r of boSung) {
+  const h = crypto.createHash('sha1').update(r.chat + '|' + r.noi_dung + '|' + r.muc_tieu + '|' + r.nguon).digest('hex').slice(0, 6);
+  rows.push({ ...r, ma_y: r.ma_y || ('Y-' + r.chat + '-' + (r.muc_tieu || 'x') + '-' + h), trang_thai: r.trang_thai || 'cho_duyet', _level: 'bo_sung' });
+}
+
 // ---------- 5. Nguon, chat, muc-tieu ----------
 const usedSources = new Set(rows.map((r) => r.nguon));
 const SOURCE_META = {
@@ -232,6 +275,8 @@ const SOURCE_META = {
   OBSIDIAN: ['OBSIDIAN', 'Kho Obsidian của gia đình (ghi chú chung)', 'ca_nhan', ''],
   KHAC: ['KHAC', 'Nguồn khác (chi tiết trong ghi_chu của dòng)', 'tac_gia', ''],
   CHUA_CO: ['CHUA_CO', 'Chưa có nguồn đã đọc', 'tac_gia', ''],
+  FDA: ['FDA', 'U.S. Food and Drug Administration (nhãn thuốc)', 'chinh_thuc', ''],
+  MSKCC: ['MSKCC', 'Memorial Sloan Kettering Cancer Center (About Herbs)', 'chuyen_gia', ''],
 };
 const nguonRows = [];
 for (const code of Object.keys(SOURCE_META)) {
@@ -257,7 +302,17 @@ const chatRows = chatKeys.map((k) => {
   return [k, NFC(kb.name), ten_khac, cat ? NFC(cat.n) : ''];
 });
 
-const topicRows = KB_TOPICS.map((t) => [t.id, NFC(t.n), '', '']);
+// Giữ can_kham_truoc, ghi_chu_an_toan đã điền tay trong muc-tieu.csv, và giữ các mục tiêu
+// không có trong KB_TOPICS (than, dinhduong, mo, gout...). Trước đây script ghi đè thành rỗng.
+const mtCu = readOut('muc-tieu.csv');
+const mtCuMap = new Map(mtCu.map((m) => [m.ma, m]));
+const topicRows = KB_TOPICS.map((t) => {
+  const c = mtCuMap.get(t.id) || {};
+  return [t.id, NFC(t.n), c.can_kham_truoc || '', c.ghi_chu_an_toan || ''];
+});
+for (const m of mtCu) {
+  if (!KB_TOPICS.some((t) => t.id === m.ma)) topicRows.push([m.ma, m.ten, m.can_kham_truoc, m.ghi_chu_an_toan]);
+}
 
 // ---------- 6. CSV ----------
 function csvCell(v) {
@@ -295,6 +350,9 @@ console.log('  ma_y trùng: ' + (rows.length - ids.size));
 console.log('  mỗi muc_tieu có dòng: ' + KB_TOPICS.map((t) => t.id + '=' + count((r) => r.muc_tieu === t.id)).join(' '));
 console.log('  ngoại lệ dùng: ' + usedExceptions.size + '/' + Object.keys(NGOAI_LE).length);
 console.log('  dòng không phải Ý: ' + count((r) => /không phải Ý/.test(r.ghi_chu)));
+console.log('  dòng từ y-bo-sung.csv: ' + boSung.length);
+console.log('câu đổi "chữa" -> "điều trị": ' + cauDoiChua.length);
+for (const c of cauDoiChua) console.log('  ' + c);
 console.log('nguon.csv: ' + nguonRows.length + ' dòng');
 console.log('chat.csv: ' + chatRows.length + ' dòng, có nhom: ' + chatRows.filter((r) => r[3]).length);
 console.log('muc-tieu.csv: ' + topicRows.length + ' dòng');
