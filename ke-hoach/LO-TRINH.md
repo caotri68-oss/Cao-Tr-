@@ -43,8 +43,8 @@ Trục 2: số nguồn **độc lập** cùng ý kiến. Hai người cùng dẫ
 | # | Việc | Ai làm | Model | Trạng thái |
 |---|---|---|---|---|
 | 0 | Chốt nền: cách đặt người làm, nhánh GitHub Pages, file Obsidian rỗng | Quản lý | Opus | **Xong** (xem bên dưới) |
-| 1 | Dọn dữ liệu: nhãn đếm, bảng tính vượt mức tối đa, từ điển đồng nghĩa | Phiên đám mây | Sonnet | Phiếu 01 chờ duyệt |
-| 2 | Bảng Ý trên Google Sheet, chuyển các lợi ích trong `kb.js` sang | Quản lý | Opus thiết kế, Haiku chuyển | Chưa |
+| 1 | Dọn dữ liệu: nhãn đếm, bảng tính vượt mức tối đa, từ điển đồng nghĩa | Phiên đám mây | Sonnet | **Xong** (v2-63, chưa gộp lên trang chính) |
+| 2 | Bảng Ý trên Google Sheet, chuyển các lợi ích trong `kb.js` sang | Quản lý | Opus thiết kế, Haiku chuyển | Thiết kế chờ duyệt (BANG-Y.md, PHIEU-02.md) |
 | 3 | Danh sách ~10 bệnh/mục tiêu của gia đình | Bạn chọn, quản lý soạn | Sonnet | Chưa |
 | 4 | Chấm tầng A–X cho từng Ý | Quản lý | Opus | Chưa |
 | 5 | App đọc Sheet + trang Bệnh | Phiên đám mây | Sonnet | Chưa |
