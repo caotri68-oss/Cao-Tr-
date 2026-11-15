@@ -337,6 +337,7 @@ nav button{gap:3px}
 <div id="report"></div>
 <dialog id="dlg"></dialog>
 <script src="kb.js"></script>
+<script src="tu-dien.js"></script>
 
 <script>
 'use strict';
@@ -404,7 +405,7 @@ function render(){
   document.querySelector('header').style.display=tab==='today'?'none':'';
   ({today:vToday,shelf:vShelf,add:vAdd,know:vKnow,fam:vFam,set:vSet})[tab]();
 }
-const APP_VER='tpcn-v2-62';
+const APP_VER='tpcn-v2-63';
 let newVer='';
 const updBanner=()=>newVer?`<div class="note" style="margin-bottom:12px;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Có bản mới của app.</b> <button class="btn sm pri" onclick="forceUpdate()">Cập nhật ngay</button></div>`:'';
 function view(title,sub_,html){$('#ttl').textContent=title;$('#sub').textContent=sub_||'';$('#view').innerHTML=updBanner()+html}
@@ -457,7 +458,19 @@ const NUTR={
   boron:{n:'Boron',re:/boron|borat|boric/i,ul:20,u:'mg',src:'Boron',srcUrl:'https://ods.od.nih.gov/factsheets/Boron-Consumer/'},
   vitK:{n:'Vitamin K',re:/vitamin k\d?\b|phylloquinone|menaquinone/i,u:'mcg',src:'VitaminK'},
   curc:{n:'Curcumin',re:/curcum|turmeric|nghệ/i,u:'mg',srcUrl:'https://www.nccih.nih.gov/health/turmeric'},
-  om3:{n:'Omega-3',re:/omega-?3\b|\bepa\b|\bdha\b|fish oil|dầu cá|rybí olej/i,u:'mg',src:'Omega3FattyAcids'}
+  om3:{n:'Omega-3',re:/omega-?3\b|\bepa\b|\bdha\b|fish oil|dầu cá|rybí olej/i,u:'mg',src:'Omega3FattyAcids'},
+  /* Các chất thêm ở phiếu 01: chủ yếu để đếm trùng giữa các sản phẩm và cộng tổng liều.
+     Chỉ choline có mức NIH (Viện Y học Mỹ 1998, 3500 mg). Các chất còn lại KHÔNG đặt mức tối đa vì chưa có mức đã kiểm chứng
+     (xem ke-hoach/MUC-TOI-DA.md). Tên (n) phải trùng tên trong kb.js để không sinh dòng trùng ở Thư viện. */
+  b1:{n:'Vitamin B1',re:/vitamin\s*b-?1\b|thiamin|benfotiamin/i,u:'mg',src:'Thiamin',note:'Chưa có mức tối đa đã kiểm chứng.'},
+  b2:{n:'Vitamin B2',re:/vitamin\s*b-?2\b|riboflavin/i,u:'mg',src:'Riboflavin',note:'Chưa có mức tối đa đã kiểm chứng.'},
+  b5:{n:'Vitamin B5',re:/vitamin\s*b-?5\b|pantothen|pantethin/i,u:'mg',src:'PantothenicAcid',note:'Chưa có mức tối đa đã kiểm chứng.'},
+  b12:{n:'Vitamin B12',re:/vitamin\s*b-?12\b|cobalamin/i,u:'mcg',src:'VitaminB12',note:'Chưa có mức tối đa đã kiểm chứng.'},
+  biotin:{n:'Biotin',re:/biotin|vitamin\s*b-?7\b|vitamin\s*h\b/i,u:'mcg',src:'Biotin',note:'Chưa có mức tối đa đã kiểm chứng.'},
+  choline:{n:'Cholin',re:/cholin(?!esterase)|phosphatidylcholin/i,ul:3500,u:'mg',src:'Choline',note:'Mức NIH (Viện Y học Mỹ 1998) cho người lớn; EFSA chưa có mức tối đa đã kiểm chứng. Lecithin trơn không tính.'},
+  coq10:{n:'CoQ10',re:/coenzyme\s*q-?10|ubiquino[nl]|\bcoq-?10\b/i,u:'mg',srcUrl:'https://ods.od.nih.gov/factsheets/list-all/',note:'Chưa có mức tối đa đã kiểm chứng.'},
+  lutein:{n:'Lutein và Zeaxanthin',re:/lutein|zeaxanthin|marigold|tagetes/i,u:'mg',srcUrl:'https://ods.od.nih.gov/factsheets/list-all/',note:'Chưa có mức tối đa đã kiểm chứng.'},
+  astaxanthin:{n:'Astaxanthin',re:/astaxanthin|haematococcus/i,u:'mg',srcUrl:'https://ods.od.nih.gov/factsheets/list-all/',note:'Chưa có mức tối đa đã kiểm chứng.'}
 };
 const nUrl=N=>N.srcUrl||odsUrl(N.src);
 /* Mức tối đa của EFSA (châu Âu), mặc định cho người ở Séc. Đã đối chiếu với ghi chú trong kho Obsidian.
@@ -578,7 +591,7 @@ const hhmm=x=>pad(Math.floor(x/60))+':'+pad(x%60);
 /* Bổ sung mẫu cho các chất đã có trong NUTR mà tên đầy đủ trên nhãn chưa khớp (dữ liệu NUTR_EXTRA trong kb.js).
    Áp dụng thẳng vào NUTR nên tổng liều và cảnh báo cũng tính đúng (vd. DHA và EPA ghi đầy đủ cùng tính vào Omega-3). */
 for(const k in (window.NUTR_EXTRA||{}))if(NUTR[k])try{NUTR[k].re=new RegExp(NUTR[k].re.source+'|'+window.NUTR_EXTRA[k],'i')}catch(e){}
-const nutrKey=g=>{if(/pantothen/i.test(g.name||''))return null; // canxi pantothenat là vitamin B5, không tính vào canxi
+const nutrKey=g=>{if(/pantothen/i.test(g.name||''))return 'b5'; // canxi pantothenat là vitamin B5, không tính vào canxi
   for(const k in NUTR)if(NUTR[k].re.test(g.name||''))return k;return null};
 /* Tên gọi khác trên nhãn -> khoá chất trong KB (KB_ALIAS), cho chất chưa có trong NUTR */
 let _AL=null;
@@ -1487,11 +1500,15 @@ function substList(){
 /* Danh mục hoạt chất: nhóm theo loại (KB_CATS trong kb.js), có ô tìm kiếm, mục "Có trong tủ" lên đầu */
 let substQ='';
 const kbKeyOf=s=>{const K=window.KB||{};return (s.key&&K[s.key])?s.key:Object.keys(K).find(k=>norm(K[k].name)===norm(s.name))};
+/* Từ điển tên gọi (tu-dien.js): gõ tên Việt, Anh, Séc hay dạng muối đều ra đúng chất (dạng muối tính về chất mẹ). */
+const parentKey=k=>{for(const[p,f]of Object.entries(famOf()))if(f.forms.includes(k))return p;return k};
+const dictHit=(s,q)=>{if(!window.tdKeys)return false;const ks=window.tdKeys(q);if(!ks.size)return false;
+  const k=kbKeyOf(s)||substKeyOf({name:s.name});return !!k&&(ks.has(k)||ks.has(parentKey(k)))};
 const catNameOf=s=>{const k=kbKeyOf(s);const c=(window.KB_CATS||[]).find(c=>k&&c.keys.includes(k));return c?c.n:'Khác (chưa có bài)'};
 const chipOf=s=>`<button class="${s.count?'on':''}" data-n="${esc(s.name)}" onclick="go('know',this.dataset.n)">${esc(s.name)}${s.count?' · '+s.count:''}</button>`;
 function substGrid(){
   const q=norm(substQ),all=substList();
-  const match=s=>!q||norm(s.name+' '+((kbOf(s)||{}).aka||'')).includes(q);
+  const match=s=>!q||norm(s.name+' '+((kbOf(s)||{}).aka||'')).includes(q)||dictHit(s,q);
   const list=all.filter(match),mine=list.filter(s=>s.count>0);
   const order=[...(window.KB_CATS||[]).map(c=>c.n),'Khác (chưa có bài)'];
   const groups=order.map(n=>[n,list.filter(s=>catNameOf(s)===n)]).filter(([,l])=>l.length);
@@ -1829,11 +1846,12 @@ function vLib(){
   if(libF==='doc'&&!libQ)return vDocList();
   const q=norm(libQ),subs=substList(),docs=S.docs||[],notes=S.notes;
   const kbText=s=>{const k=kbOf(s);return k?norm([k.what,...(k.benefits||[]).map(b=>b[1])].join(' ')):''};
-  const nameHit=s=>norm(s.name+' '+((kbOf(s)||{}).aka||'')).includes(q);
+  const nameHit=s=>norm(s.name+' '+((kbOf(s)||{}).aka||'')).includes(q)||dictHit(s,q);
   let rs=q?subs.filter(s=>nameHit(s)||kbText(s).includes(q)).sort((a,b)=>nameHit(b)-nameHit(a)):subs;
   // gom dạng muối về chất mẹ nếu chất mẹ có trong kết quả
-  const have=new Set(rs.map(kbKeyOf));
-  rs=rs.filter(s=>{const k=kbKeyOf(s);return !Object.entries(famOf()).some(([p,f])=>f.forms.includes(k)&&have.has(p))});
+  const rollup=list=>{const have=new Set(list.map(kbKeyOf));
+    return list.filter(s=>{const k=kbKeyOf(s);return !Object.entries(famOf()).some(([p,f])=>f.forms.includes(k)&&have.has(p))})};
+  rs=rollup(rs);
   const rd=docs.filter(x=>!q||docText(x).includes(q));
   const rn=notes.filter(n=>!q||(n.title+' '+n.substance+' '+n.kind+' '+n.content).toLowerCase().includes(q));
   const topics=window.KB_TOPICS||[];
@@ -1850,7 +1868,7 @@ function vLib(){
   let body='';
   if(home){
     body=`<div class="kinds"><button onclick="libSet('sub')"><span>🧬</span><b>Hoạt chất</b><span class="mute">${rs.length}</span></button><button onclick="libSet('doc')"><span>📄</span><b>Tài liệu</b><span class="mute">${docs.length}</span></button><button onclick="libSet('note')"><span>📝</span><b>Ghi chú</b><span class="mute">${notes.length}</span></button></div>`+cabinetBlock(rs)+
-      `<div class="sec2"><b>🔎 Tìm theo chủ đề</b><span class="mute">bấm để xem chất nào hợp</span></div><div class="tpgrid">${topics.map(tile).join('')}</div>
+      `<div class="sec2"><b>🔎 Tìm theo chủ đề</b><span class="mute">${topics.length} chủ đề, bấm để xem chất nào hợp</span></div><div class="tpgrid">${topics.map(tile).join('')}</div>
        ${docs.length?'':'<div class="mute" style="margin-top:6px">Chưa có tài liệu. Nhập file ở Cài đặt, mục Cập nhật dữ liệu.</div>'}`;
   }else if(libF==='sub'&&!q){
     const order=[...(window.KB_CATS||[]).map(c=>c.n),'Khác (chưa có bài)'];
@@ -1865,7 +1883,8 @@ function vLib(){
     if(!body)body=`<div class="empty">Không tìm thấy “${esc(libQ)}”. Thử từ khác, hoặc bỏ bộ lọc loại.</div>`;
   }
   const actions=`<div class="row" style="margin-top:14px"><button class="btn pri" onclick="editNote()">+ Thêm ghi chú</button><button class="btn" onclick="go('set')">Cập nhật từ file</button>${(q||libF!=='all')?`<button class="btn" onclick="libQ='';libF='all';vKnow()">Xoá tìm kiếm</button>`:''}</div>`;
-  view('Thư viện',`${(window.KB_TOPICS||[]).length} chủ đề · ${Object.keys(window.KB||{}).length-Object.values(famOf()).reduce((a,f)=>a+f.forms.length,0)} hoạt chất · ${docs.length} tài liệu`,head+body+actions);
+  const allTop=rollup(subs);
+  view('Thư viện',`${allTop.length} hoạt chất (${allTop.filter(kbOf).length} có bài) · ${docs.length} tài liệu`,head+body+actions);
 }
 function vKnow(){
   if(sub&&String(sub).startsWith('d:'))return vDoc(String(sub).slice(2));
