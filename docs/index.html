@@ -2047,7 +2047,7 @@ function banDoPhu(m){
   return {goals,noEff,bare,unk,hai,cb,warn,byChat,pend,prods}}
 const mtName=id=>{const g=goalList().find(x=>x.id===id),t=KH&&KH.muc_tieu.find(x=>x.ma===id);return {e:g?g.e:'',n:(t&&t.ten)||(g&&g.n)||id}};
 function goGoal(id){tab='know';sub=null;libTopic=id;libF='goal';libQ='';render();$('#view').scrollTop=0;nav()}
-function banDoPhuSummary(m){const d=banDoPhu(m);if(!d||d.empty)return '';const nw=d.warn.length+d.hai.length+(d.cb||[]).length;
+function banDoPhuSummary(m){const d=banDoPhu(m);if(!d||d.empty)return '';const nw=d.warn.filter(w=>/^ul-/.test(w.key)).length+d.hai.length+(d.cb||[]).length; // chỉ đếm cảnh báo nặng: vượt mức tối đa, chất có hại; bỏ trùng chất nhẹ
   return `<div class="mute">Hỗ trợ ${d.goals.length} mục tiêu · ${nw} cảnh báo</div>`}
 function banDoPhuBlock(m){
   const sw=`<label class="gsw"><input type="checkbox" ${showPending?'checked':''} onchange="setPending(this.checked)"><span><b>Xem cả ý chưa duyệt</b><span class="mute">${showPending?'Đang hiện cả ý chưa duyệt, mỗi chỗ có nhãn “chưa duyệt”.':'Đang chỉ dùng ý đã duyệt. Bật để xem cả ý còn chờ duyệt.'}</span></span></label>`;
