@@ -43,6 +43,10 @@ label{display:grid;gap:4px;font-size:14px;color:var(--mute)}
 .btn.sm{padding:6px 12px;font-size:14px;min-height:38px;border-radius:10px}
 .btn.del{color:var(--bad)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.hsc{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:6px 12px;margin:3px 4px 3px 0;background:var(--card);font-size:14px;cursor:pointer;min-height:36px}
+.hsc.on{background:var(--pri);color:#fff;border-color:var(--pri)}.hsc.gr{background:var(--bg);color:var(--mute);cursor:default}
+.hsr{border-top:1px solid var(--line);padding:10px 0}.hsr .g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hsr .g4{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px}
+.hsr label{font-size:13px;color:var(--mute)}
 .card h3{margin:0 0 3px;font-size:17px}
 .mute{color:var(--mute);font-size:14px}
 .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px}
@@ -431,7 +435,7 @@ function render(){
   document.querySelector('header').style.display=tab==='today'?'none':'';
   ({today:vToday,shelf:vShelf,add:vAdd,know:vKnow,fam:vFam,set:vSet})[tab]();
 }
-const APP_VER='tpcn-v2-65';
+const APP_VER='tpcn-v2-66';
 let newVer='';
 const updBanner=()=>newVer?`<div class="note" style="margin-bottom:12px;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Có bản mới của app.</b> <button class="btn sm pri" onclick="forceUpdate()">Cập nhật ngay</button></div>`:'';
 function view(title,sub_,html){$('#ttl').textContent=title;$('#sub').textContent=sub_||'';$('#sub').className='sub';$('#view').innerHTML=updBanner()+html}
@@ -602,7 +606,7 @@ const HERB=[
 ];
 const kbHasName=n=>Object.values(window.KB||{}).some(k=>norm(k.name)===norm(n));
 function herbWarnings(m,plans,add){
-  const meds=m.meds||'',all=meds+' '+(m.conditions||'');
+  const meds=medsOf(m),all=meds+' '+condsOf(m);
   for(const h of HERB){
     const hit=plans.filter(p=>{const pr=byId(S.products,p.productId);return h.re.test(pr.name||'')||(pr.ingredients||[]).some(g=>h.re.test((g.name||'')+' '+(g.form||'')))});
     if(!hit.length)continue;
@@ -685,6 +689,42 @@ function allergyCard(p){
   const H=allergyHits(p);
   if(!H.length)return `<div class="card"><b>Đối chiếu dị ứng</b><div class="mute">Không thấy chữ nào trên nhãn đã nhập trùng với dị ứng đã ghi của ${withA.map(m=>esc(m.name)).join(', ')}. App chỉ dựa trên chữ đã nhập: nếu nhãn thiếu thành phần hoặc chất độn thì app không biết.</div></div>`;
   return `<div class="note" style="margin-bottom:10px"><b>⚠ Đối chiếu dị ứng</b>${H.map(h=>`<div style="margin-top:4px"><b>${esc(h.m.name)}</b> ghi dị ứng ${esc(h.f.n.toLowerCase())}: ${h.tier==='chac'?'nhãn có nhắc tới':'có thể liên quan'} (ở ${esc(h.where.join(', '))})${h.why?'. '+esc(h.why):''}.</div>`).join('')}<div class="mute" style="margin-top:6px">So chữ trên nhãn với ô Dị ứng, không phải kết luận. Hỏi dược sĩ hoặc bác sĩ trước khi dùng.</div></div>`}
+/* ---------- Hồ sơ có cấu trúc (member.hs) và bảng tương tác thuốc – chất (khung.json: tuong_tac, nhom_thuoc) ---------- */
+const hsOf=m=>(m&&m.hs)||{};
+const benhNames=m=>{const h=hsOf(m);return (h.benh||[]).map(b=>b.ma?(((KH&&KH.muc_tieu)||[]).find(x=>x.ma===b.ma)||{}).ten||b.ma:(b.tu_do||'')).filter(Boolean)};
+const medsOf=m=>[m.meds||'',...(hsOf(m).thuoc||[]).map(t=>t.ten||'')].join('\n');
+const condsOf=m=>[m.conditions||'',...benhNames(m)].join('\n');
+let _NH=null,_NHK=null;
+const nhomList=()=>{if(!KH||!KH.nhom_thuoc)return [];if(_NHK===KH.nhom_thuoc&&_NH)return _NH;_NHK=KH.nhom_thuoc;_NH=Object.entries(KH.nhom_thuoc).map(([k,x])=>{try{return[k,new RegExp(x.re,'i')]}catch(e){return null}}).filter(Boolean);return _NH};
+const nhomTen=k=>((KH&&KH.nhom_thuoc&&KH.nhom_thuoc[k])||{}).ten||k;
+const nhomCua=ten=>{const t=String(ten||'');return nhomList().filter(([k,re])=>re.test(t)).map(([k])=>k)};
+function memberGroups(m){const g=new Set();
+  for(const t of hsOf(m).thuoc||[]){if(Array.isArray(t.nhom)&&(t.nhom.length||t.tu_nhan===false))t.nhom.forEach(k=>g.add(k));else nhomCua(t.ten).forEach(k=>g.add(k))}
+  const legacy=m.meds||'';if(legacy.trim())nhomCua(legacy).forEach(k=>g.add(k));
+  return g}
+/* Chất ghi trong tuong-tac.csv mà app chưa có mã riêng: ghép theo tên/regex trên nhãn sản phẩm */
+const CHAT_ALIAS={'men gạo đỏ':'redyeast'};
+const CHAT_NAME_EXTRA={redyeast:'Men gạo đỏ',kali:'Kali',algae:'Tảo biển (kelp)'};
+const CHAT_RE=[['redyeast',/men gạo đỏ|red yeast|monascus|monacolin|kvasnicová rýže/i],['kali',/potassium|kali\b|kalium|draslík|draslik/i],['algae',/\bkelp\b|tảo bẹ|tảo biển|rong biển|seaweed|laminaria|fucus|ascophyllum|bladderwrack/i],
+  ['stjohn',/st\.?\s*john|hypericum|cỏ st|třezalka/i],['ginkgo',/ginkgo|bạch quả/i],['valerian',/valerian|nữ lang|kozlík/i]];
+const ttChatName=k=>CHAT_NAME_EXTRA[k]||chatName(k);
+function chatKeysOf(pr){const ks=new Set();
+  for(const g of pr.ingredients||[]){const k=substKeyOf(g);if(k){ks.add(k);try{ks.add(parentKey(k))}catch(e){}}
+    const t=(g.name||'')+' '+(g.form||'');for(const[c,re]of CHAT_RE)if(re.test(t))ks.add(c)}
+  for(const[c,re]of CHAT_RE)if(re.test(pr.name||''))ks.add(c);
+  return ks}
+const TT_LV={chan:3,than_trong:2,luu_y:1},TT_TAG={chan:'Chặn',than_trong:'Thận trọng',luu_y:'Lưu ý'};
+function ttMatches(m,plans){
+  if(!KH||!Array.isArray(KH.tuong_tac))return [];
+  const grp=memberGroups(m);if(!grp.size)return [];
+  const prodsOf=new Map();
+  for(const p of plans){const pr=byId(S.products,p.productId);if(!pr)continue;for(const k of chatKeysOf(pr)){if(!prodsOf.has(k))prodsOf.set(k,new Set());prodsOf.get(k).add(pr.name)}}
+  const out=[];
+  for(const r of KH.tuong_tac){if(!grp.has(r.nhom_thuoc))continue;const k=CHAT_ALIAS[r.chat]||r.chat,ps=prodsOf.get(k);if(!ps)continue;out.push({r,chat:k,prods:[...ps]})}
+  return out}
+const srcLabel=u=>{if(!/^https?:\/\//.test(u))return u;try{const h=new URL(u).hostname.replace(/^www\./,'');return h==='ods.od.nih.gov'?'NIH ODS':h==='medlineplus.gov'?'MedlinePlus':/nccih/.test(h)?'NCCIH':h}catch(e){return u}};
+const DRUG_TT={warfarin:['chong_dong'],levo:['giap_t4'],abx:['quinolon','tetra'],thyrozol:['khang_giap'],bleed:['chong_dong','khang_tieu_cau'],'vite-bleed':['chong_dong','khang_tieu_cau'],'levodopa-fe':['levodopa'],'ppi-fe':['ppi']};
+DRUG.forEach(r=>{r.tt=DRUG_TT[r.id]||[]});
 function warningsFor(m,day=today()){
   const W=[],age=ageOf(m),t=totals(m.id,day),plans=activePlans(m.id,day);
   const add=(lv,key,title,text,src,fix,vault)=>{if(lv<3&&(S.dismissed||[]).includes(m.id+'|'+key))return;W.push({lv,key,title,text,src,fix,vault,mid:m.id})};
@@ -702,7 +742,13 @@ function warningsFor(m,day=today()){
     const ta=mins(a.time),tb=mins(b.time);if(ta==null||tb==null||Math.abs(ta-tb)>=r.min)continue;
     let nt=ta+r.min;if(nt>1439)nt=ta-r.min;
     add(2,`sp-${a.id}-${b.id}`,`Nên uống cách nhau: ${NUTR[r.a].n} và ${NUTR[r.b].n}`,`${pname(a.productId)} (${a.time}) và ${pname(b.productId)} (${b.time}) chỉ cách ${Math.abs(ta-tb)} phút. ${r.why} Nên cách ít nhất ${r.min/60} giờ.`,odsUrl(r.src),nt>=0?{plan:b.id,time:hhmm(nt)}:null)}
-  for(const r of DRUG){if(!r.re.test(m.meds||''))continue;const hit=plans.filter(p=>r.n.some(k=>hasN(p,k)));
+  const TTm=ttMatches(m,plans);
+  for(const x of TTm){const key='tt-'+x.r.ma,lv=TT_LV[x.r.muc_do]||1;if(lv<3&&(S.dismissed||[]).includes(m.id+'|'+key))continue;
+    const kn=(x.r.khuyen_nghi||'').trim();
+    W.push({lv,key,tag:TT_TAG[x.r.muc_do],tt:true,title:`${ttChatName(x.chat)} và ${nhomTen(x.r.nhom_thuoc).toLowerCase()}`,
+      text:`${x.r.co_che||''} ${kn} Liên quan: ${x.prods.join(', ')}. Hỏi bác sĩ, dược sĩ trước khi dùng.`.replace(/\s+/g,' ').trim(),
+      srcs:[x.r.nguon_1,x.r.nguon_2].filter(Boolean),src:null,mid:m.id})}
+  for(const r of DRUG){if(!r.re.test(medsOf(m)))continue;const cov=k=>TTm.some(x=>r.tt.includes(x.r.nhom_thuoc)&&x.chat===k);const hit=plans.filter(p=>r.n.some(k=>!cov(k)&&hasN(p,k)));
     if(hit.length)add(r.lv||3,'drug-'+r.id,r.title,`${r.text} Liên quan: ${[...new Set(hit.map(p=>pname(p.productId)))].join(', ')}. Hỏi bác sĩ hoặc dược sĩ.`,r.src?odsUrl(r.src):null,null,r.vault&&(kbHasName(r.vault)||S.notes.some(x=>norm(x.substance)===norm(r.vault)))?r.vault:null)}
   herbWarnings(m,plans,add);
   for(const pid of new Set(plans.map(p=>p.productId))){const pr=byId(S.products,pid);if(!pr)continue;
@@ -710,11 +756,12 @@ function warningsFor(m,day=today()){
   if(plans.length){
     if(!adult)add(2,'child','Chưa có mức cho trẻ em','Mức tối đa trong app là của người lớn. Trẻ em có mức thấp hơn nhiều, hãy hỏi bác sĩ nhi.');
     if(age==null)add(1,'noage','Chưa có năm sinh','App đang dùng mức tối đa của người lớn. Nhập năm sinh để tính đúng hơn.');
-    if((m.meds||'').trim())add(1,'meds','Đang dùng thuốc kê đơn','App chỉ nhận ra vài tương tác phổ biến. Hãy đưa danh sách này cho bác sĩ hoặc dược sĩ xem cùng đơn thuốc.');
+    if(hsOf(m).thai)add(2,'thai',hsOf(m).thai==='mang_thai'?'Đang mang thai':'Đang cho con bú','App chưa có bảng tương tác riêng cho thai kỳ và cho con bú. Hỏi bác sĩ, dược sĩ trước khi dùng bất kỳ thực phẩm bổ sung nào.');
+    if(medsOf(m).trim())add(1,'meds','Đang dùng thuốc kê đơn','App chỉ nhận ra vài tương tác phổ biến. Hãy đưa danh sách này cho bác sĩ hoặc dược sĩ xem cùng đơn thuốc.');
     else if(age!=null&&age>=65)add(1,'65','Trên 65 tuổi','Nên ghi thuốc kê đơn vào hồ sơ và hỏi bác sĩ trước khi thêm TPCN mới.')}
   return W.sort((a,b)=>b.lv-a.lv)}
-function warnCard(w,showName){return`<div class="w w${w.lv}"><b>${LV[w.lv]} · ${esc(w.title)}</b>${showName?` <span class="mute">(${esc(mname(w.mid))})</span>`:''}<div>${esc(w.text)}</div>
-  <div class="row" style="margin-top:6px;align-items:center">${w.src?`<a href="${esc(w.src)}" target="_blank" rel="noopener noreferrer" style="font-size:13px">Nguồn: ${/efsa|ncbi/.test(w.src)?'EFSA':/nccih/.test(w.src)?'NCCIH':'NIH'}</a>`:''}
+function warnCard(w,showName){return`<div class="w w${w.lv}"><b>${w.tag||LV[w.lv]} · ${esc(w.title)}</b>${showName?` <span class="mute">(${esc(mname(w.mid))})</span>`:''}<div>${esc(w.text)}</div>
+  <div class="row" style="margin-top:6px;align-items:center">${(w.srcs||[]).map((u,i)=>/^https?:\/\//.test(u)?`<a href="${esc(u)}" target="_blank" rel="noopener noreferrer" style="font-size:13px">Nguồn ${i+1}: ${esc(srcLabel(u))}</a>`:`<span class="mute" style="font-size:13px">Nguồn ${i+1}: ${esc(u)}</span>`).join('')}${w.src?`<a href="${esc(w.src)}" target="_blank" rel="noopener noreferrer" style="font-size:13px">Nguồn: ${/efsa|ncbi/.test(w.src)?'EFSA':/nccih/.test(w.src)?'NCCIH':'NIH'}</a>`:''}
   ${w.vault?`<button class="btn sm" data-n="${esc(w.vault)}" onclick="go('know',this.dataset.n)">${kbHasName(w.vault)?'Xem bài kiến thức':'Ghi chú của bạn'}</button>`:''}
   ${w.fix?`<button class="btn sm" onclick="applyFix('${w.fix.plan}','${w.fix.time}')">Dời giờ sang ${esc(w.fix.time)}</button>`:''}
   ${w.lv<3?`<button class="btn sm" onclick="dismissW('${w.mid}','${esc(w.key)}')">Bỏ qua</button>`:''}</div></div>`}
@@ -1860,7 +1907,7 @@ async function loadKhung(){
     if(!j||!Array.isArray(j.y)||!j.tang)throw new Error('sai dạng dữ liệu');KH=j;_KHI=null}
   catch(e){KH=null;KH_ERR=String((e&&e.message)||e)}
   finally{KH_BUSY=false}
-  if(tab==='know'||tab==='fam')render();
+  if(tab==='know'||tab==='fam'||tab==='today')render();
 }
 /* Công tắc "Xem cả ý chưa duyệt": nhớ bằng localStorage (có thể bị chặn nên bọc try/catch) */
 let showPending=false;try{showPending=localStorage.getItem('tpcn_xem_chua_duyet')==='1'}catch(e){}
@@ -2043,11 +2090,11 @@ function banDoPhu(m){
   const bare=prods.filter(pr=>!(pr.ingredients||[]).some(g=>(keysOf(g)||[]).some(k=>has.has(k)))).map(pr=>pr.name);
   const hai=KH.y.filter(r=>r.huong==='hai'&&byChat.has(r.chat)).sort((a,b)=>a.chat.localeCompare(b.chat)||a.ma_y.localeCompare(b.ma_y));
   const cb=KH.tang.xem_truoc.filter(x=>x.canh_bao&&byChat.has(x.chat)&&!hai.some(r=>r.chat===x.chat&&r.muc_tieu===x.muc_tieu)&&(showPending||ok.has(x.chat+'|'+x.muc_tieu)));
-  const warn=warningsFor(m).filter(w=>/^(ul|dup)-/.test(w.key));
+  const warn=warningsFor(m).filter(w=>/^(ul|dup|tt)-/.test(w.key));
   return {goals,noEff,bare,unk,hai,cb,warn,byChat,pend,prods}}
 const mtName=id=>{const g=goalList().find(x=>x.id===id),t=KH&&KH.muc_tieu.find(x=>x.ma===id);return {e:g?g.e:'',n:(t&&t.ten)||(g&&g.n)||id}};
 function goGoal(id){tab='know';sub=null;libTopic=id;libF='goal';libQ='';render();$('#view').scrollTop=0;nav()}
-function banDoPhuSummary(m){const d=banDoPhu(m);if(!d||d.empty)return '';const nw=d.warn.filter(w=>/^ul-/.test(w.key)).length+d.hai.length+(d.cb||[]).length; // chỉ đếm cảnh báo nặng: vượt mức tối đa, chất có hại; bỏ trùng chất nhẹ
+function banDoPhuSummary(m){const d=banDoPhu(m);if(!d||d.empty)return '';const nw=d.warn.filter(w=>/^ul-/.test(w.key)||(/^tt-/.test(w.key)&&w.lv>=2)).length+d.hai.length+(d.cb||[]).length; // chỉ đếm cảnh báo nặng: vượt mức tối đa, chất có hại; bỏ trùng chất nhẹ
   return `<div class="mute">Hỗ trợ ${d.goals.length} mục tiêu · ${nw} cảnh báo</div>`}
 function banDoPhuBlock(m){
   const sw=`<label class="gsw"><input type="checkbox" ${showPending?'checked':''} onchange="setPending(this.checked)"><span><b>Xem cả ý chưa duyệt</b><span class="mute">${showPending?'Đang hiện cả ý chưa duyệt, mỗi chỗ có nhãn “chưa duyệt”.':'Đang chỉ dùng ý đã duyệt. Bật để xem cả ý còn chờ duyệt.'}</span></span></label>`;
@@ -2058,8 +2105,8 @@ function banDoPhuBlock(m){
   const prodOf=k=>[...(d.byChat.get(k)||[])].join(', ');
   const yPend=r=>r.trang_thai!=='da_duyet'?' <span class="tag pend">chưa duyệt</span>':'';
   let h=head+sw;
-  const wUl=d.warn.filter(w=>w.lv>=2),wDup=d.warn.filter(w=>w.lv<2);
-  const wl=wUl.map(w=>warnCard(w,false)).join('')+(wDup.length?`<details class="fam"><summary>Trùng chất giữa các sản phẩm · ${wDup.length}</summary>${wDup.map(w=>warnCard(w,false)).join('')}</details>`:'')+d.hai.map(r=>`<div class="w w3"><b>${esc(chatName(r.chat))}</b>${yPend(r)} <span class="mute">(${esc(mtName(r.muc_tieu).n)}, trong ${esc(prodOf(r.chat))})</span><div>${esc(r.noi_dung)}</div><div style="font-size:13px;opacity:.85">Nguồn: ${esc((KH.nguon[r.nguon]||{}).ten||r.nguon)}</div></div>`).join('')+(d.cb||[]).map(x=>`<div class="w w3"><b>${esc(chatName(x.chat))}</b> <span class="mute">(${esc(mtName(x.muc_tieu).n)}, trong ${esc(prodOf(x.chat))})</span><div>Kho kiến thức ghi có cảnh báo cho chất này ở mục tiêu trên.</div></div>`).join('');
+  const wUl=d.warn.filter(w=>w.lv>=2),wDup=d.warn.filter(w=>w.lv<2&&!w.tt),wTt1=d.warn.filter(w=>w.lv<2&&w.tt);
+  const wl=wUl.map(w=>warnCard(w,false)).join('')+wTt1.map(w=>warnCard(w,false)).join('')+(wDup.length?`<details class="fam"><summary>Trùng chất giữa các sản phẩm · ${wDup.length}</summary>${wDup.map(w=>warnCard(w,false)).join('')}</details>`:'')+d.hai.map(r=>`<div class="w w3"><b>${esc(chatName(r.chat))}</b>${yPend(r)} <span class="mute">(${esc(mtName(r.muc_tieu).n)}, trong ${esc(prodOf(r.chat))})</span><div>${esc(r.noi_dung)}</div><div style="font-size:13px;opacity:.85">Nguồn: ${esc((KH.nguon[r.nguon]||{}).ten||r.nguon)}</div></div>`).join('')+(d.cb||[]).map(x=>`<div class="w w3"><b>${esc(chatName(x.chat))}</b> <span class="mute">(${esc(mtName(x.muc_tieu).n)}, trong ${esc(prodOf(x.chat))})</span><div>Kho kiến thức ghi có cảnh báo cho chất này ở mục tiêu trên.</div></div>`).join('');
   h+=sec('Cảnh báo')+(wl||'<div class="mute">Chưa thấy cảnh báo trùng chất, vượt mức tối đa hay chất cần tránh trong các sản phẩm đang uống.</div>');
   h+=sec('Mục tiêu đang được hỗ trợ')+(d.goals.length?`<div class="mute" style="margin-bottom:4px">Bấm một mục tiêu để mở trang mục tiêu.</div>`+d.goals.map(g=>{const t=mtName(g.id);
     return `<button class="bdp-g" onclick="goGoal('${esc(g.id)}')"><b>${t.e} ${esc(t.n)}</b>`+g.l.map(x=>`<div class="bdp-t"><span class="tb tb-${x.tang}" title="${esc(TANG_INFO[x.tang])}">${x.tang}</span><span>${esc(chatName(x.chat))}</span>${pt(x)}<span class="mute">trong ${esc(prodOf(x.chat))}</span></div>`).join('')+`</button>`}).join(''):'<div class="mute">Chưa có chất nào trong các sản phẩm này ra tầng A đến D'+(showPending?'.':' ở ý đã duyệt.')+'</div>');
@@ -2097,13 +2144,78 @@ function vPerson(mid){
     body=sketchView(m);
   }else{
     body=`<div class="card"><b>Bệnh nền</b><div>${esc(m.conditions||'—')}</div><b style="display:block;margin-top:8px">Thuốc kê đơn</b><div>${esc(m.meds||'—')}</div><b style="display:block;margin-top:8px">Dị ứng</b><div>${esc(m.allergies||'—')}</div>
-      <div class="row"><button class="btn sm" onclick="editMember('${m.id}')">Sửa</button></div></div>`+
+      <div class="row"><button class="btn sm" onclick="editMember('${m.id}')">Sửa</button></div></div>`+hsView(m)+
       (P?`<div class="card"><b>Hồ sơ sức khỏe chi tiết</b><div class="mute">Thuốc, điều cần tránh, xét nghiệm, câu hỏi cho bác sĩ. Viết bằng chữ lớn, dễ đọc.</div><div class="row"><button class="btn pri" onclick="go('fam','p:${m.id}')">Mở hồ sơ chi tiết</button></div></div>`
         :`<div class="note">Chưa có hồ sơ chi tiết. Nhập file hồ sơ ở Cài đặt, mục Cập nhật dữ liệu.</div>`);
   }
   view(m.name,`${age?age+' tuổi':''}${m.weight?(age?' · ':'')+m.weight+' kg':''}`||'Thành viên',`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="goBack(()=>{go('fam')})">‹ Gia đình</button></div>`+chips+body);
 }
+/* ---------- Màn sửa hồ sơ có cấu trúc (member.hs) ---------- */
+let HSD=null;
+const clone=o=>JSON.parse(JSON.stringify(o));
+function hsInit(mid){const m=byId(S.members,mid);if(!m)return;const h=clone(m.hs||{});
+  if(!m.hs){const tu=(m.conditions||'').trim();h.benh=tu?[{tu_do:tu}]:[];
+    h.thuoc=(m.meds||'').split(/\n|;/).map(x=>x.trim()).filter(Boolean).map(ten=>({ten,nhom:nhomCua(ten),tu_nhan:true}));
+    h.di_ung=m.allergies||''}
+  h.benh=h.benh||[];h.thuoc=h.thuoc||[];h.xn=h.xn||[];h.can_nang=h.can_nang||[];h.thai=h.thai||'';if(h.di_ung==null)h.di_ung=m.allergies||'';
+  const last=h.can_nang.length?h.can_nang[h.can_nang.length-1].kg:'';
+  HSD={mid,h,kg:last!==''?last:(m.weight||'')}}
+function hsEdit(mid){hsInit(mid);personTab='hs';go('fam','h:'+mid)}
+function hsDone(){const mid=HSD&&HSD.mid;HSD=null;if(mid)personTab='hs';goBack(()=>go('fam',mid?'m:'+mid:null))}
+const hsRe=()=>{const y=$('#view').scrollTop||0,main=$('#view');render();main.scrollTop=y};
+const hsBenhOn=ma=>HSD.h.benh.some(b=>b.ma===ma);
+function hsToggleBenh(ma){const b=HSD.h.benh,i=b.findIndex(x=>x.ma===ma);if(i<0)b.push({ma});else b.splice(i,1);hsRe()}
+function hsTuDo(v){HSD.h.benh=HSD.h.benh.filter(b=>b.ma);String(v).split(/\n|;/).map(x=>x.trim()).filter(Boolean).forEach(x=>HSD.h.benh.push({tu_do:x}))}
+function hsThuocChips(i){const t=HSD.h.thuoc[i];
+  const ch=(t.nhom||[]).map(k=>`<span class="hsc on" title="Bấm để bỏ nhóm này" onclick="hsRmNhom(${i},'${esc(k)}')">${esc(nhomTen(k))} ✕</span>`).join('');
+  const none=!(t.nhom||[]).length;
+  const add=`<select style="width:auto;max-width:100%;min-height:36px;padding:4px 8px;font-size:14px" onchange="hsAddNhom(${i},this.value)"><option value="">+ thêm nhóm</option>${Object.keys((KH&&KH.nhom_thuoc)||{}).filter(k=>!(t.nhom||[]).includes(k)).map(k=>`<option value="${esc(k)}">${esc(nhomTen(k))}</option>`).join('')}</select>`;
+  return (none&&String(t.ten||'').trim()?`<span class="hsc gr">chưa nhận ra thuốc này, hỏi dược sĩ</span>`:'')+ch+add}
+function hsThuocTen(i,v){const t=HSD.h.thuoc[i];t.ten=v;if(t.tu_nhan!==false){t.nhom=nhomCua(v);t.tu_nhan=true}const e=document.getElementById('hst'+i);if(e)e.innerHTML=hsThuocChips(i)}
+function hsRmNhom(i,k){const t=HSD.h.thuoc[i];t.nhom=(t.nhom||[]).filter(x=>x!==k);t.tu_nhan=false;hsRe()}
+function hsAddNhom(i,k){if(!k)return;const t=HSD.h.thuoc[i];t.nhom=[...(t.nhom||[]),k];t.tu_nhan=false;hsRe()}
+function hsAddThuoc(){HSD.h.thuoc.push({ten:'',nhom:[],tu_nhan:true,lieu:''});hsRe()}
+function hsDelThuoc(i){HSD.h.thuoc.splice(i,1);hsRe()}
+function hsAddXn(){HSD.h.xn.push({ten:'',gia_tri:'',don_vi:'',ngay:today()});hsRe()}
+function hsDelXn(i){HSD.h.xn.splice(i,1);hsRe()}
+function hsSave(){const m=byId(S.members,HSD.mid);if(!m)return;const h=clone(HSD.h);
+  h.thuoc=h.thuoc.filter(t=>String(t.ten||'').trim());h.xn=h.xn.filter(x=>String(x.ten||'').trim()||String(x.gia_tri||'').trim());
+  const kg=HSD.kg===''?'':Number(HSD.kg),last=h.can_nang.length?h.can_nang[h.can_nang.length-1]:null;
+  if(kg!==''&&!Number.isNaN(kg)&&(!last||last.kg!==kg)){h.can_nang.push({kg,ngay:today()});m.weight=kg}
+  h.cap_nhat=today();m.hs=h;m.allergies=h.di_ung||'';save();hsDone()}
+function vHsEdit(mid){
+  const m=byId(S.members,mid);if(!m){sub=null;return vFam()}
+  if(!HSD||HSD.mid!==mid)hsInit(mid);
+  const h=HSD.h,ms=(KH&&KH.muc_tieu)||[];
+  const tuDo=h.benh.filter(b=>!b.ma).map(b=>b.tu_do).join('\n');
+  const top=`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="hsDone()">‹ Huỷ, quay lại</button></div>`;
+  const sec=(t,x)=>`<div class="card"><b>${t}</b>${x}</div>`;
+  const benh=sec('Bệnh nền',(ms.length?`<div class="mute" style="margin:4px 0 6px">Bấm để chọn, có thể chọn nhiều.</div>`+ms.map(x=>`<span class="hsc ${hsBenhOn(x.ma)?'on':''}" role="button" tabindex="0" onclick="hsToggleBenh('${esc(x.ma)}')">${esc(x.ten)}</span>`).join(''):'<div class="mute">Đang tải danh sách mục tiêu…</div>')+
+    `<label style="display:block;margin-top:8px">Bệnh khác, tự ghi (mỗi dòng một bệnh)<textarea oninput="hsTuDo(this.value)">${esc(tuDo)}</textarea></label>`);
+  const thuoc=sec('Thuốc đang dùng',`<div class="mute" style="margin:4px 0">Gõ tên thuốc, app tự hiện nhóm thuốc nhận ra. Bấm dấu ✕ trên nhóm để bỏ, hoặc chọn thêm nhóm nếu app nhận sai.</div>`+
+    h.thuoc.map((t,i)=>`<div class="hsr"><div class="g2"><label>Tên thuốc<input value="${esc(t.ten||'')}" oninput="hsThuocTen(${i},this.value)" placeholder="vd: Thyrozol 5 mg"></label><label>Liều, giờ uống<input value="${esc(t.lieu||'')}" oninput="HSD.h.thuoc[${i}].lieu=this.value"></label></div><div id="hst${i}" style="margin-top:6px">${hsThuocChips(i)}</div><div class="row"><button class="btn sm del" onclick="hsDelThuoc(${i})">Xoá thuốc này</button></div></div>`).join('')+
+    `<div class="row"><button class="btn sm" onclick="hsAddThuoc()">+ Thêm thuốc</button></div>`);
+  const xn=sec('Xét nghiệm',`<div class="mute" style="margin:4px 0">App chỉ ghi lại và hiển thị, không chẩn đoán từ giá trị.</div>`+
+    h.xn.map((x,i)=>`<div class="hsr"><div class="g4"><label>Tên<input value="${esc(x.ten||'')}" oninput="HSD.h.xn[${i}].ten=this.value" placeholder="vd: TSH"></label><label>Giá trị<input value="${esc(x.gia_tri||'')}" oninput="HSD.h.xn[${i}].gia_tri=this.value"></label><label>Đơn vị<input value="${esc(x.don_vi||'')}" oninput="HSD.h.xn[${i}].don_vi=this.value"></label></div><label style="display:block;margin-top:6px">Ngày<input type="date" value="${esc(x.ngay||'')}" oninput="HSD.h.xn[${i}].ngay=this.value"></label><div class="row"><button class="btn sm del" onclick="hsDelXn(${i})">Xoá dòng</button></div></div>`).join('')+
+    `<div class="row"><button class="btn sm" onclick="hsAddXn()">+ Thêm xét nghiệm</button></div>`);
+  const hist=h.can_nang.slice(-3).reverse().map(c=>`${esc(c.kg)} kg (${esc((c.ngay||'').split('-').reverse().join('/'))})`).join(' · ');
+  const body=sec('Cân nặng, thai kỳ, dị ứng',`<label style="display:block;margin-top:6px">Cân nặng (kg)<input type="number" step="0.1" value="${esc(HSD.kg)}" oninput="HSD.kg=this.value"></label>${hist?`<div class="mute">Gần đây: ${hist}</div>`:''}
+    <label style="display:block;margin-top:8px">Mang thai, cho con bú<select onchange="HSD.h.thai=this.value"><option value="" ${!h.thai?'selected':''}>Không</option><option value="mang_thai" ${h.thai==='mang_thai'?'selected':''}>Đang mang thai</option><option value="cho_bu" ${h.thai==='cho_bu'?'selected':''}>Đang cho con bú</option></select></label>
+    <label style="display:block;margin-top:8px">Dị ứng<textarea oninput="HSD.h.di_ung=this.value">${esc(h.di_ung||'')}</textarea></label>`);
+  view('Sửa hồ sơ sức khỏe',m.name,top+`<div class="note" style="margin-bottom:10px">Hồ sơ này chỉ nằm trong máy của bạn. Không gửi lên Google Sheet hay Drive. App chỉ nhắc để bạn hỏi bác sĩ, dược sĩ, không thay lời của họ.</div>`+benh+thuoc+xn+body+
+    `<div class="row"><button class="btn pri" onclick="hsSave()">Lưu hồ sơ</button><button class="btn" onclick="hsDone()">Huỷ</button></div>`)}
+function hsView(m){const h=hsOf(m),has=m.hs;
+  if(!has)return `<div class="card"><b>Hồ sơ có cấu trúc</b><div class="mute">Chọn bệnh nền, ghi thuốc để app tự nhận nhóm thuốc và đối chiếu tương tác với thực phẩm bổ sung. Điền sẵn từ ô bệnh nền, thuốc đã nhập trước đó.</div><div class="row"><button class="btn pri" onclick="hsEdit('${m.id}')">Tạo hồ sơ có cấu trúc</button></div></div>`;
+  const bn=benhNames(m),th=h.thuoc||[],xn=h.xn||[],cn=h.can_nang||[];
+  return `<div class="card"><b>Hồ sơ có cấu trúc</b>${h.cap_nhat?` <span class="mute">cập nhật ${esc(h.cap_nhat.split('-').reverse().join('/'))}</span>`:''}
+    <div style="margin-top:6px"><b>Bệnh nền:</b> ${bn.length?bn.map(x=>`<span class="hsc">${esc(x)}</span>`).join(''):'—'}</div>
+    <div style="margin-top:6px"><b>Thuốc:</b>${th.length?th.map(t=>`<div style="margin:4px 0">${esc(t.ten)}${t.lieu?` <span class="mute">${esc(t.lieu)}</span>`:''}<div>${(t.nhom||[]).length?t.nhom.map(k=>`<span class="hsc on" style="cursor:default">${esc(nhomTen(k))}</span>`).join(''):'<span class="hsc gr">chưa nhận ra thuốc này, hỏi dược sĩ</span>'}</div></div>`).join(''):' —'}</div>
+    ${xn.length?`<div style="margin-top:6px"><b>Xét nghiệm:</b><table class="ing2" style="font-size:15px">${xn.map(x=>`<tr><td>${esc(x.ten)}</td><td><b>${esc(x.gia_tri)}</b> ${esc(x.don_vi||'')}</td><td class="mute">${esc((x.ngay||'').split('-').reverse().join('/'))}</td></tr>`).join('')}</table></div>`:''}
+    ${cn.length?`<div style="margin-top:6px"><b>Cân nặng:</b> ${esc(cn[cn.length-1].kg)} kg <span class="mute">(${esc((cn[cn.length-1].ngay||'').split('-').reverse().join('/'))})</span></div>`:''}
+    ${h.thai?`<div style="margin-top:6px"><b>Thai kỳ:</b> ${h.thai==='mang_thai'?'đang mang thai':'đang cho con bú'}</div>`:''}
+    <div class="row"><button class="btn pri sm" onclick="hsEdit('${m.id}')">Sửa hồ sơ có cấu trúc</button></div></div>`}
 function vFam(){
+  if(sub&&String(sub).startsWith('h:'))return vHsEdit(String(sub).slice(2));
   if(sub&&String(sub).startsWith('p:'))return vProfile(String(sub).slice(2));
   if(sub&&String(sub).startsWith('m:'))return vPerson(String(sub).slice(2));
   view('Gia đình','Mỗi người một hồ sơ',`<div class="row" style="margin:0 0 10px"><button class="btn pri" onclick="editMember()">+ Thêm thành viên</button></div>`+
@@ -2114,7 +2226,11 @@ function vFam(){
 }
 function vSet(){
   view('Cài đặt','Cập nhật, đồng bộ và sao lưu',`<div class="row" style="margin:0 0 10px"><button class="btn" onclick="goBack(()=>{go('today')})">‹ Quay lại</button></div>`+updateCard()+`<div class="card"><b>Sao lưu</b><div class="mute">Dữ liệu chỉ nằm trong trình duyệt của máy này. Hãy tải bản sao lưu định kỳ.</div><div class="mute" style="margin-top:6px"><b>${backupText()}</b></div>
-    <div class="row"><button class="btn pri" onclick="exportAll()">Tải JSON</button></div><div class="mute" style="margin-top:6px">Khôi phục: dùng "Cập nhật dữ liệu" ở trên.</div></div>
+    <label style="display:block;margin-top:10px">Mật khẩu cho file sao lưu (từ 8 ký tự, để trống nếu không mã hoá)<input id="bk_pw" type="password" autocomplete="new-password"></label>
+    <label style="display:block;margin-top:6px">Nhập lại mật khẩu<input id="bk_pw2" type="password" autocomplete="new-password"></label>
+    ${hasSensitive()?`<div class="note" style="margin-top:8px"><b>Nên đặt mật khẩu.</b> Hồ sơ đang có bệnh nền hoặc xét nghiệm. File không mã hoá cho ai có file đọc được hết.</div>`:''}
+    <div class="mute" style="margin-top:6px">Mã hoá ngay trên máy (PBKDF2 và AES-GCM). Quên mật khẩu thì không mở lại được file, app không giữ mật khẩu.</div>
+    <div class="row"><button class="btn pri" onclick="exportAll()">Tải sao lưu</button></div><div class="mute" style="margin-top:6px">Khôi phục: dùng "Cập nhật dữ liệu" ở trên, file có mật khẩu sẽ được hỏi mật khẩu.</div></div>
     <div class="card"><b>Chuẩn mức tối đa dùng để cảnh báo</b><div class="mute">EFSA là chuẩn châu Âu (áp dụng ở Séc), thường chặt hơn. NIH là chuẩn Mỹ.</div>
      <select style="margin-top:8px" onchange="S.settings={...(S.settings||{}),ul:this.value};save();render()"><option value="efsa" ${ulStd()==='efsa'?'selected':''}>EFSA (châu Âu)</option><option value="nih" ${ulStd()==='nih'?'selected':''}>NIH (Mỹ)</option></select></div>
     <div class="card"><b>Xuất bảng tính (CSV, mở bằng Excel hoặc Google Sheets)</b>
@@ -2140,7 +2256,31 @@ function reportHtml(m){
   ${plans.length?`<table><tr><th>Sản phẩm</th><th>Hãng</th><th>Thành phần mỗi liều nhãn</th><th>Liều</th><th>Giờ</th><th>Từ ngày</th></tr>${plans.map(p=>{const pr=byId(S.products,p.productId);return`<tr><td>${esc(pr.name)}</td><td>${esc(pr.brand)}</td><td>${esc(ingText(pr))}</td><td>${esc(p.qty)}${p.servings&&p.servings!=1?' ('+esc(p.servings)+' liều nhãn)':''}</td><td>${esc(p.time)} ${esc(p.label)}</td><td>${esc(p.start)}</td></tr>`}).join('')}</table>`:'<p>Không có sản phẩm nào đang dùng.</p>'}
   <h3>Lưu ý do ứng dụng tính</h3>${W.length?`<ul>${W.map(w=>`<li><b>${LV[w.lv]}:</b> ${esc(w.title)}. ${esc(w.text)}</li>`).join('')}</ul>`:'<p>Không có.</p>'}`}
 function printReport(mid){const m=byId(S.members,mid);if(!m){alert('Chưa có thành viên.');return}$('#report').innerHTML=reportHtml(m);print()}
-async function exportAll(){const images={};for(const id of S.products.flatMap(p=>p.imageIds||[])){const u=await getImg(id).catch(()=>null);if(u)images[id]=u}S.settings={...(S.settings||{}),lastBackup:new Date().toISOString()};delete S.settings.backupSnooze;save();dl('tpcn-backup-'+today()+'.json',JSON.stringify({...S,images}),'application/json');render()}
+/* Sao lưu: không mật khẩu = JSON thường (như cũ); có mật khẩu = PBKDF2-SHA256 -> AES-GCM (cùng cách và số vòng với đồng bộ Drive) */
+const BK_ENC='tpcn-backup-enc';
+const hasSensitive=()=>S.members.some(m=>{const h=m.hs||{};return (h.xn||[]).length||(h.benh||[]).length||(m.conditions||'').trim()});
+async function bEncrypt(text,pass){
+  const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12));
+  const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},await dKey(pass,salt,DSYNC.ITER),new TextEncoder().encode(text)));
+  return JSON.stringify({kind:BK_ENC,v:1,kdf:'PBKDF2-SHA256',iter:DSYNC.ITER,salt:b64e(salt),iv:b64e(iv),ct:b64e(ct)})}
+async function bDecrypt(j,pass){
+  if(!j||j.kind!==BK_ENC||j.v!==1||typeof j.ct!=='string')throw new Error('File sao lưu mã hoá không đúng định dạng');
+  const iter=Number(j.iter);if(!(iter>=100000&&iter<=2000000))throw new Error('File sao lưu có thông số mã hoá không hợp lệ');
+  let plain;try{plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64d(j.iv)},await dKey(pass,b64d(j.salt),iter),b64d(j.ct))}
+  catch(e){throw new Error('Sai mật khẩu, hoặc file sao lưu đã bị sửa. Không khôi phục gì cả.')}
+  return JSON.parse(new TextDecoder().decode(plain))}
+function askPass(title,note){return new Promise(res=>{const d=$('#dlg');dialog(title,[{k:'pw',l:(note||'Mật khẩu'),t:'password'}],{},o=>res(o.pw));const prev=d.onclose;d.onclose=()=>{prev();if(d.returnValue!=='ok')res(null)}})}
+async function exportAll(){
+  let pw=null;const el=document.getElementById('bk_pw'),el2=document.getElementById('bk_pw2');
+  if(el){pw=el.value.trim();if(pw&&pw!==(el2?el2.value.trim():pw)){alert('Hai ô mật khẩu chưa giống nhau.');return}}
+  else{const a=await askPass('Sao lưu có mật khẩu','Mật khẩu (từ 8 ký tự; để trống nếu không muốn mã hoá)');if(a===null)return;pw=a.trim()}
+  if(pw&&pw.length<8){alert('Mật khẩu cần ít nhất 8 ký tự.');return}
+  if(!pw&&hasSensitive()&&!confirm('Bản sao lưu KHÔNG mã hoá sẽ chứa bệnh nền, thuốc, xét nghiệm ở dạng chữ đọc được. Ai có file là đọc được. Vẫn tải không mật khẩu?'))return;
+  const images={};for(const id of S.products.flatMap(p=>p.imageIds||[])){const u=await getImg(id).catch(()=>null);if(u)images[id]=u}
+  S.settings={...(S.settings||{}),lastBackup:new Date().toISOString()};delete S.settings.backupSnooze;save();
+  const text=JSON.stringify({...S,images});
+  if(pw)dl('tpcn-backup-mk-'+today()+'.json',await bEncrypt(text,pw),'application/json');else dl('tpcn-backup-'+today()+'.json',text,'application/json');
+  render()}
 /* Nhắc sao lưu: mốc lần cuối nằm trong S.settings.lastBackup, "Để sau" ẩn thẻ nhắc 2 ngày */
 const BK_DAYS=7;
 function daysSinceBackup(){const t=Date.parse((S.settings||{}).lastBackup||'');return isNaN(t)?null:Math.floor((Date.now()-t)/864e5)}
@@ -2148,7 +2288,7 @@ function backupDue(){if(!S.members.length&&!S.products.length)return false;const
 function snoozeBackup(){S.settings={...(S.settings||{}),backupSnooze:new Date(Date.now()+2*864e5).toISOString()};save();render()}
 function backupText(){const d=daysSinceBackup();if(d===null)return'Sao lưu lần cuối: chưa từng sao lưu';const t=new Date((S.settings||{}).lastBackup).toLocaleDateString('vi-VN');return'Sao lưu lần cuối: '+t+(d>0?' ('+d+' ngày trước)':' (hôm nay)')}
 function backupCard(){const d=daysSinceBackup();return`<div class="note" style="margin:10px 0"><b>Nhắc sao lưu</b><br>${d===null?'Bạn chưa từng tải bản sao lưu.':'Đã '+d+' ngày chưa sao lưu.'} Dữ liệu chỉ nằm trong máy này, mất máy là mất hết.<div class="row" style="margin-top:8px"><button class="btn pri sm" onclick="exportAll()">Sao lưu ngay</button><button class="btn sm" onclick="snoozeBackup()">Để sau</button></div></div>`}
-async function restore(f){if(!f)return;try{const d=JSON.parse(await f.text());if(!d||!Array.isArray(d.products)||!Array.isArray(d.members)||d.v!==2)throw new Error('Không đúng định dạng sao lưu của bản này');if(!confirm('Khôi phục sẽ GHI ĐÈ toàn bộ dữ liệu hiện tại. Tiếp tục?'))return;const {images,...rest}=d;S={...empty(),...rest};for(const [id,u] of Object.entries(images||{}))if(/^data:image\//.test(u))await putImg(id,u);save();render()}catch(e){alert('Lỗi: '+e.message)}}
+async function restore(f){if(!f)return;try{let d=JSON.parse(await f.text());if(d&&d.kind===BK_ENC){let ok=false;for(let i=0;i<3&&!ok;i++){const pw=await askPass('File sao lưu có mật khẩu','Nhập mật khẩu của file này');if(pw===null)return;try{d=await bDecrypt(d,pw.trim());ok=true}catch(e){alert(e.message)}}if(!ok)return}if(!d||!Array.isArray(d.products)||!Array.isArray(d.members)||d.v!==2)throw new Error('Không đúng định dạng sao lưu của bản này');if(!confirm('Khôi phục sẽ GHI ĐÈ toàn bộ dữ liệu hiện tại. Tiếp tục?'))return;const {images,...rest}=d;S={...empty(),...rest};for(const [id,u] of Object.entries(images||{}))if(/^data:image\//.test(u))await putImg(id,u);save();render()}catch(e){alert('Lỗi: '+e.message)}}
 
 /* ---------- Cửa duy nhất: Cập nhật dữ liệu (tự nhận dạng loại file, xếp đúng mục) ---------- */
 /* ---------- Khung kiến thức riêng tư + Phác thảo ---------- */
@@ -2225,7 +2365,7 @@ async function updateFiles(files){
   for(const f of [...files]){
     try{
       const d=JSON.parse(await f.text());
-      if(d&&!d.kind&&d.v===2&&Array.isArray(d.members)&&Array.isArray(d.products)){await restore(f);continue}
+      if(d&&d.kind===BK_ENC||(d&&!d.kind&&d.v===2&&Array.isArray(d.members)&&Array.isArray(d.products))){await restore(f);continue}
       const fn=d&&UPDATE_KINDS[d.kind];
       if(!fn){alert(`File "${f.name}" không nhận dạng được loại dữ liệu (cần sản phẩm, hồ sơ sức khỏe, kiến thức, tài liệu, khung kiến thức hoặc bản sao lưu).`);continue}
       await fn(f);
