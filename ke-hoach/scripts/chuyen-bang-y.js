@@ -28,30 +28,88 @@ const TU_DIEN = tdWin.TU_DIEN;
 const NFC = (s) => String(s == null ? '' : s).normalize('NFC');
 const MINUS = '−'; // R−, đúng ký tự trong BANG-Y.md
 
-// ---------- 1. Mục tiêu: từ regex của KB_TOPICS + từ khoá rõ ràng ----------
-// Từ khoá bổ sung theo BANG-Y/phiếu 02. "cảm" đứng một mình quá mơ hồ
-// ("cảm xúc", "cảm thấy") nên chỉ lấy "cảm lạnh", "cảm cúm".
-const EXTRA_KEYWORDS = {
+// ---------- 1. Mục tiêu: regex của KB_TOPICS, đã thu hẹp ----------
+// Bản đầu dùng nguyên regex của KB_TOPICS nên gán quá rộng. Bản này kiểm soát bằng 4 lớp:
+//  (a) BO_TU: bỏ từ khoá quá rộng khỏi regex của từng mục tiêu.
+//  (b) THEM_TU: thêm từ khoá còn thiếu (đã đọc từng dòng để chọn).
+//  (c) LOAI_DOAN: bỏ cả đoạn câu (cắt ở dấu . hoặc ;) nói về động vật hoặc chỉ là lời khuyên
+//      "hỏi bác sĩ", trước khi gán. Đoạn đó không phải kết luận trên người.
+//  (d) CAT_CUM: cắt cụm từ làm gán nhầm cho từng mục tiêu (ví dụ "ống thần kinh" không phải nao).
+// Dòng nào chỉ sửa được theo nội dung thì nằm ở bảng NGOAI_LE bên dưới.
+const BO_TU = {
+  co: ['vận động'],       // "cải thiện vận động" của thoái hoá khớp, "mức vận động" của cân nặng không phải cơ bắp
+  giap: ['i-ốt', 'iod'],  // chất là i-ốt thì câu nào cũng nhắc i-ốt, không có nghĩa là về tuyến giáp
+};
+const THEM_TU = {
   ngu: ['ngủ'],
   xuong: ['xương'],
-  tim: ['\\btim\\b', 'huyết áp'],
-  duong: ['đường huyết', 'tiểu đường'],
-  mien: ['miễn dịch', 'cảm cúm', 'cảm lạnh'],
+  tim: ['\\btim\\b', 'huyết áp', 'mạch vành', 'động mạch', 'đột quỵ'],
+  duong: ['đường huyết', 'tiểu đường', 'đái tháo đường'],
+  mien: ['miễn dịch', 'cảm cúm', 'cảm lạnh', '\\bcúm\\b'],
+  nao: ['alzheimer', 'đau nửa đầu', 'đau đầu'],
+  co: ['sau vận động', 'tổn thương cơ', 'thể thao', 'sức bền'],
+  thieu: ['phòng thiếu'],
+};
+const LOAI_DOAN = [
+  { re: /động vật|chuột/, ly_do: 'động vật' },
+  { re: /hỏi bác sĩ/, ly_do: 'lời khuyên hỏi bác sĩ' },
+];
+const CAT_CUM = {
+  _all: [/(?:thiếu )?hay gặp ở[^.;]*/g],        // nhóm nguy cơ của bệnh thiếu, không phải mục tiêu
+  nao: [/ống thần kinh/g, /\(các dị tật[^)]*\)/g, /bệnh thần kinh[^:.;,)]*/g],
+  da: [/ngoài da/g],
+  tieuhoa: [/acid dạ dày/g, /qua đường tiêu ho[áa]/g], // hấp thu qua đường tiêu hoá là dược động học, không phải mục tiêu
 };
 
 const TOPIC_MATCHERS = KB_TOPICS.map((t) => {
-  const parts = [t.re].concat(EXTRA_KEYWORDS[t.id] || []);
+  const bo = new Set(BO_TU[t.id] || []);
+  const parts = t.re.split('|').filter((x) => !bo.has(x)).concat(THEM_TU[t.id] || []);
   return { id: t.id, re: new RegExp('(' + parts.join('|') + ')') };
 });
 
+// Trả về { hits, boQua: [lý do các đoạn bị bỏ] }
 function assignTopics(sentence) {
-  const s = NFC(sentence).toLowerCase();
+  const segs = NFC(sentence).split(/(?<=[.;])\s+/);
+  const boQua = [];
+  const kept = segs.filter((seg) => {
+    const low = seg.toLowerCase();
+    const l = LOAI_DOAN.find((x) => x.re.test(low));
+    if (l) { boQua.push(l.ly_do); return false; }
+    return true;
+  });
+  const base = kept.join(' ').toLowerCase();
   const hits = [];
   for (const m of TOPIC_MATCHERS) {
+    let s = base;
+    for (const re of (CAT_CUM._all || []).concat(CAT_CUM[m.id] || [])) s = s.replace(re, ' ');
     if (m.re.test(s)) hits.push(m.id);
   }
-  return hits;
+  return { hits, boQua: Array.from(new Set(boQua)) };
 }
+
+// Dòng chỉ là ghi chú "không có dữ liệu / không đọc được nguồn": không phải một Ý.
+// Bỏ hết mục tiêu, giữ dòng ở cho_duyet để quản lý quyết định chuyển sang `bo`.
+const KHONG_PHAI_Y = [
+  /không nêu (mức bằng chứng|kết quả)/, /không đọc được/, /chưa có nguồn đã đọc/,
+  /trong nguồn tôi đọc không có/, /trang tôi đọc bị cắt/, /nên không kết luận/,
+  /^mức độ chắc chắn của bằng chứng/, /mua hàng thương hiệu/,
+];
+
+// Bảng ngoại lệ theo nội dung: khoá = chat + '|' + 40 ký tự đầu của noi_dung.
+// Chỉ dùng khi quy tắc chung không đủ. Mỗi mục có lý do.
+const NGOAI_LE = {
+  // Thiếu biotinidase là bệnh di truyền hiếm; "triệu chứng thần kinh và da" là hậu quả của bệnh,
+  // không phải lợi ích của biotin cho não hay da ở người bình thường.
+  'biotin|Cần cho những người có thiếu hụt biotini': {
+    muc_tieu: ['thieu'],
+    ghi_chu: 'nao/da bị loại: triệu chứng thần kinh/da là của bệnh biotinidase hiếm, không phải lợi ích chung',
+  },
+  // Câu thật ra là cảnh báo kẽm liều cao gây thiếu đồng, không phải lợi ích của đồng.
+  'cu|Kẽm liều cao kéo dài (từ khoảng 40–50 mg': {
+    cho_duyet: true,
+    ghi_chu: 'nội dung là cảnh báo về kẽm (gây thiếu đồng), không phải lợi ích của đồng; cân nhắc chuyển sang chat zn, huong=hai',
+  },
+};
 
 // ---------- 2. Nguồn: chuẩn hoá mã ----------
 const OFFICIAL = [
@@ -97,15 +155,27 @@ const OFFICIAL_CODES = new Set(['NIH', 'EFSA', 'COCHRANE', 'NCCIH']);
 const rows = [];
 const seqByPrefix = new Map();
 const chatKeys = Object.keys(KB);
+const usedExceptions = new Set();
 
 for (const chat of chatKeys) {
   const benefits = KB[chat].benefits || [];
   benefits.forEach(([level, text, rawSource], idx) => {
     const { huong, ncuu } = mapLevel(level);
     const src = normalizeSource(rawSource);
-    const topics = assignTopics(text);
+    const key = chat + '|' + NFC(text).slice(0, 40);
+    const exc = NGOAI_LE[key];
+    if (exc) usedExceptions.add(key);
+    const { hits, boQua } = assignTopics(text);
+    const khongPhaiY = KHONG_PHAI_Y.some((re) => re.test(NFC(text).toLowerCase()));
+    let topics = exc && exc.muc_tieu ? exc.muc_tieu : hits;
     const notes = [];
     if (src.note) notes.push(src.note);
+    if (khongPhaiY) {
+      topics = [];
+      notes.push('không phải Ý: ghi chú thiếu dữ liệu hoặc không đọc được nguồn; đề nghị chuyển bo khi duyệt');
+    }
+    if (boQua.length) notes.push('đã bỏ qua khi gán mục tiêu: ' + boQua.join(', '));
+    if (exc && exc.ghi_chu) notes.push(exc.ghi_chu);
     // Dòng không có mục tiêu: một dòng với muc_tieu rỗng.
     const targets = topics.length ? topics : [''];
     if (!topics.length) notes.unshift('chưa gán');
@@ -116,10 +186,12 @@ for (const chat of chatKeys) {
       seqByPrefix.set(prefix, n);
       const maY = prefix + '-' + String(n).padStart(3, '0');
 
-      // "chưa gán" chỉ được thêm vào notes khi không có mục tiêu nào, nên giữ nguyên notes.
       const rowNotes = notes;
+      // da_duyet: mức chac + nguồn chính thức + có mục tiêu + kết luận trên người.
+      // Dòng có đoạn động vật hoặc lời khuyên thì hạ về cho_duyet, lý do đã nằm trong ghi_chu.
       let trang = 'cho_duyet';
-      if (level === 'chac' && OFFICIAL_CODES.has(src.code) && muc) trang = 'da_duyet';
+      if (level === 'chac' && OFFICIAL_CODES.has(src.code) && muc &&
+          !boQua.length && !khongPhaiY && !(exc && exc.cho_duyet)) trang = 'da_duyet';
 
       rows.push({
         ma_y: maY,
@@ -215,6 +287,9 @@ console.log('  dòng da_duyet: ' + count((r) => r.trang_thai === 'da_duyet'));
 console.log('  dòng thiếu chat: ' + count((r) => !r.chat) + ', thiếu nguon: ' + count((r) => !r.nguon));
 const ids = new Set(rows.map((r) => r.ma_y));
 console.log('  ma_y trùng: ' + (rows.length - ids.size));
+console.log('  mỗi muc_tieu có dòng: ' + KB_TOPICS.map((t) => t.id + '=' + count((r) => r.muc_tieu === t.id)).join(' '));
+console.log('  ngoại lệ dùng: ' + usedExceptions.size + '/' + Object.keys(NGOAI_LE).length);
+console.log('  dòng không phải Ý: ' + count((r) => /không phải Ý/.test(r.ghi_chu)));
 console.log('nguon.csv: ' + nguonRows.length + ' dòng');
 console.log('chat.csv: ' + chatRows.length + ' dòng, có nhom: ' + chatRows.filter((r) => r[3]).length);
 console.log('muc-tieu.csv: ' + topicRows.length + ' dòng');
