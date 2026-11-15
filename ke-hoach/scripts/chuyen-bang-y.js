@@ -3,6 +3,7 @@
 // Chỉ đọc docs/, chỉ ghi vào ke-hoach/du-lieu/. Không gọi mạng.
 // Repo đặt "type": "module" nên dùng ESM.
 import fs from 'node:fs';
+import crypto from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -107,7 +108,10 @@ const NGOAI_LE = {
   // Câu thật ra là cảnh báo kẽm liều cao gây thiếu đồng, không phải lợi ích của đồng.
   'cu|Kẽm liều cao kéo dài (từ khoảng 40–50 mg': {
     cho_duyet: true,
-    ghi_chu: 'nội dung là cảnh báo về kẽm (gây thiếu đồng), không phải lợi ích của đồng; cân nhắc chuyển sang chat zn, huong=hai',
+    chat: 'zn',
+    huong: 'hai',
+    muc_tieu: ['mau'],
+    ghi_chu: 'chuyển từ đồng sang kẽm: nội dung là cảnh báo kẽm liều cao gây thiếu đồng (thiếu máu, giảm bạch cầu)',
   },
 };
 
@@ -180,11 +184,12 @@ for (const chat of chatKeys) {
     const targets = topics.length ? topics : [''];
     if (!topics.length) notes.unshift('chưa gán');
 
+    const chatRow = (exc && exc.chat) || chat;
+    const huongRow = (exc && exc.huong) || huong;
     for (const muc of targets) {
-      const prefix = 'Y-' + chat + '-' + (muc || 'x');
-      const n = (seqByPrefix.get(prefix) || 0) + 1;
-      seqByPrefix.set(prefix, n);
-      const maY = prefix + '-' + String(n).padStart(3, '0');
+      // Mã ổn định: băm chất gốc + nội dung + mục tiêu, nên chạy lại script không đổi mã.
+      const h = crypto.createHash('sha1').update(chat + '|' + NFC(text) + '|' + muc).digest('hex').slice(0, 6);
+      const maY = 'Y-' + chatRow + '-' + (muc || 'x') + '-' + h;
 
       const rowNotes = notes;
       // da_duyet: mức chac + nguồn chính thức + có mục tiêu + kết luận trên người.
@@ -195,9 +200,9 @@ for (const chat of chatKeys) {
 
       rows.push({
         ma_y: maY,
-        chat,
+        chat: chatRow,
         muc_tieu: muc,
-        huong,
+        huong: huongRow,
         noi_dung: NFC(text),
         lieu: '',
         nguon: src.code,
