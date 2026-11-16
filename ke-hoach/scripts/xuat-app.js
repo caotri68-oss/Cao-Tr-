@@ -57,8 +57,9 @@ export function xuat() {
   const mucTieu = readCsv('muc-tieu.csv');
   const nguon = readCsv('nguon.csv');
   const chat = readCsv('chat.csv');
-  const tt = readCsv('tuong-tac.csv'); // giữ nguyên mọi cột có trong CSV (kể cả cột phụ như da_kiem_chung)
-  const dong = apChamMuc(readCsv('bang-y.csv'), readCsv('cham-muc.csv'), readCsv('cham-muc-tai-lieu.csv'));
+  const tt = [...(readCsv('tuong-tac.csv') || []), ...(readCsv('tuong-tac-bo-sung.csv') || [])]; // giữ nguyên mọi cột có trong CSV (kể cả cột phụ như da_kiem_chung)
+  const dong = apChamMuc(readCsv('bang-y.csv'), readCsv('cham-muc.csv'), readCsv('cham-muc-tai-lieu.csv'),
+    readCsv('cham-muc-lai.csv'), readCsv('cham-muc-lai-2a.csv'), readCsv('cham-muc-lai-2b.csv'));
 
   const hopLe = dong.filter((r) => r.trang_thai !== 'bo' && r.muc_tieu);
   const tangPhan = (rows) => tinhTang(rows, nguon).map((r) => ({

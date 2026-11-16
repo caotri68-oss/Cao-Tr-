@@ -155,7 +155,7 @@ function main() {
   const nguon = readCsv('nguon.csv');
   const cham = readCsv('cham-muc.csv');
   const chamTL = readCsv('cham-muc-tai-lieu.csv');
-  const dong = apChamMuc(y, cham, chamTL);
+  const dong = apChamMuc(y, cham, chamTL, readCsv('cham-muc-lai.csv'), readCsv('cham-muc-lai-2a.csv'), readCsv('cham-muc-lai-2b.csv'));
   console.log(`Đọc ${y.length} dòng Ý; cham-muc.csv: ${cham ? cham.length + ' dòng được áp' : 'chưa có, bỏ qua'}; cham-muc-tai-lieu.csv: ${chamTL ? chamTL.length + ' dòng' : 'chưa có'}.`);
 
   const cheDo = [

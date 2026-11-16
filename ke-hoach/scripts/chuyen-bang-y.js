@@ -256,7 +256,7 @@ const readOut = (name) => {
   const f = path.join(OUT, name);
   return fs.existsSync(f) ? parseCsvSimple(fs.readFileSync(f, 'utf8')) : [];
 };
-const boSung = readOut('y-bo-sung.csv');
+const boSung = [...readOut('y-bo-sung.csv'), ...readOut('y-bo-sung-2.csv')];
 for (const r of boSung) {
   const h = crypto.createHash('sha1').update(r.chat + '|' + r.noi_dung + '|' + r.muc_tieu + '|' + r.nguon).digest('hex').slice(0, 6);
   rows.push({ ...r, ma_y: r.ma_y || ('Y-' + r.chat + '-' + (r.muc_tieu || 'x') + '-' + h), trang_thai: r.trang_thai || 'cho_duyet', _level: 'bo_sung' });
@@ -273,6 +273,8 @@ const CHAT_MOI = {
   xylitol: ['Xylitol', 'Đường xylitol; xylitol', 'Chất tạo ngọt'],
   sambucus: ['Cơm cháy (elderberry)', 'Sambucus nigra; elderberry; bez černý', 'Thảo dược'],
   mobo: ['Mỡ bò (dùng ngoài da)', 'Beef tallow; tallow; hovězí lůj', 'Dùng ngoài'],
+  berberin: ['Berberin', 'Berberine; goldenseal; vàng đắng; hoàng liên; berberin', 'Thảo dược'],
+  toi: ['Tỏi (viên, chiết xuất)', 'Garlic; allicin; česnek; tỏi', 'Thảo dược'],
 };
 const taiLieu = readOut('y-tai-lieu.csv');
 const maCoSan = new Set(Object.keys(KB));
@@ -382,6 +384,16 @@ const BANG_HEADER = ['ma_y', 'chat', 'muc_tieu', 'huong', 'noi_dung', 'lieu', 'n
 writeCsv('bang-y.csv', BANG_HEADER, rows.map((r) => BANG_HEADER.map((h) => r[h])));
 writeCsv('nguon.csv', ['ma_nguon', 'ten', 'loai', 'dua_vao'], nguonRows);
 writeCsv('chat.csv', ['ma_chat', 'ten_viet', 'ten_khac', 'nhom'], chatRows);
+// muc-tieu-bo-sung.csv: thêm ý vào cột can_kham_truoc / ghi_chu_an_toan, không lặp khi chạy lại.
+for (const b of readOut('muc-tieu-bo-sung.csv')) {
+  const row = topicRows.find((r) => r[0] === b.ma);
+  const ci = b.cot === 'can_kham_truoc' ? 2 : b.cot === 'ghi_chu_an_toan' ? 3 : -1;
+  if (!row || ci < 0 || !b.gia_tri_them) continue;
+  const parts = (row[ci] || '').split(';').map((x) => x.trim()).filter(Boolean);
+  const moi = b.gia_tri_them.replace(/;/g, ',').trim();
+  if (!parts.includes(moi)) parts.push(moi);
+  row[ci] = parts.join('; ');
+}
 writeCsv('muc-tieu.csv', ['ma', 'ten', 'can_kham_truoc', 'ghi_chu_an_toan'], topicRows);
 
 // ---------- 7. Thống kê in ra ----------
