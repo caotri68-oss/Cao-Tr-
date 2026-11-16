@@ -7,13 +7,13 @@ window.KB={
     name:'Vitamin D',aka:'D3 (cholecalciferol), D2 (ergocalciferol)',updated:'2026-11-03',
     what:'Vitamin tan trong dầu, hoạt động gần giống một hormone. Giúp ruột hấp thu canxi và phốt pho, cần cho xương, cơ và hệ miễn dịch. Da tự tạo vitamin D dưới nắng, nhưng ở Séc (khoảng vĩ độ 50) từ tháng 10 đến tháng 3 da gần như không tạo được. Người làm việc trong nhà thiếu gần như quanh năm.',
     benefits:[
-      ['chac','Phòng và chữa thiếu vitamin D (còi xương, nhuyễn xương).','NIH'],
+      ['chac','Phòng và điều trị thiếu vitamin D (còi xương, nhuyễn xương).','NIH'],
       ['chac','Nâng nồng độ vitamin D trong máu (25(OH)D) một cách dự đoán được ở liều 1000–4000 IU/ngày.','Kho Obsidian'],
       ['cothe','Dùng cùng canxi có thể tăng mật độ xương ở phụ nữ mãn kinh và nam lớn tuổi. Chưa rõ có giảm té ngã và gãy xương hay không.','NIH'],
       ['khong','Các thử nghiệm lớn không thấy bổ sung vitamin D phòng được ung thư, bệnh tim mạch, tiểu đường type 2 hay trầm cảm, kể cả ở người có nồng độ thấp.','NIH']],
     need:'Theo NIH: 15 µg (600 IU) mỗi ngày cho người 19–70 tuổi, 20 µg (800 IU) trên 70 tuổi. Liều bổ sung thường dùng là 800–2000 IU (20–50 µg) mỗi ngày (Examine). Kho của bạn ghi liều duy trì 2000–2500 IU/ngày cho người ít ra nắng ở Séc.',
     how:[
-      'Uống cùng bữa ăn có chất béo, tốt nhất là bữa chính, để hấp thu tốt hơn (Examine, kho Obsidian).',
+      'Uống cùng bữa ăn có chất béo, nên là bữa chính, để hấp thu tốt hơn (Examine, kho Obsidian).',
       'Chọn D3 thay vì D2: D3 nâng nồng độ trong máu mạnh hơn và lâu hơn (NIH, Examine).',
       'Vitamin D dự trữ lâu trong cơ thể (15–25 ngày), nên tổng liều cả tuần mới quan trọng; quên một ngày không sao (kho Obsidian).',
       'Muốn biết có thiếu hay không thì xét nghiệm 25(OH)D trong máu.'],
@@ -252,7 +252,7 @@ window.KB={
     name:'Vitamin E',aka:'Tocopherol, tocotrienol',updated:'2026-11-03',
     what:'Nhóm vitamin tan trong dầu, là chất chống oxy hoá bảo vệ màng tế bào. Dạng hoạt động chính ở người là alpha-tocopherol.',
     benefits:[
-      ['chac','Phòng và chữa thiếu vitamin E (hiếm; gặp ở trẻ sinh non nhẹ cân và người kém hấp thu chất béo).','NIH'],
+      ['chac','Phòng và điều trị thiếu vitamin E (hiếm; gặp ở trẻ sinh non nhẹ cân và người kém hấp thu chất béo).','NIH'],
       ['cothe','Thoái hoá điểm vàng: công thức AREDS (có vitamin E, vitamin C, kẽm, đồng) làm chậm tiến triển ở người đã mắc.','NIH'],
       ['khong','Phòng ung thư: bằng chứng không ủng hộ. Một thử nghiệm lớn gợi ý liều cao dùng đều đặn có thể còn có hại.','NIH'],
       ['chuaro','Tim mạch: có cơ chế hợp lý (chống oxy hoá LDL, chống đông) nhưng kết quả thử nghiệm không thống nhất.','NIH'],
@@ -278,14 +278,14 @@ window.KB={
     name:'Sắt',aka:'Iron, železo',updated:'2026-11-03',
     what:'Khoáng chất cần để tạo hemoglobin (mang oxy trong máu), tạo năng lượng trong tế bào và cho hệ miễn dịch. Có hai loại trong thức ăn: sắt heme (từ thịt, hấp thu tốt) và sắt không heme (từ thực vật, hấp thu kém hơn).',
     benefits:[
-      ['chac','Phòng và chữa thiếu máu thiếu sắt. Ở phụ nữ mang thai, bổ sung sắt giảm nguy cơ thiếu máu và một số bất lợi cho trẻ sơ sinh.','NIH'],
+      ['chac','Phòng và điều trị thiếu máu thiếu sắt. Ở phụ nữ mang thai, bổ sung sắt giảm nguy cơ thiếu máu và một số bất lợi cho trẻ sơ sinh.','NIH'],
       ['cothe','Một số hội chuyên môn khuyên sàng lọc thiếu máu và bổ sung sắt cho phụ nữ mang thai.','NIH'],
       ['chuaro','Thiếu máu do bệnh mạn tính: chủ yếu điều trị bệnh nền, bổ sung sắt chỉ có ích trong một số trường hợp.','NIH']],
     need:'Theo NIH: 8–27 mg mỗi ngày tuỳ giới, tuổi và thai kỳ; phụ nữ còn kinh nguyệt và phụ nữ mang thai cần nhiều hơn nam giới. Người ăn chay cần nhiều hơn vì sắt thực vật hấp thu kém hơn. Mức tối đa: NIH 45 mg; EFSA 40 mg (đây là "mức an toàn", EFSA không đặt được mức tối đa chính thức).',
     how:[
       'Chỉ bổ sung khi có lý do, ví dụ thiếu sắt đã được xét nghiệm hoặc nhu cầu cao (mang thai, mất máu).',
       'Uống cùng vitamin C giúp hấp thu tốt hơn. Kho Obsidian ghi vitamin C tăng hấp thu sắt khoảng 67%.',
-      'Uống lúc bụng đói hấp thu tốt nhất, nhưng dễ khó chịu dạ dày. NIH ghi một số dạng dễ gây khó chịu tiêu hoá hơn ở liều cao.',
+      'Uống lúc bụng đói hấp thu tốt hơn, nhưng dễ khó chịu dạ dày. NIH ghi một số dạng dễ gây khó chịu tiêu hoá hơn ở liều cao.',
       'Uống cách canxi: NIH khuyên uống canxi và sắt vào các thời điểm khác nhau; nghiên cứu cũ ghi 300 mg canxi uống cùng bữa làm giảm hấp thu sắt tới khoảng 60% (kho Obsidian).',
       'Trà, cà phê (tannin) và thuốc giảm acid dạ dày cản hấp thu sắt (kho Obsidian, NIH).',
       'Đang viêm nhiễm hoặc đang ốm thì cơ thể tự đóng cửa hấp thu sắt (qua hormone hepcidin), uống lúc đó gần như vô ích (kho Obsidian).'],
@@ -535,7 +535,7 @@ window.KB={
     name:'PQQ',aka:'Pyrroloquinoline quinone',updated:'2026-11-03',
     what:'Hợp chất chống oxy hoá được nghiên cứu về khả năng kích thích tạo ty thể mới và hỗ trợ nhận thức. Không phải vi chất thiết yếu. EFSA cấp phép là thực phẩm mới năm 2017–2018.',
     benefits:[
-      ['chuaro','Trí nhớ: một RCT (n=70, 20 mg/ngày, 12 tuần) cải thiện trí nhớ tổng hợp và trí nhớ ngôn từ. Nhưng RCT này do chính hãng sản xuất nguyên liệu BioPQQ tài trợ 100%.','Kho Obsidian'],
+      ['chuaro','Trí nhớ: một RCT (n=70, 20 mg/ngày, 12 tuần) cải thiện trí nhớ tổng hợp và trí nhớ ngôn từ. Nhưng RCT này do chính hãng sản xuất nguyên liệu BioPQQ tài trợ toàn bộ.','Kho Obsidian'],
       ['chuaro','Người có suy giảm nhận thức nhẹ (n=34, 6 tuần): một số chỉ số cải thiện nhưng thang MMSE (chỉ số chuẩn) không khác biệt có ý nghĩa; tác giả có liên hệ tài chính với nhà cung cấp.','Kho Obsidian'],
       ['chuaro','Chưa tìm được RCT độc lập hoàn toàn không do ngành tài trợ. Độ tin cậy tổng thể: trung bình đến thấp.','Kho Obsidian']],
     need:'Không có nhu cầu khuyến nghị. Liều trong thử nghiệm: 20 mg mỗi ngày, cũng là mức tối đa EU cho phép với thực phẩm mới. Ý kiến của EFSA năm 2017 dựa trên mức không gây hại quan sát được (NOAEL) 100 mg/kg ở chuột trong thử nghiệm 90 ngày, với biên an toàn 344 so với liều 20 mg mỗi ngày. EFSA cũng ghi dữ liệu về hấp thu và chuyển hoá của PQQ ở người còn hạn chế.',
@@ -608,7 +608,7 @@ window.KB={
       ['cothe','Collagen peptide cho khớp và gân: có thử nghiệm với liều 5–10 gam mỗi ngày (Clark 2008, Zdzieblik 2017). Một phân tích gộp các RCT năm 2023 ghi giảm đau có ý nghĩa so với giả dược nhưng dị biệt giữa các nghiên cứu cao (I² 68%); một phân tích gộp 11 RCT với 870 người năm 2024 cũng được công bố. Tôi không tìm thấy tổng quan Cochrane về collagen.','Kho Obsidian, kết quả tìm kiếm tài liệu 03/11/2026'],
       ['cothe','Da: các tổng quan ghi collagen uống cải thiện nhẹ độ ẩm và độ đàn hồi, không ngăn được nếp nhăn. Nhiều nghiên cứu trước đây do ngành tài trợ.','Kết quả tìm kiếm tài liệu 03/11/2026, chưa kiểm chứng tạp chí gốc'],
       ['chuaro','Collagen typ II không biến tính cho thoái hoá khớp gối: thử nghiệm Lugo 2016 dùng 40 mg sản phẩm, trong đó collagen typ II thật chỉ khoảng 1,2 mg (đã đính chính từ con số ~10 mg).','Kho Obsidian'],
-      ['chuaro','Collagen typ II ở liều microgram (20–2500 µg) được thử trong viêm khớp dạng thấp (Barnett 1998, liều 20 µg đáp ứng tốt nhất). Áp dụng sang thoái hoá khớp là suy đoán.','Kho Obsidian'],
+      ['chuaro','Collagen typ II ở liều microgram (20–2500 µg) được thử trong viêm khớp dạng thấp (Barnett 1998, liều 20 µg đáp ứng rõ nhất). Áp dụng sang thoái hoá khớp là suy đoán.','Kho Obsidian'],
       ['chuaro','Hướng dẫn của ACR và Arthritis Foundation về thoái hoá khớp không nhắc đến collagen ở mức khuyến cáo nào: không bị bác bỏ mà chưa đủ dữ liệu để được xét.','Kho Obsidian']],
     need:'Không có nhu cầu khuyến nghị. Liều trong các thử nghiệm: 5–10 g collagen peptide mỗi ngày. Một số sản phẩm bán ở Séc chỉ chứa vài chục miligam collagen, thấp hơn liều thử nghiệm hàng trăm lần.',
     how:[
@@ -642,7 +642,7 @@ window.KB={
       'Đọc nhãn: "mcg DFE" khác "mcg axit folic". 400 mcg axit folic ghi là 680 mcg DFE.'],
     forms:'Axit folic (tổng hợp), 5-methyltetrahydrofolate (5-MTHF), folinic acid. Folate tự nhiên có trong thức ăn nhưng dễ mất khi nấu.',
     cautions:[
-      'Lượng lớn axit folic có thể che giấu thiếu vitamin B12: chữa được thiếu máu nhưng không chữa được tổn thương thần kinh. NIH ghi mối lo đã chuyển sang khả năng lượng lớn làm nặng thêm thiếu máu và triệu chứng nhận thức khi thiếu B12 (NIH).',
+      'Lượng lớn axit folic có thể che giấu thiếu vitamin B12: điều trị được thiếu máu nhưng không điều trị được tổn thương thần kinh. NIH ghi mối lo đã chuyển sang khả năng lượng lớn làm nặng thêm thiếu máu và triệu chứng nhận thức khi thiếu B12 (NIH).',
       'Có lo ngại liều axit folic cao có thể làm tiến triển nhanh hơn các tổn thương tiền ung thư ở một số người (NIH). Vì vậy giữ dưới mức tối đa 1000 mcg.',
       'Rượu cản hấp thu folate và làm tăng thải folate; người nghiện rượu thường thiếu (NIH).'],
     interactions:[
@@ -655,7 +655,7 @@ window.KB={
     name:'Niacin (B3)',aka:'Nicotinic acid, nicotinamide (niacinamide), inositol hexanicotinate',updated:'2026-11-03',
     what:'Vitamin B3, cần để tạo NAD và NADP, hai coenzyme trong chuyển hoá năng lượng. Có hai dạng chính trong viên là nicotinic acid và nicotinamide; hai dạng này có độc tính khác nhau.',
     benefits:[
-      ['chac','Phòng và chữa thiếu niacin (bệnh pellagra). Thiếu hay gặp ở người suy dinh dưỡng, nghiện rượu, bệnh viêm ruột.','NIH'],
+      ['chac','Phòng và điều trị thiếu niacin (bệnh pellagra). Thiếu hay gặp ở người suy dinh dưỡng, nghiện rượu, bệnh viêm ruột.','NIH'],
       ['cothe','Liều rất cao nicotinic acid (hơn 100 lần nhu cầu, dùng nhiều tháng đến nhiều năm) là một điều trị rối loạn mỡ máu. Nicotinamide không có tác dụng này. Đây là việc của bác sĩ kê đơn, không tự dùng.','NIH']],
     need:'Thức ăn thường đủ. Một số viên chỉ có niacin chứa từ 500 mg trở lên, cao hơn nhu cầu rất nhiều (NIH). Mức tối đa từ viên: NIH 35 mg (nicotinic acid); EFSA 10 mg nicotinic acid và 900 mg nicotinamide mỗi ngày.',
     how:[
@@ -1146,7 +1146,7 @@ window.KB={
     name:'Vitamin B1',aka:'Thiamin, thiamine, benfotiamine',updated:'2026-11-03',
     what:'Vitamin tan trong nước, cần cho chuyển hoá năng lượng từ carbohydrate và cho thần kinh. Cơ thể thải phần thừa qua nước tiểu.',
     benefits:[
-      ['chac','Phòng và chữa thiếu thiamin (bệnh beriberi). Rượu cản hấp thu thiamin; tới 80% người nghiện rượu mạn bị thiếu.','NIH'],
+      ['chac','Phòng và điều trị thiếu thiamin (bệnh beriberi). Rượu cản hấp thu thiamin; tới 80% người nghiện rượu mạn bị thiếu.','NIH'],
       ['chuaro','Tiểu đường: nồng độ thiamin trong máu thấp hơn ở người tiểu đường (17–79% có tình trạng thiamin kém trong các nghiên cứu), nhưng việc bổ sung có cải thiện bệnh hay không chưa được xác định ở nguồn tôi đọc.','NIH']],
     need:'Viên đa vitamin thường có khoảng 1,5 mg thiamin (NIH). Viên B-complex liều cao chứa 75–100 mg. Không có mức tối đa: NIH không đặt vì chưa có báo cáo tác hại khi dùng từ 50 mg mỗi ngày trở lên, có thể do hấp thu giảm nhanh khi vượt khoảng 5 mg, nhưng NIH nhắc dùng quá nhiều vẫn có thể có tác hại.',
     how:['Cơ thể hấp thu giảm nhanh khi uống trên khoảng 5 mg, nên liều rất cao không mang thêm lợi ích.'],
@@ -1160,7 +1160,7 @@ window.KB={
     name:'Vitamin B2',aka:'Riboflavin, riboflavin 5-phosphate',updated:'2026-11-03',
     what:'Vitamin tan trong nước, cần cho chuyển hoá năng lượng và nhiều enzyme. Có nhiều trong sữa, trứng, nội tạng.',
     benefits:[
-      ['chac','Phòng và chữa thiếu riboflavin.','NIH'],
+      ['chac','Phòng và điều trị thiếu riboflavin.','NIH'],
       ['chuaro','Đau nửa đầu: NIH có mục riêng về riboflavin và đau nửa đầu (giả thuyết rối loạn ty thể); trang tôi đọc bị cắt nên tôi không nêu kết quả.','NIH'],
       ['chuaro','Ung thư: dữ liệu về mối liên quan giữa riboflavin và phòng hay điều trị ung thư còn hạn chế.','NIH']],
     need:'Viên đa vitamin thường chứa 1,3 mg (100% giá trị tham chiếu). Viên B-complex liều cao chứa 50–75 mg. Không có mức tối đa: không có báo cáo tác hại ở 400 mg mỗi ngày trong ít nhất 3 tháng, nhưng NIH khuyên thận trọng với liều rất cao.',
@@ -1376,7 +1376,7 @@ window.KB={
   cacarbonat:{
     name:'Canxi carbonat',aka:'Calcium carbonate',updated:'2026-11-03',
     what:'Canxi bán dưới nhiều muối. Nhãn ghi lượng canxi nguyên chất (elemental calcium); đó mới là con số cần cộng, không phải khối lượng cả viên. Một trong hai dạng chính trong thực phẩm bổ sung; cũng có trong thuốc kháng acid.',
-    benefits:[['chac','Hấp thu tốt nhất khi uống cùng bữa ăn.','NIH ODS – Calcium (cho người dùng)'],['chac','Người ít acid dạ dày (thường gặp ở người lớn tuổi) hấp thu citrat dễ hơn carbonat.','NIH ODS – Calcium (cho người dùng)'],['cothe','Chứa khoảng 40% canxi nguyên chất (Mayo Clinic), nhiều nhất trong các muối, nên ít viên hơn.','Mayo Clinic']],
+    benefits:[['chac','Hấp thu tốt hơn khi uống cùng bữa ăn.','NIH ODS – Calcium (cho người dùng)'],['chac','Người ít acid dạ dày (thường gặp ở người lớn tuổi) hấp thu citrat dễ hơn carbonat.','NIH ODS – Calcium (cho người dùng)'],['cothe','Chứa khoảng 40% canxi nguyên chất (Mayo Clinic), nhiều nhất trong các muối, nên ít viên hơn.','Mayo Clinic']],
     need:'Nhu cầu và mức tối đa theo tuổi: xem bài Canxi. Hấp thu cao nhất khi mỗi lần uống từ 500 mg canxi nguyên chất trở xuống, nên chia liều nếu uống nhiều hơn (NIH, Mayo Clinic).',
     how:['Nhiều canxi nhất mỗi viên (40%), rẻ.','Uống cùng bữa ăn.','Có thể gây đầy hơi và táo bón.'],
     forms:'Canxi carbonat (calcium carbonate).',
@@ -1523,7 +1523,7 @@ window.KB_TOPICS=[
   {id:'thai',e:'🤰',n:'Thai kỳ và sinh sản',re:"thai|mang thai|ống thần kinh|sinh sản|bà bầu",subs:[['folic','chac'],['io','chac'],['zn','chac'],['fe','chac'],['ca','cothe'],['ginger','cothe'],['inositol','chuaro'],['se','chuaro'],['b6','chuaro']]},
   {id:'giap',e:'🦋',n:'Tuyến giáp',re:"tuyến giáp|i-ốt|iod",subs:[['io','chac'],['se','chac']]},
   {id:'metmoi',e:'⚡',n:'Mệt mỏi và năng lượng',re:"mệt mỏi|uể oải|năng lượng|chuyển hoá năng lượng",subs:[['mg','chac'],['ginseng','cothe'],['bcomplex','khong'],['b12','khong']]},
-  {id:'thieu',e:'🧪',n:'Bù thiếu hụt vi chất',re:"phòng và chữa thiếu|thiếu hụt|bệnh pellagra|beriberi|scorbut|còi xương",subs:[['biotin','chac'],['niacin','chac'],['fe','chac'],['bcomplex','chac'],['b1','chac'],['b2','chac'],['vitD','chac'],['vitE','chac']]},
+  {id:'thieu',e:'🧪',n:'Bù thiếu hụt vi chất',re:"phòng và chữa thiếu|phòng và điều trị thiếu|thiếu hụt|bệnh pellagra|beriberi|scorbut|còi xương",subs:[['biotin','chac'],['niacin','chac'],['fe','chac'],['bcomplex','chac'],['b1','chac'],['b2','chac'],['vitD','chac'],['vitE','chac']]},
   {id:'tamtrang',e:'🙂',n:'Tâm trạng và lo âu',re:"trầm cảm|lo âu|tâm trạng|tiền kinh nguyệt",subs:[['stjohn','cothe'],['b6','cothe'],['vitD','khong'],['ashwagandha','chuaro'],['folic','chuaro'],['ginkgo','chuaro'],['om3','chuaro'],['valerian','chuaro']]},
   {id:'gan',e:'🫀',n:'Gan',re:"gan nhiễm mỡ|chức năng gan|\\bgan\\b",subs:[['choline','chuaro'],['curc','chuaro'],['blackgarlic','chuaro']]},
   {id:'duong',e:'🍬',n:'Đường huyết và tiểu đường',re:"đường huyết|tiểu đường|insulin|chuyển hoá đường",subs:[['ala','cothe'],['vitD','khong'],['ashwagandha','chuaro'],['inositol','chuaro'],['zn','chuaro'],['mg','chuaro'],['mn','chuaro'],['ginseng','chuaro'],['nmn','chuaro'],['b1','chuaro']]},

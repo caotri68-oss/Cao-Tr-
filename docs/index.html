@@ -438,7 +438,7 @@ function render(){
   document.querySelector('header').style.display=tab==='today'?'none':'';
   ({today:vToday,shelf:vShelf,add:vAdd,know:vKnow,fam:vFam,set:vSet})[tab]();
 }
-const APP_VER='tpcn-v2-67';
+const APP_VER='tpcn-v2-68';
 let newVer='';
 const updBanner=()=>newVer?`<div class="note" style="margin-bottom:12px;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Có bản mới của app.</b> <button class="btn sm pri" onclick="forceUpdate()">Cập nhật ngay</button></div>`:'';
 function view(title,sub_,html){$('#ttl').textContent=title;$('#sub').textContent=sub_||'';$('#sub').className='sub';$('#view').innerHTML=updBanner()+html}
@@ -901,7 +901,7 @@ function vToday(){
   if(S.members.length){
     const st=memStats(day);
     html+=`<div class="sec"><h2>🩺 Sức khỏe gia đình</h2><a onclick="go('fam')">Xem tất cả ›</a></div><div class="hscroll">${S.members.map((m,i)=>{
-      const a=ageOf(m),r=st[m.id]||{t:0,d:0},w=warningsFor(m).length,ini=String(m.name||'?').trim().charAt(0).toUpperCase(),c=AVC[i%AVC.length];
+      const a=ageOf(m),r=st[m.id]||{t:0,d:0},w=soCanhBaoNang(m),ini=String(m.name||'?').trim().charAt(0).toUpperCase(),c=AVC[i%AVC.length];
       return `<div class="mem" role="button" tabindex="0" onclick="go('fam','m:${m.id}')"><div class="av" style="background:var(--${c});color:var(--${c}i)">${esc(ini)}</div>
         <b>${esc(m.name)}</b><div class="mute">${a?a+' tuổi':''}${m.weight?(a?' · ':'')+esc(m.weight)+' kg':''}</div>
         <div class="bar"><i style="width:${r.t?Math.round(r.d/r.t*100):0}%;background:var(--pri)"></i></div><div class="mute" style="margin-top:4px">${r.t?r.d+'/'+r.t+' lượt hôm nay':'Chưa có lịch'}</div>
@@ -1916,7 +1916,7 @@ async function loadKhung(){
 let showPending=false;try{showPending=localStorage.getItem('tpcn_xem_chua_duyet')==='1'}catch(e){}
 const setPending=on=>{showPending=!!on;try{localStorage.setItem('tpcn_xem_chua_duyet',on?'1':'0')}catch(e){}if(tab==='fam')render();else vKnow()};
 /* 19 chủ đề có sẵn (KB_TOPICS) cộng các mục tiêu mới chưa có ô: thận, dinh dưỡng, mỡ máu */
-const GOAL_EXTRA={than:{e:'🫘',n:'Thận và sỏi thận',re:'thận|sỏi thận|canxi niệu|oxalat'},dinhduong:{e:'🥣',n:'Dinh dưỡng, sụt cân',re:'dinh dưỡng|suy dinh dưỡng|sụt cân|thiếu đạm|ăn kém'},mo:{e:'🧈',n:'Mỡ máu',re:'mỡ máu|cholesterol|lipid|triglycerid'}};
+const GOAL_EXTRA={than:{e:'🫘',n:'Thận và sỏi thận',re:'thận|sỏi thận|canxi niệu|oxalat'},dinhduong:{e:'🥣',n:'Dinh dưỡng, sụt cân',re:'dinh dưỡng|suy dinh dưỡng|sụt cân|thiếu đạm|ăn kém'},mo:{e:'🧈',n:'Mỡ máu',re:'mỡ máu|cholesterol|lipid|triglycerid'},gout:{e:'🦶',n:'Gout và acid uric',re:'gout|gút|acid uric|axit uric'}};
 function goalList(){
   const a=(window.KB_TOPICS||[]).map(t=>({id:t.id,e:t.e,n:t.n,re:t.re,cnt:t.subs.length}));
   const have=new Set(a.map(x=>x.id));
@@ -2097,7 +2097,12 @@ function banDoPhu(m){
   return {goals,noEff,bare,unk,hai,cb,warn,byChat,pend,prods}}
 const mtName=id=>{const g=goalList().find(x=>x.id===id),t=KH&&KH.muc_tieu.find(x=>x.ma===id);return {e:g?g.e:'',n:(t&&t.ten)||(g&&g.n)||id}};
 function goGoal(id){tab='know';sub=null;libTopic=id;libF='goal';libQ='';render();$('#view').scrollTop=0;nav()}
-function banDoPhuSummary(m){const d=banDoPhu(m);if(!d||d.empty)return '';const nw=d.warn.filter(w=>/^ul-/.test(w.key)||(/^tt-/.test(w.key)&&w.lv>=2)).length+d.hai.length+(d.cb||[]).length; // chỉ đếm cảnh báo nặng: vượt mức tối đa, chất có hại; bỏ trùng chất nhẹ
+// Đếm cảnh báo nặng dùng chung cho mọi thẻ: vượt mức tối đa, tương tác chặn/thận trọng, chất có hại đã duyệt.
+// Bỏ trùng chất nhẹ và lưu ý; Ý chưa duyệt chỉ tính khi bật công tắc "Xem cả ý chưa duyệt".
+function soCanhBaoNang(m){const nang=warningsFor(m).filter(w=>!/^dup-/.test(w.key)&&(w.lv>=3||(/^tt-/.test(w.key)&&w.lv>=2))).length;
+  const d=banDoPhu(m);if(!d||d.empty)return nang;
+  return nang+d.hai.filter(r=>showPending||r.trang_thai==='da_duyet').length+(d.cb||[]).length}
+function banDoPhuSummary(m){const d=banDoPhu(m);if(!d||d.empty)return '';const nw=soCanhBaoNang(m);
   return `<div class="mute">Hỗ trợ ${d.goals.length} mục tiêu · ${nw} cảnh báo</div>`}
 function banDoPhuBlock(m){
   const sw=`<label class="gsw"><input type="checkbox" ${showPending?'checked':''} onchange="setPending(this.checked)"><span><b>Xem cả ý chưa duyệt</b><span class="mute">${showPending?'Đang hiện cả ý chưa duyệt, mỗi chỗ có nhãn “chưa duyệt”.':'Đang chỉ dùng ý đã duyệt. Bật để xem cả ý còn chờ duyệt.'}</span></span></label>`;
