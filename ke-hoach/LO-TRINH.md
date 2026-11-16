@@ -64,3 +64,12 @@ Phải giữ đúng thứ tự: không làm giao diện (5–7) trước khi B�
 - **File Obsidian rỗng:** Creatin.md, Dầu olive.md, Multivitamin - so sánh các dòng.md, Jojoba oil.md, Lộ trình tiếng Séc A0 → A2.md, Anki — Bộ nền tảng 400 từ.md và 50 câu thi nói A2.md đều 0 byte trên Drive. Cần mở Obsidian trên máy tính xem bản trong máy còn nội dung không.
 - **Bộ đếm 53/67/14:** không phải lỗi dữ liệu. 67 là tổng số hoạt chất. 53 là số chất đã có bài. 14 là số chất chưa có bài. Chỉ có nhãn tiêu đề ghi sai nghĩa.
 - **Lỗ hổng thật phát hiện được:** bảng tính trùng chất và vượt mức tối đa (`NUTR`) chỉ có **19 chất**, trong khi kho kiến thức có **78 chất**. 59 chất còn lại không được kiểm tra trùng hay vượt mức.
+
+
+## Cập nhật 2026-11-16
+
+- **Đã gộp v2-68 lên trang chính** (nhánh `ccr-08643b6b-cfgj04`, commit 742c981). Bản cũ v2-62 giữ ở nhánh `du-phong-v2-62`.
+- Giai đoạn 0–9: đã làm xong phần code. Nội dung còn chờ duyệt dần (xem `KE-HOACH-HOAN-TAT.md`, bước 6).
+- Phiếu build APK v2-68 đã gửi sang phiên "APP TPCN apk" trên máy tính, chờ máy tính bật.
+- Kiểm tra toàn app (QA.md): lỗi lớn duy nhất (mục Gout) đã sửa ở v2-68. Còn chưa kiểm: khối theo dõi trên Hôm nay, cảnh báo cam/xám, file sao lưu cũ, ngoại tuyến ở chế độ tối.
+- Việc treo: 15 Ý phần 1 và 1–2 Ý phần 2 chưa tra; cảnh báo Concor với canxi chưa có nguồn; xác nhận GitHub Pages đã cập nhật trên điện thoại; tải `bang-y-tpcn-v2.xlsx` lên Drive.
