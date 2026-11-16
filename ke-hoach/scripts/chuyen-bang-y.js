@@ -289,8 +289,28 @@ for (const r of taiLieu) {
   rows.push({ ...r, ghi_chu: ghi, trang_thai: coMa ? (r.trang_thai || 'cho_duyet') : 'bo', _level: 'tai_lieu' });
 }
 
+// ---------- 4d. Lọc từ và tự duyệt ----------
+// Từ không dùng trong lời của app (chỉ sửa noi_dung, không sửa trich_dan nguyên văn).
+const DOI_TU = [[/đáp ứng tốt nhất/g, 'đáp ứng rõ nhất'], [/tài trợ 100%/g, 'tài trợ toàn bộ'], [/tốt nhất/g, 'tốt hơn cả'], [/100% hiệu quả/g, 'hiệu quả cao']];
+for (const r of rows) {
+  let t = doiChua(r.noi_dung || '');
+  for (const [re, moi] of DOI_TU) t = t.replace(re, moi);
+  r.noi_dung = t;
+}
+// duyet.csv (sinh bởi ke-hoach/scripts/tu-duyet.js): ghi đè trang_thai theo ma_y, kèm lý do vào ghi_chu.
+const duyet = readOut('duyet.csv');
+const duyetMap = new Map(duyet.map((d) => [d.ma_y, d]));
+let soDuyet = 0;
+for (const r of rows) {
+  const d = duyetMap.get(r.ma_y);
+  if (!d || r.trang_thai === 'bo' && d.trang_thai !== 'bo') continue;
+  r.trang_thai = d.trang_thai;
+  if (d.ly_do) r.ghi_chu = (r.ghi_chu ? r.ghi_chu + '; ' : '') + 'duyệt: ' + d.ly_do;
+  soDuyet++;
+}
+
 // ---------- 5. Nguon, chat, muc-tieu ----------
-const usedSources = new Set(rows.map((r) => r.nguon));
+const usedSources = new Set([...rows.map((r) => r.nguon), 'EFSA']); // EFSA luôn có để nạp Ý mới
 const SOURCE_META = {
   NIH: ['NIH', 'NIH Office of Dietary Supplements', 'chinh_thuc', ''],
   NCCIH: ['NCCIH', 'National Center for Complementary and Integrative Health', 'chinh_thuc', ''],
@@ -381,6 +401,7 @@ console.log('  dòng không phải Ý: ' + count((r) => /không phải Ý/.test(
 console.log('  dòng từ y-bo-sung.csv: ' + boSung.length);
 console.log('  dòng từ y-tai-lieu.csv: ' + taiLieu.length + ', trong đó bo (chất chưa có trong kho): ' + taiLieuBo);
 console.log('câu đổi "chữa" -> "điều trị": ' + cauDoiChua.length);
+console.log('dòng áp duyet.csv: ' + soDuyet);
 for (const c of cauDoiChua) console.log('  ' + c);
 console.log('nguon.csv: ' + nguonRows.length + ' dòng');
 console.log('chat.csv: ' + chatRows.length + ' dòng, có nhom: ' + chatRows.filter((r) => r[3]).length);

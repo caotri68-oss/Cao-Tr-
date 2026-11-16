@@ -92,10 +92,23 @@ t('dòng có hại bị chấm R− không bật cảnh báo đỏ', () => {
   const r = tang([y('BS', 'R1'), y('TG', 'R−', 'hai')]);
   assert.equal(r.tang, 'A'); assert.equal(r.canh_bao, 0);
   const k = tang([y('TG', 'R−', 'hai')]); assert.equal(k.tang, 'K'); assert.equal(k.canh_bao, 0);
-  assert.equal(tang([y('TG', 'R0', 'hai')]).canh_bao, 1);
+  assert.equal(tang([y('TG', 'R0', 'hai')]).canh_bao, 0); // tác giả nói có hại nhưng chưa có nghiên cứu: không bật đỏ (luật 2026-11-16)
 });
 t('parseCsv: BOM, ngoặc kép, dấu phẩy và ngoặc kép trong ô', () => {
   const r = parseCsv('﻿"a","b"\n"1, x","y ""z"""\n');
   assert.deepEqual(r, [{ a: '1, x', b: 'y "z"' }]);
 });
 console.log(`\n${pass} kiểm thử đạt.`);
+
+// Cảnh báo đỏ chỉ khi "có hại" có căn cứ (thêm 2026-11-16).
+{
+  const { tinhTangChoCap } = await import('./tinh-tang.js');
+  const nm = { TG: { loai: 'tac_gia', dua_vao: '' }, NIH: { loai: 'chinh_thuc', dua_vao: '' } };
+  const a = tinhTangChoCap([{ ma_y: 'a', huong: 'hai', nguon: 'TG', muc_ncuu: 'R0' }], nm);
+  if (a.canh_bao !== 0) throw new Error('hai R0 của tác giả không được bật đỏ');
+  const b = tinhTangChoCap([{ ma_y: 'b', huong: 'hai', nguon: 'TG', muc_ncuu: 'R2' }], nm);
+  if (b.canh_bao !== 1) throw new Error('hai R2 phải bật đỏ');
+  const c = tinhTangChoCap([{ ma_y: 'c', huong: 'hai', nguon: 'NIH', muc_ncuu: '' }], nm);
+  if (c.canh_bao !== 1) throw new Error('hai của nguồn chính thức phải bật đỏ');
+  console.log('ok  cảnh báo đỏ chỉ khi có căn cứ');
+}

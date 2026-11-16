@@ -66,14 +66,19 @@ export function tinhTangChoCap(rows, nguonMap) {
   const haiBac = rows.filter((r) => r.huong === 'hai' && biBac(r));
   const hai = rows.filter((r) => r.huong === 'hai' && !biBac(r));
   const loi = rows.filter((r) => r.huong === 'loi' && !biBac(r));
-  const canhBao = hai.length ? 1 : 0;
+  // Cảnh báo đỏ chỉ khi khẳng định "có hại" có căn cứ: nguồn chính thức, hoặc mức nghiên cứu R1–R3.
+  // Khẳng định có hại của tác giả mà không có nghiên cứu (R0/rỗng) không bật đỏ, chỉ ghi trong giải thích.
+  const coCanCu = (r) => info(r).loai === 'chinh_thuc' || ['R1', 'R2', 'R3'].includes(normMuc(r.muc_ncuu));
+  const haiYeu = hai.filter((r) => !coCanCu(r));
+  const canhBao = hai.some(coCanCu) ? 1 : 0;
   const doc = (rs) => new Set(rs.map(khoa)).size;
 
   const lv = loi.map((r) => mucHieuLuc(r, info(r).loai));
   const tot = lv.filter((m) => m in RANK).sort((a, b) => RANK[b] - RANK[a])[0] || '';
   const base = { canh_bao: canhBao, so_dong: rows.length, so_nguon_doc_lap: doc(loi), muc_tot_nhat: tot, ma_y_lien_quan: maY };
   const ghiBac = (loiBac.length ? ` Có ${loiBac.length} dòng nói có lợi bị nghiên cứu bác (R−).` : '') +
-    (haiBac.length ? ` Có ${haiBac.length} dòng nói có hại bị nghiên cứu bác (R−), không hiện cảnh báo.` : '');
+    (haiBac.length ? ` Có ${haiBac.length} dòng nói có hại bị nghiên cứu bác (R−), không hiện cảnh báo.` : '') +
+    (haiYeu.length ? ` Có ${haiYeu.length} dòng tác giả nói có hại nhưng chưa có nghiên cứu, chỉ ghi để lưu ý.` : '');
   const ket = (tang, giai_thich) => ({ tang, ...base, giai_thich: giai_thich + (canhBao ? ' Có nguồn cảnh báo có hại, hiện cảnh báo đỏ.' : '') + ghiBac });
 
   // Bước 2: nguồn chính thức mức R− mâu thuẫn với nguồn khác nói có lợi
