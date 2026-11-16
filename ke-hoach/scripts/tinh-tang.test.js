@@ -75,6 +75,25 @@ t('cham-muc đè muc_ncuu và huong', () => {
   assert.equal(c.muc_ncuu, ''); assert.equal(c.huong, 'khong');
   assert.equal(apChamMuc([a], null)[0], a);
 });
+t('apChamMuc nhận nhiều file chấm', () => {
+  const a = y('NIH', ''); const b = y('BS', '');
+  const r = apChamMuc([a, b], [{ ma_y: a.ma_y, muc_ncuu: 'R2', huong_de_xuat: '' }], null, [{ ma_y: b.ma_y, muc_ncuu: 'R3', huong_de_xuat: '' }]);
+  assert.equal(r[0].muc_ncuu, 'R2'); assert.equal(r[1].muc_ncuu, 'R3');
+});
+t('nguồn không chính thức nói có lợi bị chấm R−, không còn dòng có lợi khác: tầng X', () => {
+  const r = tang([y('BS', 'R−'), y('TG', 'R−')]);
+  assert.equal(r.tang, 'X'); assert.match(r.giai_thich, /không ủng hộ/);
+});
+t('dòng có lợi bị bác không làm hỏng tầng của nguồn khác', () => {
+  const r = tang([y('NIH', 'R1'), y('TG', 'R−')]);
+  assert.equal(r.tang, 'A'); assert.equal(r.so_nguon_doc_lap, 1); assert.match(r.giai_thich, /bị nghiên cứu bác/);
+});
+t('dòng có hại bị chấm R− không bật cảnh báo đỏ', () => {
+  const r = tang([y('BS', 'R1'), y('TG', 'R−', 'hai')]);
+  assert.equal(r.tang, 'A'); assert.equal(r.canh_bao, 0);
+  const k = tang([y('TG', 'R−', 'hai')]); assert.equal(k.tang, 'K'); assert.equal(k.canh_bao, 0);
+  assert.equal(tang([y('TG', 'R0', 'hai')]).canh_bao, 1);
+});
 t('parseCsv: BOM, ngoặc kép, dấu phẩy và ngoặc kép trong ô', () => {
   const r = parseCsv('﻿"a","b"\n"1, x","y ""z"""\n');
   assert.deepEqual(r, [{ a: '1, x', b: 'y "z"' }]);

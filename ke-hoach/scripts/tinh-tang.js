@@ -1,6 +1,6 @@
 // Tính tầng tin cậy A–X cho từng cặp (chất, mục tiêu) của Bảng Ý, theo 7 bước trong ke-hoach/BANG-Y.md.
 // Chạy: node ke-hoach/scripts/tinh-tang.js
-// Đọc bang-y.csv, nguon.csv và (nếu có) cham-muc.csv; ghi ke-hoach/du-lieu/tang.csv. Không gọi mạng.
+// Đọc bang-y.csv, nguon.csv và (nếu có) cham-muc.csv, cham-muc-tai-lieu.csv; ghi ke-hoach/du-lieu/tang.csv. Không gọi mạng.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -59,15 +59,22 @@ export function tinhTangChoCap(rows, nguonMap) {
   const khoa = (r) => info(r).dua_vao || r.nguon || '?'; // khoá độc lập
   const maY = rows.map((r) => r.ma_y).filter(Boolean).join(';');
 
-  const hai = rows.filter((r) => r.huong === 'hai');
-  const loi = rows.filter((r) => r.huong === 'loi');
+  // Dòng "bị bác": nguồn không chính thức nói có lợi hoặc có hại, nhưng bước chấm mức nghiên cứu
+  // ghi R− (nghiên cứu thế giới không ủng hộ khẳng định đó). Không tính là ủng hộ, không bật cảnh báo đỏ.
+  const biBac = (r) => (r.huong === 'loi' || r.huong === 'hai') && normMuc(r.muc_ncuu) === 'R' + MINUS && info(r).loai !== 'chinh_thuc';
+  const loiBac = rows.filter((r) => r.huong === 'loi' && biBac(r));
+  const haiBac = rows.filter((r) => r.huong === 'hai' && biBac(r));
+  const hai = rows.filter((r) => r.huong === 'hai' && !biBac(r));
+  const loi = rows.filter((r) => r.huong === 'loi' && !biBac(r));
   const canhBao = hai.length ? 1 : 0;
   const doc = (rs) => new Set(rs.map(khoa)).size;
 
   const lv = loi.map((r) => mucHieuLuc(r, info(r).loai));
   const tot = lv.filter((m) => m in RANK).sort((a, b) => RANK[b] - RANK[a])[0] || '';
   const base = { canh_bao: canhBao, so_dong: rows.length, so_nguon_doc_lap: doc(loi), muc_tot_nhat: tot, ma_y_lien_quan: maY };
-  const ket = (tang, giai_thich) => ({ tang, ...base, giai_thich: giai_thich + (canhBao ? ' Có nguồn cảnh báo có hại, hiện cảnh báo đỏ.' : '') });
+  const ghiBac = (loiBac.length ? ` Có ${loiBac.length} dòng nói có lợi bị nghiên cứu bác (R−).` : '') +
+    (haiBac.length ? ` Có ${haiBac.length} dòng nói có hại bị nghiên cứu bác (R−), không hiện cảnh báo.` : '');
+  const ket = (tang, giai_thich) => ({ tang, ...base, giai_thich: giai_thich + (canhBao ? ' Có nguồn cảnh báo có hại, hiện cảnh báo đỏ.' : '') + ghiBac });
 
   // Bước 2: nguồn chính thức mức R− mâu thuẫn với nguồn khác nói có lợi
   const rTru = rows.filter((r) => normMuc(r.muc_ncuu) === 'R' + MINUS && info(r).loai === 'chinh_thuc');
@@ -78,13 +85,17 @@ export function tinhTangChoCap(rows, nguonMap) {
       return ket('X', `Nguồn chính thức (${[...new Set(rTru.map((r) => r.nguon))].join(', ')}) kết luận không có tác dụng, nhưng ${[...new Set(doiLap.map((r) => r.nguon))].join(', ')} nói có lợi: hai bên mâu thuẫn.`);
     }
   }
+  // Nguồn nói có lợi nhưng mọi dòng có lợi đều bị nghiên cứu bác: mâu thuẫn giữa nguồn và nghiên cứu
+  if (!loi.length && loiBac.length) {
+    return ket('X', `${[...new Set(loiBac.map((r) => r.nguon))].join(', ')} nói có lợi, nhưng nghiên cứu thế giới không ủng hộ (chấm R−): hai bên mâu thuẫn.`);
+  }
   // Nhóm không có dòng nào nói có lợi: chỉ có dòng "không tác dụng" và/hoặc "có hại"
   if (!loi.length) {
     const b = { ...base, muc_tot_nhat: rows.some((r) => normMuc(r.muc_ncuu) === 'R' + MINUS) ? 'R' + MINUS : '' };
     const gt = hai.length && !rows.some((r) => r.huong === 'khong')
       ? 'Chỉ có nguồn cảnh báo có hại, chưa có nguồn nói có lợi.'
       : 'Chưa có nguồn nào nói có lợi; các nguồn hiện có nói không có tác dụng' + (hai.length ? ' hoặc có hại.' : '.');
-    return { tang: 'K', ...b, giai_thich: gt + (canhBao ? ' Hiện cảnh báo đỏ.' : '') };
+    return { tang: 'K', ...b, giai_thich: gt + (canhBao ? ' Hiện cảnh báo đỏ.' : '') + ghiBac };
   }
   // Bước 3
   if (lv.includes('R1')) return ket('A', 'Có bằng chứng nghiên cứu mạnh (mức R1) từ nguồn chính thức hoặc chuyên gia.');
@@ -121,8 +132,10 @@ export function tinhTang(dongY, nguonList) {
   return out.sort((a, b) => a.chat.localeCompare(b.chat) || a.muc_tieu.localeCompare(b.muc_tieu));
 }
 
-export function apChamMuc(dongY, cham) {
-  if (!cham) return dongY;
+// cham: một mảng dòng chấm, hoặc nhiều mảng (cham-muc.csv, cham-muc-tai-lieu.csv). Mảng null được bỏ qua.
+export function apChamMuc(dongY, ...dsCham) {
+  const cham = dsCham.filter(Boolean).flat();
+  if (!cham.length) return dongY;
   const m = new Map(cham.map((c) => [c.ma_y, c]));
   return dongY.map((r) => {
     const c = m.get(r.ma_y);
@@ -136,8 +149,9 @@ function main() {
   const y = readCsv('bang-y.csv');
   const nguon = readCsv('nguon.csv');
   const cham = readCsv('cham-muc.csv');
-  const dong = apChamMuc(y, cham);
-  console.log(`Đọc ${y.length} dòng Ý; cham-muc.csv: ${cham ? cham.length + ' dòng được áp' : 'chưa có, bỏ qua'}.`);
+  const chamTL = readCsv('cham-muc-tai-lieu.csv');
+  const dong = apChamMuc(y, cham, chamTL);
+  console.log(`Đọc ${y.length} dòng Ý; cham-muc.csv: ${cham ? cham.length + ' dòng được áp' : 'chưa có, bỏ qua'}; cham-muc-tai-lieu.csv: ${chamTL ? chamTL.length + ' dòng' : 'chưa có'}.`);
 
   const cheDo = [
     ['da_duyet', dong.filter((r) => r.trang_thai === 'da_duyet')],

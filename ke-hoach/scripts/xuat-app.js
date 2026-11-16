@@ -1,4 +1,4 @@
-// Xuất dữ liệu cho app: đọc các CSV trong ke-hoach/du-lieu, áp cham-muc.csv, tính tầng, ghi docs/data/khung.json.
+// Xuất dữ liệu cho app: đọc các CSV trong ke-hoach/du-lieu, áp cham-muc.csv và cham-muc-tai-lieu.csv, tính tầng, ghi docs/data/khung.json.
 // Chạy: node ke-hoach/scripts/xuat-app.js   (chạy lại nhiều lần cho cùng kết quả; sắp xếp cố định)
 // Không gọi mạng. Ngày xuất lấy theo ngày chạy (đặt NGAY_XUAT=YYYY-MM-DD để cố định).
 import fs from 'node:fs';
@@ -58,7 +58,7 @@ export function xuat() {
   const nguon = readCsv('nguon.csv');
   const chat = readCsv('chat.csv');
   const tt = readCsv('tuong-tac.csv'); // giữ nguyên mọi cột có trong CSV (kể cả cột phụ như da_kiem_chung)
-  const dong = apChamMuc(readCsv('bang-y.csv'), readCsv('cham-muc.csv'));
+  const dong = apChamMuc(readCsv('bang-y.csv'), readCsv('cham-muc.csv'), readCsv('cham-muc-tai-lieu.csv'));
 
   const hopLe = dong.filter((r) => r.trang_thai !== 'bo' && r.muc_tieu);
   const tangPhan = (rows) => tinhTang(rows, nguon).map((r) => ({

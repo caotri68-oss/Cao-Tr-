@@ -262,6 +262,33 @@ for (const r of boSung) {
   rows.push({ ...r, ma_y: r.ma_y || ('Y-' + r.chat + '-' + (r.muc_tieu || 'x') + '-' + h), trang_thai: r.trang_thai || 'cho_duyet', _level: 'bo_sung' });
 }
 
+// ---------- 4c. Ý từ tài liệu bài viết (y-tai-lieu.csv: BS-PHUC, C-THAO) ----------
+// Giữ nguyên ma_y "T-…". Chất chưa có trong kho: chất có >= 2 Ý thì thêm mã mới vào chat.csv
+// (CHAT_MOI dưới đây); chất chỉ có 1 Ý thì để trang_thai=bo, ghi_chu "chất chưa có trong kho".
+const CHAT_MOI = {
+  silic: ['Silic', 'Silicon; silica; axit orthosilicic; orthosilicic acid; křemík', 'Khoáng chất'],
+  allulose: ['Allulose', 'D-psicose; đường hiếm allulose', 'Chất tạo ngọt'],
+  tinhbotkhang: ['Tinh bột kháng', 'Resistant starch; cơm nguội; rezistentní škrob', 'Chất xơ'],
+  giamtao: ['Giấm táo', 'Apple cider vinegar; jablečný ocet', 'Thực phẩm'],
+  xylitol: ['Xylitol', 'Đường xylitol; xylitol', 'Chất tạo ngọt'],
+  sambucus: ['Cơm cháy (elderberry)', 'Sambucus nigra; elderberry; bez černý', 'Thảo dược'],
+  mobo: ['Mỡ bò (dùng ngoài da)', 'Beef tallow; tallow; hovězí lůj', 'Dùng ngoài'],
+};
+const taiLieu = readOut('y-tai-lieu.csv');
+const maCoSan = new Set(Object.keys(KB));
+let taiLieuBo = 0;
+for (const r of taiLieu) {
+  const coMa = maCoSan.has(r.chat) || CHAT_MOI[r.chat];
+  let ghi = r.ghi_chu || '';
+  if (!coMa) {
+    if (!/chất chưa có trong kho/.test(ghi)) ghi = (ghi ? ghi + '; ' : '') + 'chất chưa có trong kho';
+    taiLieuBo++;
+  } else if (CHAT_MOI[r.chat]) {
+    ghi = ghi.replace(/;?\s*chất chưa có trong kho/, '').replace(/^;\s*/, '');
+  }
+  rows.push({ ...r, ghi_chu: ghi, trang_thai: coMa ? (r.trang_thai || 'cho_duyet') : 'bo', _level: 'tai_lieu' });
+}
+
 // ---------- 5. Nguon, chat, muc-tieu ----------
 const usedSources = new Set(rows.map((r) => r.nguon));
 const SOURCE_META = {
@@ -301,6 +328,7 @@ const chatRows = chatKeys.map((k) => {
   const cat = KB_CATS.find((c) => c.keys.includes(k));
   return [k, NFC(kb.name), ten_khac, cat ? NFC(cat.n) : ''];
 });
+for (const [k, v] of Object.entries(CHAT_MOI)) chatRows.push([k, ...v]);
 
 // Giữ can_kham_truoc, ghi_chu_an_toan đã điền tay trong muc-tieu.csv, và giữ các mục tiêu
 // không có trong KB_TOPICS (than, dinhduong, mo, gout...). Trước đây script ghi đè thành rỗng.
@@ -351,6 +379,7 @@ console.log('  mỗi muc_tieu có dòng: ' + KB_TOPICS.map((t) => t.id + '=' + c
 console.log('  ngoại lệ dùng: ' + usedExceptions.size + '/' + Object.keys(NGOAI_LE).length);
 console.log('  dòng không phải Ý: ' + count((r) => /không phải Ý/.test(r.ghi_chu)));
 console.log('  dòng từ y-bo-sung.csv: ' + boSung.length);
+console.log('  dòng từ y-tai-lieu.csv: ' + taiLieu.length + ', trong đó bo (chất chưa có trong kho): ' + taiLieuBo);
 console.log('câu đổi "chữa" -> "điều trị": ' + cauDoiChua.length);
 for (const c of cauDoiChua) console.log('  ' + c);
 console.log('nguon.csv: ' + nguonRows.length + ' dòng');
