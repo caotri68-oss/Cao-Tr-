@@ -438,7 +438,7 @@ function render(){
   document.querySelector('header').style.display=tab==='today'?'none':'';
   ({today:vToday,shelf:vShelf,add:vAdd,know:vKnow,fam:vFam,set:vSet})[tab]();
 }
-const APP_VER='tpcn-v2-68';
+const APP_VER='tpcn-v2-69';
 let newVer='';
 const updBanner=()=>newVer?`<div class="note" style="margin-bottom:12px;border-color:var(--pri);background:var(--pri2);color:var(--pri)"><b>Có bản mới của app.</b> <button class="btn sm pri" onclick="forceUpdate()">Cập nhật ngay</button></div>`:'';
 function view(title,sub_,html){$('#ttl').textContent=title;$('#sub').textContent=sub_||'';$('#sub').className='sub';$('#view').innerHTML=updBanner()+html}
@@ -2607,14 +2607,34 @@ function sketchView(m){
   if(skMode==='adv')out+=`<div class="mute" style="margin-top:10px">Cảnh báo cộng liều và tương tác thuốc nằm ở tab Tổng quan.</div>`;
   return out}
 
-const UPDATE_KINDS={'tpcn-products':importProducts,'tpcn-profile':importProfile,'tpcn-knowledge':importKnowledge,'tpcn-docs':importDocs,'tpcn-framework':importFramework};
+/* Nhập lịch sử mua từ file tpcn-purchases: ghi vào danh mục mua và Sổ giá, bỏ qua dòng đã có */
+async function importPurchases(f){
+  const d=JSON.parse(await f.text());const L=Array.isArray(d.purchases)?d.purchases:[];
+  if(!L.length){alert('File không có lần mua nào.');return}
+  if(!confirm(`Ghi ${L.length} lần mua vào danh mục mua và lịch sử giá? Dòng đã có sẽ không bị ghi lại.`))return;
+  const str=(v,n)=>String(v==null?'':v).slice(0,n);
+  S.shopping=shopList();let add=0,dup=0,neu=0,bad=0;
+  for(const p of L){
+    const price=Number(p.price),qty=Math.max(1,Number(p.qty)||1),shop=str(p.shop,120),units=Number(p.units)>0?Number(p.units):'';
+    if(!p||!p.name||!(price>=0)||!/^\d{4}-\d{2}-\d{2}$/.test(String(p.date||''))){bad++;continue}
+    let x=(p.match&&byId(S.shopping,String(p.match)))||S.shopping.find(s=>s.name===p.name);
+    if(!x){x={id:uid(),name:str(p.name,200),group:str(p.group,80),shop,price,qty,units,unitLabel:str(p.unitLabel,20),link:'',dose:'',checkShort:'',check:'',notes:'',status:'Đã mua',buy:true,log:[]};x._new=1;S.shopping.push(x);neu++}
+    if(shopLog(x).some(e=>e.kind==='mua'&&e.date===p.date&&Number(e.price)===price&&Number(e.qty)===qty&&(e.shop||'')===shop)){dup++;continue}
+    const e={id:uid(),kind:'mua',date:p.date,shop,price,qty,units:units||(Number(x.units)>0?Number(x.units):''),link:'',note:str(p.note,300)};
+    if(x.price!==''&&x.price!=null&&!x._new)e.planned=Number(x.price);
+    x.log=[...shopLog(x),e];x.status='Đã mua';x.buy=true;
+    if(!(Number(x.units)>0)&&units)x.units=units;
+    delete x._new;add++}
+  save();render();
+  alert(`Đã ghi ${add} lần mua${neu?`, tạo mới ${neu} mục`:''}${dup?`, bỏ qua ${dup} dòng đã có`:''}${bad?`, ${bad} dòng lỗi`:''}.`)}
+const UPDATE_KINDS={'tpcn-purchases':importPurchases,'tpcn-products':importProducts,'tpcn-profile':importProfile,'tpcn-knowledge':importKnowledge,'tpcn-docs':importDocs,'tpcn-framework':importFramework};
 async function updateFiles(files){
   for(const f of [...files]){
     try{
       const d=JSON.parse(await f.text());
       if(d&&d.kind===BK_ENC||(d&&!d.kind&&d.v===2&&Array.isArray(d.members)&&Array.isArray(d.products))){await restore(f);continue}
       const fn=d&&UPDATE_KINDS[d.kind];
-      if(!fn){alert(`File "${f.name}" không nhận dạng được loại dữ liệu (cần sản phẩm, hồ sơ sức khỏe, kiến thức, tài liệu, khung kiến thức hoặc bản sao lưu).`);continue}
+      if(!fn){alert(`File "${f.name}" không nhận dạng được loại dữ liệu (cần sản phẩm, hồ sơ sức khỏe, kiến thức, tài liệu, khung kiến thức, lịch sử mua hoặc bản sao lưu).`);continue}
       await fn(f);
     }catch(e){alert(`Không đọc được "${f.name}": ${e.message}`)}
   }
